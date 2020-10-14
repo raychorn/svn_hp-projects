@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<actionScriptProperties analytics="false" mainApplicationPath="Hpic4vc_server_ui.mxml" projectUUID="0d66810f-8d78-47d3-b6f8-66d09a229c16" version="10">
+  <compiler additionalCompilerArguments="-load-config+=${VSPHERE_CLIENT_SDK}/resources/flex-config.xml -locale  -source-path+=locale/{locale}" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="false" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="false" includeNetmonSwc="false" outputFolderPath="war/target/hpic4vc_server_ui-war" removeUnusedRSL="true" sourceFolderPath="swf/src/main/flex" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="false" warn="true">
+    <compilerSourcePath>
+      <compilerSourcePathEntry kind="1" linkType="1" path="war/src/main/webapp"/>
+      <compilerSourcePathEntry kind="1" linkType="1" path="/hpic4vc_ui/swf/src/main/flex"/>
+    </compilerSourcePath>
+    <libraryPath defaultLinkType="1">
+      <libraryPathEntry kind="4" path=""/>
+      <libraryPathEntry kind="3" linkType="2" path="${VSPHERE_CLIENT_SDK}/libs/vsphere-client-lib.swc" useDefaultLinkType="false"/>
+    </libraryPath>
+    <sourceAttachmentPath/>
+  </compiler>
+  <applications/>
+  <modules/>
+  <buildCSSFiles/>
+  <flashCatalyst validateFlashCatalystCompatibility="false"/>
+</actionScriptProperties>

@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="800" height="600" close="closeEventHandler(event);"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"
+			   title.onDeployConfirmation="{Helper.getString('title.onDeployConfirmation')}"
+			   title.onHostManagementInfo="{Helper.getString('title.onHostManagementInfo')}"
+			   title.onTargetServers="{Helper.getString('title.onTargetServers')}"
+			   title.noDeploymentConfig="{Helper.getString('title.noDeploymentConfig')}"
+			   title.invalidDeploymentConfig="{Helper.getString('title.invalidDeploymentConfig')}"
+			   >
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		
+		[Event(name="taskPanelRefreshRequest", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import assets.events.ColumnSelectedEvent;
+			
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.ApplicationDataModel;
+			import com.hp.asi.hpic4vc.ui.model.BuildPlanModel;
+			import com.hp.asi.hpic4vc.ui.model.DeploymentConfigurationModel;
+			import com.hp.asi.hpic4vc.ui.model.DeploymentDetailModel;
+			import com.hp.asi.hpic4vc.ui.model.StringModel;
+			import com.hp.asi.hpic4vc.ui.model.UserInfoModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.utils.UtilToDeploy;
+			import com.hp.asi.hpic4vc.ui.vo.BuildPlanData;
+			import com.hp.asi.hpic4vc.ui.vo.DeploymentTaskVO;
+			import com.hp.asi.hpic4vc.ui.vo.DeploymentUserData;
+			import com.hp.asi.hpic4vc.ui.vo.DeploymentVO;
+			import com.hp.asi.hpic4vc.ui.vo.NicsVO;
+			import com.hp.asi.hpic4vc.ui.vo.ServerNodesData;
+			import com.hp.asi.hpic4vc.ui.vo.ServerProvisioningData;
+			import com.vmware.core.events.DataRefreshInvocationEvent;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			import com.vmware.usersession.ServerInfo;
+			import com.vmware.vsphere.client.util.UserSessionManager;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CollectionEvent;
+			import mx.events.CollectionEventKind;
+			import mx.events.FlexEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TitleWindowBoundsEvent;
+			
+			private var serviceGuid:String;
+			
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			
+			private var _proxy:Hpic4vc_providerProxy;
+			
+			[Bindable]
+			private var isAuthorized:Boolean;
+			
+			[Bindable]
+			private var deploymentConfigAvailable:Boolean;
+			
+			
+			[Bindable]
+			private var dataLoaded:Boolean;
+			
+			[Bindable]
+			public var objReferenceId:String;
+			
+			[Bindable]
+			private var deploymentDetailModel:DeploymentDetailModel = new DeploymentDetailModel();
+			
+			[Bindable]
+			private var buildPlanModel:BuildPlanModel = new BuildPlanModel();
+			
+			[Bindable]
+			private var selectedBuildplan:BuildPlanData; 
+			
+			[Bindable]
+			private var isTargetServerDataSelected:Boolean;
+			
+			[Bindable]
+			private var isBuildPlanSelected:Boolean;
+			
+			[Bindable]
+			private var isHostManagementInfoFilled:Boolean = true;
+			
+			[Bindable]
+			private var deploymentVO:DeploymentVO ;
+			
+			private var serverCache:Dictionary ;
+			
+			
+			[Bindable]
+			private var depTaskVO:DeploymentTaskVO = new DeploymentTaskVO();
+			
+			[Bindable]
+			public var vcenterFolderName:String;
+			
+			[Bindable]
+			public var vCenterFolderRef:String;
+			
+			[Bindable]
+			private var userData:DeploymentUserData = new DeploymentUserData(); 
+			
+			
+			[Bindable]
+			public var helpUrl : String ;
+			
+			[Bindable]
+			private var isDeploymentSubmitted:Boolean;
+			
+			[Bindable]
+			private var appModel:ApplicationDataModel = ApplicationDataModel.getInstance();
+			
+			
+			protected function titleWin_windowMovingHandler(evt:TitleWindowBoundsEvent):void {
+				if (evt.afterBounds.left < 0) {
+					evt.afterBounds.left = 0;
+				} else if (evt.afterBounds.right > systemManager.stage.stageWidth) {
+					evt.afterBounds.left = systemManager.stage.stageWidth - evt.afterBounds.width;
+				}
+				if (evt.afterBounds.top < 0) {
+					evt.afterBounds.top = 0;
+				} else if (evt.afterBounds.bottom > systemManager.stage.stageHeight) {
+					evt.afterBounds.top = systemManager.stage.stageHeight - evt.afterBounds.height;
+				}
+			}
+
+			
+			public function closeEventHandler(event:Event = null):void
+			{
+				PopUpManager.removePopUp(this);
+				deploymentDetailModel = null;
+			}
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_proxyServer = new Hpic4vc_server_providerProxy();
+				serviceGuid = (UserSessionManager.instance.userSession.serversInfo[0] as ServerInfo).serviceGuid;
+				_proxy = new Hpic4vc_providerProxy();
+				ChangeWatcher.watch(appModel,["isAuthorized"],handlerAuthorization);
+				if(ApplicationDataModel.isUserValidated())
+				{
+					isAuthorized = appModel.isAuthorized;
+				}
+				else
+				{
+					_proxy.getUserInfo(serviceGuid, onGettingUserInfo);	
+				}
+				
+				this.currentState = "loading";
+				getHelpUrl();
+				//requestData();
+				
+			}
+			
+			private function getHelpUrl():void
+			{
+				_proxy.getICServerProvisioningHelp(serviceGuid,onGettingHelpUrl);
+			}
+			
+			private function onGettingHelpUrl(event:MethodReturnEvent):void
+			{
+				if (event && event.result)
+				{
+					helpUrl = event.result as String;
+					
+				}
+			}
+			
+			private function handler(e:PropertyChangeEvent):void
+			{
+				helpHgroupId.setFocus();
+			}
+			
+		
+			
+			private function selectedServersHandler(event:CollectionEvent):void
+			{
+				isTargetServerDataSelected = false;
+				if (event.kind == CollectionEventKind.UPDATE)
+				{
+					for each  (var item:ServerNodesData in deploymentDetailModel.serverNodes)
+					{
+						if (item.deploy)
+						{
+							isTargetServerDataSelected = true;
+							break;
+						}
+					}
+					
+					 
+				}
+			}
+			
+			private function onGettingUserInfo(event:MethodReturnEvent):void 
+			{
+				Helper.updateUserAuthorization(event);
+				
+			}
+			
+			private function handlerAuthorization(event:Event):void
+			{
+				if(appModel.isAuthorized)
+				{
+					_proxyServer.getDeploymentConfiguration(serviceGuid,onGettingCredentialsPage);
+				}
+				else
+				{
+					this.currentState = "notAuthorized";	
+				}
+				
+			}
+			
+			private function onGettingCredentialsPage(event:MethodReturnEvent):void
+			{
+				if (event && event.result)
+				{
+					
+					
+					if (event.result is DeploymentConfigurationModel)
+					{
+						var model:DeploymentConfigurationModel = new DeploymentConfigurationModel();
+						model = event.result as DeploymentConfigurationModel;
+						if(model.deploymentConfigData && model.deploymentConfigData.length > 0)
+						{
+							deploymentDetailModel.hostName = model.deploymentConfigData.getItemAt(0).host;
+							
+							userData.username = model.deploymentConfigData.getItemAt(0).username;
+							userData.password = model.deploymentConfigData.getItemAt(0).password;
+							
+							_proxyServer.getAuth(serviceGuid,userData.username,userData.password,deploymentDetailModel.hostName,onGettingAuth);
+
+							deploymentConfigAvailable = true;
+							
+						}
+						else
+						{
+							this.currentState = "noDeploymentConfig";
+							deploymentConfigAvailable = false;
+						}
+					}
+				}
+				else if(event && event.error)
+				{
+					
+					this.currentState = "noDeploymentConfig";
+					return;
+				}
+			}
+			
+			private function onGettingAuth(event:MethodReturnEvent):void
+			{
+				var model:StringModel ;
+				if (event && event.result is StringModel)
+				{
+					model = event.result as StringModel;
+					deploymentDetailModel.auth = model.data;
+					if (model && model.data)
+					{
+						//Make a call to ICSP to get server nodes
+						_proxyServer.getServers(objReferenceId,deploymentDetailModel.auth,deploymentDetailModel.hostName,onGettingServerNodes);
+						
+					}
+					
+				}
+				else if(event && event.error)
+				{
+					this.currentState = "invalidDeploymentConfig";
+				}
+			}
+			
+			
+			private function onGettingServerNodes(event:MethodReturnEvent):void
+			{
+			
+				if (event && event.result is DeploymentDetailModel)
+				{
+					var servers:ArrayCollection = new ArrayCollection();
+					servers = DeploymentDetailModel(event.result).serverNodes;
+					deploymentDetailModel.serverNodes = servers;
+					
+					deploymentDetailModel.serverNodes.addEventListener(CollectionEvent.COLLECTION_CHANGE,selectedServersHandler);
+				
+					
+					if (deploymentDetailModel.serverNodes && deploymentDetailModel.serverNodes.length > 0)
+					{
+						//Make a call to ICSP to get server nodes
+						_proxyServer.getBuildPlans(objReferenceId,deploymentDetailModel.auth,deploymentDetailModel.hostName,onGettingBuildPlans);
+						
+					}
+					else
+					{
+						this.currentState = "noTargetServers";
+					}
+					
+				}
+				else if(event && event.error)
+				{
+					this.currentState = "errorFound";
+					return;
+				}
+			}
+				
+			
+			private function onGettingBuildPlans (event:MethodReturnEvent):void
+			{
+				if (event && event.result is BuildPlanModel)
+				{
+					var serverNodesData:ServerNodesData;
+					buildPlanModel = BuildPlanModel(event.result);
+					this.currentState = "onTargetServers" ;
+					
+					dataLoaded = ApplicationDataModel.isUserAuthorized() && deploymentConfigAvailable;
+				}
+				else if(event && event.error)
+				{
+					this.currentState = "errorFound";
+					dataLoaded = false;
+					return;
+				}
+				
+			}
+					
+			
+			protected function requestData():void
+			{
+				//_proxyServer.getClusterProperties(objReferenceId, onGettingData);
+				var server:ServerNodesData = new ServerNodesData();
+				server.name = "minint-c5tqi06";
+				server.macAddress ="101F74359E00";
+				server.uri = "/rest/os-deployment-servers/80001";
+				server.UUID = "35373932-3337-5553-4531-32364e314351";
+				server.state = "MAINTENANCE";
+				server.opswLifecycle ="UNPROVISIONED";
+				deploymentDetailModel.serverNodes.addItem(server);
+				
+				server = new ServerNodesData();
+				server.name = "ml350g6.";
+				server.macAddress ="1C:C1:DE:72:92:70";
+				server.uri = "/rest/os-deployment-servers/80002";
+				server.UUID = "421eb610-bf0d-2b40-a7e1-57734ad21e60";
+				server.state = "UNREACHABLE";
+				server.opswLifecycle = "PROVISIONING";
+				deploymentDetailModel.serverNodes.addItem(server);
+				 
+				 server = new ServerNodesData();
+				server.name = "minint-bos6glo.";
+				server.macAddress ="1C:C1:DE:72:92:70";
+				server.uri = "/rest/os-deployment-servers/80003";
+				server.UUID = "421e59e0-ae7d-8a17-07d0-e7b45e1896da";
+				server.state = "MAINTENANCE";
+				server.opswLifecycle = "PROVISION FAILED";
+				deploymentDetailModel.serverNodes.addItem(server);
+				
+				server = new ServerNodesData();
+				server.name = "test2.";
+				server.macAddress ="1C:C1:DE:72:92:70";
+				server.uri = "/rest/os-deployment-servers/80004";
+				server.UUID = "421e59e0-ae7d-8a17-07d0-e7b45e1896da";
+				server.state = "MAINTENANCE";
+				server.opswLifecycle = "PROVISION FAILED";
+				deploymentDetailModel.serverNodes.addItem(server);
+				
+				server = new ServerNodesData();
+				server.name = "test5";
+				server.macAddress ="1C:C1:DE:72:92:70";
+				server.uri = "/rest/os-deployment-servers/80005";
+				server.UUID = "421e59e0-ae7d-8a17-07d0-e7b45e1896da";
+				server.state = "MAINTENANCE";
+				server.opswLifecycle = "PROVISION FAILED";
+				deploymentDetailModel.serverNodes.addItem(server);
+				
+				var build:BuildPlanData = new BuildPlanData();
+				build.name = "ProLiant OS - ESXi 5.0 U1 Scripted Install";
+				build.os = "OS - VMware ESXi Server 5.x";
+				build.uri = "/rest/os-deployment-build-plans/420001";
+				buildPlanModel.buildPlan.addItem(build);
+				build = new BuildPlanData();
+				build.name = "ProLiant OS - ESXi 5.1 U1 Scripted Install";
+				build.os = "OS - VMware ESXi Server 5.x";
+				build.uri = "/rest/os-deployment-build-plans/420002";
+				buildPlanModel.buildPlan.addItem(build);
+				
+				deploymentConfigAvailable = true;
+				isAuthorized = true;
+				
+				dataLoaded = true;
+				
+				deploymentDetailModel.serverNodes.addEventListener(CollectionEvent.COLLECTION_CHANGE,selectedServersHandler);
+
+				this.currentState = "onTargetServers";
+			}
+			
+			
+			protected function previousStateButton_clickHandler(event:MouseEvent):void
+			{
+				switch (this.currentState)
+				{
+					case 'onHostManagementInfo' :
+						this.currentState = 'onTargetServers' ;
+						break ;
+					case 'onDeployConfirmation' :
+						this.currentState = 'onHostManagementInfo' ;
+						break ;
+				}
+				
+			}
+			
+			protected function nextStateButton_clickHandler(event:MouseEvent):void
+			{
+				switch (this.currentState)
+				{
+					case 'onTargetServers' :
+						deploymentDetailModel.selectedServers.refresh();
+						collectServerInformation();
+						this.currentState = 'onHostManagementInfo' ;
+						break ;
+					case 'onHostManagementInfo' :
+						deploymentDetailModel.selectedServers.refresh();
+						
+						if(UtilToDeploy.validateHostManagementData(deploymentDetailModel))
+						{
+							this.currentState = 'onDeployConfirmation' ;
+							
+						}
+						break ;
+					case 'onDeployConfirmation' :
+						processDeployement();
+				}
+				
+			}
+			
+		
+			
+			
+			
+			
+	
+			
+			private function processDeployement():void
+			{
+				isDeploymentSubmitted = true;
+				var jsonData:String = JSON.stringify(convertListToArray());
+				trace("personilzation data" + jsonData);
+				_proxyServer.submitBuildPlans(objReferenceId,jsonData,selectedBuildplan.uri,deploymentDetailModel.auth,deploymentDetailModel.hostName,onSubmitting);
+			}
+			
+			private function convertListToArray():Array
+			{
+
+				var returnList:ArrayCollection = new ArrayCollection();
+				var serverProvisioningData:ServerProvisioningData ;
+				var nicsVO:NicsVO;
+				var testArr:Array = new Array();
+				
+				for each (var dep:DeploymentVO in deploymentDetailModel.selectedServers)
+				{
+					
+					serverProvisioningData  = new ServerProvisioningData();
+					nicsVO = new NicsVO();
+					
+					serverProvisioningData.serverUri = dep.serverUri;
+					
+					nicsVO = dep.personalityData.nics.getItemAt(0) as NicsVO;
+					if (nicsVO.dhcp)
+					{
+						serverProvisioningData.personalityData.displayName =null;
+						serverProvisioningData.personalityData.dnsSuffix = null;
+						serverProvisioningData.personalityData.domainName = null;
+						serverProvisioningData.personalityData.domainType = null;
+						serverProvisioningData.personalityData.groupName = null;
+						serverProvisioningData.personalityData.hostName = null;	
+						nicsVO.dns = null;
+						nicsVO.dnsDomain = null;
+						nicsVO.gateway = null;
+						nicsVO.ip4Address = null;
+						nicsVO.macAddress = null;
+						nicsVO.mask = null;
+						nicsVO.state = null;
+						serverProvisioningData.personalityData = null;
+						//serverProvisioningData.personalityData.nics.push(nicsVO);
+						
+					}
+					else
+					{
+						serverProvisioningData.personalityData.displayName = dep.personalityData.displayName;
+						serverProvisioningData.personalityData.dnsSuffix = dep.personalityData.dnsSuffix;
+						serverProvisioningData.personalityData.domainName = dep.personalityData.domainName;
+						serverProvisioningData.personalityData.domainType = dep.personalityData.domainType;
+						serverProvisioningData.personalityData.groupName = dep.personalityData.groupName;
+						serverProvisioningData.personalityData.hostName = dep.personalityData.hostName;	
+						serverProvisioningData.personalityData.nics.push(dep.personalityData.nics.getItemAt(0));
+						dep.hostData.hostIP = nicsVO.ip4Address;
+						
+					}
+						
+					returnList.addItem( serverProvisioningData );
+					
+					
+				}
+				
+				testArr = returnList.toArray();
+				
+				return testArr;
+				
+			}
+			
+			
+			private function collectServerInformation():void
+			{
+				if (deploymentDetailModel.selectedServers && deploymentDetailModel.selectedServers.length > 0)
+				{
+					deploymentDetailModel.cacheData = new ArrayCollection();
+					var found:Boolean;
+					for(var j:uint ; j<deploymentDetailModel.serverNodes.length ; j++)
+					{
+						var serverNodesData:ServerNodesData = deploymentDetailModel.serverNodes.getItemAt(j) as ServerNodesData;
+						
+						found = false;
+						if (serverNodesData.deploy == true)
+						{
+							for (var k:uint ; k<deploymentDetailModel.selectedServers.length ; k++)
+							{
+								var deploymentVO:DeploymentVO = deploymentDetailModel.selectedServers.getItemAt(k) as DeploymentVO;
+								if (serverNodesData.uri == deploymentVO.serverUri)
+								{
+									deploymentDetailModel.cacheData.addItem(deploymentVO);
+									found = true;
+									break;
+								}
+											
+							}
+							if(!found)
+							{
+								deploymentVO = new DeploymentVO();
+								var nicsVO:NicsVO;
+								nicsVO = new NicsVO();
+								deploymentVO.useNIC0 = true;
+								deploymentVO.buildPlanUri = selectedBuildplan.uri;
+								deploymentVO.buildPlanName = selectedBuildplan.name;
+								deploymentVO.vCenterFolderName = this.vcenterFolderName;
+								deploymentVO.serverUri = serverNodesData.uri;
+								deploymentVO.hostData.hostIP = serverNodesData.managementIP;
+								deploymentVO.personalityData.displayName = serverNodesData.name;
+								nicsVO.macAddress = serverNodesData.macAddress;
+								deploymentVO.personalityData.nics.addItem(nicsVO);
+								deploymentDetailModel.cacheData.addItem(deploymentVO);
+							}
+							
+						}
+					}
+					
+					deploymentDetailModel.selectedServers = new ArrayCollection();
+					deploymentDetailModel.selectedServers = deploymentDetailModel.cacheData;
+					deploymentDetailModel.selectedServers.refresh();
+					
+					
+				}
+				else
+				{
+					
+					addNewServersForDeployment();
+				}
+			}
+			
+			private function addNewServersForDeployment():void
+			{
+				deploymentDetailModel.selectedServers = new ArrayCollection();
+				var nicsVO:NicsVO;
+				for(var i:uint ; i<deploymentDetailModel.serverNodes.length ; i++)
+				{
+					if(ServerNodesData(deploymentDetailModel.serverNodes.getItemAt(i)).deploy)
+					{
+						deploymentVO = new DeploymentVO();
+						nicsVO = new NicsVO();
+						deploymentVO.useNIC0 = true;
+						deploymentVO.buildPlanUri = selectedBuildplan.uri;
+						deploymentVO.buildPlanName = selectedBuildplan.name;
+						deploymentVO.vCenterFolderName = this.vcenterFolderName;
+						deploymentVO.serverUri = ServerNodesData(deploymentDetailModel.serverNodes.getItemAt(i)).uri;
+						deploymentVO.hostData.hostIP =  ServerNodesData(deploymentDetailModel.serverNodes.getItemAt(i)).managementIP;
+						deploymentVO.personalityData.displayName = ServerNodesData(deploymentDetailModel.serverNodes.getItemAt(i)).name;
+						nicsVO.macAddress = ServerNodesData(deploymentDetailModel.serverNodes.getItemAt(i)).macAddress;
+						deploymentVO.personalityData.nics.addItem(nicsVO);
+						deploymentDetailModel.selectedServers.addItem(deploymentVO);
+					}
+				}
+			}
+			
+			
+				
+			
+			
+			private function onSubmitting(event:MethodReturnEvent):void
+			{
+				if(event && event.result)
+				{
+					if(event.result is StringModel)
+					{
+						// serverProvisioning accepted the buildplan and we received JobId
+						// create task in Vecenter
+						var jobId:String = StringModel(event.result).data;
+						
+						var createTaskData:String = getTaskData( jobId);
+						
+						if (jobId)
+						{
+						 Alert.show(Helper.getString('DEPLOYMENT_SUCCESS_MESSAGE'),"Success");
+						 PopUpManager.removePopUp(this);
+						_proxyServer.createTaskForServerProvisioningJob(serviceGuid,createTaskData,onCreatingTask);
+						
+						}
+					}
+					else
+					{
+					
+						Alert.show(Helper.getString('DEPLOYMENT_FAILED_MESSAGE'),"Error");
+						isDeploymentSubmitted = false;
+						
+					}
+					
+					
+				}
+				
+			}
+			
+			private function getTaskData(jobId:String):String
+			{
+				if(deploymentDetailModel.selectedServers)
+				{
+					
+					depTaskVO.serverProvisioningJobId = jobId;
+					depTaskVO.serverProvisioningHost = "https://" +  deploymentDetailModel.hostName;
+					depTaskVO.serverProvisioningHostUserName = userData.username;
+					depTaskVO.serverProvisioningHostPassword = userData.password;
+					depTaskVO.serverGuid = serviceGuid;
+					depTaskVO.uuid = vCenterFolderRef;
+						
+					for each (var depVO:DeploymentVO in deploymentDetailModel.selectedServers)
+					{
+						
+						depTaskVO.host.push(depVO.hostData);
+					}
+				}
+				
+				return JSON.stringify(depTaskVO);
+			}
+			
+			
+			private function onCreatingTask (e:MethodReturnEvent):void
+			{
+				deploymentDetailModel = null;
+				if (e && e.result)
+				{
+					dispatchEvent(new Event("taskPanelRefreshRequest"));
+				}
+				else
+				{
+					
+				}
+				
+			}
+				
+			
+			
+			protected function buildPlanDropDownList_changeHandler(event:IndexChangeEvent):void
+			{
+				if (buildPlanDropDownList.selectedItem && buildPlanDropDownList.selectedItem is BuildPlanData)
+				{
+					 selectedBuildplan = BuildPlanData(buildPlanDropDownList.selectedItem)
+					 isBuildPlanSelected = true;
+					
+				}
+				else
+				{
+					isBuildPlanSelected = false;
+				}
+				
+			}
+			
+			private function onRefresh():void
+			{
+				this.currentState = "loading";
+				
+				reSetWizardData();
+				_proxyServer.getServers(objReferenceId,deploymentDetailModel.auth,deploymentDetailModel.hostName,onGettingServerNodes);
+			}
+			
+			private function reSetWizardData():void{
+				dataLoaded = false;
+				isTargetServerDataSelected=false;
+				isBuildPlanSelected = false;
+				isDeploymentSubmitted = false;
+				deploymentDetailModel.selectedServers = new ArrayCollection();
+			}
+			
+			protected function advNodes_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				this.advNodes.addEventListener(ColumnSelectedEvent.COLUMN_SELECTED, onColumnSelected)
+				
+			}
+			
+			private function onColumnSelected(event:ColumnSelectedEvent):void{
+				
+				if(event.isSelected)
+				{
+					for each (var s:ServerNodesData in deploymentDetailModel.serverNodes)
+					{
+						s.deploy = true ;
+					}
+				}
+				else
+				{
+					for each (var sn:ServerNodesData in deploymentDetailModel.serverNodes)
+					{
+						sn.deploy = false ;
+					}
+				}
+				
+				invalidateDisplayList();
+				validateNow();
+			}
+			
+			
+			
+			
+			protected function helpButton_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(helpUrl), "_blank");
+				
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				hostMgmtScroller.viewport.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, handler);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="loading" />
+		<s:State name="notAuthorized"/>
+		<s:State name="errorFound"/>
+		<s:State name="noDeploymentConfig"/>
+		<s:State name="noTargetServers"/>
+		<s:State name="onTargetServers" />
+		<s:State name="onHostManagementInfo" />
+		<s:State name="onDeployConfirmation" />
+		<s:State name="invalidDeploymentConfig" />
+			 
+	</s:states>
+
+		
+	
+	
+	<s:layout>
+		<s:VerticalLayout paddingBottom="10" paddingTop="10" paddingRight="10" paddingLeft="10" horizontalAlign="center"/>
+	</s:layout>
+	
+	<s:HGroup id="helpHgroupId" horizontalAlign="right" width="100%" verticalAlign="middle" gap="0" >
+		<mx:Image id="helpButton" 
+				  source="@Embed(source='/assets/images/help_black.png')" 
+				  click="helpButton_clickHandler(event)"
+				  buttonMode="true"
+				  toolTip="{Helper.getString('help')}"
+				  />	
+		
+	</s:HGroup>
+	<s:Group height="100%" includeIn="loading">
+		<s:Label text="{Helper.getString('loadingDetail')}" verticalAlign="middle"/>					
+	</s:Group>
+	
+	<s:Group height="100%" includeIn="errorFound">
+		<s:Label text="{Helper.getString('errorOccurred')}" verticalCenter="0"/>
+	</s:Group>
+	
+			
+	<s:Group width="100%" height="100%" includeIn="notAuthorized">
+		<s:Label text="You are not authorized" />
+	</s:Group>
+			
+	<s:Group width="100%" height="100%" includeIn="noDeploymentConfig">
+		<s:Label text="{Helper.getString('MISSING_DEPLOYMENT_CONFIGURATION')}" width="780"/>
+	</s:Group>	
+	
+	<s:Group width="100%" height="100%" includeIn="noTargetServers">
+		<s:Label text="{Helper.getString('NO_TARGET_SERVERS')}" width="780"/>
+	</s:Group>	
+	
+	<s:Group width="100%" height="100%" includeIn="invalidDeploymentConfig">
+		<s:Label text="{Helper.getString('INVALID_DEPLOYMENT_CONFIGURATION')}" width="780"/>
+	</s:Group>		
+	
+			 
+
+	<s:Group width="100%" height="100%" includeIn="onTargetServers">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:Scroller width="100%" height="100%">
+			<s:HGroup>
+				<s:VGroup width="100%" height="100%" gap="25">
+					<s:HGroup width="100%" gap="10" >
+						<s:DropDownList id="buildPlanDropDownList" width="75%" 
+										dataProvider="{buildPlanModel.buildPlan}" 
+										labelField="name" change="buildPlanDropDownList_changeHandler(event)"
+										prompt="{Helper.getString('PLEASE_SELECT_BUILD_PLAN')}"
+										selectedIndex="-1"
+										/>
+							<mx:Image id="imgRefresh" 
+									  source="@Embed(source='/assets/images/refresh.png')" 
+									  click="onRefresh()"
+									  buttonMode="true"
+									  toolTip="Click to refresh target servers"
+									  />		 
+					</s:HGroup>
+					<s:HGroup width="100%" >
+							<s:Label text="{Helper.getString('PLEASE_SELECT_TARGET_SERVER_FOR_DEPLOYMENT')}" />
+					</s:HGroup>
+					<s:HGroup width="100%" gap="80" height="100%">
+						<mx:AdvancedDataGrid id="advNodes" 
+											 width="100%" height="100%" dataProvider="{deploymentDetailModel.serverNodes}" 
+											 creationComplete="advNodes_creationCompleteHandler(event)"
+											 sortableColumns="false"
+											 headerStyleName="mxDataGridHeader"
+											 sortExpertMode="true"
+											 >
+							<mx:columns>
+								<mx:AdvancedDataGridColumn 
+									itemRenderer="assets.renderers.ServerNodeCheckBoxRenderer"
+									headerRenderer="assets.renderers.CheckBoxHeaderRenderer"
+									sortable="false"
+									width="40"
+									  />
+								<mx:AdvancedDataGridColumn headerText="Name"  dataField="name" width="200"/>
+								<mx:AdvancedDataGridColumn headerText="First NIC MAC Address"  dataField="macAddress" width="200"/>
+								<mx:AdvancedDataGridColumn headerText="UUID"  dataField="UUID" width="200"/>
+								<mx:AdvancedDataGridColumn headerText="Status" width="200"
+														   itemRenderer="assets.renderers.ServerStatusRenderer"
+														   />
+								<!--<mx:AdvancedDataGridColumn headerText="Deployment Server ID" width="140" />-->
+							</mx:columns>
+						</mx:AdvancedDataGrid>
+					</s:HGroup>		
+				</s:VGroup>
+			</s:HGroup>
+		</s:Scroller>		
+	</s:Group>
+
+	
+	<s:Group width="100%" height="100%" includeIn="onHostManagementInfo" creationComplete="group1_creationCompleteHandler(event)">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+					<s:Label text="{Helper.getString('label.onHostManagementInfo.instructions')}" width="790" fontSize="12" fontStyle="italic"/>
+					<s:Label text="{Helper.getString('label.onHostManagementInfo.note')}" width="790" fontSize="12" fontStyle="italic"/>
+					<!--<s:Label text="{Helper.getString('label.onHostManagementInfo.note_1')}" width="790" fontSize="12" fontStyle="italic"/>-->
+				<s:Scroller id="hostMgmtScroller" width="100%" height="100%">	
+					<s:DataGroup itemRenderer="assets.renderers.HostManagementRenderer" dataProvider="{deploymentDetailModel.selectedServers}" >
+						<s:layout>
+							<s:VerticalLayout useVirtualLayout="true" gap="0"/>
+						</s:layout>
+					</s:DataGroup>
+				</s:Scroller>
+			
+	</s:Group>
+
+	
+	
+		<s:Group width="100%" height="100%" includeIn="onDeployConfirmation">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:Label text="{Helper.getString('label.onDeployConfirmation.instructions')}" width="700" fontSize="12" fontStyle="italic"/>
+			<s:Scroller width="100%" height="100%">	
+				<s:DataGroup id="onDeployConfirmationDataProvider" itemRenderer="assets.renderers.DeploymentSummaryRenderer" dataProvider="{deploymentDetailModel.selectedServers}" >
+					<s:layout>
+						<s:VerticalLayout useVirtualLayout="true" gap="0"/>
+					</s:layout>
+				</s:DataGroup>
+			</s:Scroller>
+		</s:Group>
+
+	
+	
+	<s:Group width="100%" visible="{dataLoaded}" 
+						  includeInLayout="{dataLoaded}">
+		<s:layout>
+			<s:HorizontalLayout horizontalAlign="right"/>
+		</s:layout>
+		<s:Button id="previousStateButton" 
+				  label="Previous" 
+				  excludeFrom="onTargetServers" 
+				  click="previousStateButton_clickHandler(event)" />
+		<s:Button id="nextStateButton" 
+				  label="{(this.currentState == 'onDeployConfirmation'?'Finish':'Next')}"
+				  click="nextStateButton_clickHandler(event)"
+				  enabled.onTargetServers="{isTargetServerDataSelected &amp;&amp; isBuildPlanSelected}"
+				  enabled.onHostManagementInfo="{isHostManagementInfoFilled}"
+				  enabled.onDeployConfirmation="{!isDeploymentSubmitted}"
+				  />
+				  
+				  
+	</s:Group>
+	
+	
+	
+</s:TitleWindow>

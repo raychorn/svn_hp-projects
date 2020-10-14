@@ -1,0 +1,73 @@
+
+
+<script id="hostcomm_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+        <div class="bigbox_header ui-widget-header">HP Insight Control for VMWare vCenter Communication Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <table>
+                    <tr><th>Communication Type</th><th>Description</th><th>Status</th><th>Last Communication Time (UTC)</th></tr>
+                    <tr><td>Server</td><td>SNMP Agents (ESX), Providers (ESXi), or Agentless Providers (HP Gen8)</td>{{if server}}<td>${server.status}</td><td>${server.last_update}</td>{{else}}<td>Unavailable</td><td>&nbsp;</td>{{/if}}</tr>
+                    <tr><td>iLO</td><td>HP iLO server</td>{{if ilo}}<td>${ilo.status}</td><td>${ilo.last_update}</td>{{else}}<td colspan="2">Unavailable</td>{{/if}}</tr>
+                    {{if hostInfo!=null && typeof hostInfo.blade != 'undefinded' && hostInfo.blade==true}}
+                        <tr><td>Onboard Administrator</td><td>HP Blade Enclosure Onboard Administrator</td>{{if oa}}<td>${oa.status}</td><td>${oa.last_update}</td>{{else}}<td>Unavailable</td><td>&nbsp;</td>{{/if}}</tr>
+                     {{if fusionmanaged==true}}
+                         <tr><td>HP OneView</td><td>HP OneView</td><td>${ov.status}</td><td>${ov.last_update}</td></tr> {{/if}}    
+                     {{if fusionmanaged==false}}    
+                    <tr><td>Virtual Connect</td><td>HP Virtual Connect Manager</td>{{if vcm}}<td>${vcm.status}</td><td>${vcm.last_update}</td>{{else}}<td colspan="2">Unavailable</td>{{/if}}</tr>{{/if}}
+                    {{/if}}
+                </table>    
+            </div>
+        </div>
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var HostComm = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (HostComm.isActive())
+            {                                
+                $.getJSON("/services/host/hostcomm" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#hostcomm').empty();
+                        $.tmpl('hostcomm_template', data).appendTo( "#hostcomm" );                        
+                        HostComm.refreshTimeoutId = setTimeout("HostComm.refresh_data()", 120000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#hostcomm_template").template('hostcomm_template');
+            HostComm.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            HostComm.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(HostComm.activeOverride == true)
+            {
+                HostComm.activeOverride = false;
+                return true;
+            }
+            return $("#hostcomm").is(":visible");
+        }
+    };
+    
+    HostComm.startApp();
+    AppManager.addAppListener(HostComm.refresh_data);
+</script>
+
+
+<div id="hostcomm" style="display:none">
+<h3>Loading...</h3>        
+</div>

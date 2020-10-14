@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:component="assets.components.*"
+		 creationComplete="init()">
+
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_summaryViewMediator")]
+	</fx:Metadata>
+
+   <fx:Script><![CDATA[
+	   import assets.components.Hpic4vc_BaseMediator;
+	   
+	   import com.hp.asi.hpic4vc.ui.model.TabModel;
+	   import com.hp.asi.hpic4vc.ui.utils.Helper;
+	   import com.vmware.core.model.IResourceReference;
+	   import com.vmware.ui.events.NavigationRequest;
+	   
+	   import mx.binding.utils.ChangeWatcher;
+	   import mx.collections.ArrayCollection;
+	   
+	   [Bindable]
+	   public var noInfoFoundLabel:String;
+	   
+	   [Bindable]
+	   public var errorMessage:String;
+	   
+	   [Bindable]
+	   private var dataWatcher:ChangeWatcher;
+	   
+	   [Bindable]
+	   private var errorWatcher:ChangeWatcher;
+	   
+	   [Bindable]
+	   private var noDataWatcher:ChangeWatcher;
+	   
+	   [Bindable]
+	   private var loading:String;
+	   
+	   [Bindable]
+	   public var hpic4vc_manage_uiView_id:String;
+	   
+	   [Bindable]
+	   public var contextObject:IResourceReference;
+	   
+	   [Bindable]
+	   public var summaryPortletList:ArrayCollection;
+	   
+	   private var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+	   private var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+	   
+	   private function init():void {
+		   dataWatcher  = ChangeWatcher.watch(this, ["summaryPortletList"], dataAvailable);
+		   errorWatcher = ChangeWatcher.watch(this, ["errorMessage"], errorOccurred);
+		   noDataWatcher = ChangeWatcher.watch(this, ["noInfoFoundLabel"], noDataAvailable);
+		   currentState = "DataLoading";
+		   loading = Helper.getString("loading");
+	   }
+	   
+	   private function dataAvailable(event:Event):void {
+		   currentState = "DataAvailable";
+		   invalidateDisplayList();
+		   dataWatcher.unwatch();
+		   errorWatcher.unwatch();
+		   
+		   if (summaryPortletList != null) {
+			   
+			   // Sort the portlets as per the 'order'.
+			   Helper.sortArrayCollection(summaryPortletList, "order", true);
+			   
+			   // Remove all existing components
+			   vBoxId.removeAllChildren();
+			   
+			   // To make the porlets visible
+			   for (var i:int=0; i < summaryPortletList.length; i++) 
+			   {
+				   var component:TabModel = summaryPortletList.getItemAt(i) as TabModel;
+				   
+				   var comp:* = instantiateUsingClassName(component.component);
+				   if (comp != null) {
+					   comp.show(contextObject);
+					   spaceId.visible = true;
+					   vBoxId.addChild(comp);
+					   
+				   }
+			   }
+		   }
+	   }	   
+	   
+	   private function errorOccurred(event:Event):void {
+		   currentState = "DataError";
+		   invalidateDisplayList();
+	   }
+	   
+	   private function noDataAvailable(event:Event):void {
+		   currentState = "DataNotAvailable";
+		   invalidateDisplayList();
+	   }
+	   	 
+	   protected function moreClicked(click:MouseEvent):void
+	   {
+		   // Jump to the HP Insight Management view under Manage Overview
+		   baseMediator.setTabClickedInfo("overviewTab");
+		   var event:NavigationRequest = new NavigationRequest();
+		   event.context = contextObject;
+		   event.targetViewUid = hpic4vc_manage_uiView_id;
+		   dispatchEvent(event);
+		   _hpic4vc_manage_uiView = baseMediator.getManageView()
+		   if(_hpic4vc_manage_uiView != null)
+			   _hpic4vc_manage_uiView.overview_Clicked(event);
+	   }
+	   
+	   private function instantiateUsingClassName(className:String):* {
+		   var classToInstantiate : Class = getDefinitionByName(className) as Class;
+		   var myClassFactory : ClassFactory = new ClassFactory(classToInstantiate);
+		   var myObjectInstance : * = myClassFactory.newInstance();
+		   return myObjectInstance;
+	   }
+   ]]>
+   
+   </fx:Script>
+	
+	<s:states>
+		<s:State name="DataAvailable"/>
+		<s:State name="DataLoading"/>
+		<s:State name="DataError"/>
+		<s:State name="DataNotAvailable"/>
+	</s:states>
+
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="DataLoading">
+		<s:Label text="{loading}" verticalCenter="0" />
+	</s:VGroup>
+	
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="DataNotAvailable">
+		<s:Label text="{noInfoFoundLabel}"/>
+	</s:VGroup>
+	
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="DataError">
+		<mx:Text width="100%" text="{errorMessage}" styleName="errorMessage" />
+	</s:VGroup>
+	
+	<s:VGroup x="0" y="0" paddingTop="10" height="100%" includeIn="DataAvailable" styleName="portletVBox">
+		
+		<s:VGroup x="0" y="0">
+			<s:Spacer id="spaceId" height="-15" visible="false"/>
+			<mx:VBox id="vBoxId" x="0" y="10" verticalGap="0">
+				
+			</mx:VBox>
+			
+		</s:VGroup>
+	
+		<s:HGroup width="100%" styleName="portletHBox" horizontalAlign="right">
+			<mx:LinkButton id="moreId" label="{Helper.getString('more')}" 
+							click="moreClicked(event)" 
+							styleName="moreLink"/>				 
+		</s:HGroup>	
+	</s:VGroup>
+</s:Group>

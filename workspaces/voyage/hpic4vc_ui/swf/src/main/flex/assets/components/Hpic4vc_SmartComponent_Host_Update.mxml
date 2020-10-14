@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" creationComplete="onCreationComplete()" implements="assets.components.Hpic4vc_Manage_BaseComponent" xmlns:components="assets.components.*" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.SmartComponentUpdateModel;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			[Bindable]
+			public var noRecordsFoundLabel:String;
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			private var _objReferenceId:String;
+			[Bindable]
+			public var smartComponentUpdateHostDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var uploadedComponents:DataGridWrapper;
+			[Bindable]
+			public var  smartComponentUpdateModel:SmartComponentUpdateModel;
+			[Bindable]	
+			private var getSmartComponentupdateTimer:Timer;
+			[Bindable]
+			private var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView ;
+			public var  url:String = "";
+			[Bindable]
+			public var _baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+			[Bindable]
+			public var errorFoundLabel:String;
+			private static var _logger:ILogger = Log.getLogger("Hpic4vc_SmartComponent_Host_Update");
+			private var count:int = 0;
+			
+			public function get objReferenceId():String
+			{
+				return _objReferenceId;
+			}
+			
+			public function set objReferenceId(value:String):void
+			{
+				_objReferenceId = value;
+			}
+			
+			public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_uiView = hpic4vc_uiView;
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+			}
+			
+			
+			private function onCreationComplete():void
+			{
+				_proxyServer = new Hpic4vc_server_providerProxy();
+				if (objReferenceId){
+					getData();
+				}
+				else {
+					smartComponentUpdateHostDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+					
+				}
+			}	
+			
+			public function getData():void{
+				mx.managers.CursorManager.setBusyCursor();
+				_proxyServer.getSmartComponentUpdateStatusMessages(objReferenceId,onGettingSmartComponentUpdateMessages);
+				
+			}
+			
+			public function onGettingSmartComponentUpdateMessages(event:MethodReturnEvent):void{
+			
+				if (event == null) {
+					noRecordsFoundLabel = Helper.getString("noRecordsFound");
+					return;
+				} else if (event.error != null) {
+					if (event.error.toString().match("DeliveryInDoubt")) {
+						_logger.warn("DeliveryInDoubt exception occurred.  Count: " + count.toString());
+						// Re try to request data for not more than 2 times
+						if (count < 2) {
+							count ++;
+							getData();
+							return;
+						} else {
+							errorFoundLabel = event.error.message;
+							return;
+						}
+					} else {
+						errorFoundLabel = event.error.message;
+						return;
+					}
+				} else if (event.result == null) {
+					errorFoundLabel = Helper.getString("noRecordsFound");
+					return;
+				}
+				
+				smartComponentUpdateModel= event.result as SmartComponentUpdateModel;
+				if(smartComponentUpdateModel.errors.source.length!=0){
+					mx.managers.CursorManager.removeBusyCursor();
+					imageContainer.includeInLayout = true;
+					imageContainer.visible = true;
+					errorMessage.includeInLayout = true;
+					errorMessage.visible =true;
+					errorMessage.text = smartComponentUpdateModel.errors[0];
+					invalidateDisplayList();
+				}else {
+					smartComponentUpdateForHost.includeInLayout = true;
+					smartComponentUpdateForHost.visible = true;
+					invalidateDisplayList();
+					_proxyServer.getUploadedSoftwareComponents(objReferenceId, onGettingUploadedSoftwareComponents);
+				}
+				
+			}
+			
+			private function onGettingUploadedSoftwareComponents(event:MethodReturnEvent):void{
+				if (event != null && event.result) {
+					mx.managers.CursorManager.removeBusyCursor();
+					var detail:TableModel = event.result as TableModel;
+					if (detail)
+						uploadedComponents =  Helper.createDataGrid( detail );
+				}
+			}
+			
+			
+			private function managedSmartComponent_changeHandler(event:Event):void
+			{
+				if(updateFromManagedSmart.selected){
+					var selectedItemObject:Object = managedSmartComponent.selectedItem;
+					if(selectedItemObject!=null){
+						box1.enabled = false;
+						//htmlLinkRedirect.enabled = false;
+						var obj:Object = managedSmartComponent.selectedItem;
+						var packageUrl:String = obj[2].toString();
+						var options:ArrayCollection = new ArrayCollection();
+						options.addItem("4");
+						options.addItem("11");
+						
+						if(forceComponentUpdate.selected){
+							options.addItem("3");
+						}
+						
+						_proxyServer.updateFirmwareComponents(objReferenceId,packageUrl,options.toArray(),onGettingCurrentUpdateOnMessage);
+					}else {
+						
+						Alert.show("Please Select a Component from the list.");
+					}
+						
+				}else {
+					url = urlInput.text;
+					if (url.indexOf("http://") != 0 || (url.length<15)){
+						Alert.show("Please enter a valid HTTP URL.");
+					}else{
+						box1.enabled = false;
+						//htmlLinkRedirect.enabled = false;
+						var packageUrlInput:String = url;
+						var optionsUrlInput:ArrayCollection = new ArrayCollection();
+						optionsUrlInput.addItem("4");
+						optionsUrlInput.addItem("11");
+						
+						if(forceComponentUpdate.selected){
+							optionsUrlInput.addItem("3");
+						}
+						
+						_proxyServer.updateFirmwareComponents(objReferenceId,packageUrlInput,optionsUrlInput.toArray(),onGettingCurrentUpdateOnMessage);
+					}
+					
+				}
+				
+				
+			}
+			
+			private function onGettingCurrentUpdateOnMessage(event:MethodReturnEvent):void {
+			 var temp:SmartComponentUpdateModel;
+			     box1.enabled = true;
+				 //htmlLinkRedirect.enabled = true;
+				if (event != null && event.result) {
+					temp= event.result as SmartComponentUpdateModel;
+					if(temp.updateSoftwareComponentMessageModel != null){
+						Alert.show(temp.updateSoftwareComponentMessageModel.message);
+					
+					}
+				}   
+			}
+			
+			
+			
+			private function clickUpdateFromURL(event:MouseEvent):void{
+				updateFromUrl.selected = true;
+				updateFromManagedSmart.selected = false;
+				managedSmartComponent.selectedIndex = -1;
+			}
+			
+			private function updateFromManagedSmartComponent(event:MouseEvent):void{
+				updateFromUrl.selected = false;
+				updateFromManagedSmart.selected = true;
+				urlInput.text ="";
+			}
+			
+			private function clickRedirectToSoftwareFirmware(event:Event):void {
+				_hpic4vc_manage_uiView = _baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+				    _hpic4vc_manage_uiView.component_moreOnSoftwareFirmwareStatusUpdateClicked(event);
+				    PopUpManager.removePopUp(this);
+			}
+			
+			private function comboBox_labelFunc(item:Object):String {
+				var arrayCollection:ArrayCollection;
+				var selectionString:String;
+				if(item){
+					arrayCollection = item as ArrayCollection;
+					selectionString = arrayCollection[1]+"-"+arrayCollection[0]+"("+arrayCollection[2]+")";
+				}
+                  return selectionString;					
+			}
+			
+			private function clearUpdateFromURLHost(event:Event):void{
+				updateFromManagedSmart.selected = false;
+				managedSmartComponent.selectedIndex = -1;
+			}
+			
+			private function clearUpdateFromManageSmartComponentRadioHost(event:Event):void{
+				updateFromUrl.selected = false;
+				urlInput.text ="";
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:Text id="manageSmartComponentsText" text="Host firmware can be updated using HP Smart Components. Smart Components must be made available to the host using an HTTP server. Use the form below to specify Smart Component URLs (for example, http://myserver/CPXXXXXX.SCEXE). If additional URLs are specified while an update is in progress, they will be added to the Pending Jobs list."  width="100%"/>
+	<s:HGroup id="imageContainer" includeInLayout="false" visible="false" horizontalAlign="center" paddingTop="90" >
+		<mx:Image id="errorImage"  source="@Embed(source='/assets/images/orange_triangle_large.png')" />
+		<mx:Label id="errorMessage"  />
+	</s:HGroup>
+   
+	<s:VGroup left="10" right="10" top="10" bottom="10" paddingTop="90" horizontalAlign="center" id="smartComponentUpdateForHost" includeInLayout="false" visible="false">
+		  
+		  <mx:Box direction="vertical" borderStyle="solid" id="box1"  paddingTop="10" paddingBottom="10" paddingLeft="10">
+			  <mx:VBox paddingLeft="6" paddingRight="5">
+				<mx:RadioButton id ="updateFromUrl" label="Update from URL" fontWeight="bold" width="100%"  groupName="firmWareUpdateGroup" selected="true" click="clearUpdateFromURLHost(event)"/> 
+				  <mx:HBox paddingLeft="6" horizontalGap="30" width="100%" >
+					<mx:Label text = "Smart Component URL:" /> 
+					<mx:TextInput id="urlInput" width="350" click="clickUpdateFromURL(event)"/>
+				</mx:HBox>
+			  </mx:VBox>
+			
+			  <mx:VBox paddingLeft="6" paddingRight="5">
+				<mx:RadioButton id="updateFromManagedSmart" label="Update from Managed Smart Component" fontWeight="bold" width="100%" groupName="firmWareUpdateGroup" click="clearUpdateFromManageSmartComponentRadioHost(event)"/> 
+				<mx:HBox horizontalGap="5" paddingLeft="5" >
+					<mx:Label text = "Managed Smart Component:" />
+					<components:VariableDropDownWidthCombo id="managedSmartComponent" width="350" paddingLeft="5" dataProvider="{uploadedComponents.list}" labelFunction="comboBox_labelFunc" click="updateFromManagedSmartComponent(event)" prompt="Select ..." height="26" />
+				</mx:HBox>
+			</mx:VBox>
+			<mx:CheckBox id="forceComponentUpdate" label="Force Component Update" fontWeight="bold" width="100%" paddingTop="40"/>
+			
+			<mx:VBox horizontalAlign="right" width="100%" paddingRight="7">
+				<mx:Button id="updateSmartComponentButton" label="Update" click="managedSmartComponent_changeHandler(event)" />
+			</mx:VBox>
+	  </mx:Box>
+	    <mx:HBox id="htmlLinkRedirect">
+			<mx:Label id = "redirect" text="Please click on the Status Update  link to redirect to Queued Job status" />
+			<mx:LinkButton id="statusMessageLink" label="Status Update" click="clickRedirectToSoftwareFirmware(event)" styleName="htmlLink" />	
+		</mx:HBox>	
+   </s:VGroup>
+</s:Group>

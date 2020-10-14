@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Manually refreshing the cache</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:30+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="Refreshing_Data.html" title="Refreshing Storage Module for vCenter data"/><link rel="prev" href="Refreshing_Data.html" title="Refreshing Storage Module for vCenter data"/><link rel="next" href="v11320954.html" title="Restarting a cache refresh"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('s_Manually_refreshing_the_data_201002191829','icon4s_Manually_refreshing_the_data_201002191829','link4s_Manually_refreshing_the_data_201002191829','v15744267')" onunload="clearbgcolortoc('link4s_Manually_refreshing_the_data_201002191829','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="Refreshing_Data.html">Refreshing Storage Module for vCenter data</a> &gt; Manually refreshing the cache</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v11320954.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="s_Manually_refreshing_the_data_201002191829"/><h1 class="sectiontitle">Manually refreshing the cache</h1></div></div></div><a id="v11320952" class="indexterm"/><p><a id="v11109995"/>When you make changes to the VMware environment
+using VMware operations (for example, <span class="italic">Add
+Datastore</span>, <span class="italic">New Virtual Machine</span>,
+and <span class="italic">Remove (VM) From Inventory</span>),
+the changes are not reflected in the vSphere Client until the cache
+is refreshed. HP recommends that you manually refresh the cache whenever
+you do any of the following:</p>
+	
+	<div class="itemizedlist"><a id="v11109996"/><ul type="disc"><li><p><a id="v11109997"/><a id="v11109998"/>Add, remove, or modify
+storage arrays.</p>
+	
+	</li><li><p><a id="v11109999"/><a id="v11110000"/>Add or remove VMware
+hosts, VMs, or datastores using VMware operations.</p>
+	
+	</li><li><p><a id="v11110001"/><a id="v11110002"/>Change the storage provisioning
+using the storage array management console.</p>
+	
+	</li><li><p><a id="v14689037"/><a id="v14689038"/>Delete a VM from a disk
+using a VMware command.</p>
+	
+	</li></ul></div><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>Provisioning changes performed by the Storage Module for vCenter do
+not require a manual refresh. This information is automatically updated
+when provisioning is complete. For more information, see <a href="v14221628.html" title="Provisioning storage">Provisioning storage</a>.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><h4><a id="v11190041"/>Related
+topics</h4><div class="itemizedlist"><a id="v11190042"/><ul type="disc"><li><p><a id="v11550819"/><a id="v11550820"/><a href="v11320954.html" title="Restarting a cache refresh">Restarting a cache refresh</a></p>
+	
+	</li><li><p><a id="v11190046"/><a id="v11190047"/><a href="s_Changing_the_automatic_data_refresh_settings_201002191830.html" title="Changing the automatic refresh settings">Changing the automatic refresh settings</a></p>
+	
+	</li></ul></div><p><a id="v17712487"/>Use the following procedures to start a cache
+refresh immediately using HP Insight Management or the Storage Administrator
+Portal.</p>
+	
+	<div class="section" lang="en"><div class="titlepage"><div><div><a id="v17712488"/><h2>Using HP Insight Management</h2></div></div></div><div class="procedure"><a id="v11121471"/><ol type="1"><li><p><a id="v11121472"/><a id="v17709148"/>Click the cache refresh
+icon <span class="inlinemediaobject"><img src="images/cache_refresh_icon.png"/></span> in the top right corner of any storage page.</p>
+	
+	<p><a id="v11121479"/>HP Insight Management Refresh screen displays
+the options available.</p>
+	
+	</li><li><p><a id="v11121485"/><a id="v11121486"/>Click <span><strong class="guilabel">Continue</strong></span> to
+continue the cache refresh, or click <span><strong class="guibutton">Cancel</strong></span> to
+stop the refresh.</p>
+	
+	<p><a id="v17967333"/>If you click <span><strong class="guilabel">Cancel</strong></span> when
+the refresh process is in a state where it is safe to cancel, the
+operation is stopped. If it is not safe to cancel, the operation is
+cancelled as soon as it is safe to stop the operation.</p>
+	
+	</li><li><p><a id="v17712514"/><a id="v17712515"/>Optional: Move the cursor
+over the refresh status on any storage page to view the elapsed time
+and estimated time remaining.</p>
+	
+	</li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><a id="v17712519"/><h2>Using the Storage Administrator Portal</h2></div></div></div><div class="procedure"><a id="v17712520"/><ol type="1"><li><p><a id="v17712521"/><a id="v17712522"/>Log in to the Storage Administrator
+Portal.</p>
+	
+	</li><li><p><a id="v17712523"/><a id="v17709159"/>Click <span><strong class="guilabel">Refresh
+Cache</strong></span> in the top right corner of the Storage Administrator
+Portal.</p>
+	
+	<p><a id="v17709160"/>The Storage Administrator Portal
+displays the options shown in <a href="s_Manually_refreshing_the_data_201002191829.html#f_Manual_data_refresh_options_Storage_Administrator_Portal_201201120051" title="Manual refresh options—Storage Administrator Portal">Manual refresh options—Storage Administrator Portal</a>.</p>
+	
+	<div class="figure"><a id="f_Manual_data_refresh_options_Storage_Administrator_Portal_201201120051"/><p class="title"><b>Manual refresh options—Storage Administrator Portal</b></p><div class="mediaobject"><a name="v17709163"/><img src="images/refresh_options_SAP.png" alt="Manual refresh options—Storage Administrator Portal"/></div></div></li><li><p><a id="v17712532"/><a id="v17712533"/>Click <span><strong class="guilabel">OK</strong></span> to
+continue the cache refresh.</p>
+	
+	</li><li><p><a id="v17712534"/><a id="v17712535"/>Optional: Click <span><strong class="guilabel">Check
+Refresh Progress</strong></span> to update the elapsed time and estimated
+time remaining. See <a href="Refreshing_Data.html#v11297275" title="Refresh in progress (Storage Administrator Portal)">Refresh in progress (Storage Administrator Portal)</a>.</p>
+	
+	</li></ol></div></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="Refreshing_Data.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="Refreshing_Data.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v11320954.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Refreshing Storage Module for vCenter data </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Restarting a cache refresh</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

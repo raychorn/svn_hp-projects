@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="assets.components.*"
+		 width="100%"
+		 height="100%"
+		 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.InfrastructureDetailModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.model.InfrastructureDetailViewModel;
+
+			[Bindable]
+			private var clusterInfrastructureDetailViewModel:InfrastructureDetailViewModel;
+			
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				var clusterInfrastructureDetail:InfrastructureDetailModel;
+				
+				if (value && value is InfrastructureDetailModel)
+				{
+					clusterInfrastructureDetail =  InfrastructureDetailModel(value);
+					clusterInfrastructureDetailViewModel = InfrastructureDetailViewModel.makeInfrastructureDetailViewModel(clusterInfrastructureDetail);
+					
+					
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:VBox  width="100%" backgroundColor="white" backgroundAlpha="2" height="300">
+		<!-- Cluster Infrastructure Enclusure Information -->
+		<mx:Panel title="Enclosure" width="100%">
+			<s:VGroup x="0" y="0" height="100%" width="100%">
+				<mx:HBox width="100%"   horizontalGap="-2" >
+					<mx:VBox width="100%" verticalGap="0">
+						<mx:Repeater id="clusterinfraEnclosureLabel" dataProvider="{clusterInfrastructureDetailViewModel.enclosure.lvList}" width="100%" >
+							<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+								<mx:HBox horizontalGap="0" width="100%">
+									<s:Label width="150" 
+											 text="{(clusterinfraEnclosureLabel.currentItem as LabelValueModel).label}" 
+											 styleName="portletLabel"/>
+									<s:Label width="198"
+											 text="{(clusterinfraEnclosureLabel.currentItem as LabelValueModel).value}" 
+											 styleName="portletText"/>
+								</mx:HBox>
+							</mx:VBox>
+							<mx:HRule width="100%"/>
+						</mx:Repeater>
+					</mx:VBox>
+				</mx:HBox>
+			</s:VGroup>
+		</mx:Panel>
+		
+		<!-- Cluster Infrastructure Power Information -->
+		<mx:Panel title="Power" width="100%">
+			<s:VGroup x="0" y="0" height="100%" width="100%">
+				<mx:HBox width="100%"   horizontalGap="-2" >
+					<mx:VBox width="100%" verticalGap="0">
+						<mx:Repeater id="clusterinfraPowerLabel" dataProvider="{clusterInfrastructureDetailViewModel.power.lvList}" width="100%" >
+							<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+								<mx:HBox horizontalGap="0" width="100%">
+									<s:Label width="150" 
+											 text="{(clusterinfraPowerLabel.currentItem as LabelValueModel).label}" 
+											 styleName="portletLabel"/>
+									<s:Label width="198"
+											 text="{(clusterinfraPowerLabel.currentItem as LabelValueModel).value}" 
+											 styleName="portletText"/>
+								</mx:HBox>
+							</mx:VBox>
+							<mx:HRule width="100%"/>
+						</mx:Repeater>
+					</mx:VBox>
+				</mx:HBox>
+			</s:VGroup>
+		</mx:Panel>
+
+		
+		<!-- Cluster Infrastructure Thermal Information -->
+		<mx:Panel title="Thermal" width="100%">
+			<s:VGroup x="0" y="0" height="100%" width="100%">
+				<mx:HBox width="100%"   horizontalGap="-2" >
+					<mx:VBox width="100%" verticalGap="0">
+						<mx:Repeater id="clusterinfraThermalLabel" dataProvider="{clusterInfrastructureDetailViewModel.thermal.lvList}" width="100%" >
+							<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+								<mx:HBox horizontalGap="0" width="100%">
+									<s:Label width="150" 
+											 text="{(clusterinfraThermalLabel.currentItem as LabelValueModel).label}" 
+											 styleName="portletLabel"/>
+									<s:Label width="198"
+											 text="{(clusterinfraThermalLabel.currentItem as LabelValueModel).value}" 
+											 styleName="portletText"/>
+								</mx:HBox>
+							</mx:VBox>
+							<mx:HRule width="100%"/>
+						</mx:Repeater>
+					</mx:VBox>
+				</mx:HBox>
+			</s:VGroup>
+		</mx:Panel>
+		
+		<!-- Cluster Infrastructure Fans Information -->
+		<mx:Panel title="Fans" width="100%">
+			<mx:AdvancedDataGrid 
+					columns="{clusterInfrastructureDetailViewModel.fans.columns}"
+					dataProvider="{clusterInfrastructureDetailViewModel.fans.list}"
+					sortExpertMode="true"
+					/>
+		</mx:Panel>
+		
+		
+		<!-- Cluster Infrastructure Power Supplies Information -->
+		<mx:Panel title="Power Supplies" width="100%">
+				<mx:AdvancedDataGrid 
+					columns="{clusterInfrastructureDetailViewModel.powerSupplies.columns}"
+					dataProvider="{clusterInfrastructureDetailViewModel.powerSupplies.list}"
+					sortExpertMode="true"
+					/>
+		</mx:Panel>
+		
+		
+
+		<!-- Cluster Interconnects Information -->
+		<mx:Panel title="Interconnects" width="100%">
+			<mx:AdvancedDataGrid 
+				columns="{clusterInfrastructureDetailViewModel.interconnects.columns}"
+				dataProvider="{clusterInfrastructureDetailViewModel.interconnects.list}"
+				sortExpertMode="true"
+				/>
+		</mx:Panel>
+		
+		<!-- Cluster Infrastructure OA Modules Information -->
+		<mx:Panel title="Onboard Administrator Modules" width="100%">
+			<mx:AdvancedDataGrid 
+				columns="{clusterInfrastructureDetailViewModel.oaModules.columns}"
+							dataProvider="{clusterInfrastructureDetailViewModel.oaModules.list}"
+							sortExpertMode="true"
+							/>
+		</mx:Panel>
+	
+		
+		<!-- Cluster Infrastructure OA SysLogs Information -->
+			<mx:Panel title="Onboard Administrator Syslog" width="100%">
+			<s:HGroup width="100%">
+				<s:DataGroup 
+					dataProvider="{clusterInfrastructureDetailViewModel.syslog}" 
+					itemRenderer="spark.skins.spark.DefaultItemRenderer">
+					<s:layout>
+						<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+					</s:layout>
+				</s:DataGroup>
+			</s:HGroup>
+			</mx:Panel>
+
+	</mx:VBox>
+
+</s:MXAdvancedDataGridItemRenderer>

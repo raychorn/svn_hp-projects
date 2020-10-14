@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx" borderColor="0xd8d8d8" xmlns:controls="com.flexicious.controls.*">
+	<fx:Script>
+		<![CDATA[
+			import com.flexicious.grids.dependencies.IExtendedDataGrid;
+			import com.hp.asi.hpic4vc.ui.controls.grids.HPDataGrid;
+			import com.hp.asi.hpic4vc.ui.utils.IconRepository;
+			
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			[Bindable()]
+			public var grid:HPDataGrid;
+			
+			protected function onOkClick(event:MouseEvent):void
+			{
+				grid.globalFilterColumns=cbList.selectedItems;
+				PopUpManager.removePopUp(this);
+			}
+			[Bindable()]
+			public var selectedItems:Array=[];
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" paddingTop="2" paddingRight="2" paddingLeft="2" paddingBottom="2">
+		<s:Image source="{IconRepository.close}" click="PopUpManager.removePopUp(this)" useHandCursor="true" buttonMode="true" mouseChildren="false"/>
+	</s:HGroup>
+	<mx:HRule strokeColor="0xd8d8d8" width="100%"/>
+	<controls:CheckBoxList width="100%" dataProvider="{grid.settingsColumns}" dataField="headerText" rowCount="{Math.min(grid.columnPickerRowCount,new ArrayCollection(grid.settingsColumns).length)}" 
+						   allowMultipleSelection="true" id="cbList" borderVisible="false" selectedItems="{selectedItems}">
+		
+	</controls:CheckBoxList >
+	<mx:HRule strokeColor="0xd8d8d8" width="100%"/>
+	<s:HGroup width="100%"  paddingTop="2" paddingRight="2" paddingLeft="2" paddingBottom="2">
+		<s:Label  text="Select All" textDecoration="underline" useHandCursor="true" buttonMode="true" mouseChildren="false" click="cbList.selectedItems=cbList.dataProvider.source"/>
+	</s:HGroup>
+	<s:HGroup width="100%" horizontalAlign="center"  paddingTop="2" paddingRight="2" paddingLeft="2" paddingBottom="2">
+		<s:Button label="OK" click="onOkClick(event)" useHandCursor="true" buttonMode="true" mouseChildren="false" />
+	</s:HGroup>
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+</s:BorderContainer>

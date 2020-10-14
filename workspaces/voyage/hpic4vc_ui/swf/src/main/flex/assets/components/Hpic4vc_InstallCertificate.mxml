@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   cornerRadius="3"
+			   controlBarVisible="true"
+			   width="534" height="569"
+			   creationComplete="handleCreationComplete();" styleName="refreshPopUp">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.StringModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import flash.desktop.Clipboard;
+			import flash.desktop.ClipboardFormats;
+			import flash.desktop.ClipboardTransferMode;
+			
+			import mx.controls.Alert;
+			import mx.events.EventListenerRequest;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			import mx.skins.halo.WindowBackground;
+			
+			[Bindable]
+			public var serviceGuid:String;
+			
+			[Bindable]
+			public var _proxy:Hpic4vc_providerProxy;
+			
+			[Bindable]
+			public var _logger:ILogger = Log.getLogger("Hpic4vc_InstallCertificate");
+			
+			private function handleCreationComplete():void {
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+				closeButton.visible = false;
+			}
+			
+			private function processInstall():void {
+				_proxy.installSignedCertificate(serviceGuid,installCertId.text, onInstallCert);
+			}
+			
+			private function onInstallCert(event:MethodReturnEvent):void{
+				
+				if (event == null || event.result == null)
+					_logger.debug("No data returned for Install Certificate");
+				
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else {
+					Alert.show(stringModel.data);
+				}
+				removePopUp();
+			}
+			
+			private function helpClicked():void {
+				_proxy.getInstallCertificateHelp(serviceGuid, onGettingInstallCertificateHelp);
+			}
+			
+			private function onGettingInstallCertificateHelp(event:MethodReturnEvent):void{
+				
+				if (event == null || event.result == null)
+					_logger.debug("Install Certificate help link not found");
+				var urlString:String = event.result as String;
+				navigateToURL(new URLRequest(urlString), "_blank");
+			}
+			
+			private function removePopUp():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function paste_click(event:Event):void{
+		//		var pasteStr:String = ExternalInterface.call("PasteFromClipboard");
+				var pasteStr:String = Clipboard.generalClipboard.getData(ClipboardFormats.TEXT_FORMAT).toString();
+				installCertId.text=pasteStr;
+			}
+		]]>
+	</fx:Script>
+	<mx:Image x="5" y="-26" width="22" height="22"
+			  source="@Embed(source='/assets/images/hp-logo.png')"/>
+	<s:Label x="33" y="-21" text="{Helper.getString('Form_installCert')}" fontWeight="bold"/>
+	<mx:Image x="505" y="-29"
+			  source="@Embed(source='/assets/images/help_circle.png')" click="helpClicked()"
+			  buttonMode="true"/>
+	
+	<s:VGroup width="510" paddingLeft="15">
+		<mx:Text text="{Helper.getString('Form_signedCertFormatText')}"/>
+		<mx:Box width="497" height="420" borderVisible="true" borderStyle="solid">
+			<mx:TextArea id="installCertId" width="495" height="418" mouseEnabled="true" fontFamily="_typewriter"/>
+			
+		</mx:Box>
+		<mx:Text text="{Helper.getString('installPasteMsg.text')}"/>
+	</s:VGroup>
+	<s:controlBarContent>
+		<s:Spacer width="99%"/>
+		<!--s:Button label="{Helper.getString('Form_pasteLabel')}" click="paste_click(event);" toolTip="Paste"/-->
+		<s:Button label="{Helper.getString('Form_installButtonText')}" click="processInstall();" toolTip="Install" buttonMode="true"/>
+		<s:Button id="cancelButtonId" label="{Helper.getString('cancelLabel')}"
+				  click="removePopUp();" buttonMode="true"/>
+	</s:controlBarContent>
+	
+</s:TitleWindow>
+

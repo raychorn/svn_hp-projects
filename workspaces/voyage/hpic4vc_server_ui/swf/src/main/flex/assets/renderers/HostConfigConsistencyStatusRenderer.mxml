@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">	
+	<fx:Script>
+		<![CDATA[	
+			import mx.collections.ArrayCollection;
+			[Embed(source="/assets/images/success.png")]
+			[Bindable]
+			public var successCls:Class;
+			[Embed(source="/assets/images/statusRed.png")]
+			[Bindable]
+			public var statusRedCls:Class;
+			[Embed(source="/assets/images/help_gray.png")]
+			[Bindable]
+			public var help_grayCls:Class;			
+			[Embed(source="/assets/images/info.png")]
+			[Bindable]
+			public var errorCls:Class;
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if (value)
+				{
+				
+					
+					if(value.hostConfigConsistencyStatus == "UNKNOWN"){						
+						loader1.source=help_grayCls;
+						loader1.toolTip="UNKNOWN";
+					}					
+					
+					else if(value.hostConfigConsistencyStatus == "MISMATCH"){						
+						loader1.source=statusRedCls;
+						loader1.toolTip="MISMATCH";
+					}					
+					else if(value.hostConfigConsistencyStatus == "OK"){						
+						loader1.source=successCls;
+						loader1.toolTip="OK";
+					}
+					else if(value.serverProfileConsistencyStatus == "NA"){						
+						loader1.source=errorCls;
+						loader1.toolTip="NA";
+					}
+						
+				}
+			}
+		]]>
+	</fx:Script>		
+	<mx:Image id="loader1"/> 
+</s:MXAdvancedDataGridItemRenderer>
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			[Bindable] public var title:String;
+			
+			[Bindable] public var titleColor:uint = 0xFFFFFF;
+			
+			[Bindable] public var titleBackgroundColor:uint = 0x555599;
+			
+			[Bindable] public var showBubble:Boolean;
+			
+			[Bindable] public var parentTitle:String;
+			
+			public var ttip:String = '';
+			
+			public var ptt:PanelToolTip;
+			
+			[Bindable]
+			public var backgroundColor:uint = 0xFFFFFF;
+			
+			protected function createCustomToolTip(event:ToolTipEvent):void
+			{
+				//ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit)
+				ptt = new PanelToolTip();
+				ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit)
+				event.toolTip = ptt;
+			}
+			
+			private function onTooltipInit(event:Event):void
+			{
+				ptt.removeEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				ptt.lblSummary.text = ttip;
+				ptt.group.invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:Rect left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5" >
+		<s:filters>
+			<s:DropShadowFilter 
+				blurX="5" blurY="5" 
+				alpha=".20" 
+				distance="8" 
+				angle="60"                 
+				/>
+		</s:filters>
+		<s:stroke>
+			<s:SolidColorStroke color="{titleBackgroundColor}" weight="1"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="{titleBackgroundColor}" />
+		</s:fill>
+		
+	</s:Rect>
+	
+	<s:Rect left="1" right="1" top="20" bottom="1" radiusX="5" radiusY="5" >
+		<s:stroke>
+			<s:SolidColorStroke color="{backgroundColor}" weight="1"/>
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="{backgroundColor}" />
+		</s:fill>
+	</s:Rect>
+	
+	<s:HGroup  paddingTop="3" paddingLeft="5" paddingBottom="5" verticalAlign="middle">
+		<s:Label id="headerText" text="{title}"  color="{titleColor}" />
+		<s:Image id="bubble" visible="{showBubble}" source="{Images.BUBBLE}" toolTip="h" toolTipCreate="createCustomToolTip(event)" />
+	</s:HGroup>
+	<s:Group id="group" top="25" bottom="5" left="5" right="5" >
+	</s:Group>
+</s:Group>

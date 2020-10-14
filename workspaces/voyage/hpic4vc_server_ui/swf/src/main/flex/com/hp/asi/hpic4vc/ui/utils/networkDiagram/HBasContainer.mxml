@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.network.HBA;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			import mx.utils.StringUtil;
+			
+			//private var hbaWatcher:ChangeWatcher
+			
+			private var _hbaValue:HBA;
+			
+			[Bindable]
+			private var portMapping:String = "";
+			[Bindable]
+			private var physDevName:String = "";
+			[Bindable]
+			private var displayName:String;
+			
+			[Bindable]
+			private var nicIcon:Class;
+			
+			
+			public var ttip:String = 'HBA';
+			
+			
+			public function get hbaValue():HBA
+			{
+				return _hbaValue;
+			}
+			
+			public function set hbaValue(value:HBA):void
+			{
+				var hba:HBA = value;
+				if(hba.physicalPortMapping != null) 
+				{                    
+					var mezz:String = hba.physicalPortMapping.mezz;
+					
+					// BLOMs aka Flexible LOMs should be displayed as LOM1:1-a not BLOM1:1-a to match the OA and VC GUIs                
+					if(mezz && mezz.indexOf('BLOM')==0)
+					{
+						mezz = mezz.substr(1);
+					}
+					
+					if(hba.physicalPortMapping.physFunc)
+					{                        
+						nicIcon = Images.FLEXNIC // = this.image("/static/img/network-diagram/flexnic.png", 0, 0, 16, 16);                    
+						//var physFuncMap:ArrayCollection = new ArrayCollection([{'VIRT-NIC1':'a', 'VIRT-NIC2':'b', 'VIRT-NIC3':'c', 'VIRT-NIC4':'d' }]);
+						var physFuncMap:Object = {'VIRT-NIC1':'a', 'VIRT-NIC2':'b', 'VIRT-NIC3':'c', 'VIRT-NIC4':'d' };
+						var physFunc:String = hba.physicalPortMapping.physFunc;
+						if(hba.physicalPortMapping.physFunc in physFuncMap)
+						{
+							physFunc = physFuncMap[hba.physicalPortMapping.physFunc];
+						}
+						physDevName = mezz + ":" + hba.physicalPortMapping.port + '-' + physFunc;
+						portMapping = physDevName + " => Bay " + hba.physicalPortMapping.ioBay;
+					}
+					else
+					{
+						nicIcon = Images.PNIC //img = this.image("/static/img/network-diagram/pnic.png", 0, 0, 16, 16);                      
+						physDevName = mezz + ":" + hba.physicalPortMapping.port
+						portMapping = physDevName + " => Bay " + hba.physicalPortMapping.ioBay;
+					}
+				}
+				else
+				{
+					nicIcon = Images.PNIC //img = this.image("/static/img/network-diagram/pnic.png", 0, 0, 16, 16);                                        
+				} 
+				
+				//FC adapters give speed in Gbps while FCoE adapters are in Kbps
+				var speedUnit:String = 'Gb';
+				//var speed:Number = hba.speedGb;
+				var speed:Number = int(hba.speedGb*10)/10;  
+				
+				//Lets genrate poup data as well
+				
+				if(hba.type == 'HostFibreChannelHba')
+				{
+					ttip = StringUtil.substitute("Device:  {0}\nPhysical Device: {1}\nModel:  {2}\nPort mapping: {3}\nport WWN:  {4}\nnode WWN:  {5}\nDriver:  {6}\nPCI locator:  {7}\nSpeed:  {8} {9}\nPath State: {10}",
+						hba.device,
+						physDevName,
+						hba.model,
+						portMapping,                    
+						hba.portWorldWideName,
+						hba.nodeWorldWideName,
+						hba.driver,
+						hba.pci,
+						speed,
+						speedUnit,
+						hba.pathState                        
+					);
+				}
+				else if(hba.type == 'HostInternetScsiHba')
+				{
+					ttip = StringUtil.substitute("Device:  {0}\nPhysical Device: {1}\nModel:  {2}\nPort mapping: {3}\nMAC Address:  {4}\nDriver:  {5}\nPCI locator:  {6}\nSpeed:  {7} {8}\nPath State: {9}",
+						hba.device,
+						physDevName,
+						hba.model,
+						portMapping,                    
+						hba.mac,                        
+						hba.driver,
+						hba.pci,
+						speed,
+						speedUnit,
+						hba.pathState                        
+					);
+				}
+				
+				displayName = StringUtil.substitute("{0} {1} {2} {3}",
+					hba.device,
+					physDevName,
+					speed,
+					speedUnit);
+				
+				_hbaValue = value;
+			}
+
+			protected function createCustomToolTip(event:ToolTipEvent):void
+			{
+				var ptt:PanelToolTip = new PanelToolTip();
+				ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				event.toolTip = ptt;
+			}
+			
+			private function onTooltipInit(event:Event):void
+			{
+				(event.currentTarget as PanelToolTip).removeEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				(event.currentTarget as PanelToolTip).lblSummary.text = ttip;
+				(event.currentTarget as PanelToolTip).group.invalidateDisplayList();
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup width="100%" verticalAlign="bottom">
+		<s:Image id="icon" source="{nicIcon}" />
+		<s:Label id="lblPhysDevName" text="{displayName}" />
+		<s:Image id="bubble" source="{Images.BUBBLE}" toolTip="h" toolTipCreate="createCustomToolTip(event)" />
+	</s:HGroup>
+</s:Group>

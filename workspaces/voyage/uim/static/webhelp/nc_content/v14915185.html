@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Customizing the location of virtual disks on an HP EVA</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:32+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v14221628.html" title="Provisioning storage"/><link rel="prev" href="v14221628.html" title="Provisioning storage"/><link rel="next" href="v17969685.html" title="Viewing the audit log"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v14221628','icon4v14221628','link4v14915185','v14221628')" onunload="clearbgcolortoc('link4v14915185','v14221628')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v14221628.html">Provisioning storage</a> &gt; Customizing the location of virtual disks on an HP EVA</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v17969685.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="v14915185"/><h1 class="sectiontitle">Customizing the location of virtual disks on an HP EVA</h1></div></div></div><a id="v14941935" class="indexterm"/><a id="v14941936" class="indexterm"/><p><a id="v14915186"/>Before performing provisioning operations on HP EVAs,
+you might want to change the folder in which your virtual disk is
+created. </p>
+	
+	<p><a id="v14987476"/>When you create a datastore on an HP EVA using
+the Storage Module for vCenter, by default, the associated virtual
+disks are created at the root level of the <code class="filename">Virtual Disks</code> folder.
+You can customize the location of the virtual disks by modifying the <code class="filename">configuration.xml</code> file,
+which is located in the following directory:</p>
+	
+	<p><a id="v14915189"/><code class="filename"><em class="replaceable"><code>install folder</code></em>\Storage\JBoss\standalone\configuration</code></p>
+	
+	<h3><a id="v14915192"/>Changing the default location
+for all HP EVAs</h3><p><a id="v14915193"/>To change the default location for all HP EVAs,
+modify the value <code class="computeroutput">\Virtual Disks\</code> in
+the following section of the <code class="filename">configuration.xml</code> file:</p>
+	
+	<a id="v16158694"/><pre class="programlisting">&lt;!-- EVA Global Default folder --&gt;
+&lt;entry key="EVA.DefaultFolder"&gt;\Virtual Disks\&lt;/entry&gt;</pre><h3><a id="v14915195"/>Changing the default location
+for a specific HP EVA</h3><p><a id="v14915196"/>To change the default location for a specific HP EVA,
+add the following text to the <code class="filename">configuration.xml</code> file:</p>
+	
+	<p><a id="v14915197"/></p><pre class="programlisting">&lt;!-- Array-specific default folder --&gt;
+&lt;entry key="EVA.DefaultFolder.<em class="replaceable"><code>ArrayName</code></em>"&gt;\Virtual Disks\<em class="replaceable"><code>FolderName</code></em>&lt;/entry&gt;</pre>
+	
+	<p><a id="v14944438"/>Use <em class="replaceable"><code>ArrayName</code></em> to specify
+an array, and <em class="replaceable"><code>FolderName</code></em> to specify the
+virtual disk location.</p>
+	
+	<div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b><em class="replaceable"><code>FolderName</code></em> must exist
+on the HP EVA, or provisioning operations will fail.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="v14221628.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v14221628.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v17969685.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Provisioning storage </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Viewing the audit log</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

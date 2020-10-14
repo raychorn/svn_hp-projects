@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="false" width="100%">
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.JobsModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			
+			import mx.controls.Alert;
+			
+			override public function set data(value:Object):void
+			{
+			     
+				super.data = value ;
+				
+				var jobsModel:JobsModel;
+				
+				if(value && value is JobsModel)
+				{
+					jobsModel = JobsModel(value);
+					
+					var stringCompare:String = "There are no firmware update jobs in progress."
+					
+				   if(jobsModel.noJobs == stringCompare){
+					   messageContainer.visible = false;
+					   messageContainer.includeInLayout = false;
+					   noJobsText.visible = true;
+					   noJobsText.includeInLayout = true;
+					   noJobsText.text = jobsModel.noJobs;
+				   }else {
+					   messageContainer.visible = true;
+					   messageContainer.includeInLayout = true;
+					   noJobsText.visible = false;
+					   noJobsText.includeInLayout = false;
+					   jobDescription.text = jobsModel.jobDescription;
+					   status.text = jobsModel.status;
+					   statusDescription.text = jobsModel.statusDescriptions;
+					   if(jobsModel.errorDescription!=null){
+						   percentCompleteLabel.includeInLayout = false;
+						   percentCompleteLabel.visible = false;
+						   percentComplete.visible = false;
+						   errorDescriptionLabel.includeInLayout = true;
+						   errorDescriptionLabel.visible = true;
+						   errorDescription.visible = true;
+						   errorDescription.text = jobsModel.errorDescription;
+					   }else {
+						   errorDescriptionLabel.includeInLayout = false;
+						   errorDescriptionLabel.visible = false;
+						   errorDescription.visible = false;
+						   percentCompleteLabel.includeInLayout = true;
+						   percentCompleteLabel.visible = true;
+						   percentComplete.visible = true;
+						   percentComplete.text = jobsModel.percentComplete;
+					   }
+					   
+					   hrule.includeInLayout = true;
+					   hrule.visible = true;
+					   
+				   }
+				}
+				
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+		]]>
+	</fx:Script>
+		
+	<mx:VBox id="messageContainer" paddingTop="20" verticalGap="10" width="100%">
+		
+			<mx:HBox horizontalGap="10" width="100%" >
+				<s:Label text="Job Description" width="30%"  />
+				<mx:Text id="jobDescription" width="70%" />
+			</mx:HBox>
+		
+			<mx:HBox horizontalGap="10" width="100%" >
+				<s:Label text="Status" width="30%"  />
+				<mx:Text id="status" width="70%"/>
+			</mx:HBox>
+		
+			<mx:HBox horizontalGap="10" width="100%">
+				<s:Label text="Status Description" width="30%"  />
+				<mx:Text id="statusDescription" width="70%"/>
+			</mx:HBox>
+		
+			<mx:HBox horizontalGap="10" width="100%">
+				<s:Label id="errorDescriptionLabel" text="Error Description" width="30%"/>
+				<mx:Text id="errorDescription" width="70%" />
+			</mx:HBox>
+		
+			<mx:HBox horizontalGap="10" width="100%">
+				<s:Label id="percentCompleteLabel" text="Percent Complete"  width="30%" />
+				<mx:Text id="percentComplete" width="70%" />
+			</mx:HBox>
+		
+  </mx:VBox>
+	<mx:Text id="noJobsText" width="100%" includeInLayout="false" visible="false" />
+	<s:Spacer height="10"  />
+	<mx:HRule id="hrule" strokeWidth="1" width="100%"/>	
+	<s:Spacer height="8" />
+	
+</s:ItemRenderer>

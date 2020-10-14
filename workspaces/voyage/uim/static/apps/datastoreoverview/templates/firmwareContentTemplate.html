@@ -1,0 +1,34 @@
+
+<div class="box_line">
+    <table width="100%">
+		<tr><th>Name</th><th>Version</th></tr>
+		{{if typeof software != 'undefined' && software.length > 0}}
+            {{each software}}
+                <tr>
+                    <td>${name}</td>                
+                    <td>${version}</td>        
+                </tr>
+            {{/each}}
+        {{else}}
+            <tr>
+                <td colspan="2">The Software is not available.</td>
+            </tr>
+        {{/if}}
+        <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+        {{if typeof firmware != 'undefined' && firmware != null && firmware.length > 0}}
+            {{each firmware}}
+                <tr>
+                    <td>${name}</td>                
+                    <td>${version}</td>        
+                </tr>
+            {{/each}}
+        {{else}}
+            <tr>
+                <td colspan="2">The firmware is not available.</td>
+            </tr>
+        {{/if}}
+    </table>    
+</div>
+<div class="box_footer">
+<a href="#" onclick="AppManager.loadApp('datastoreswfwdetail');">More...</a>
+</div>

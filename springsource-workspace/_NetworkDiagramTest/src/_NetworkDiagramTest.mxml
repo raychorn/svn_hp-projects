@@ -1,0 +1,1985 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			  >
+		
+	<fx:Script>
+		<![CDATA[
+			import com.ArrayCollectionUtils;
+			import com.Generator;
+			import com.ObjectUtils;
+			import com.adobe.serialization.json.JSONEncoder;
+			import com.hp.asi.hpic4vc.ui.model.network.CommonAttrs;
+			import com.hp.asi.hpic4vc.ui.model.network.CommonIoModulesAttrs;
+			import com.hp.asi.hpic4vc.ui.model.network.DVS;
+			import com.hp.asi.hpic4vc.ui.model.network.DVSUplink;
+			import com.hp.asi.hpic4vc.ui.model.network.DataStore;
+			import com.hp.asi.hpic4vc.ui.model.network.Enclosure;
+			import com.hp.asi.hpic4vc.ui.model.network.ExternalStorage;
+			import com.hp.asi.hpic4vc.ui.model.network.ExternalStoragePort;
+			import com.hp.asi.hpic4vc.ui.model.network.ExternalSwitch;
+			import com.hp.asi.hpic4vc.ui.model.network.ExternalSwitchPort;
+			import com.hp.asi.hpic4vc.ui.model.network.Fabric;
+			import com.hp.asi.hpic4vc.ui.model.network.FabricDownlink;
+			import com.hp.asi.hpic4vc.ui.model.network.HBA;
+			import com.hp.asi.hpic4vc.ui.model.network.LinkSpeed;
+			import com.hp.asi.hpic4vc.ui.model.network.NetworkDiagramDetailModel;
+			import com.hp.asi.hpic4vc.ui.model.network.Nic;
+			import com.hp.asi.hpic4vc.ui.model.network.PNIC;
+			import com.hp.asi.hpic4vc.ui.model.network.PhysicalPortMapping;
+			import com.hp.asi.hpic4vc.ui.model.network.PortGroup;
+			import com.hp.asi.hpic4vc.ui.model.network.PortTelemetry;
+			import com.hp.asi.hpic4vc.ui.model.network.TelemetryProperties;
+			import com.hp.asi.hpic4vc.ui.model.network.UplinkPortGroup;
+			import com.hp.asi.hpic4vc.ui.model.network.VCDownlink;
+			import com.hp.asi.hpic4vc.ui.model.network.VCM;
+			import com.hp.asi.hpic4vc.ui.model.network.VCNetwork;
+			import com.hp.asi.hpic4vc.ui.model.network.VCUplink;
+			import com.hp.asi.hpic4vc.ui.model.network.VM;
+			import com.hp.asi.hpic4vc.ui.model.network.VMDisk;
+			import com.hp.asi.hpic4vc.ui.model.network.VMHardware;
+			import com.hp.asi.hpic4vc.ui.model.network.VS;
+			import com.hp.asi.hpic4vc.ui.model.network.VcModule;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.BaseContainer;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.ConnectorContainer;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.DataStoreDisksContainer;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.ExternalPort;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.HBasContainer;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.Images;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.PhysicalAdaptorItem;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.PortGroupBox;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.Utilities;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.VCNetworkBox;
+			import com.hp.asi.hpic4vc.ui.utils.networkDiagram.VCNetworkContainer;
+			import com.vmware.core.model.SourceInfo;
+			
+			import flash.utils.getDefinitionByName;
+			import flash.utils.getQualifiedClassName;
+			
+			import flashx.textLayout.container.ScrollPolicy;
+			
+			import mx.collections.ArrayCollection;
+			import mx.containers.VBox;
+			import mx.controls.Spacer;
+			import mx.controls.Text;
+			import mx.core.IVisualElement;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.graphics.ImageSnapshot;
+			import mx.graphics.SolidColor;
+			import mx.graphics.SolidColorStroke;
+			import mx.graphics.codec.PNGEncoder;
+			import mx.managers.CursorManager;
+			import mx.utils.Base64Encoder;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			
+			import spark.collections.Sort;
+			import spark.collections.SortField;
+			import spark.components.BorderContainer;
+			import spark.components.Image;
+			import spark.components.Label;
+			import spark.layouts.HorizontalAlign;
+			import spark.layouts.HorizontalLayout;
+			import spark.layouts.VerticalLayout;
+			import spark.primitives.Ellipse;
+			import spark.primitives.Graphic;
+			import spark.primitives.Line;
+			import spark.primitives.Path;
+			import spark.primitives.Rect;
+			
+			[Bindable]
+			public var errorFound:String;
+			
+			[Bindable]
+			public var dataNotFound:String;
+			
+			[Bindable]
+			public var netDetailModel:NetworkDiagramDetailModel;
+			
+			private var __fileName__:String;
+			private var __rawData__:*;
+			
+			private var file:FileReference;
+			private var fr:FileReference;
+			private static const FILE_TYPES:Array = [new FileFilter("Network Diagram File", "*.drw")];
+			
+			private var vSwtichArray:ArrayCollection = new ArrayCollection();
+			private var dvSwtichArray:ArrayCollection = new ArrayCollection();
+			private var vcNetworkArray:ArrayCollection = new ArrayCollection();
+			
+			private var recInvSwitch:Array=new Array();
+			private var pgs:Array=new Array();
+			private var upl:Array=new Array();
+			private var dvpgs:Array=new Array();
+			
+			private var network_objs:Object = {};
+			private var downlink_objs:Object = {};
+			private var portlink_objs:Object = {};
+			private var uplink_objs:Object = {};
+			private var uplink_networks:Object = {};
+
+			
+			private var timer:Timer = new Timer(1000,0);
+			
+			//Bay Colors
+			private var baycolors:ArrayCollection = new ArrayCollection(
+				[
+					{enclosureType:"c7000", bay:[0xAAAAAA, 0xFF7700, 0xFF7700, 0xFFDD00, 0xFFDD00, 0x22BB00, 0x22BB00, 0x3399EE, 0x3399EE]},
+					{enclosureType:"c3000", bay:[0xAAAAAA, 0xFF7700, 0xFFDD00, 0x22BB00, 0x22BB00]}
+				]
+			);
+			
+			protected function application1_mouseMoveHandler(event:MouseEvent):void {
+				//lbl.text = "X = " + event.localX + " Y = " + event.localY;
+			}
+			
+			private function init():void {
+				errorFound = "";
+				dataNotFound = "";
+				this.currentState = "loadingData";
+				
+				file = new FileReference();
+			}
+			
+			private function showDetialHandler(event:Event):void {
+				if (this.netDetailModel.vcm != null && this.netDetailModel.vcm.enclosures.length > 0) {
+					currentState="showDetail";
+					onInitDiagram();
+					invalidateDisplayList();
+				} else {
+					currentState="showVCMSError";
+				}
+			}
+
+			
+			private function errorFoundHandler(event:Event):void {
+				currentState = "errorFound";
+				invalidateDisplayList();
+			}
+			
+			private function dataNotFoundHandler(event:Event):void {
+				currentState = "dataNotFound";
+				invalidateDisplayList();
+			}
+			
+			
+			//On File save
+			private function save():void {
+				var myBA:ByteArray = new ByteArray();
+				myBA.writeObject(this.netDetailModel);
+				myBA.position = 0;
+				
+				file.save(myBA, "myNetworkDiagram.drw");
+			}
+			
+			/**
+			 *To Open existing diagram 
+			 **/
+			private function onLoadFileClick():void {
+				loadMe.enabled = false;
+				fr = new FileReference();
+				fr.addEventListener(Event.SELECT, onFileSelect);
+				fr.addEventListener(Event.CANCEL,onCancel);
+				fr.browse(FILE_TYPES);
+			}
+			
+			private function onFileSelect(event:Event):void {
+				fr.addEventListener(Event.COMPLETE, onLoadComplete);
+				fr.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
+				fr.load();
+			}
+			
+			//called when the user cancels out of the browser dialog
+			private function onCancel(e:Event):void {
+				trace("File Browse Canceled");
+				fr = null;
+			}	
+			
+			
+			//called when the file has completed loading
+			private function onLoadComplete(e:Event):void {
+				this.__fileName__ = FileReference(e.currentTarget).name;
+				currentState = "showDetail"
+				var data:ByteArray = fr.data;
+				this.__rawData__ = {};
+				this.netDetailModel = data.readObject() as NetworkDiagramDetailModel;
+				this.__rawData__['ds'] = ArrayCollectionUtils.clone(this.netDetailModel.ds);
+				this.__rawData__['dvss'] = ArrayCollectionUtils.clone(this.netDetailModel.dvss);
+				this.__rawData__['errorMessage'] = this.netDetailModel.errorMessage;
+				this.__rawData__['informationMessage'] = this.netDetailModel.informationMessage;
+				this.__rawData__['isUnset'] = this.netDetailModel.isUnset;
+				this.__rawData__['nics'] = ArrayCollectionUtils.clone(this.netDetailModel.nics);
+				this.__rawData__['sourceInfo_'] = this.netDetailModel.sourceInfo_;
+				this.__rawData__['vcm'] = this.netDetailModel.vcm;
+				this.__rawData__['vss'] = ArrayCollectionUtils.clone(this.netDetailModel.vss);
+				fr = null;
+				onInitDiagram();
+				
+			}
+			
+			//called if an error occurs while loading the file contents
+			private function onLoadError(e:IOErrorEvent):void {
+				trace("Error loading file : " + e.text);
+			}
+			
+			//End of Open existing diagram logic
+			
+			/**
+			 * Start of Diagram from here
+			 * Start of Diagram Logic
+			 **/
+			private function onInitDiagram():void {
+				timer.addEventListener(TimerEvent.TIMER, drawPaths);
+				
+				removeAll();
+				
+				drawLeftContainer();
+				drawMiddleContainer();
+				drawRightContainer();
+				drawDataStores(); 
+				
+			}
+			
+			private function removeAll():void {
+				leftContainer.removeAllElements();
+				middleContainer.removeAllElements();
+				rightContainer.removeAllElements();
+				leftBottomContainer.removeAllElements();
+			}
+			
+			
+			//draw VSwtich
+			private function drawVSwtiches():Boolean {
+				for each (var vSwtich:VS in this.netDetailModel.vss) {
+					
+					var mainContainer:BaseContainer = new BaseContainer();
+					//mainContainer.minWidth = 450;
+					mainContainer.title = vSwtich.name;
+					mainContainer.group.right = 7;
+					mainContainer.group.left = 7;
+					mainContainer.group.bottom = 7;
+					leftContainer.addElement(mainContainer);
+					var hl:HorizontalLayout=new HorizontalLayout();
+					hl.gap=7;
+					mainContainer.group.layout = hl;
+					//create Port groups
+					var vgroup:VGroup = new VGroup();
+					mainContainer.group.addElement(vgroup);
+					vgroup.percentWidth = 40;
+					
+					var count:int=0;
+					for each (var portGroups:PortGroup in vSwtich.port_groups) {
+						var childPortGroup:BaseContainer = new BaseContainer();
+						//childPortGroup.percentWidth = 100;
+						vgroup.addElement(childPortGroup);
+						childPortGroup.title = "Port Group";
+						childPortGroup.titleBackgroundColor = 0xAAAAAA;
+						
+						var portGroupBox:PortGroupBox = new PortGroupBox();
+						portGroupBox.minWidth = 150;
+						portGroupBox.networkName = portGroups.name;
+						if(portGroups.vms != null)
+							portGroupBox.description = "Virtual Machines ("+portGroups.vms.length+")";
+						childPortGroup.group.addElement(portGroupBox);
+						portGroupBox.showPortGroupIcon = true;
+						portGroupBox.type="vs";
+						portGroupBox.vms = portGroups.vms; 
+						portGroupBox.parentVSwitch=mainContainer.title;
+						if(count==0) {
+							portGroupBox.firstOrNot=true;
+						} else {
+							portGroupBox.firstOrNot=false;
+						}
+						pgs.push(portGroupBox);
+						count++;
+						
+					} 
+					
+					//create rectangle
+					var borderContainer:BorderContainer = new BorderContainer();
+					borderContainer.width = 32;
+					borderContainer.percentHeight = 100;
+					
+					borderContainer.borderStroke = new SolidColorStroke(0x444444,2);
+					borderContainer.backgroundFill = new SolidColor(0x999999);
+					borderContainer.name=mainContainer.title;
+					mainContainer.group.addElement(borderContainer);
+					recInvSwitch.push(borderContainer);
+					
+					//create Physical Adapters.
+					var paGroup:BaseContainer = new BaseContainer();
+					paGroup.title = "Physical Adapters";
+					paGroup.titleBackgroundColor = 0xAAAAAA;
+					
+					mainContainer.group.addElement(paGroup);
+					paGroup.percentWidth = 40;
+					
+					//get nics
+					
+					if(vSwtich.pnics.length > 0) {
+						//sort
+						var dataSortField:SortField = new SortField();
+						dataSortField.name = "device";
+						dataSortField.numeric  = false;
+						
+						var dataSort:Sort = new Sort();
+						dataSort.fields = [dataSortField];
+						
+						vSwtich.pnics.sort = dataSort;
+						vSwtich.pnics.refresh();
+
+						for each (var item:PNIC in vSwtich.pnics) {
+							var physicalAdapator:PhysicalAdaptorItem = new PhysicalAdaptorItem();
+							var vl:VerticalLayout = new VerticalLayout();
+							vl.gap = 0;
+							paGroup.group.layout = vl;
+							paGroup.group.addElement(physicalAdapator);
+							physicalAdapator.pnicValue = item;
+							vSwtichArray.addItem({box:physicalAdapator, mac:item.mac});
+						}
+					} else {
+						var label:Label = new Label();
+						label.text = "No Physical Adapter"
+						paGroup.group.addElement(label);
+					}
+				}
+				
+				return true;
+			}
+			
+			private function drawDVSwtiches():Boolean {
+				for each (var dvSwtich:DVS in this.netDetailModel.dvss) {
+					//create vSwitch
+					var dvContainer:BaseContainer = new BaseContainer();
+					
+					dvContainer.group.right = 7;
+					dvContainer.group.left = 7;
+					dvContainer.group.bottom = 7;
+					dvContainer.title = dvSwtich.name;
+					leftContainer.addElement(dvContainer);
+					dvContainer.group.layout = new HorizontalLayout();
+					
+					
+					//create Port groups
+					var downLinkGroup:VGroup = new VGroup();
+					dvContainer.group.addElement(downLinkGroup);
+					downLinkGroup.percentWidth = 45;
+					downLinkGroup.paddingTop = 10;
+					downLinkGroup.paddingBottom = 10;
+					
+					for each (var dvPortGroups:PortGroup in dvSwtich.downlink_port_groups) {
+						var childPortGroup:BaseContainer = new BaseContainer();
+						childPortGroup.percentWidth = 100;
+						downLinkGroup.addElement(childPortGroup);
+						childPortGroup.title = dvPortGroups.name;
+						childPortGroup.parentTitle=dvContainer.title;
+						dvpgs.push(childPortGroup);
+						
+						var portGroupBox:PortGroupBox = new PortGroupBox();
+						var vlanid:String = "--";                
+						if(dvPortGroups.vlanId != "0" )
+							vlanid = dvPortGroups.vlanId;  
+						var pname:String = StringUtil.substitute("VLANID {0}", vlanid)
+						portGroupBox.networkName = pname;
+						if(dvPortGroups.vms != null)
+							portGroupBox.description = "Virtual Machines ("+dvPortGroups.vms.length+")";
+						portGroupBox.parentVSwitch=dvContainer.title;
+						childPortGroup.group.addElement(portGroupBox);
+						portGroupBox.type="dvs";
+						portGroupBox.vms = dvPortGroups.vms; 
+					} 
+					
+					//create rectangle
+					var borderContainer:BorderContainer = new BorderContainer();
+					borderContainer.percentHeight = 100;
+					borderContainer.width = 35;
+					borderContainer.borderStroke = new SolidColorStroke(0x444444,2);
+					borderContainer.backgroundFill = new SolidColor(0x999999);
+					borderContainer.name=dvContainer.title;
+					dvContainer.group.addElement(borderContainer);
+					recInvSwitch.push(borderContainer);
+					//create Uplink Ports
+					
+					var topUplinkGroup:VGroup = new VGroup();
+					dvContainer.group.addElement(topUplinkGroup);
+					topUplinkGroup.paddingTop = 10;
+					topUplinkGroup.paddingBottom = 10;
+					
+					var uplinkGroup:BaseContainer = new BaseContainer();
+					topUplinkGroup.addElement(uplinkGroup);
+					var uplinkTitle:String; 
+					
+					// Loop through uplink ports
+					for each (var uplinkPortgroup:UplinkPortGroup in dvSwtich.uplink_port_groups) {
+						uplinkTitle = uplinkPortgroup.name;
+						uplinkGroup.title = uplinkTitle;
+						uplinkGroup.parentTitle=dvContainer.title;
+						for each (var uplink:DVSUplink in uplinkPortgroup.uplinks) {
+							var uplinkName:String = uplink.name;
+							var uplinkLabel:Label = new Label();
+							uplinkLabel.text = uplinkName;
+							uplinkGroup.group.addElement(uplinkLabel);
+							var vl:VerticalLayout = new VerticalLayout();
+							vl.gap = 3;
+							/* vl.paddingLeft = 5;
+							vl.paddingRight = 5 */;
+	
+							uplinkGroup.group.layout = vl;
+							
+							for each (var pnic:PNIC in uplink.pnics) {
+								var physicalAdapator:PhysicalAdaptorItem = new PhysicalAdaptorItem();
+								uplinkGroup.group.addElement(physicalAdapator);
+								physicalAdapator.pnicValue = pnic;
+								dvSwtichArray.addItem({box:physicalAdapator, mac:pnic.mac});
+							} 
+						}
+						upl.push(uplinkGroup);
+						
+					}
+					
+				}
+				return true;
+			}
+			
+			private function drawLeftContainer():void {
+				
+				var vs:Boolean = drawVSwtiches();
+				var dvs:Boolean = drawDVSwtiches();
+				
+			}
+			
+			private function drawMiddleContainer():void {
+				//create VC
+				if (this.netDetailModel.vcm) {
+					for each (var enclosures:Enclosure in this.netDetailModel.vcm.enclosures) {
+						for each (var module:VcModule in enclosures.allVcModuleG1s) {
+							createModule(module, enclosures.enclosureType)
+						}
+					}
+				}
+			}
+			
+			private function createModule(module:VcModule, enclosureType:String):void {
+				var pid:String;
+				var mainContainerParent:Group = new Group();
+				middleContainer.addElement(mainContainerParent);
+				var mainContainer:BaseContainer = new BaseContainer();
+				mainContainer.width = 400;
+				var bay:Number = module.commonIoModuleAttrs.bay;
+				mainContainer.title = module.commonIoModuleAttrs.productName +" in " + module.commonIoModuleAttrs.enclosureName + " bay " + module.commonIoModuleAttrs.bay;
+				
+				//Set the module color based on enclosure type
+				var baycolor:uint = 0xAAAAAA;
+				if (module.commonAttrs.overallStatus != 'MISSING' && module.commonAttrs.overallStatus != 'NO-COMM') {
+					for each (var item:Object in baycolors) {
+						if(item.enclosureType==enclosureType) {
+							baycolor = item.bay[bay];
+							break;
+						}
+					}
+				}
+				
+				//if yellow color
+				if(baycolor==0xFFDD00) {
+					mainContainer.titleColor = 0x000000;
+				}
+				mainContainer.titleBackgroundColor = baycolor;
+				mainContainerParent.addElement(mainContainer);
+				var v:VerticalLayout = new VerticalLayout();
+				v.paddingLeft = 20;
+				mainContainer.group.layout = v;
+				mainContainer.showBubble = true;
+				
+				//mainContainer.ptt.title = "VC";
+				mainContainer.ttip = StringUtil.substitute("Product: {0}\nStatus: {1}\nSerial Number: {2}\nRack: {3}\nEnclosure: {4}\nBay: {5}\nFirmware: {6}\nAddress: {7}\nManagement Role: {8}",                    
+					module.commonIoModuleAttrs.productName,
+					module.commonAttrs.overallStatus,
+					module.commonIoModuleAttrs.serialNumber,
+					module.commonIoModuleAttrs.rackName,
+					module.commonIoModuleAttrs.enclosureName,
+					module.commonIoModuleAttrs.bay,
+					module.commonIoModuleAttrs.fwRev,
+					module.commonIoModuleAttrs.ipaddress,
+					module.commonIoModuleAttrs.vcManagerRole);
+				
+				//add container for Virtual Connect Ethernet port
+				//point = mainContainer.localToGlobal(point);
+				//point = main.globalToLocal(point);
+				var connectorGroup:VBox = new VBox();
+				connectorGroup.setStyle("borderColor", "0xFF0000");
+				connectorGroup.setStyle("borderStyle", "solid");
+				connectorGroup.autoLayout = true;
+				connectorGroup.top = 40;
+				connectorGroup.right = 0;
+				mainContainerParent.addElement(connectorGroup);
+				
+				
+				// Draw each uplink port       
+				var yPos:int = 40;
+				for each ( var up:VCUplink in module.uplinks) { 
+					var obj:ConnectorContainer;
+					if(up.uplinkType == 'fc') {                            
+						obj = fc_uplink(up, baycolor);
+					} else {
+						obj = net_uplink(up, baycolor);
+					}
+					obj.x = mainContainer.width - obj.width;
+					obj.y = yPos;
+					up.drawing = obj;
+					mainContainerParent.addElement(obj);
+					yPos = yPos + 40;
+					
+				}
+				
+				// Draw each network on the module                    
+				for each (var network:VCNetwork in module.networks) {
+					var vcNetwork:VCNetworkContainer = new VCNetworkContainer();
+					vcNetwork.networkName = "VC Network";
+					var name:String = network.displayName;
+					
+					var net_text:String = name;
+					vcNetwork.titleBackgroundColor = 0x555555;
+					vcNetwork.vcname = name;
+					vcNetwork.color = Utilities.colorcode(name);
+					vcNetwork.hiColor = Utilities.colorcode(name,0.86, 0.86);
+					
+					
+					if (network.uplinkVLANId) {
+						net_text += '  Vlan ID: ';
+						net_text += network.uplinkVLANId;                                
+						net_text += ' ';
+					}
+					
+					if (network.bottleNeck) {
+						vcNetwork.showBottleNeck = true;                                                                                            
+					}
+					
+					vcNetwork.description = net_text;
+					
+					//Store network bubbles by name so we can light up all networks with the same name on mouseover
+					//Store network downlinks too
+					if (!(name in network_objs)) {
+						network_objs[name] = new Array();
+						downlink_objs[name] = new Array();
+						portlink_objs[name] = new Array();
+						uplink_objs[name] = new Array();
+					}
+					network_objs[name].push(vcNetwork);
+					
+					vcNetwork.addEventListener(MouseEvent.MOUSE_OVER, networkColorEventHandler)
+					vcNetwork.addEventListener(MouseEvent.MOUSE_OUT, networkColorOutEventHandler)
+					
+					mainContainer.group.addElement(vcNetwork);
+					network.drawing = vcNetwork;
+					
+					//save the uplink port to use in lightup uplink
+					for each (pid in network.portlinks) {
+						if(!(pid in uplink_networks)) uplink_networks[pid] = [];
+						uplink_networks[pid].push({'name':name});
+					}
+
+				}
+				
+				for each (var fabric:Fabric in module.fabrics) {
+					var vcFCFabric:VCNetworkContainer = new VCNetworkContainer();
+					vcFCFabric.networkName = "VC FC Fabric";
+					vcFCFabric.description = fabric.displayName;
+					var fname:String = fabric.displayName;
+					vcFCFabric.vcname = fname;
+					
+					vcFCFabric.titleBackgroundColor = 0x555555;
+					vcFCFabric.color = Utilities.colorcode(fname);
+					vcFCFabric.hiColor = Utilities.colorcode(fname,0.86, 0.86);
+					
+					if (!(fname in network_objs)) {
+						network_objs[fname] = new Array();
+						downlink_objs[fname] = new Array();
+						portlink_objs[fname] = new Array();
+						uplink_objs[fname] = new Array();
+					}
+					network_objs[fname].push(vcFCFabric);
+					
+					vcFCFabric.addEventListener(MouseEvent.MOUSE_OVER, networkColorEventHandler)
+					vcFCFabric.addEventListener(MouseEvent.MOUSE_OUT, networkColorOutEventHandler)
+						
+					mainContainer.group.addElement(vcFCFabric);
+					fabric.drawing = vcFCFabric;
+					
+					//save the uplink port to use in lightup uplink
+					for each (pid in fabric.portlinks) {
+						if(!(pid in uplink_networks)) uplink_networks[pid] = [];
+						uplink_networks[pid].push({'name':fname});
+					}
+				}
+				
+				//Asuming VC Netwrok and Network port has been created
+			}
+			
+			//Draw FC uplink port
+			private function fc_uplink(port:VCUplink, portColor:uint):* {
+				var tt:String = StringUtil.substitute("Connection Status: {0}\nPort WWN: {1}\nConnected To WWN: {2}\nSpeed: {3} Gb",
+					port.portConnectStatus,
+					port.portWWN,
+					port.connectedToWWN,
+					port.speedGb);
+				var connectorContainer:ConnectorContainer = new ConnectorContainer();
+				connectorContainer.setConnector("SFP-SR", portColor, port.portLabel);
+				connectorContainer.ttip = tt;
+				return connectorContainer;
+			}
+			
+			private function net_uplink(port:VCUplink, portColor:uint):* {
+				var tt:String = StringUtil.substitute("Connector: {0}\nPhysical layer: {1}\nLink status: {2}\nDuplex: {3}\nSpeed: {4} Gb\nSupported speeds: {5}",
+					port.connectorType,
+					port.physicalLayer,
+					port.linkStatus,
+					port.duplexStatus,
+					port.speedGb,
+					port.supportedSpeeds);
+				
+				var connectorContainer:ConnectorContainer = new ConnectorContainer();
+				connectorContainer.setConnector(port.connectorType, portColor, port.portLabel);
+				connectorContainer.ttip = tt;
+				
+				if (port.telemetry) {
+					var units:String = 'kbps';
+					var maxY:Number = Math.max(Math.max.apply(Math, port.telemetry.rx_kbps.source), Math.max.apply(Math, port.telemetry.tx_kbps.source) );
+					
+					
+					if (maxY > 1000) {
+						units = 'Mbps';                        
+						for (var x:String in port.telemetry.rx_kbps) {
+							port.telemetry.rx_kbps[x] = port.telemetry.rx_kbps[x]/1000.0;
+						}
+						for (x in port.telemetry.tx_kbps) {
+							port.telemetry.tx_kbps[x] = port.telemetry.tx_kbps[x]/1000.0;
+						}
+					}
+					maxY = Math.max(Math.max.apply(Math, port.telemetry.rx_kbps.source), Math.max.apply(Math, port.telemetry.tx_kbps.source) );                    
+					if (maxY > 1000) {
+						units = 'Gbps';                        
+						for (x in port.telemetry.rx_kbps) {
+							port.telemetry.rx_kbps[x] = port.telemetry.rx_kbps[x]/1000.0;
+						}
+						for (x in port.telemetry.tx_kbps) {
+							port.telemetry.tx_kbps[x] = port.telemetry.tx_kbps[x]/1000.0;
+						}
+					}
+
+					var tcount:int = parseInt(String(port.telemetry.properties.port_telemetry_entry_count));
+					trace(tcount);
+					var tperiod:int = parseInt(port.telemetry.properties.port_telemetry_period);                                        
+					var min_ago:Array = new Array(tcount);
+					var sec:int = 0;
+					for (var cnt:int = 0; cnt < tcount; cnt++) {
+						min_ago[cnt] = -sec/60;         
+						sec+=tperiod;
+					}
+					var min_ago1:ArrayCollection=new ArrayCollection(min_ago);
+					var dp:ArrayCollection=new ArrayCollection();
+					for (var i:int=0;i<tcount;i++) {
+						dp.addItem({min_ago:min_ago[i],rx_kbps:port.telemetry.rx_kbps[i],tx_kbps:port.telemetry.tx_kbps[i]});
+					}
+					
+					connectorContainer.addLineChartToPTT(units,dp);
+				}
+				return connectorContainer;
+			}
+			
+			private function drawRightContainer():void {
+				drawExternalSwitch();
+				drawExternalStorage();
+			}
+			
+			private function drawExternalSwitch():void {
+				for each (var sw:ExternalSwitch in this.netDetailModel.vcm.externalSwitches) {
+					//Create Parent container
+					var swContainerParent:Group = new Group();
+					rightContainer.addElement(swContainerParent);
+					
+					//create External Swtich
+					var mainContainer:BaseContainer = new BaseContainer();
+					mainContainer.width = 350;
+					mainContainer.percentHeight = 100;
+					var lbl:String = sw.remote_system_desc || "Unknown";
+					mainContainer.ttip = lbl;
+					mainContainer.title = lbl.split(",")[0]; 
+					mainContainer.showBubble = true;
+					mainContainer.titleBackgroundColor = 0x555555;
+					swContainerParent.addElement(mainContainer);
+					mainContainer.group.layout = new VerticalLayout();
+					mainContainer.group.left = 15;
+					
+					var label:Label = new Label();
+					label.text = mainContainer.title;
+					mainContainer.group.addElement(label);
+					
+					var swtichName:Label = new Label();
+					swtichName.text = sw.remote_chassis_id;
+					mainContainer.group.addElement(swtichName);
+					
+					var portContainer:VGroup = new VGroup();
+					portContainer.paddingTop = 30;
+					portContainer.paddingBottom = 10;
+					portContainer.gap = 10;
+					portContainer.x = -3;
+					
+					swContainerParent.addElement(portContainer);
+					
+					for each (var p:ExternalSwitchPort in sw.ports) {
+						var ep:ExternalPort = new ExternalPort();
+						
+						var tt:String = StringUtil.substitute("Port ID: {0} \nPort description: {1}", 
+							p.remote_port_id, 
+							p.remote_port_desc);
+						ep.ttip = tt;
+						portContainer.addElement(ep);
+						p.drawing = ep;
+					} 
+				}
+			}
+			
+			private function drawExternalStorage():void {
+				for each (var es:ExternalStorage in this.netDetailModel.vcm.externalStorage) {
+					//Create Parent container
+					var seContainerParent:Group = new Group();
+					rightContainer.addElement(seContainerParent);
+					
+					//create VC
+					var externalStorageContainer:BaseContainer = new BaseContainer();
+					externalStorageContainer.width = 350;
+					externalStorageContainer.percentHeight = 100;
+					externalStorageContainer.title = "FC Storage"
+					externalStorageContainer.titleBackgroundColor = 0x555555;
+					seContainerParent.addElement(externalStorageContainer);
+					externalStorageContainer.group.layout = new VerticalLayout();
+					externalStorageContainer.group.left = 15;
+					
+					var esLable:Label = new Label();
+					esLable.text = StringUtil.substitute("WWN: {0}", es.WWN);
+					externalStorageContainer.group.addElement(esLable);
+					
+					var portContainer:VGroup = new VGroup();
+					portContainer.paddingTop = 30;
+					portContainer.paddingBottom = 10;
+					portContainer.gap = 10;
+					portContainer.x = -3;
+					
+					seContainerParent.addElement(portContainer);
+					
+					for each (var p:Object in es.portArray) {
+						var ep:ExternalPort = new ExternalPort();
+						var tt:String = StringUtil.substitute("Port WWN: {0}",  p.id);
+						ep.ttip = tt;
+						portContainer.addElement(ep);
+						p.drawing = ep; //Since there is no array for portWWN
+					} 
+					
+				}
+			}
+			
+			
+			
+			
+			private function drawDataStores():void {
+				for each (var dataStore:Object in this.netDetailModel.ds) {
+					//create datastore
+					var mainContainer:BaseContainer = new BaseContainer();
+					//mainContainer.width = 450;
+					mainContainer.group.right = 7;
+					mainContainer.group.left = 7;
+					mainContainer.group.bottom = 7;
+					mainContainer.title = "Datastore - " + dataStore.name;
+					leftBottomContainer.addElement(mainContainer);
+					
+					//add bubble
+					mainContainer.showBubble = true;
+					//mainContainer.ptt.title = "Datastore";
+					mainContainer.ttip = StringUtil.substitute("Name: {0} \nFree Space: {1} \nMax File Size: {2}", 
+						dataStore.name,
+						Utilities.bytesToString(dataStore.freeSpace),
+						Utilities.bytesToString(dataStore.maxFileSize));
+					
+					
+					var gLayout:HorizontalLayout = new HorizontalLayout();
+					gLayout.paddingLeft = 10;
+					gLayout.paddingRight = -1;
+					mainContainer.group.layout = gLayout;
+					
+					
+					var vmGroup:VGroup = new VGroup();
+					mainContainer.group.addElement(vmGroup);
+					//create VM for datastore
+					if(dataStore.vms != null)
+						var vmsTitle:String = StringUtil.substitute("Virtual Machines ({0})", dataStore.vms.length);
+					
+					
+					var label:Label = new Label();
+					label.text = vmsTitle;
+					label.styleName = "vmGrayStyle";
+					vmGroup.addElement(label);
+					
+					// Add Virtual Machines
+					for each (var vm:Object in dataStore.vms) {
+						var vmName:Label = new Label();
+						vmName.text = vm.name;
+						vmName.styleName = "vmNameStyle";
+						vmGroup.addElement(vmName);
+						
+						for each (var disk:Object in vm.hardware.disks) {
+							var diskBox:DataStoreDisksContainer = new DataStoreDisksContainer();
+							diskBox.diskName = disk.label;
+							diskBox.title = vm.name;
+							diskBox.diskSummary = StringUtil.substitute("Name: {0} \nSummary: {1}", disk.label, disk.summary);
+							vmGroup.addElement(diskBox);
+							
+						}
+					}
+					
+					//add some space in middle
+					var hspacer:Spacer = new Spacer();
+					hspacer.width = 50;
+					mainContainer.group.addElement(hspacer);
+					
+					//add DataStores
+					var dataStroreGroup:VGroup = new VGroup();
+					mainContainer.group.addElement(dataStroreGroup);
+					
+					for each (var hbas:HBA in dataStore.hbas) {
+						var hBasContainer:HBasContainer = new HBasContainer();
+						hBasContainer.hbaValue = hbas;
+						dataStroreGroup.addElement(hBasContainer);
+						
+						hbas.drawing = hBasContainer;
+					}
+					
+					var spacer:Spacer = new Spacer();
+					spacer.percentWidth = 100;
+					mainContainer.group.addElementAt(spacer,1);
+					
+				}
+				timer.start();
+			}
+			
+			
+			
+			////////////////////////////////////////////////////////////
+			//Draw Paths here
+			//Put more comment for understanding
+			////////////////////////////////////////////////////////////
+			private function drawPaths(event:Event=null):void {
+				generatingMsg.visible = false;
+				structure.visible = true;
+				timer.stop();
+				connectVCandVSwtich();
+				connectVCandDVSwtich();
+				connectVCandFCDownlink();
+				connectVCandISCSIDownlink();
+				connectVCandPort();
+				connectUplinkandExternalSwitch();
+				connectUplinkandExternalStorage();
+				vSwitchConnectNicsandPortGroups();
+				dvSwitchConnectNicsandPortGroups(); 
+				
+			}
+			
+			//Connect dvStich Nics and port group
+			private function dvSwitchConnectNicsandPortGroups():void {
+				for (var j:int=0;j<dvpgs.length;j++) {
+					var dvpg:BaseContainer=dvpgs[j] as BaseContainer;
+					
+					var pgPoint:Point=new Point(dvpg.x,0);
+					pgPoint=dvpg.localToGlobal(pgPoint);
+					pgPoint = main.globalToLocal(pgPoint);
+					
+					
+					var rect:Rect=Utilities.drawRect();
+					main.addElement(rect);
+					rect.x=pgPoint.x+dvpg.width+7;
+					rect.y=pgPoint.y ;						
+					rect.height=dvpg.height;
+					
+					 var recPoint1:Point=new Point(rect.x,rect.y);
+					recPoint1=rect.localToGlobal(recPoint1);
+					recPoint1 = main.globalToLocal(recPoint1); 
+
+					
+					var upLink0:BaseContainer=new BaseContainer;
+					for each(var upLink:BaseContainer in upl) {
+						if (upLink.parentTitle==dvpg.parentTitle) {
+							upLink0=upLink;
+						}
+					}
+					
+					var upPoint:Point=new Point(upLink0.x,0);
+					upPoint=upLink0.localToGlobal(upPoint);
+					upPoint = main.globalToLocal(upPoint);
+					
+					var rect2:Rect=Utilities.drawRect();
+					rect2=Utilities.drawRect();
+					main.addElement(rect2);
+					rect2.x=rect.x + (33-rect2.width);
+					rect2.y=upPoint.y ;
+					rect2.height=upLink0.height ; 
+					
+					
+					main.addElement(Utilities.drawLine(rect.x+10,rect.y+rect.height/2,rect.x+17,rect.y+rect.height/2));
+					main.addElement(Utilities.drawLine(rect.x+17,rect.y+rect.height/2,rect.x+17,rect2.y+rect2.height/2));
+					main.addElement(Utilities.drawLine(rect.x+17,rect2.y+rect2.height/2,rect.x+24,rect2.y+rect2.height/2)); 
+					
+				}
+				
+			}
+			
+			//Connect vStich Nics and port group
+			private function vSwitchConnectNicsandPortGroups():void {
+				var FirstPGCoor:ArrayCollection=new ArrayCollection();
+				for (var j:int=0;j<pgs.length;j++) {
+					var pg:PortGroupBox=pgs[j] as PortGroupBox;
+					var rec0:BorderContainer=new BorderContainer();
+					for each(var rec:BorderContainer in recInvSwitch) {
+						if(pg.parentVSwitch==rec.name)rec0=rec;
+					}
+					
+					var recPoint:Point=new Point(rec0.x,rec0.y);
+					
+					if (pg.firstOrNot==true && pg.type=="vs") {
+						var image:Image=pg.hgPortGroup.getElementAt(2) as spark.components.Image;
+						var spacer:Spacer=pg.hgPortGroup.getElementAt(1) as Spacer;
+						var imagePoint:Point=new Point(image.x,image.y);
+						imagePoint=image.localToGlobal(imagePoint);
+						imagePoint = main.globalToLocal(imagePoint);
+						var startPoint:Point = new Point(recPoint.x+15, imagePoint.y);
+						var spacerPoint:Point=new Point(pg.x + pg.width ,spacer.y);
+						spacerPoint=pg.localToGlobal(spacerPoint);
+						spacerPoint = main.globalToLocal(spacerPoint);
+						var x0:Number=image.x;
+						
+						var rCircle:Ellipse= Utilities.drawCircle();
+						main.addElement(rCircle);
+						rCircle.x=startPoint.x+34;
+						rCircle.y=startPoint.y;
+						
+						main.addElement(Utilities.drawLine(spacerPoint.x + 5,imagePoint.y+4,rCircle.x,rCircle.y+4));
+						
+						main.addElement(Utilities.drawLine(rCircle.x + rCircle.width ,imagePoint.y+4,rCircle.x + rCircle.width + 5,rCircle.y+4)); 
+						
+						var y0:Number=rCircle.y;
+						var vSwitchName:String=pg.parentVSwitch;
+						FirstPGCoor.addItem({name:vSwitchName,coorX:x0,coorY:y0});
+						
+						 var circle:Ellipse= Utilities.drawCircle();
+						main.addElement(circle);
+						circle.x=recPoint.x+18;
+						circle.y=imagePoint.y;
+
+						var vg:VGroup=pg.vmsList as VGroup;
+						var numElements:int = vg.numElements;
+						for (var i:int = 0; i<numElements; i++) {
+							
+							var hg:HGroup=vg.getElementAt(i) as HGroup;
+							var textPoint:Point;
+							textPoint = new Point(hg.x+hg.width, 0)
+							textPoint=hg.localToGlobal(textPoint);
+							textPoint = main.globalToLocal(textPoint);
+							
+							circle = Utilities.drawCircle();
+							circle.x=recPoint.x+18;
+							circle.y=textPoint.y;
+							
+							startPoint.x=x0;
+							startPoint.y=hg.y;
+							startPoint=hg.localToGlobal(startPoint);
+							startPoint = main.globalToLocal(startPoint);
+							main.addElement(Utilities.drawLine(textPoint.x - 5,textPoint.y+5,circle.x + 15,textPoint.y+5));
+							
+							main.addElement(circle);
+							
+							main.addElement(Utilities.drawLine(recPoint.x+35,circle.y+5,recPoint.x+35,y0+5));
+						}
+					} else if(pg.type=="vs") {
+						image=pg.hgPortGroup.getElementAt(2) as Image;
+						imagePoint=new Point(image.x,image.y);
+						imagePoint=image.localToGlobal(imagePoint);
+						imagePoint = main.globalToLocal(imagePoint);
+						startPoint= new Point(recPoint.x+18, imagePoint.y);
+						for each(var item:Object in FirstPGCoor) {
+							if (item.name==pg.parentVSwitch) {
+								x0=item.coorX;
+								y0=item.coorY;
+							}
+						}
+						
+						circle = Utilities.drawCircle();
+						
+						circle.x=startPoint.x;
+						circle.y=startPoint.y;
+						startPoint.x=x0;
+						startPoint.y=image.y;
+						startPoint=image.localToGlobal(startPoint);
+						startPoint = main.globalToLocal(startPoint);
+						
+						var pgPoint:Point = new Point(pg.x + pg.width , 0);
+						pgPoint=pg.localToGlobal(pgPoint);
+						pgPoint = main.globalToLocal(pgPoint);
+						
+						
+						main.addElement(Utilities.drawLine(pgPoint.x + 5,pgPoint.y+5,circle.x + 15,pgPoint.y+5));
+						main.addElement(Utilities.drawLine(recPoint.x+35,circle.y+5,recPoint.x+35,y0+5));
+						main.addElement(circle);
+						
+						
+						vg=pg.vmsList as VGroup;
+						numElements= vg.numElements;
+						for (i= 0; i<numElements; i++) {
+							
+							hg=vg.getElementAt(i)as HGroup;
+							image= hg.getElementAt(1) as spark.components.Image;
+							imagePoint.x=image.x
+							imagePoint.y=image.y
+							imagePoint=image.localToGlobal(imagePoint);
+							imagePoint = main.globalToLocal(imagePoint);
+							
+							
+							startPoint.x=x0;
+							startPoint.y=image.y;
+							startPoint=image.localToGlobal(startPoint);
+							startPoint = main.globalToLocal(startPoint);
+							
+							Utilities.drawLine(startPoint.x-40,startPoint.y+5,circle.x+20,startPoint.y+5);
+							
+							circle=Utilities.drawCircle();
+							main.addElement(circle);
+							circle.x=startPoint.x+25;
+							circle.y=startPoint.y;
+							
+							Utilities.drawLine(recPoint.x+35,circle.y+5,recPoint.x+35,y0+5);
+						}
+						
+					}
+				}
+			}
+			
+			////////////////////////////////////////////////////////////
+			// connect VCM uplink ports to the external switches
+			////////////////////////////////////////////////////////////
+			private function connectUplinkandExternalSwitch():void {
+				for each (var e:Enclosure in this.netDetailModel.vcm.enclosures) {                
+					for each (var m:VcModule in e.allVcModuleG1s) {                    
+						for each(var u:VCUplink in m.uplinks) {
+							var id:String = u.id;
+							
+							for each(var es:ExternalSwitch in this.netDetailModel.vcm.externalSwitches) {
+								for each (var esp:ExternalSwitchPort in es.ports) {
+									if (id == esp.id) {
+										var cc:ConnectorContainer = u.drawing;
+										var ep:ExternalPort = esp.drawing;
+										
+										var isDotted:Boolean;
+										
+										var startPoint:Point = new Point(cc.container.width , cc.height/2);
+										startPoint = cc.localToGlobal(startPoint);
+										startPoint = main.globalToLocal(startPoint);
+										
+										
+										var endPoint:Point = new Point(0,0); 
+										ep.y += (ep.height/2)
+										endPoint = ep.localToGlobal(endPoint);
+										endPoint = main.globalToLocal(endPoint);
+										
+										var link:SolidColorStroke;
+										
+										if(u.linkStatus == 'LINKED-STANDBY') {
+											link = customDrawCurve(startPoint, endPoint, u.speedGb, 0x000000, true);
+										} else {
+											link = customDrawCurve(startPoint, endPoint, u.speedGb, 0x000000, false);
+										}
+
+										for(var n:int = 0; n < uplink_networks[id].length; n++) {
+											uplink_objs[uplink_networks[id][n].name].push(link);
+										} 
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			private function connectUplinkandExternalStorage():void {
+				for each (var e:Enclosure in this.netDetailModel.vcm.enclosures) {                
+					for each (var m:VcModule in e.allVcModuleG1s) {                    
+						for each(var u:VCUplink in m.uplinks) {
+							var id:String = u.portWWN;
+							
+							for each(var es:ExternalStorage in this.netDetailModel.vcm.externalStorage) {
+								for each (var p:Object in es.portArray) {
+									if (id == p.id) {
+										var cc:ConnectorContainer = u.drawing;
+										var ep:ExternalPort = p.drawing;
+										
+										var startPoint:Point = new Point(cc.container.width , cc.height/2);
+										startPoint = cc.localToGlobal(startPoint);
+										startPoint = main.globalToLocal(startPoint);
+										
+										
+										var endPoint:Point = new Point(0,0); 
+										ep.y += (ep.height/2)
+										endPoint = ep.localToGlobal(endPoint);
+										endPoint = main.globalToLocal(endPoint);
+										
+										var link:SolidColorStroke;
+										
+										if (u.linkStatus == 'LINKED-STANDBY') {
+											link = customDrawCurve(startPoint, endPoint, u.speedGb, 0x000000, true);
+										} else {
+											link = customDrawCurve(startPoint, endPoint, u.speedGb, 0x000000, false);
+										}
+										
+										
+										for(var n:int = 0; n < uplink_networks[u.id].length; n++) {
+											uplink_objs[uplink_networks[u.id][n].name].push(link);
+										} 
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			
+			private function connectVCandPort():void {
+				if (this.netDetailModel.vcm) {
+					for each (var enclosures:Enclosure in this.netDetailModel.vcm.enclosures) {
+						for each (var module:VcModule in enclosures.allVcModuleG1s) {
+							// Now draw a nice curve between all of the network bubbles and
+							// their uplink ports  
+							
+							for each(var n:VCNetwork in module.networks) {
+								for each(var p1:String in n.portlinks) {
+									for each(var u1:VCUplink in module.uplinks) {
+										if (u1.id == p1) {
+											var vcNetwork1:VCNetworkContainer = n.drawing;
+											var connectorContainer1:ConnectorContainer = u1.drawing;
+											portlink_objs[n.displayName].push(
+												drawCurve("Right", vcNetwork1, connectorContainer1, u1.speedGb, vcNetwork1.backgroundColor)
+											);
+										}
+									}
+								}
+							}
+							
+							p1 = null;
+							u1 = null;
+							vcNetwork1 = null;
+							connectorContainer1 = null;
+							
+							// Now draw a nice curve between all of the fabric bubbles and
+							// their uplink ports 
+							for each(var f:Fabric in module.fabrics) {
+								for each(var p2:String in f.portlinks) {
+									for each(var u2:VCUplink in module.uplinks) {
+										if (u2.id == p2) {
+											var vcNetwork2:VCNetworkContainer = f.drawing;
+											var connectorContainer2:ConnectorContainer = u2.drawing;
+											
+											portlink_objs[f.displayName].push(
+												drawCurve("Right", vcNetwork2, connectorContainer2, u2.speedGb, vcNetwork2.backgroundColor)
+											);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//Virtual Connect and Virtual Swtich
+			private function connectVCandVSwtich():void {
+				var vcm:VCM = this.netDetailModel.vcm;
+				var vswtiches:ArrayCollection = this.netDetailModel.vss;
+				
+				if (vcm!=null && vcm.enclosures != null) {
+					for each (var e:Enclosure in vcm.enclosures) {
+						for each (var m:VcModule in e.allVcModuleG1s) {
+							for each (var n:VCNetwork in m.networks) {
+								var network:VCNetwork = n;
+								for each (var d:VCDownlink in n.downlinks) {
+									var mac:String = d.macAddress;
+									for each (var item:Object in vSwtichArray) {
+										if (mac == item.mac) {
+											var vSwtich:PhysicalAdaptorItem = item.box as PhysicalAdaptorItem;
+											var vcNetwork:VCNetworkContainer = network.drawing;
+											
+											downlink_objs[network.displayName].push(
+												drawCurve("Left", vcNetwork, vSwtich, d.speedGb, vcNetwork.backgroundColor)
+											);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//Now Connect DVSwitch
+			private function connectVCandDVSwtich():void {
+				var vcm:VCM = this.netDetailModel.vcm;
+				var vswtiches:ArrayCollection = this.netDetailModel.vss;
+				
+				if (vcm!=null && vcm.enclosures != null) {
+					for each (var e:Enclosure in vcm.enclosures) {
+						for each (var m:VcModule in e.allVcModuleG1s) {
+							for each (var n:VCNetwork in m.networks) {
+								var network:VCNetwork = n;
+								for each (var d:VCDownlink in n.downlinks) {
+									var mac:String = d.macAddress;
+									for each (var item:Object in dvSwtichArray) {
+										if (mac == item.mac) {
+											var vSwtich:PhysicalAdaptorItem = item.box as PhysicalAdaptorItem;
+											var vcNetwork:VCNetworkContainer = network.drawing;
+											
+											downlink_objs[network.displayName].push(
+												drawCurve("Left", vcNetwork, vSwtich, d.speedGb, vcNetwork.backgroundColor)
+											);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			// hp.vc.connect_fc_downlinks: connect VCM FC ports to HBAs
+			private function connectVCandFCDownlink():void {
+				var vcm:VCM = this.netDetailModel.vcm;
+				
+				if (vcm!=null && vcm.enclosures != null) {
+					for each (var e:Enclosure in vcm.enclosures) {
+						for each (var m:VcModule in e.allVcModuleG1s) {
+							for each (var f:Fabric in m.fabrics) {
+								var fabric:Fabric = f;
+								for each(var d:FabricDownlink in f.downlinks) {
+									var downlink:FabricDownlink = d;
+									if (downlink.portWWN) {   //Make sure the portWWN is not null - if null it could match null datastores
+										for each(var ds:DataStore in this.netDetailModel.ds) {
+											for each(var h:HBA in ds.hbas) {  
+												if (h.portWorldWideName == downlink.portWWN) {                                        
+													var hBasContainer:HBasContainer = h.drawing as HBasContainer;
+													var vcNetwork:VCNetworkContainer = fabric.drawing;
+													
+													var link:SolidColorStroke;
+													
+													if(h.pathState != 'active') {
+														link = drawCurve("Left", vcNetwork, hBasContainer, d.speedGb, vcNetwork.backgroundColor, true);
+													} else {
+														link = drawCurve("Left", vcNetwork, hBasContainer, d.speedGb, vcNetwork.backgroundColor);
+													}
+													
+													downlink_objs[fabric.displayName].push(link);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			private function connectVCandISCSIDownlink():void {
+				var vcm:VCM = this.netDetailModel.vcm;
+				
+				if (vcm!=null && vcm.enclosures != null) {
+					for each (var e:Enclosure in vcm.enclosures) {
+						for each (var m:VcModule in e.allVcModuleG1s) {
+							for each (var n:VCNetwork in m.networks) {
+								var network:VCNetwork = n;                        
+								for each (var d:VCDownlink in network.downlinks) {
+									var downlink:VCDownlink = d;   
+									for each(var ds:DataStore in this.netDetailModel.ds) {
+										for each(var h:HBA in ds.hbas) {
+											if (h.mac == downlink.macAddress) {       
+												
+												var hBasContainer:HBasContainer = h.drawing as HBasContainer;
+												var vcNetwork:VCNetworkContainer = network.drawing;
+												var link:SolidColorStroke;
+												
+												if(h.pathState != 'active') {
+													link = drawCurve("Left", vcNetwork, hBasContainer, d.speedGb, vcNetwork.backgroundColor, true);
+												} else {
+													link = drawCurve("Left", vcNetwork, hBasContainer, d.speedGb, vcNetwork.backgroundColor);
+												}
+												
+												downlink_objs[network.displayName].push(link);
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			
+			/*******************************
+			 * Code to draw curve
+			 *********************************/
+			
+			private function customDrawCurve(startPoint:Point, endPoint:Point, speed:Number, lineColor:uint, isDashed:Boolean=false):SolidColorStroke {
+				
+				var stroke_width:Number = strokeWidthCalc(speed);
+				//stroke_width++
+				
+				var graphic:Group = new Group();
+				graphic.mouseEnabledWhereTransparent = false;
+				var path:Path = new Path();
+				main.addElement(graphic);
+				path.data = curve(startPoint.x, startPoint.y, endPoint.x, endPoint.y, 0.7, 0.7, isDashed);
+				var stroke:SolidColorStroke = new SolidColorStroke(lineColor, stroke_width,1,false);
+				stroke.weight = stroke_width;
+				stroke.caps = CapsStyle.NONE;
+				path.stroke = stroke;
+				graphic.addElement(path);
+				graphic.addEventListener(MouseEvent.MOUSE_OVER, moHandler);
+				graphic.addEventListener(MouseEvent.MOUSE_OUT, moHandler);
+				
+				return stroke;
+			}
+			
+			private function moHandler(event:Event):void {
+				var g:Group = event.currentTarget as Group;
+				var p:Path = g.getElementAt(0) as Path;
+				if (SolidColorStroke(p.stroke).color == 0x000000) {
+					SolidColorStroke(p.stroke).color = 0xFF0000;
+					SolidColorStroke(p.stroke).weight += 2;
+					main.setElementIndex(g, main.numElements-1);
+				} else {
+					SolidColorStroke(p.stroke).color = 0x000000;
+					SolidColorStroke(p.stroke).weight -= 2;
+				}
+				
+				
+				
+			}
+			
+			private function drawCurve(direction:String, startElement:UIComponent, secondElement:UIComponent, speed:Number, lineColor:uint, isDashed:Boolean=false):SolidColorStroke {
+				var startPoint:Point;
+				var endPoint:Point;
+				
+				if (direction=="Right") {
+					startPoint = new Point(startElement.width + 0 ,0);
+					startPoint.y += (startElement.height/1.5)
+					startPoint = startElement.localToGlobal(startPoint);
+					startPoint = main.globalToLocal(startPoint);
+					
+					endPoint = new Point(0, secondElement.height/2); 
+					endPoint = secondElement.localToGlobal(endPoint);
+					endPoint = main.globalToLocal(endPoint);
+				} else {
+					startPoint = new Point(0, startElement.height/1.5 );
+					startPoint = startElement.localToGlobal(startPoint);
+					startPoint = main.globalToLocal(startPoint);
+					
+					endPoint = new Point(secondElement.parent.width+5, secondElement.height/2); 
+					endPoint = secondElement.localToGlobal(endPoint);
+					endPoint = main.globalToLocal(endPoint);
+				}
+				
+				var stroke_width:Number = strokeWidthCalc(speed);
+				//stroke_width++
+				
+				var path:Path = new Path();
+				main.addElement(path);
+				path.data = curve(startPoint.x, startPoint.y, endPoint.x, endPoint.y, 0.7, 0.7, isDashed);
+				var stroke:SolidColorStroke = new SolidColorStroke(lineColor, stroke_width,1,false);
+				stroke.caps = CapsStyle.NONE;
+				stroke.weight = stroke_width;
+				path.stroke = stroke;
+				
+				return stroke;
+			}
+			
+			private function curve(x0:Number, y0:Number, x1:Number, y1:Number, p0:Number, p1:Number, isDashed:Boolean):String {
+				// A nice 4-point curve from (x0,y0) to (x1,y1).
+				var str:String;
+				var cx0:Number, cx:Number, cy0:Number, cy1:Number, f:Number;
+				var f0:Number = (x1-x0) * p0;
+				var f1:Number = (x1-x0) * p1;
+				cx0 = x0+f0;
+				var cx1:Number = x1-f1;
+				cy0 = y0;
+				cy1 = y1;
+				
+				if (!isDashed) {
+					str = ("M "+ x0 + " "+ y0 + " C " + cx0 + " "+ cy0 + " "+ cx1 + " "+ cy1 + " "+ x1 + " "+ y1) ;
+				} else {
+					var drw:String = "";
+					var start:Point = new Point(x0,y0);
+					var end:Point = new Point(x1,y1);
+					var cp1:Point = new Point(cx0, cy0);
+					var cp2:Point = new Point(cx1, cy1);
+					
+					var dashLength:Number = 10;
+					var step:Number = 1 / 200;
+					var dist:Number = -2;    // approx distance from the start
+					var seg:Number;
+					var last:Point = start;
+					var p:Point;
+					
+					for (var t:Number = step; t <= 1; t += step) { 
+						p = getCubicValue(t, start, cp1, cp2, end);
+						dist += Point.distance(p, last);
+						seg = Math.floor((dist / dashLength) % 2); 
+						if (seg == 0) {
+							drw += "L "+ (p.x) + " " + (p.y) + " ";
+							//g.lineTo(p.x, p.y);
+						} else {
+							//g.moveTo(p.x, p.y);
+							drw += "M "+ (p.x) + " " + (p.y) + " ";
+						}
+						last = p;
+					}
+					str = ("M "+ x0 + " "+ y0 + drw) ;
+				}
+				return str;
+			}
+			
+			/**
+			 * Calculates the point along the cubic curve at the given "time" t (between 0 and 1).
+			 * Formula came from
+			 * http://en.wikipedia.org/wiki/B%C3%A9zier_curve#Linear_B.C3.A9zier_curves
+			 * It is also very similar to the fl.motion.BezierSegment.getValue() function.
+			 * @param start the starting point
+			 * @param cp1 the first control point
+			 * @param cp2 the second control point
+			 * @param end the end point
+			 */
+			private static function getCubicValue(t:Number, start:Point, cp1:Point, cp2:Point, end:Point):Point {
+				t = Math.max(Math.min(t, 1), 0);
+				var tp:Number = 1 - t;
+				var t2:Number = t * t;
+				var t3:Number = t2 * t;
+				var tp2:Number = tp * tp;
+				var tp3:Number = tp2 * tp;
+				var x:Number = (tp3*start.x) + (3*tp2*t*cp1.x) + (3*tp*t2*cp2.x) + (t3*end.x);
+				var y:Number = (tp3*start.y) + (3*tp2*t*cp1.y) + (3*tp*t2*cp2.y) + (t3*end.y);
+				return new Point(x, y);
+			}
+			
+			/*******************************
+			 * End of Code to draw curve
+			 *********************************/
+			
+			private function strokeWidthCalc(speed:Number):Number {
+				if (speed>10) {
+					speed = speed/1000.0;
+				}
+				return Math.min(10,Math.max(2,speed/1));
+			}
+			
+			
+			//Network lightup logic
+			private function networkColorEventHandler(event:MouseEvent):void {
+				var vcNet:VCNetworkContainer = (event.currentTarget as VCNetworkContainer);
+				var hiColor:uint = vcNet.hiColor;
+				var vcname:String =  vcNet.vcname;
+				
+				for each(var n:VCNetworkContainer in network_objs[vcname]) {     
+					n.backgroundColor = hiColor;
+				}
+				
+				var s:SolidColorStroke;
+				
+				for each(s in downlink_objs[vcname]) {     
+					s.color = hiColor;
+					s.weight++;
+				}
+
+				for each(s in portlink_objs[vcname]) {     
+					s.color = hiColor;
+					s.weight++;
+				}
+				
+				for each(s in uplink_objs[vcname]) {     
+					s.color = hiColor;
+					s.weight++;
+				}
+				
+			}
+			
+			private function networkColorOutEventHandler(event:MouseEvent):void {
+				var vcNet:VCNetworkContainer = (event.currentTarget as VCNetworkContainer);
+				var color:uint = vcNet.color;
+				var vcname:String =  vcNet.vcname;
+				
+				for each(var n:VCNetworkContainer in network_objs[vcname]) {     
+					n.backgroundColor = color;
+				}
+				
+				var s:SolidColorStroke;
+				
+				for each(s in downlink_objs[vcname]) {     
+					s.color = color;
+					s.weight--;
+				}
+
+				for each(s in portlink_objs[vcname]) {     
+					s.color = color;
+					s.weight--;
+				}
+				
+				for each(s in uplink_objs[vcname]) {     
+					s.color = 0x000000;
+					s.weight--;
+				}
+
+			}
+			
+			
+			private function onSaveAsPNG():void {
+				//mainImg.horizontalScrollPolicy = ScrollPolicy.OFF;
+				//mainImg.verticalScrollPolicy = ScrollPolicy.OFF;
+				
+				var bd:BitmapData = new BitmapData(structure.width,structure.height);
+				bd.draw(mainImg);
+				var PNGEnc:PNGEncoder = new PNGEncoder();
+				var ba:ByteArray = PNGEnc.encode(bd);
+				var be:Base64Encoder = new Base64Encoder();
+				be.encodeBytes(ba);
+				//var encodedData:String = be.flush();
+				
+				
+				/*  mainImg.horizontalScrollPolicy = ScrollPolicy.OFF;
+				mainImg.verticalScrollPolicy = ScrollPolicy.OFF;
+				var bitmapData:BitmapData;
+				var imageSnapshot:ImageSnapshot = new ImageSnapshot(mainImg.width,mainImg.height);
+				bitmapData = ImageSnapshot.captureBitmapData(mainImg);
+				 */
+				
+				//Now we convert the BitmapData object to a ByteArray encoded as a PNG:
+				/* var PNGEnc:PNGEncoder = new PNGEncoder();
+				var ba:ByteArray = PNGEnc.encode(bitmapData);  */
+
+				
+				// save into file
+				var file:FileReference = new FileReference();
+				file.save(ba,"design.png");
+				//end tonmoy
+				
+			}
+			
+		private function onSaveAsJSON():void {
+			var clone:* = {};
+			var gen:Generator = new Generator(this.__rawData__,
+				function (parent:Generator,item:*,dp:*,i:*):void {
+					var _item:* = {};
+					var keys:Array = ObjectUtils.keys(item);
+					if (keys.length == 0) {
+						if (item is SourceInfo) {
+							var sourceInfo:SourceInfo = item as SourceInfo;
+							_item['isUnsupported'] = sourceInfo.isUnsupported;
+							_item['provider'] = sourceInfo.provider;
+							_item['version'] = sourceInfo.version;
+							dp[i] = _item;
+						} else if (item is VCM) {
+							var vcm:VCM = item as VCM;
+							_item['enclosures'] = ArrayCollectionUtils.clone(vcm.enclosures);
+							_item['externalStorage'] = ArrayCollectionUtils.clone(vcm.externalStorage);
+							_item['externalSwitches'] = ArrayCollectionUtils.clone(vcm.externalSwitches);
+							dp[i] = _item;
+						} else if (item is VS) {
+							var vs:VS = item as VS;
+							_item['isUnset'] = vs.isUnset;
+							_item['name'] = vs.name;
+							_item['numPorts'] = vs.numPorts;
+							_item['sourceInfo_'] = vs.sourceInfo_;
+							_item['pnics'] = ArrayCollectionUtils.clone(vs.pnics);
+							_item['port_groups'] = ArrayCollectionUtils.clone(vs.port_groups);
+							dp[i] = _item;
+						} else if (item is Nic) {
+							var nic:Nic = item as Nic;
+							_item['driver'] = nic.driver;
+							_item['isUnset'] = nic.isUnset;
+							_item['mac'] = nic.mac;
+							_item['pci'] = nic.pci;
+							_item['physical_nic'] = nic.physical_nic;
+							_item['slot'] = nic.slot;
+							_item['sourceInfo_'] = nic.sourceInfo_;
+							_item['speedGb'] = nic.speedGb;
+							_item['speedMb'] = nic.speedMb;
+							_item['vmnic'] = nic.vmnic;
+							_item['vswitch'] = nic.vswitch;
+							dp[i] = _item;
+						} else if (item is DVS) {
+							var dvs:DVS = item as DVS;
+							_item['driver'] = ArrayCollectionUtils.clone(dvs.downlink_port_groups);
+							_item['host'] = dvs.host;
+							_item['name'] = dvs.name;
+							_item['uplink_port_groups'] = ArrayCollectionUtils.clone(dvs.uplink_port_groups);
+							dp[i] = _item;
+						} else if (item is DataStore) {
+							var dataStore:DataStore = item as DataStore;
+							_item['freeSpace'] = dataStore.freeSpace;
+							_item['hbas'] = ArrayCollectionUtils.clone(dataStore.hbas);
+							_item['key'] = dataStore.key;
+							_item['maxFileSize'] = dataStore.maxFileSize;
+							_item['name'] = dataStore.name;
+							_item['vms'] = ArrayCollectionUtils.clone(dataStore.vms);
+							dp[i] = _item;
+						} else if (item is Enclosure) {
+							var enclosure:Enclosure = item as Enclosure;
+							_item['id'] = enclosure.id;
+							_item['allVcModuleG1s'] = ArrayCollectionUtils.clone(enclosure.allVcModuleG1s);
+							_item['enclosureName'] = enclosure.enclosureName;
+							_item['enclosureType'] = enclosure.enclosureType;
+							dp[i] = _item;
+						} else if (item is PNIC) {
+							var pnic:PNIC = item as PNIC;
+							_item['autoNegotiateSupported'] = pnic.autoNegotiateSupported;
+							_item['device'] = pnic.device;
+							_item['deviceName'] = pnic.deviceName;
+							_item['driver'] = pnic.driver;
+							_item['isUnset'] = pnic.isUnset;
+							_item['key'] = pnic.key;
+							_item['linkSpeed'] = pnic.linkSpeed;
+							_item['mac'] = pnic.mac;
+							_item['pci'] = pnic.pci;
+							_item['physicalPortMapping'] = pnic.physicalPortMapping;
+							_item['resourcePoolSchedulerAllowed'] = pnic.resourcePoolSchedulerAllowed;
+							_item['sourceInfo_'] = pnic.sourceInfo_;
+							_item['speedGb'] = pnic.speedGb;
+							_item['validLinkSpecification'] = ArrayCollectionUtils.clone(pnic.validLinkSpecification);
+							_item['vendorName'] = pnic.vendorName;
+							_item['vmDirectPathGen2Supported'] = pnic.vmDirectPathGen2Supported;
+							_item['wakeOnLanSupported'] = pnic.wakeOnLanSupported;
+							dp[i] = _item;
+						} else if (item is HBA) {
+							var hba:HBA = item as HBA;
+							_item['bus'] = hba.bus;
+							_item['device'] = hba.device;
+							//_item['drawing'] = hba.drawing;
+							_item['driver'] = hba.driver;
+							_item['key'] = hba.key;
+							_item['mac'] = hba.mac;
+							_item['model'] = hba.model;
+							_item['nodeWorldWideName'] = hba.nodeWorldWideName;
+							_item['pathState'] = hba.pathState;
+							_item['pci'] = hba.pci;
+							_item['physicalPortMapping'] = hba.physicalPortMapping;
+							_item['portWorldWideName'] = hba.portWorldWideName;
+							_item['speed'] = hba.speed;
+							_item['speedGb'] = hba.speedGb;
+							_item['status'] = hba.status;
+							_item['type'] = hba.type;
+							dp[i] = _item;
+						} else if (item is ExternalStorage) {
+							var externalStorage:ExternalStorage = item as ExternalStorage;
+							_item['portArray'] = ArrayCollectionUtils.clone(externalStorage.portArray);
+							_item['portWWN'] = ArrayCollectionUtils.clone(externalStorage.portWWN);
+							_item['WWN'] = externalStorage.WWN;
+							dp[i] = _item;
+						} else if (item is ExternalStoragePort) {
+							var externalStoragePort:ExternalStoragePort = item as ExternalStoragePort;
+							//_item['drawing'] = externalStoragePort.drawing;
+							_item['id'] = externalStoragePort.id;
+							dp[i] = _item;
+						} else if (item is VcModule) {
+							var vcModule:VcModule = item as VcModule;
+							_item['bay'] = vcModule.bay;
+							_item['commonAttrs'] = vcModule.commonAttrs;
+							_item['commonIoModuleAttrs'] = vcModule.commonIoModuleAttrs;
+							_item['commStatus'] = vcModule.commStatus;
+							_item['dipSwitchSettings'] = vcModule.dipSwitchSettings;
+							_item['enclosureId'] = vcModule.enclosureId;
+							_item['fabrics'] = ArrayCollectionUtils.clone(vcModule.fabrics);
+							_item['fcAtters'] = vcModule.fcAtters;
+							_item['id'] = vcModule.id;
+							_item['macAddress'] = vcModule.macAddress;
+							_item['moduleType'] = vcModule.moduleType;
+							_item['networks'] = ArrayCollectionUtils.clone(vcModule.networks);
+							_item['oaReportedStatus'] = vcModule.oaReportedStatus;
+							_item['powerState'] = vcModule.powerState;
+							_item['uid'] = vcModule.uid;
+							_item['uplinks'] = vcModule.uplinks;
+							dp[i] = _item;
+						} else if (item is ExternalPort) {
+							var externalPort:ExternalPort = item as ExternalPort;
+							_item['ttip'] = externalPort.ttip;
+							//_item['x'] = externalPort.x;
+							//_item['y'] = externalPort.y;
+							//_item['width'] = externalPort.width;
+							//_item['height'] = externalPort.height;
+							dp[i] = _item;
+						} else if (item is ExternalSwitch) {
+							var externalSwitch:ExternalSwitch = item as ExternalSwitch;
+							_item['id'] = externalSwitch.id;
+							_item['ports'] = externalSwitch.ports;
+							_item['remote_chassis_id'] = externalSwitch.remote_chassis_id;
+							_item['remote_system_capabilities'] = externalSwitch.remote_system_capabilities;
+							_item['remote_system_desc'] = externalSwitch.remote_system_desc;
+							_item['remote_system_name'] = externalSwitch.remote_system_name;
+							dp[i] = _item;
+						} else if (item is ExternalSwitchPort) {
+							var externalSwitchPort:ExternalSwitchPort = item as ExternalSwitchPort;
+							_item['id'] = externalSwitchPort.id;
+							//_item['drawing'] = externalSwitchPort.drawing;
+							_item['remote_port_desc'] = externalSwitchPort.remote_port_desc;
+							_item['remote_port_id'] = externalSwitchPort.remote_port_id;
+							dp[i] = _item;
+						} else if (item is PortGroup) {
+							var portGroup:PortGroup = item as PortGroup;
+							_item['isUnset'] = portGroup.isUnset;
+							_item['key'] = portGroup.key;
+							_item['name'] = portGroup.name;
+							_item['vlanId'] = portGroup.vlanId;
+							_item['vms'] = ArrayCollectionUtils.clone(portGroup.vms);
+							dp[i] = _item;
+						} else if (item is VCUplink) {
+							var vcuplink:VCUplink = item as VCUplink;
+							_item['connectedToWWN'] = vcuplink.connectedToWWN;
+							_item['connectorType'] = vcuplink.connectorType;
+							_item['currentSpeed'] = vcuplink.currentSpeed;
+							//_item['drawing'] = vcuplink.drawing;
+							_item['duplexStatus'] = vcuplink.duplexStatus;
+							_item['id'] = vcuplink.id;
+							_item['linkStatus'] = vcuplink.linkStatus;
+							_item['opSpeed'] = vcuplink.opSpeed;
+							_item['physicalLayer'] = vcuplink.physicalLayer;
+							_item['portConnectStatus'] = vcuplink.portConnectStatus;
+							_item['portLabel'] = vcuplink.portLabel;
+							_item['portWWN'] = vcuplink.portWWN;
+							_item['remoteChassisId'] = vcuplink.remoteChassisId;
+							_item['remotePortId'] = vcuplink.remotePortId;
+							_item['speedGb'] = vcuplink.speedGb;
+							_item['supportedSpeeds'] = vcuplink.supportedSpeeds;
+							_item['telemetry'] = vcuplink.telemetry;
+							_item['uplinkType'] = vcuplink.uplinkType;
+							dp[i] = _item;
+						} else if (item is VM) {
+							var vm:VM = item as VM;
+							_item['hardware'] = vm.hardware;
+							_item['name'] = vm.name;
+							_item['nics'] = ArrayCollectionUtils.clone(vm.nics);
+							dp[i] = _item;
+						} else if (item is VMHardware) {
+							var vmHardware:VMHardware = item as VMHardware;
+							_item['disks'] = ArrayCollectionUtils.clone(vmHardware.disks);
+							_item['memoryMB'] = vmHardware.memoryMB;
+							_item['numCPU'] = vmHardware.numCPU;
+							dp[i] = _item;
+						} else if (item is PortTelemetry) {
+							var portTelemetry:PortTelemetry = item as PortTelemetry;
+							_item['properties'] = portTelemetry.properties;
+							_item['rx_kbps'] = ArrayCollectionUtils.clone(portTelemetry.rx_kbps);
+							_item['tx_kbps'] = ArrayCollectionUtils.clone(portTelemetry.tx_kbps);
+							dp[i] = _item;
+						} else if (item is UplinkPortGroup) {
+							var uplinkPortGroup:UplinkPortGroup = item as UplinkPortGroup;
+							_item['isUnset'] = uplinkPortGroup.isUnset;
+							_item['name'] = uplinkPortGroup.name;
+							_item['uplinks'] = ArrayCollectionUtils.clone(uplinkPortGroup.uplinks);
+							dp[i] = _item;
+						} else if (item is PhysicalPortMapping) {
+							var physicalPortMapping:PhysicalPortMapping = item as PhysicalPortMapping;
+							_item['ioBay'] = physicalPortMapping.ioBay;
+							_item['mezz'] = physicalPortMapping.mezz;
+							_item['physFunc'] = physicalPortMapping.physFunc;
+							_item['port'] = physicalPortMapping.port;
+							_item['portType'] = physicalPortMapping.portType;
+							dp[i] = _item;
+						} else if (item is LinkSpeed) {
+							var linkSpeed:LinkSpeed = item as LinkSpeed;
+							_item['duplex'] = linkSpeed.duplex;
+							_item['isUnset'] = linkSpeed.isUnset;
+							_item['speedMb'] = linkSpeed.speedMb;
+							dp[i] = _item;
+						} else if (item is DVSUplink) {
+							var dvsUplink:DVSUplink = item as DVSUplink;
+							_item['isUnset'] = dvsUplink.isUnset;
+							_item['name'] = dvsUplink.name;
+							_item['pnics'] = ArrayCollectionUtils.clone(dvsUplink.pnics);
+							dp[i] = _item;
+						} else if (item is CommonIoModulesAttrs) {
+							var commonIoModulesAttrs:CommonIoModulesAttrs = item as CommonIoModulesAttrs;
+							_item['bay'] = commonIoModulesAttrs.bay;
+							_item['commStatus'] = commonIoModulesAttrs.commStatus;
+							_item['enclosureId'] = commonIoModulesAttrs.enclosureId;
+							_item['enclosureName'] = commonIoModulesAttrs.enclosureName;
+							_item['fwRev'] = commonIoModulesAttrs.fwRev;
+							_item['hostname'] = commonIoModulesAttrs.hostname;
+							_item['ipaddress'] = commonIoModulesAttrs.ipaddress;
+							_item['isRemovable'] = commonIoModulesAttrs.isRemovable;
+							_item['manufacturer'] = commonIoModulesAttrs.manufacturer;
+							_item['oaReportedStatus'] = commonIoModulesAttrs.oaReportedStatus;
+							_item['partNumber'] = commonIoModulesAttrs.partNumber;
+							_item['poserState'] = commonIoModulesAttrs.poserState;
+							_item['productName'] = commonIoModulesAttrs.productName;
+							_item['rackName'] = commonIoModulesAttrs.rackName;
+							_item['serialNumber'] = commonIoModulesAttrs.serialNumber;
+							_item['sparePartNumber'] = commonIoModulesAttrs.sparePartNumber;
+							_item['uid'] = commonIoModulesAttrs.uid;
+							_item['urlToMgmt'] = commonIoModulesAttrs.urlToMgmt;
+							_item['vcManagerRole'] = commonIoModulesAttrs.vcManagerRole;
+							dp[i] = _item;
+						} else if (item is VCNetwork) {
+							var vcNetwork:VCNetwork = item as VCNetwork;
+							_item['bottleNeck'] = vcNetwork.bottleNeck;
+							_item['displayName'] = vcNetwork.displayName;
+							_item['downlinks'] = ArrayCollectionUtils.clone(vcNetwork.downlinks);
+							//_item['drawing'] = vcNetwork.drawing;
+							_item['id'] = vcNetwork.id;
+							_item['maxPortSpeed'] = vcNetwork.maxPortSpeed;
+							_item['downlinks'] = ArrayCollectionUtils.clone(vcNetwork.portlinks);
+							_item['preferredPortSpeed'] = vcNetwork.preferredPortSpeed;
+							_item['uplinkVLANId'] = vcNetwork.uplinkVLANId;
+							dp[i] = _item;
+						} else if (item is HBasContainer) {
+							var hbasContainer:HBasContainer = item as HBasContainer;
+							_item['bubble'] = hbasContainer.bubble;
+							_item['hbaValue'] = hbasContainer.hbaValue;
+							_item['icon'] = hbasContainer.icon;
+							_item['lblPhysDevName'] = hbasContainer.lblPhysDevName;
+							_item['ttip'] = hbasContainer.ttip;
+							dp[i] = _item;
+						} else if (item is TelemetryProperties) {
+							var telemetryProperties:TelemetryProperties = item as TelemetryProperties;
+							_item['port_telemetry_entry_count'] = telemetryProperties.port_telemetry_entry_count;
+							_item['port_telemetry_period'] = telemetryProperties.port_telemetry_period;
+							dp[i] = _item;
+						} else if (item is VCNetworkContainer) {
+							var vcNetworkContainer:VCNetworkContainer = item as VCNetworkContainer;
+							_item['color'] = vcNetworkContainer.color;
+							_item['description'] = vcNetworkContainer.description;
+							_item['hiColor'] = vcNetworkContainer.hiColor;
+							_item['networkName'] = vcNetworkContainer.networkName;
+							_item['showBottleNeck'] = vcNetworkContainer.showBottleNeck;
+							_item['vcname'] = vcNetworkContainer.vcname;
+							_item['vms'] = ArrayCollectionUtils.clone(vcNetworkContainer.vms);
+							dp[i] = _item;
+						} else if (item is CommonAttrs) {
+							var commonAttrs:CommonAttrs = item as CommonAttrs;
+							_item['id'] = commonAttrs.id;
+							_item['managedStatus'] = commonAttrs.managedStatus;
+							_item['overallStatus'] = commonAttrs.overallStatus;
+							_item['vcOperationalStatus'] = commonAttrs.vcOperationalStatus;
+							dp[i] = _item;
+						} else if (item is ConnectorContainer) {
+							var connectorContainer:ConnectorContainer = item as ConnectorContainer;
+							_item['ttip'] = connectorContainer.ttip;
+							dp[i] = _item;
+						} else if (item is Fabric) {
+							var fabric:Fabric = item as Fabric;
+							_item['displayName'] = fabric.displayName;
+							_item['downlinks'] = ArrayCollectionUtils.clone(fabric.downlinks);
+							//_item['drawing'] = fabric.drawing;
+							_item['id'] = fabric.id;
+							_item['portlinks'] = ArrayCollectionUtils.clone(fabric.portlinks);
+							dp[i] = _item;
+						} else if (item is FabricDownlink) {
+							var fabricDownlink:FabricDownlink = item as FabricDownlink;
+							_item['id'] = fabricDownlink.id;
+							_item['physicalPortMapping'] = fabricDownlink.physicalPortMapping;
+							_item['physicalServerBay'] = fabricDownlink.physicalServerBay;
+							_item['portWWN'] = fabricDownlink.portWWN;
+							_item['speedGb'] = fabricDownlink.speedGb;
+							dp[i] = _item;
+						} else if (item is VMDisk) {
+							var vmDisk:VMDisk = item as VMDisk;
+							_item['label'] = vmDisk.label;
+							_item['summary'] = vmDisk.summary;
+							dp[i] = _item;
+						} else if (item) {
+							var className:String = getQualifiedClassName(item);
+							if (className.indexOf('.hp.') > -1) {
+								var jj:int = -1;
+							}
+						}
+					}
+					var ii:int = -1;
+				},
+				function (item:*):* {
+					var _item:* = {};
+					if (item is VCM) {
+						var vcm:VCM = item as VCM;
+						_item['enclosures'] = ArrayCollectionUtils.clone(vcm.enclosures);
+						_item['externalStorage'] = ArrayCollectionUtils.clone(vcm.externalStorage);
+						_item['externalSwitches'] = ArrayCollectionUtils.clone(vcm.externalSwitches);
+						item = _item;
+					} else if (item is SourceInfo) {
+						var sourceInfo:SourceInfo = item as SourceInfo;
+						_item['isUnsupported'] = sourceInfo.isUnsupported;
+						_item['provider'] = sourceInfo.provider;
+						_item['version'] = sourceInfo.version;
+						item = _item;
+					} else if (item) {
+						var className:String = getQualifiedClassName(item);
+						if (className.indexOf('.hp.') > -1) {
+							var jj:int = -1;
+						}
+					}
+				}
+			);
+
+			var jsonEncoder:JSONEncoder = new JSONEncoder(this.__rawData__);
+			var json:String = jsonEncoder.getString();
+
+			var toks:Array = this.__fileName__.split('.');
+			var file:FileReference = new FileReference();
+			file.save(json,toks[0]+".json");
+		}
+				
+			
+		]]>
+	</fx:Script>	
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="loadingData"/>
+		<s:State name="errorFound"/>
+		<s:State name="showDetail"/>
+		<s:State name="showVCMSError"/>
+		<s:State name="dataNotFound"/>
+	</s:states>
+	
+		<mx:Canvas  width="100%" height="100%"  >
+			<s:VGroup height="100%" width="100%"  paddingTop="10" paddingBottom="10">
+				<s:HGroup gap="20"  includeIn="loadingData, showDetail">
+					<!--<s:Button label="Save Network Diagram" click="save()" />-->
+					<s:Button label="Load Network Diagram" click="onLoadFileClick()" id="loadMe" />
+					<s:Image id="saveAsPNG" source="{Images.SAVE_ICON}" enabled="{this.netDetailModel != null}" toolTip="Save as PNG" buttonMode="true" useHandCursor="true" click="onSaveAsPNG()"/>
+					<s:Image id="saveAsJSON" source="{Images.SAVE_ICON}" enabled="{this.netDetailModel != null}" toolTip="Save as JSON" buttonMode="true" useHandCursor="true" click="onSaveAsJSON()"/>
+					<!--<s:Button label="Load Network Diagram" click="onFullscreenClick()" />-->
+					<s:Spacer width="300" />
+					<!--<s:Button label="draw path" click="drawPaths()" />-->
+				</s:HGroup>
+				<mx:HRule width="100%" />
+				<s:Label text="Loading...." includeIn="loadingData" />
+				<s:Label id="generatingMsg" text="Generating Diagram...." includeIn="showDetail" />
+				<s:Group id="mainImg" width="100%">
+					<s:HGroup id="structure" width="100%" paddingLeft="15" paddingRight="20" gap="140" includeIn="showDetail" visible="false">
+						<s:VGroup gap="30" >
+							<s:VGroup id="leftContainer" gap="20" 
+									  />
+							<s:VGroup id="leftBottomContainer"  />
+						</s:VGroup>
+						<s:VGroup id="middleContainer" gap="20" />
+						<s:VGroup id="rightContainer" horizontalAlign="left" gap="20" />
+						
+					</s:HGroup>
+					<s:Group id="main" width="100%" height="100%" includeIn="showDetail"/>
+					
+				</s:Group>
+			</s:VGroup>
+		</mx:Canvas>
+</s:Application>

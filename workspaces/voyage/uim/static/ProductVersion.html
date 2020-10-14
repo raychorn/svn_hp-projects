@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<link id="jquery-ui-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/jquery-ui-1.8.16.custom.css"/>
+<link id="main-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css" />
+
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/apps/storage/js/apphelper.js"></script>
+<script type="text/javascript" src="/static/js/i18n/en/storage-en.js"></script>
+<script type="text/javascript" src="/static/js/i18n/en/server-en.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/hptools.css" />
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	var protocol = window.location.protocol;
+	var host = window.location.host;
+    
+    var url = protocol + "//" + host + "/config/about";
+	var versionError = $.ProductVersion.versionRetrievalError;
+	var title = $.ProductVersion.title;
+    $("#title").text(title);
+    var productTitle = $.ProductVersion.productName;
+    $("#productTitle").text(productTitle);  
+	
+	$.getJSON(url, function(about) {		
+		      
+        if (isDataValid(about)) {
+            $("#version").text(about.version);
+        }else {
+            
+            $("#version").text(versionError);
+        }
+	}	          
+    ).error(function() { $("#version").text(versionError); });	
+    get_current_theme();
+});
+ 
+	function isDataValid(data) {
+	    //Check for no data.
+	    if (data==="null"
+	    	|| data===null
+	    	|| data===""
+	    	|| typeof data === "undefined"
+	    	|| data.version === "null"
+	    	|| data.version===""
+	    	|| typeof data.version === "undefined") {
+	        return false;
+	    } 
+	    else {
+	        return true;
+	    }
+	}
+	
+	var jquery_ui_themes = [
+                            "/static/css/hp-light/jquery-ui-1.8.16.custom.css",                                
+                            "/static/css/hp-dark/jquery-ui-1.8.16.custom.css"                            
+                            ]
+	
+	 var main_themes = [     
+                        "/static/css/hp-light/main.css",
+                        "/static/css/hp-dark/main.css"                        
+                        ]
+	
+    function get_current_theme(){
+        var themeCookie = readCookie('hpicsm-theme');
+        //alert(themeCookie);
+        if(!themeCookie){
+            //Create the theme cookie
+            createCookie('hpicsm-theme', $("#jquery-ui-theme-link").attr("href"), 90);
+        }else{
+            for (i in jquery_ui_themes){
+                if(themeCookie == jquery_ui_themes[i]){
+                    theme_number = i;
+                    break;
+                }
+            } 
+            eraseCookie('hpicsm-theme');
+            createCookie('hpicsm-theme', jquery_ui_themes[theme_number], 90);
+            $("#jquery-ui-theme-link").attr("href",jquery_ui_themes[theme_number]);
+            $("#main-theme-link").attr("href",main_themes[theme_number]);
+        }
+    }
+</script>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>HP Insight Control for vCenter Version Information</title>
+</head>
+<body>
+    <div id="versionId" class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" >
+        <div id=title class="box_header ui-widget-header">Loading...</div>
+        
+        <div class="box_line">
+		    <table>
+		        <tr><td id=productTitle>Name</td><td id="version">Version</td></tr>
+		        
+		    </table>    
+        </div>
+        
+    </div>
+</body>
+</html>

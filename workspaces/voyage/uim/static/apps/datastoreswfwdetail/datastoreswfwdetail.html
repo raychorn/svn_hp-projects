@@ -1,0 +1,75 @@
+<script id="hostswfwdetail_software_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="datastoreswfwdetail_firmware_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="datastoreswfwdetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">                
+       
+        <div class="bigbox_header ui-widget-header">Firmware</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+               {{if typeof firmware != 'undefined' && firmware.length > 0}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(firmware) "#datastoreswfwdetail_firmware_template"}}              
+                    </table>
+                {{else}}
+                    Firmware information is unavailable.
+                {{/if}}    
+            </div>
+        </div>
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('datastoreoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var DatastoreSwFwDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (DatastoreSwFwDetail.isActive())
+            {                                
+                $.getJSON("/agservices/datastoreswfwdetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#datastoreswfwdetail').empty();
+                        $.tmpl('datastoreswfwdetail_template', data).appendTo( "#datastoreswfwdetail" );                        
+                        DatastoreSwFwDetail.refreshTimeoutId = setTimeout("DatastoreSwFwDetail.refresh_data()", 15000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#datastoreswfwdetail_template").template('datastoreswfwdetail_template');
+            DatastoreSwFwDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            DatastoreSwFwDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(DatastoreSwFwDetail.activeOverride == true)
+            {
+                DatastoreSwFwDetail.activeOverride = false;
+                return true;
+            }
+            return $("#datastoreswfwdetail").is(":visible");
+        }
+    };
+    
+    DatastoreSwFwDetail.startApp();
+</script>
+
+
+<div id="datastoreswfwdetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init()" paddingBottom="0" paddingLeft="0" paddingRight="0"  showCloseButton="true" 
+         width="800" height="300" close="closeWindow();" horizontalScrollPolicy="off"  verticalScrollPolicy="off">
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		//[DefaultMediator("assets.components.Hpic4vc_Server_HostMediator")]
+	</fx:Metadata>
+	
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- Script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.events.CollectionEvent;
+			import mx.events.PropertyChangeEvent;
+			import mx.managers.PopUpManager;
+
+            [Bindable]
+            public var _proxyServer:Hpic4vc_server_providerProxy;
+            [Bindable]
+            public var objReferenceId:String;
+
+			
+            [Bindable]
+            public var commStatus:DataGridWrapper;
+
+            [Bindable]
+            public var commStatusDataWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+			}
+
+            private function onGettingCommStatus(event:MethodReturnEvent):void {
+                if (event != null && event.result) {
+                    var detail:TableModel = event.result as TableModel;
+                    if (detail)
+                       commStatus =  Helper.createDataGrid( detail );
+                }
+            }
+            
+            private function getData():void{
+                _proxyServer.getCommStatus(objReferenceId, onGettingCommStatus);
+            }
+            
+            private function init():void{
+                _proxyServer = new Hpic4vc_server_providerProxy();
+                commStatusDataWatcher = ChangeWatcher.watch(this, ["commStatus"], resizeDataGridColumns);
+                if (objReferenceId){
+                    getData();
+                }
+                else {
+                    commStatusDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+                }
+            }
+            private function setColumnWidth():void{
+                var i:int;
+                for (i=0; i< commStatusDataGrid.columns.length; i++){
+                    if (AdvancedDataGridColumn(commStatusDataGrid.columns[i]).headerText == 'Management Component'){
+						AdvancedDataGridColumn(commStatusDataGrid.columns[i]).width = 150;
+                    }
+                    if (AdvancedDataGridColumn(commStatusDataGrid.columns[i]).headerText == 'Description'){
+						AdvancedDataGridColumn(commStatusDataGrid.columns[i]).width = 400;
+                    }
+                    if (AdvancedDataGridColumn(commStatusDataGrid.columns[i]).headerText == 'Last Update'){
+						AdvancedDataGridColumn(commStatusDataGrid.columns[i]).width = 150;
+                    }
+                }
+            }
+            
+            private function resizeDataGridColumns(evt:Event):void {
+                commStatusDataGrid.rowCount = commStatus.list.length;
+                setColumnWidth();
+            }
+
+			private function closeWindow():void {
+				// Call the refresh service to cancel. 
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- <mx:Panel height="100%" controlBarVisible="true"> -->
+    <mx:VBox height="100%" width="100%" paddingLeft="0" paddingRight="0" paddingBottom="3">
+        <mx:AdvancedDataGrid id="commStatusDataGrid" columns="{commStatus.columns}" width="100%" height="100%"
+                     dataProvider="{commStatus.list}">
+        </mx:AdvancedDataGrid>
+    </mx:VBox>
+	
+</mx:TitleWindow>
+

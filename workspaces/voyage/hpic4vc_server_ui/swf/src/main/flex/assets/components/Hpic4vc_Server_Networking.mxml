@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%" height="100%"
+		   xmlns:components="assets.components.*"
+		   initialize="canvas1_initializeHandler(event)"
+		   implements="assets.components.Hpic4vc_BaseComponent"
+           >
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Server_NetworkingMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.TabModel;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			
+			[Bindable]
+			private var subTabs:ArrayCollection = new ArrayCollection();
+
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			private var hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			
+			private var isBL:Boolean;
+			
+			private var so:SharedObject;
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			public function showManage(contextObject:IResourceReference, uiView:Hpic4vc_manage_uiView):void
+			{
+				hpic4vc_manage_uiView = uiView;
+				if(this.hpic4vc_manage_uiView.productInfo != null)
+					isBL = this.hpic4vc_manage_uiView.productInfo.indexOf("BL",0) > -1;
+				init();
+			}
+
+            private function init():void
+			{
+            	
+				var networkDetail:TabModel = new TabModel();
+				networkDetail.displayNameValue = "Network Detail";
+				networkDetail.displayNameKey = "networkDetail";
+				networkDetail.component = "assets.components.Hpic4vc_Server_NetworkingDetail";
+				subTabs.addItem(networkDetail);
+				
+				if(isBL)
+				{
+					var networkDiagram:TabModel = new TabModel();
+					networkDiagram.displayNameValue = "Network Diagram";
+					networkDiagram.displayNameKey = "networkDiagram";
+					networkDiagram.component = "assets.components.Hpic4vc_Server_NetworkDiagram";
+					subTabs.addItem(networkDiagram);
+				}
+				
+			}
+			
+			private function instantiateUsingClassName(className:String):* {
+				var classToInstantiate : Class = getDefinitionByName(className) as Class;
+				var myClassFactory : ClassFactory = new ClassFactory(classToInstantiate);
+				var myObjectInstance : * = myClassFactory.newInstance();
+				return myObjectInstance;
+			}
+			
+			protected function tabBar_itemClickHandler(event:ItemClickEvent):void
+			{
+				var item:TabModel = event.item as TabModel;
+				var tabComponentName:String = item.component;
+				var tab:* = instantiateUsingClassName(tabComponentName);
+				this.so.data.setTab = item.displayNameKey;
+				this.so.flush();
+				
+				tab.show(_contextObject);
+				
+				canvas.removeAllChildren();
+				canvas.addChild(tab);
+				Hpic4vc_BaseMediator.tab_Clicked = null;
+				var helpUrl:String;
+				var toks:Array = this.parentDocument['helpUrl'].split('#');
+				var toks2:Array = toks[0].split('/');
+				helpUrl = toks[0] + '#s_Network_diagram.html';
+				if (hpic4vc_manage_uiView.header) {
+					hpic4vc_manage_uiView.header.helpUrl = helpUrl;
+				}
+			}
+            
+			protected function onTabInit(event:FlexEvent):void
+			{
+				for each (var item:TabModel in subTabs)
+				{
+					if(item.displayNameKey == "networkDiagram")
+					{
+						var itemClickEVent:ItemClickEvent = new ItemClickEvent(ItemClickEvent.ITEM_CLICK);
+						itemClickEVent.item = item;
+						tabBar.dispatchEvent(itemClickEVent);
+						tabBar.selectedIndex = subTabs.getItemIndex(item);
+						break;
+					}
+				}
+			}
+
+			protected function canvas1_initializeHandler(event:FlexEvent):void {
+				this.so = SharedObject.getLocal("mydata2");
+			}
+			
+			
+		]]>
+	</fx:Script>	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+    <!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <mx:states>
+        <mx:State name="loadingData"/>
+        <mx:State name="errorFound"/>
+    </mx:states>
+	
+	<mx:Canvas id="canvas"
+			   x="0" y="35"
+			   width="100%" height="100%"
+			   borderVisible="false">
+		
+	</mx:Canvas>
+		
+	<mx:ToggleButtonBar id="tabBar"
+						dataProvider="{subTabs}" 
+						labelField="displayNameValue"
+						itemClick="tabBar_itemClickHandler(event)"
+						height="25" 
+						styleName="buttonBar"
+						buttonMode="true"
+						creationComplete="onTabInit(event)"
+						/> 
+	
+</mx:Canvas>

@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" implements="assets.components.Hpic4vc_Manage_BaseComponent"
+		 creationComplete="init()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[Event(name="taskLabelClicked", type="flash.events.Event")]
+		[Event(name="healthLabelClicked", type="flash.events.Event")]
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_storage_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.ApplicationDataModel;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			import com.hp.asi.hpic4vc.ui.model.RefreshCacheModel;
+			import com.hp.asi.hpic4vc.ui.model.StringModel;
+			import com.hp.asi.hpic4vc.ui.model.TaskModel;
+			import com.hp.asi.hpic4vc.ui.model.TaskSummary;
+			import com.hp.asi.hpic4vc.ui.model.UserInfoModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			import com.vmware.ui.events.NavigationRequest;
+			import com.vmware.usersession.ServerInfo;
+			import com.vmware.vsphere.client.util.UserSessionManager;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.containers.TitleWindow;
+			import mx.controls.Alert;
+			import mx.controls.Menu;
+			import mx.controls.ToolTip;
+			import mx.events.CloseEvent;
+			import mx.events.MenuEvent;
+			import mx.events.ToolTipEvent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			import mx.managers.ToolTipManager;
+			
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var objReferenceId:String;
+			[Bindable]
+			public var _proxyStorage:Hpic4vc_storage_providerProxy = new Hpic4vc_storage_providerProxy();
+            [Bindable]
+            public var _proxyServer:Hpic4vc_server_providerProxy = new Hpic4vc_server_providerProxy();
+			[Bindable]
+			public var _proxy:Hpic4vc_providerProxy = new Hpic4vc_providerProxy();
+			[Bindable]
+			public var objReferenceName:String;			
+			[Bindable]
+			public var healthConsolidatedStatus:String;			
+			[Bindable]
+			public var warningCount:String;
+			[Bindable]
+			public var errorCount:String;
+			[Bindable]
+			public var okCount:String;
+			[Bindable]
+			public var informationCount:String;			
+			[Bindable]
+			public var tasksHoverValue:ArrayCollection;			
+			[Bindable]
+			public var actionsList:ArrayCollection;
+			[Bindable]
+			public var noInfoFoundLabel:String;
+			[Bindable]
+			public var configList:ArrayCollection;
+			[Bindable]
+			public var helpUrl:String;
+			private var tempHelpUrl:String;
+			[Bindable]
+			public var refreshList:ArrayCollection;
+			[Bindable]
+			private var taskDisplayName:String;
+			[Bindable]
+			public var isPopulating:Boolean;
+			[Bindable]
+			public var refreshStatusSummary:String;
+			[Bindable]
+			public var taskSummaryError:String;
+			[Bindable]
+			private var estRemainingTimeMessage:String;
+			[Bindable]
+			public var errorMessage:String;
+			[Bindable]
+			public var productInfo:String;
+			[Bindable]
+			public var enclosureInfo:String;
+			
+			[Bindable]
+			public var tasksAvailable:String;
+			
+			[Bindable]
+			public var actionsAvailable:String;
+			[Bindable]
+			public var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			
+			
+			[Bindable]
+			public var createToolTip:String;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			private var serviceGuid:String;
+			private static var _logger:ILogger = Log.getLogger("Hpic4vc_Header");
+			public var _baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();	
+			private var refreshPopup:TitleWindow;
+			private var healthStatusWatcher:ChangeWatcher;
+			private var productInfoWatcher:ChangeWatcher;
+			private var helpLinkWatcher:ChangeWatcher;
+			private var tasksToolTip:ToolTip;
+			private var refreshToolTip:ToolTip;
+			// Using the custom tool tip for Health Icon
+			private var tt:Hpic4vc_HealthToolTip;
+			[Bindable]
+			public var showRefreshCache:Boolean;
+			[Bindable]
+			public var isAuthorized:Boolean;
+			public var firmwareLabel:String;
+			public var firmwareForHost:String;
+			public var helpUrlForFirmware:String;
+			public var clusterPropertiesTitle:String;
+			
+			[Bindable]
+			private var appModel:ApplicationDataModel = ApplicationDataModel.getInstance();
+			
+			
+			private static const dividerLine:String = "___________________________________";
+			
+			protected function init():void {
+				if (tasksAvailable == "false")
+					taskLabel.visible = false;
+				if (actionsAvailable == "false")
+					actionsButton.visible = false;
+				if (createToolTip == "false") {
+										
+					healthIconUnknown.buttonMode = false;
+					healthIconOk.buttonMode = false;
+					healthIconInformation.buttonMode = false;
+					healthIconWarning.buttonMode = false;
+					healthIconError.buttonMode = false;
+				}
+				
+				taskDisplayName 		 = Helper.getString('tasksDisplayName');
+				healthStatusWatcher		 = ChangeWatcher.watch(this, ["healthConsolidatedStatus"], healthStatusAvailable);
+				helpLinkWatcher		     = ChangeWatcher.watch(this, ["helpUrl"], helpUrlAvailable);
+				_proxyStorage            = new Hpic4vc_storage_providerProxy();
+				getRefreshStatus();
+				getUserAuthorization();
+				ChangeWatcher.watch(appModel,["isAuthorized"],handlerAuthorization);
+				//productInfoWatcher		 = ChangeWatcher.watch(this, ["productInfo"], productInfoAvailable);
+				
+				
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+			}
+			
+			protected function getUserAuthorization():void{
+				serviceGuid = getServerGuid();
+				if(ApplicationDataModel.isUserValidated())
+				{
+					isAuthorized = appModel.isAuthorized;
+				}
+				else
+				{
+				_proxy.getUserInfo(serviceGuid, onGettingUserInfo);
+				}
+			}
+			
+			private function handlerAuthorization(event:Event):void
+			{
+				isAuthorized = appModel.isAuthorized;
+			}
+
+			protected function onGettingUserInfo(event:MethodReturnEvent):void{
+				
+				Helper.updateUserAuthorization(event);
+				
+				/* _logger.warn("Received HPIC4VC UserInfo data in onGettingUserInfo()");
+				if (event == null) {
+					_logger.warn(Helper.getString("noRecordsFound"));
+					 isAuthorized = false;;
+					return;
+				} else if (event.error != null) {
+					_logger.warn(event.error.message);
+					isAuthorized = false;
+					return;
+				} else if ((event.result as UserInfoModel).errorMessage != null) {
+					_logger.warn((event.result as UserInfoModel).errorMessage);
+					isAuthorized = false;
+					return;
+				} else if ((event.result as UserInfoModel).informationMessage != null) {
+					_logger.warn((event.result as UserInfoModel).informationMessage);
+					isAuthorized = false;
+					return;
+				} 
+				
+				var userInfo:UserInfoModel = event.result as UserInfoModel;
+				
+				if (userInfo.roleId == "-1") {
+					isAuthorized = true;
+				} else {
+					isAuthorized = false;
+				}
+				_logger.info("Return value in onGettingUserInfo(): " + isAuthorized); */
+			}
+			
+			
+			private function productInfoAvailable(event:Event):void {
+				if (productInfo != null) {
+					productId.visible = true;
+				}
+			}
+			
+			private function helpUrlAvailable(event:Event):void {
+				tempHelpUrl = helpUrl;
+			}
+			
+			private function healthStatusAvailable(event:Event):void {
+				if (healthConsolidatedStatus == null) {
+					Alert.show("No Health icon: healthConsolidatedStatus is null");
+				} else {
+					if (healthConsolidatedStatus == "ERROR" || healthConsolidatedStatus == "Not Available") {
+						healthIconError.visible = true;
+						healthIconError.x = 0;
+						healthIconError.y = 2;
+						healthIconOk.visible = false;
+						healthIconWarning.visible = false;
+						healthIconInformation.visible = false;
+						healthIconUnknown.visible = false;
+					} else if (healthConsolidatedStatus == "OK") {
+						healthIconOk.visible = true;
+						healthIconOk.x = 0;
+						healthIconOk.y = 2;
+						healthIconError.visible = false;
+						healthIconWarning.visible = false;
+						healthIconInformation.visible = false;
+						healthIconUnknown.visible = false;
+					} else if (healthConsolidatedStatus == "WARNING") {
+						healthIconWarning.visible = true;
+						healthIconWarning.x = 0;
+						healthIconWarning.y = 3;
+						healthIconError.visible = false;
+						healthIconOk.visible = false;
+						healthIconInformation.visible = false;
+						healthIconUnknown.visible = false;
+					} else if (healthConsolidatedStatus == "INFORMATION") {
+						healthIconInformation.visible = true;
+						healthIconInformation.x = 0;
+						healthIconInformation.y = 3;
+						healthIconError.visible = false;
+						healthIconOk.visible = false;
+						healthIconWarning.visible = false;
+						healthIconUnknown.visible = false;
+					} else if (healthConsolidatedStatus == "UNKNOWN") {
+						healthIconUnknown.visible = true;
+						healthIconUnknown.x = 0;
+						healthIconUnknown.y = 3;
+						healthIconError.visible = false;
+						healthIconOk.visible = false;
+						healthIconWarning.visible = false;
+						healthIconInformation.visible = false;
+					}
+				}	
+			}
+			
+			private function getRefreshStatus():void {
+				if (showRefreshCache) {
+					// Get Refresh status only if Storage Module is installed.
+					if (_proxyStorage != null) {
+						// Get the Refresh Status.
+						var refreshStatus:RefreshCacheModel = 
+							_proxyStorage.getRefreshCacheStatus(objReferenceId,
+															    onGettingRefreshCacheStatus) as RefreshCacheModel;
+					} 
+				}
+			}
+			
+			protected function refreshButtonClickHandler(event:MouseEvent):void
+			{
+				// Initiate Refresh Cache operation if there is no refresh operation going in the background!!
+				if (isPopulating == false) {
+					// Start a new Refresh Cache operation.;
+					_proxyStorage.startRefreshCache(objReferenceId, onGettingRefreshCacheStatus);
+				}
+				// Open TitleWindow, allow the user to choose the required action - Continue/Restart/Cancel
+				var refreshPopup:Hpic4vc_Refresh = 
+					PopUpManager.createPopUp(this, Hpic4vc_Refresh, true) as Hpic4vc_Refresh;
+				
+				if (refreshPopup != null) {
+					refreshPopup.title 					 	= "Refresh";
+					refreshPopup._proxyStorage				= _proxyStorage;
+					refreshPopup.estRemainingTimeMessage 	= estRemainingTimeMessage;
+					refreshPopup.isPopulating 				= isPopulating;
+					refreshPopup.showCloseButton 			= true;
+					refreshPopup.objReferenceId 			= objReferenceId;
+					refreshPopup._hpic4vcHeader 			= this;
+					PopUpManager.centerPopUp(refreshPopup);
+				}
+			}
+			
+			private function onGettingRefreshCacheStatus(event:MethodReturnEvent):void {
+				
+				if (event == null || event.result == null) {
+					refreshStatusSummary = Helper.getString('errorOccurred');
+					return;
+				} else if (event.error != null) {
+					refreshStatusSummary = event.error.message;
+					return;
+				}
+				
+				var refreshStatus:RefreshCacheModel = event.result as RefreshCacheModel;
+				isPopulating 			= refreshStatus.isPopulating;
+				estRemainingTimeMessage = refreshStatus.estimatedTimeLabel 
+										+ refreshStatus.remainingTime;
+				refreshStatusSummary	= refreshStatus.summary;
+				
+				if(refreshToolTip != null){
+					refreshStatusSummary.replace("<br>", "\n");
+					refreshToolTip.text = dividerLine 
+										+ refreshStatusSummary
+										+ "\n"
+										+ dividerLine
+										+ "\n"
+										+ "\n"
+										+ Helper.getString('refreshIconToolTipMsg')
+										+ "\n";
+				}
+			}
+			
+			private function getTasksList():void {
+				if (_proxy != null) {
+					// Get the Tasks list.
+					var taskSummary:TaskSummary = 
+						_proxy.getTaskSummary(objReferenceId,
+							onGettingTasksList) as TaskSummary;
+				} 
+			}
+			
+			private function onGettingTasksList(event:MethodReturnEvent):void {
+				
+				if (event == null || event.result == null) {
+					taskSummaryError = Helper.getString('errorOccurred');
+					return;
+				} else if (event.error != null) {
+					taskSummaryError = event.error.message;
+					return;
+				}
+				
+				tasksHoverValue	= (event.result as TaskSummary).taskItems;
+			}
+			
+			private function getFormattedTasksHover():String{
+				
+				getTasksList();
+				
+				var tooltip:String 		= "";
+				var dividerLine:String 	= "___________________________________";
+				tooltip					+= dividerLine + "\n"; 
+				
+				if (taskSummaryError != null) {
+					tooltip += taskSummaryError  
+						+ "\n"
+						+ dividerLine
+						+ "\n"
+						+ "\n"
+						+ Helper.getString("tasksDisplayMore");
+				} else if (tasksHoverValue == null || tasksHoverValue.length == 0) {
+					tooltip += Helper.getString("noTasksToDisplay")  
+						+ "\n"
+						+ dividerLine
+						+ "\n"
+						+ "\n"
+						+ Helper.getString("tasksDisplayMore");
+				} else {
+					for (var i:int = 0; i < tasksHoverValue.length; i++) 
+					{
+						var taskModel:TaskModel = tasksHoverValue.getItemAt(i) as TaskModel;
+						var timestamp:String    = "";
+						var _name:String = taskModel.name;
+						if ((taskModel.status == "COMPLETED") || (taskModel.status == "FAILED")) {
+							timestamp = taskModel.completedTime;
+						} else 
+							timestamp = taskModel.startTime;
+						
+						if(_name)
+						{
+							tooltip += taskModel.name
+								+ "\t:"
+								+ taskModel.taskName
+								+ "\n"
+								+ taskModel.status
+								+ "\t:\t"
+								+ timestamp
+								+ "\n"
+								+ dividerLine
+								+ "\n"
+								+ "\n";
+						}
+						else
+						{
+							tooltip += taskModel.status
+								+ "\t:\t"
+								+ taskModel.taskName
+								+ "\n"
+								+ timestamp
+								+ "\n"
+								+ dividerLine
+								+ "\n"
+								+ "\n";
+						}
+						
+					}
+				}
+				return tooltip;
+			}
+			
+			protected function taskLabel_rollOverHandler(event:MouseEvent):void
+			{
+				var tooltip:String 	 = getFormattedTasksHover();
+				var pt:Rectangle 	 = stage.getBounds(taskLabel);
+				var xPos:Number 	 = mouseX + 260;
+				var yPos:Number		 = mouseY + 150;
+				//	var yPos:Number 	= pt.y * -1;
+				//	var xPos:Number	 	= pt.x * -1;
+				
+				tasksToolTip 		= ToolTipManager.createToolTip(tooltip, 
+					xPos, 
+					yPos + 20) as ToolTip;
+				tasksToolTip.width 	= 300;
+			}
+			
+			protected function taskLabel_rollOutHandler(event:MouseEvent):void
+			{
+				ToolTipManager.destroyToolTip(tasksToolTip);
+			}
+
+			protected function taskLabel_clickHandler():void
+			{
+				dispatchEvent(new Event("taskLabelClicked"));	
+			}
+			
+			protected function healthLabel_clickHandler():void
+			{
+				dispatchEvent(new Event("healthLabelClicked"));	
+			}
+			
+			protected function gearButtonClickHandler():void {
+				var gearMenu:Menu   = Menu.createMenu(null, configList);
+				gearMenu.labelField = "displayName";
+				
+				var pt:Rectangle 	= stage.getBounds(gearButton);
+				var yPos:Number 	= pt.y * -1;
+				var xPos:Number	 	= pt.x * -1;
+				if ((this.stage.stageWidth - xPos) > 200)
+					gearMenu.show(xPos, yPos + 20);
+				else
+					gearMenu.show(this.stage.stageWidth - 200, yPos + 20);
+				gearMenu.addEventListener(MenuEvent.ITEM_CLICK, menuClickHandler, false, 0 ,false);
+			}
+			
+			private function menuClickHandler(e:MenuEvent):void {
+				
+				if (e.label == "Communication Status" ) {
+					var commStatus:Hpic4vc_Server_CommStatus = PopUpManager.createPopUp(this, Hpic4vc_Server_CommStatus, true) as Hpic4vc_Server_CommStatus;
+					commStatus.objReferenceId = objReferenceId;
+					commStatus.title = e.label; 
+					PopUpManager.centerPopUp(commStatus);
+					
+				}else if(e.label== "Host Properties"){
+					var hostProperties:Hpic4vc_HostProperties = PopUpManager.createPopUp(this,Hpic4vc_HostProperties , true) as Hpic4vc_HostProperties;
+					hostProperties.objReferenceId = objReferenceId;
+					hostProperties.title = e.label;
+					PopUpManager.centerPopUp(hostProperties);
+				}else if(e.label == "Cluster Properties"){
+					if(isAuthorized){
+					var clusterProperties:Hpic4vc_Server_ClusterProperties = PopUpManager.createPopUp(this,Hpic4vc_Server_ClusterProperties , true) as Hpic4vc_Server_ClusterProperties;
+					clusterProperties.objReferenceId = objReferenceId;
+					clusterProperties.title = e.label;
+					PopUpManager.centerPopUp(clusterProperties);
+					}else{
+						Alert.show("You are not Authorized to perform this Operation");
+					}
+				}else if(e.label == "Firmware"){
+					
+					if(isAuthorized){
+						if(e.item.firmwareForHost=="cluster"){
+							var firmware:Hpic4vc_Firmware = PopUpManager.createPopUp(this,Hpic4vc_Firmware,true) as Hpic4vc_Firmware;
+							firmware.objReferenceId = objReferenceId;
+							firmware.title = e.label;
+							firmware.helpUrl = e.item.url;
+							PopUpManager.centerPopUp(firmware);
+							_baseMediator.setTabClickedInfo("swfwTab");
+							var event:NavigationRequest = new NavigationRequest();
+							event.context = _contextObject;
+							event.targetViewUid = _baseMediator.getManageMoreLinkURLs(_contextObject);
+							dispatchEvent(event); 
+						}else {
+							
+							var firmwareHost:Hpic4vc_Firmware_Host = PopUpManager.createPopUp(this,Hpic4vc_Firmware_Host,true) as Hpic4vc_Firmware_Host;
+							firmwareHost.objReferenceId = objReferenceId;
+							firmwareHost.title = e.label;
+							firmwareHost.helpUrl = e.item.url;
+							PopUpManager.centerPopUp(firmwareHost);
+							_baseMediator.setTabClickedInfo("swfwTab");
+							var eventHost:NavigationRequest = new NavigationRequest();
+							eventHost.context = _contextObject;
+							eventHost.targetViewUid = _baseMediator.getManageMoreLinkURLs(_contextObject);
+							dispatchEvent(eventHost); 
+						}	
+					}else {
+						Alert.show("You are not Authorized to perform this Operation");
+					}
+					
+				}else if(e.label == "Toggle UID"){
+					if(isAuthorized){
+						_proxyServer.updateToggleUUID(objReferenceId,onGettingToggleUUIDStatus);	
+					}else{
+						Alert.show("You are not Authorized to perform this Operation");
+					}
+				}else if (e.label == "Power Control"){
+					if(isAuthorized){
+						_proxyServer.getPowerControlStatus(objReferenceId, onGettingPowerControlStatus);	
+					}else {
+						Alert.show("You are not Authorized to perform this Operation");
+					}
+				}
+				else if (e.label == "Rediscover Node"){
+					if(isAuthorized){
+						Alert.show(Helper.getString('REDISCOVER_WARNING'),"Warning",Alert.OK | Alert.CANCEL,null,alertRediscoverHandler);
+					}else {
+						Alert.show("You are not Authorized to perform this Operation");
+					}
+				}
+				else if(e.label == "Product Version") {
+				//	navigateToURL(new URLRequest(e.item.url), "productVersion");
+					var productAbout:Hpic4vc_ProductVersion;
+					productAbout = PopUpManager.createPopUp(this, Hpic4vc_ProductVersion, true) as Hpic4vc_ProductVersion;	
+					productAbout._proxy = _proxy;
+					productAbout._contextObject = _contextObject;
+				}
+				else if(e.item != null || e.item != "") {
+					navigateToURL(new URLRequest(e.item.url), "_blank");
+				}
+		
+			}
+			
+			public function getServerGuid():String {
+				return (UserSessionManager.instance.userSession.serversInfo[0] as ServerInfo).serviceGuid;	
+			}
+			
+			protected function onGettingPowerControlStatus(event:MethodReturnEvent):void{
+				
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else if (stringModel.data == "On"){
+					//Do Nothing
+					Alert.okLabel = "Power Off";
+					Alert.buttonWidth = 130;
+					Alert.show(Helper.getString('POWER_CONTROL_WARNING') ,"Warning",Alert.OK | Alert.CANCEL,null,alerHandler,null,Alert.CANCEL);
+					
+				}
+				else if(stringModel.data == "Off"){
+					
+					_proxyServer.updatePowerControl(objReferenceId,  onUpdatingPowerControl);
+					
+				}
+				
+			}
+			
+			private function alerHandler(e:CloseEvent):void
+			{
+				if (e.detail == Alert.OK)
+				{
+					
+					_proxyServer.updatePowerControl(objReferenceId,  onUpdatingPowerControl);
+					
+				}
+				else
+				{
+					
+				}
+				
+				Alert.okLabel = resourceManager.getString(
+					"controls", "okLabel");
+			}
+			
+			private function alertRediscoverHandler(e:CloseEvent):void
+			{
+				if (e.detail == Alert.OK)
+				{
+					
+					_proxyServer.rediscoverNode(objReferenceId, onRediscoveringNode);
+					
+				}
+				else
+				{
+					
+				}
+			}
+			
+			protected function onUpdatingPowerControl(event:MethodReturnEvent):void{
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else {
+					//Do Nothing
+					Alert.show("The action was triggered successfully.  Please monitor the task popup or details page for any update.");
+				}
+			}
+			
+			protected function onGettingToggleUUIDStatus(event:MethodReturnEvent):void{
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else {
+					//Do Nothing
+				}
+			}
+			
+			protected function onRediscoveringNode(event:MethodReturnEvent):void{
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else {
+					//Do Nothing
+				}
+			}
+			
+			
+			
+			
+			protected function helpButtonClickHandler():void {
+				if (tempHelpUrl != null && tempHelpUrl != "") {
+					var toks:Array = tempHelpUrl.split('#');
+					toks[0] += '?no-cache=' + Math.random();
+					var url:String = toks.join('#');
+					_logger.warn('(@@@) helpButtonClickHandler() --> tempHelpUrl='+url);
+					navigateToURL(new URLRequest(url), "main-help-window");
+				}
+			}
+			
+			protected function actionButtonClickHandler(event:Event):void
+			{					
+				var actionsMenu:Menu   = Menu.createMenu(null, actionsList);
+				actionsMenu.labelField = "displayName";
+				
+				var pt:Rectangle 	= stage.getBounds(actionsButton);
+				var yPos:Number 	= pt.y * -1;
+				var xPos:Number	 	= pt.x * -1;
+				if ((this.stage.stageWidth - xPos) > 250)
+					actionsMenu.show(xPos, yPos + 20);
+				else
+					actionsMenu.show(this.stage.stageWidth - 250, yPos + 20);
+				actionsMenu.addEventListener(MenuEvent.ITEM_CLICK, menuClickHandler, false, 0 ,false);
+			}
+			
+			protected function createHealthToolTip(event:ToolTipEvent):void
+			{
+				if (createToolTip == "false") {
+					// Do nothing.  Show the default tooltip.
+				} else {
+					tt = new Hpic4vc_HealthToolTip();
+					
+					tt.errorCount = errorCount;
+					tt.warningCount = warningCount;
+					tt.okCount = okCount;
+					tt.informationCount = informationCount;
+					
+					event.toolTip = tt;
+				}
+			}
+			
+			protected function refreshButton_rollOverHandler(event:MouseEvent):void
+			{
+				if (showRefreshCache) {
+					getRefreshStatus();
+				} else {
+					return;
+				}
+				
+				var tooltip:String 		=  dividerLine
+										+ Helper.getString('refreshIconToolTip')
+										+ "\n"
+										+ dividerLine
+										+ "\n"
+										+ "\n"
+										+ Helper.getString('refreshIconToolTipMsg')
+										+ "\n";
+	
+				var pt:Rectangle 	 = stage.getBounds(refreshButton);
+				var xPos:Number 	 = mouseX + 260;
+				var yPos:Number		 = mouseY + 150;
+			//	var xPos:Number	 	 = pt.x * -1;
+			//	var yPos:Number 	 = pt.y * -1;
+			
+				//Setting the position of the refresh tool tip based on the width of the window 
+				if ((this.stage.stageWidth - xPos) > 300)
+					refreshToolTip 		 = ToolTipManager.createToolTip(tooltip, 
+																		xPos, 
+																		yPos + 20) as ToolTip;
+				else
+					refreshToolTip 		 = ToolTipManager.createToolTip(tooltip, 
+																		this.stage.stageWidth - 300, 
+																		yPos + 20) as ToolTip;
+				refreshToolTip.maxWidth = 300;
+			}
+			
+			protected function refreshButton_rollOutHandler(event:MouseEvent):void
+			{
+				if (refreshToolTip != null) {
+					//Todo:The exception here should be handled in a different way. the exception here is encountered only from refresh button click handler.
+					try {
+						ToolTipManager.destroyToolTip(refreshToolTip);
+					}
+					catch (e:Error) {
+						//do nothing
+					}
+				}
+			}
+
+			protected function actionsButton_mouseOverHandler(event:MouseEvent):void
+			{
+				// To remove the underline from the Actions button.
+				actionsButton.setStyle("textDecoration", "none");
+				actionsButton.setStyle("fontColor", "#666666");
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:Canvas id="canvasId" width="100%" borderVisible="false">
+		<mx:HBox width="100%" horizontalAlign="left">
+			<s:Group >
+				<mx:Image id="healthIconUnknown"
+						  source="@Embed(source='/assets/images/statusUnknown.png')" 
+						  visible="true" 
+						  toolTipCreate="createHealthToolTip(event)" toolTip="{Helper.getString('healthToolTip')}"
+						  x="0" y="3" 
+						  click="healthLabel_clickHandler()"
+						  buttonMode="true"/>
+				<mx:Image id="healthIconError"
+						  source="@Embed(source='/assets/images/statusRed.png')" 
+						  visible="false" 
+						  toolTipCreate="createHealthToolTip(event)" toolTip="{Helper.getString('healthToolTip')}"
+						  x="0" y="3"
+						  click="healthLabel_clickHandler()"
+						  buttonMode="true"/>
+				<mx:Image id="healthIconWarning" 
+						  source="@Embed(source='/assets/images/statusWarning.png')" 
+						  visible="false"
+						  toolTipCreate="createHealthToolTip(event)" toolTip="{Helper.getString('healthToolTip')}"
+						  x="0" y="3"
+						  click="healthLabel_clickHandler()"
+						  buttonMode="true"/>
+				<mx:Image id="healthIconOk" 
+						  source="@Embed(source='/assets/images/statusGreen.png')"
+						  visible="false"
+						  toolTipCreate="createHealthToolTip(event)" toolTip="{Helper.getString('healthToolTip')}"
+						  x="0" y="3"
+						  click="healthLabel_clickHandler()"
+						  buttonMode="true"/>
+				<mx:Image id="healthIconInformation"
+						  source="@Embed(source='/assets/images/info.png')" 
+						  visible="false"
+						  toolTipCreate="createHealthToolTip(event)" toolTip="{Helper.getString('healthToolTip')}"
+						  x="0" y="3"
+						  click="healthLabel_clickHandler()"
+						  buttonMode="true"/> 
+			</s:Group>
+			
+			<mx:VBox>
+				<mx:Label id="objReferenceNameId" styleName="headerText"
+						  text="{objReferenceName}" paddingBottom="-7"/>
+				<mx:Label id="productId" fontSize="9"
+						  text="{productInfo}" paddingBottom="-8"/>
+				<mx:Label id="enclosureId" fontSize="9"
+						  text="{enclosureInfo}"/>
+			</mx:VBox>
+			
+			
+			<mx:Label text="{noInfoFoundLabel}"/>
+			
+			<mx:Text text="{errorMessage}" styleName="errorMessage" />
+			
+			<mx:Label id="taskLabel" click="taskLabel_clickHandler()"
+					  rollOut="taskLabel_rollOutHandler(event)"
+					  rollOver="taskLabel_rollOverHandler(event)" styleName="headerText"
+					  text="{taskDisplayName}"
+					  buttonMode="true" useHandCursor="true" mouseChildren="false"/>
+		
+		</mx:HBox>
+		<mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle" >		
+			
+			<mx:LinkButton id="actionsButton" 
+						   label="{Helper.getString('actionsLabel')}" 
+						   icon="@Embed(source='/assets/images/chevron_black.png')" 
+						   labelPlacement="left"
+						   styleName="headerText"
+						   click="actionButtonClickHandler(event)"
+						   buttonMode="true"
+						   mouseOver="actionsButton_mouseOverHandler(event)"
+						   mouseUp="actionsButton_mouseOverHandler(event)"/>
+			
+		    <mx:Text text="|"/>
+			
+			<mx:Button id="gearButton" click="gearButtonClickHandler()"
+					   styleName="customGearButton"
+					   buttonMode="true"/>
+			
+			<mx:Button id="refreshButton"  click="refreshButtonClickHandler(event)"
+					   styleName="customRefreshButton" 
+					   rollOver="refreshButton_rollOverHandler(event)"
+					   rollOut="refreshButton_rollOutHandler(event)"
+					   buttonMode="true" visible="{showRefreshCache}" includeInLayout="{showRefreshCache}"/>
+			
+			<mx:Button id="helpButton"  click="helpButtonClickHandler()"
+					   styleName="customHelpButton" toolTip="{Helper.getString('help')}"
+					   buttonMode="true"/>
+			<mx:Image id="hpIcon" x="429" buttonMode="false"
+					  source="@Embed(source='/assets/images/hp-logo-small.png')"/>
+		</mx:HBox>
+	</mx:Canvas>
+</s:Group>

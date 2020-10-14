@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Adding the Storage Module for vCenter to the vendor providers list using the vSphere Client</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:22+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v16106651.html" title="Configuring the VMware VASA provider"/><link rel="prev" href="v16106651.html" title="Configuring the VMware VASA provider"/><link rel="next" href="v16136670.html" title="Adding a CA-signed certificate"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v16106651','icon4v16106651','link4v16136620','v15695823')" onunload="clearbgcolortoc('link4v16136620','v15695823')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v16106651.html">Configuring the VMware VASA provider</a> &gt; Adding the Storage Module for vCenter to the vendor providers
+list using the vSphere Client</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v16136670.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="v16136620"/><h1 class="sectiontitle">Adding the Storage Module for vCenter to the vendor providers
+list using the vSphere Client</h1></div></div></div><a id="v16158956" class="indexterm"/><a id="v16158957" class="indexterm"/><p><a id="v16106652"/>To add the Storage Module for vCenter to the
+vendor providers list:</p>
+	
+	<div class="procedure"><a id="v16106653"/><ol type="1"><li><p><a id="v16106654"/><a id="v16106655"/>Navigate to the Home page
+in the vSphere Client.</p>
+	
+	</li><li><p><a id="v16122223"/><a id="v16122224"/>Click <span><strong class="guilabel">Storage
+Providers</strong></span> in the Administration section.</p>
+	
+	<p><a id="v16122225"/>The Vendor Providers page opens.</p>
+	
+	</li><li><p><a id="v16122226"/><a id="v16122227"/>Click <span><strong class="guibutton">Add</strong></span>.</p>
+	
+	<p><a id="v16122228"/>The Add Vendor Provider dialog box opens.</p>
+	
+	</li><li><p><a id="v16122234"/><a id="v16122235"/>Enter the following information:</p>
+	
+	<div class="itemizedlist"><a id="v16122236"/><ul type="disc"><li><p><a id="v16122237"/><a id="v16122238"/><span class="bold"><b>Name</b></span>:
+Enter <span><strong class="userinput">HPICSM</strong></span>.</p>
+	
+	</li><li><p><a id="v16122239"/><a id="v16122240"/><span class="bold"><b>URL</b></span>:
+Enter <span><strong class="userinput">https://<em class="replaceable"><code>vasaProvider_server_name</code></em>:<em class="replaceable"><code>port</code></em>/vasa_provider_ws/vasaService</strong></span>.</p><div class="tip"><table border="0" cellspacing="1" cellpadding="2" summary="TIP"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[TIP: ]" height="25px" src="images/tip.gif"/></div></td><td><p><b>TIP: </b>To view the VASA Provider URL, click the Settings icon <span class="inlinemediaobject"><img src="images/settings_icon.png"/></span>, and then select <span><strong class="guilabel">VASA
+Provider.</strong></span></p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div>
+	
+	</li><li><p><a id="v16122241"/><a id="v16122242"/><span class="bold"><b>Login</b></span>:
+Enter the login information for the system that runs the vSphere Client.</p>
+	
+	</li><li><p><a id="v16122243"/><a id="v16122244"/><span class="bold"><b>Password</b></span>:
+Enter the password for the system that runs the vSphere Client.</p>
+	
+	</li></ul></div></li><li><p><a id="v16122245"/><a id="v16122246"/>Click <span><strong class="guibutton">OK</strong></span>.</p>
+	
+	<p><a id="v16122247"/>The HPICSM provider is added to the Vendor Providers
+list in the vSphere Client.</p>
+	
+	</li></ol></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="v16106651.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v16106651.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v16136670.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Configuring the VMware VASA provider </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Adding a CA-signed certificate</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

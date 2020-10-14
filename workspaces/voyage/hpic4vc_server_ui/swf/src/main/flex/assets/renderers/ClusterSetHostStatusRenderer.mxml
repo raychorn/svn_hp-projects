@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">	
+	<fx:Script>
+		<![CDATA[	
+			import assets.components.Hpic4vc_ClusterMismatch;
+			
+			import mx.collections.ArrayCollection;
+			[Embed(source="/assets/images/nextPage.png")]
+			[Bindable]
+			public var successCls:Class;
+			private var _view:Hpic4vc_ClusterMismatch;
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if (value)
+				{
+				var hostName:String=value.hostName;
+				hostid.text=hostName;				
+				}
+				if(parentDocument.clusterMismatch.refHostName == hostName)
+				{
+					loader1.source=successCls;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:HGroup gap="10" width="100%">
+		<mx:Label id="hostid"/>		
+		<mx:Image id="loader1"/> 
+	</s:HGroup>
+	
+</s:MXAdvancedDataGridItemRenderer>
+

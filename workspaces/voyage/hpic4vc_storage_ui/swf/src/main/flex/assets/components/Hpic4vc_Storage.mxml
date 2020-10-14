@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="assets.components.*"
+		 implements="assets.components.Hpic4vc_Manage_BaseComponent"
+		 creationComplete="init()"
+		 height="100%" width="100%">
+	
+	<!-- Do not use mx:Metadata tag.  It does not work. -->
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_StorageMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.TabModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.ItemClickEvent;
+			
+			// Tab variables
+			[Bindable]
+			public var storageTabs:ArrayCollection;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			// DataGrids
+			[Bindable]
+			public var dataProvider:ArrayCollection;
+			[Bindable]
+			public var columns:Array;
+			
+			// Error message labels
+			[Bindable]
+			public var noTabsFound:String;
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			// Tab Model
+			[Bindable]
+			public var summaryTabModel:TabModel;
+			[Bindable]
+			public var storageVolumesTabModel:TabModel;
+			[Bindable]
+			public var virtualDisksTabModel:TabModel;
+			[Bindable]
+			public var hbasTabModel:TabModel;
+			[Bindable]
+			public var pathsTabModel:TabModel;
+			[Bindable]
+			public var replicationsTabModel:TabModel;
+			
+			private var _vmsToVolumesTabModel:TabModel;
+			[Bindable]
+			public function get vmsToVolumesTabModel():TabModel {
+				return _vmsToVolumesTabModel;
+			}
+			
+			public function set vmsToVolumesTabModel(value:TabModel): void {
+				this._vmsToVolumesTabModel = value;
+				summary_clickHandler(new Event(""));
+			}
+			
+			
+			private var summaryTabWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			
+			private var so: SharedObject;
+			
+			private function init():void {
+				so = SharedObject.getLocal("subTabsdata");
+		//		this.currentState = "DataUnavailable";
+		//		summaryTabWatcher		= ChangeWatcher.watch(this, ["summaryTabModel"], summary_clickHandler);
+
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+			}
+			
+			protected function tabBar_itemClickHandler(event:ItemClickEvent):void
+			{
+				var tabComponentName:String = (event.item as TabModel).component;
+				var tab:* = instantiateUsingClassName(tabComponentName);
+				// Get the new Help URL from the Tab object
+				if(hpic4vc_manage_uiView != null)
+					hpic4vc_manage_uiView.helpUrl = (event.item as TabModel).helpUrl;
+				
+				// Set shared object here. Shared Object in flex is equivalent to cookie. We are using Shared Object to remember 
+				// the last clicked tab for the same VObject.
+				so.data.setTab = tabComponentName;
+				so.data.setContextObject = _contextObject.type; //this is prev context object
+				so.flush();
+				
+				// Display the tab
+				tab.show(_contextObject);
+				canvas.removeAllChildren();
+				canvas.addChild(tab);
+			}
+			
+			public function instantiateUsingClassName(className:String):* {
+				var classToInstantiate : Class = getDefinitionByName(className) as Class;
+				var myClassFactory : ClassFactory = new ClassFactory(classToInstantiate);
+				var myObjectInstance : * = myClassFactory.newInstance();
+				return myObjectInstance;
+			}
+			
+			protected function storageVolumes_clickHandler(event:Event):void {
+				var storageVolumesClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (storageVolumesTabModel != null) {
+					storageVolumesClicked.item = storageVolumesTabModel;
+					tabBar_itemClickHandler(storageVolumesClicked);
+					tabBar.selectedIndex = parseInt(storageVolumesTabModel.order) - 1;
+				}
+			}
+			
+			protected function virtualDisks_clickHandler(event:Event):void {
+				var virtualDisksClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (virtualDisksTabModel != null) {
+					virtualDisksClicked.item = virtualDisksTabModel;
+					tabBar_itemClickHandler(virtualDisksClicked);
+					tabBar.selectedIndex = parseInt(virtualDisksTabModel.order) - 1;
+				}
+			}
+			
+			protected function hbas_clickHandler(event:Event):void {
+				var hbasClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (hbasTabModel != null) {
+					hbasClicked.item = hbasTabModel;
+					tabBar_itemClickHandler(hbasClicked);
+					tabBar.selectedIndex = parseInt(hbasTabModel.order) - 1;
+				}
+			}
+			
+			protected function paths_clickHandler(event:Event):void {
+				var pathsClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (pathsTabModel != null) {
+					pathsClicked.item = pathsTabModel;
+					tabBar_itemClickHandler(pathsClicked);
+					tabBar.selectedIndex = parseInt(pathsTabModel.order) - 1;
+				}
+			}
+			
+			protected function replications_clickHandler(event:Event):void {
+				var replicationsClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (replicationsTabModel != null) {
+					replicationsClicked.item = replicationsTabModel;
+					tabBar_itemClickHandler(replicationsClicked);
+					tabBar.selectedIndex = parseInt(replicationsTabModel.order) - 1;
+				}
+			}
+			
+			protected function vmsToVolumes_clickHandler(event:Event):void {
+				var vmsToVolumesClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (vmsToVolumesTabModel != null) {
+					vmsToVolumesClicked.item = vmsToVolumesTabModel;
+					tabBar_itemClickHandler(vmsToVolumesClicked);
+					tabBar.selectedIndex = parseInt(vmsToVolumesTabModel.order) - 1;
+				}
+			}
+			
+			protected function summaryTab_clickHandler(event:Event):void {
+				var summaryClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (summaryTabModel != null) {
+					summaryClicked.item = summaryTabModel;
+					tabBar_itemClickHandler(summaryClicked);
+					tabBar.selectedIndex = parseInt(summaryTabModel.order) - 1;
+				}
+			}
+			
+			// This to check if a sub tab was selected for same VObject
+			protected function summary_clickHandler(event:Event):void
+			{
+				if(so.data.hasOwnProperty("setTab") && so.data.hasOwnProperty("setContextObject")){
+					var prevTab:String = so.data.setTab;
+					var prevContextObj:String = so.data.setContextObject;
+					if (prevContextObj == _contextObject.type){  	// for same VObject only
+						var i:int = prevTab.lastIndexOf("_");
+						var stringToCompare:String = prevTab.substring(i+1, prevTab.length);
+						if (stringToCompare == "StorageVolumes")
+							storageVolumes_clickHandler(event);
+						else if (stringToCompare == "VirtualDisks")
+							virtualDisks_clickHandler(event);
+						else if (stringToCompare == "HBAs")
+							hbas_clickHandler(event);
+						else if (stringToCompare == "Paths")
+							paths_clickHandler(event);
+						else if (stringToCompare == "Replications")
+							replications_clickHandler(event);
+						else if (stringToCompare == "VMsToVolumes")
+							vmsToVolumes_clickHandler(event);
+						else
+							summaryTab_clickHandler(event);
+					}
+					else
+						summaryTab_clickHandler(event);	
+				}
+				else
+					summaryTab_clickHandler(event);		
+			}
+		]]>
+	</fx:Script>
+	<s:Group width="100%" height="100%">
+		<s:layout>
+			<s:VerticalLayout paddingTop="5"/>
+		</s:layout>
+		
+		<mx:ToggleButtonBar x="0" y="9"
+					  id="tabBar" 
+					  dataProvider="{storageTabs}" 
+					  itemClick="tabBar_itemClickHandler(event)"
+					  labelField="displayNameValue"
+					  height="25" 
+					  styleName="buttonBar"
+					  buttonMode="true"/> 
+		
+		<mx:Canvas id="canvas" height="100%" width="100%" borderVisible="false">
+			
+			<mx:Label text="{noTabsFound}"/>
+			<mx:Text width="100%" text="{errorFoundLabel}" styleName="errorMessage"/>
+			
+		</mx:Canvas>
+	</s:Group>
+</s:Group>

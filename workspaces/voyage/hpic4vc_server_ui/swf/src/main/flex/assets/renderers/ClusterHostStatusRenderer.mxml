@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">	
+	<fx:Script>
+		<![CDATA[	
+			import assets.components.Hpic4vc_ClusterMismatch;
+			
+			import mx.collections.ArrayCollection;
+			[Embed(source="/assets/images/success.png")]
+			[Bindable]
+			public var successCls:Class;
+			[Embed(source="/assets/images/statusRed.png")]
+			[Bindable]
+			public var statusRedCls:Class;
+			[Embed(source="/assets/images/help_gray.png")]
+			[Bindable]
+			public var help_grayCls:Class;			
+			[Embed(source="/assets/images/info.png")]
+			[Bindable]
+			public var errorCls:Class;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if (value)
+				{		
+				
+				if(value.consistencyStatus == "UNKNOWN"){						
+					loader1.source=help_grayCls;					
+				}					
+					
+				else if(value.consistencyStatus == "MISMATCH"){						
+					loader1.source=statusRedCls;
+				}					
+				else if(value.consistencyStatus == "OK"){						
+					loader1.source=successCls;
+				}
+				else if(value.consistencyStatus == "NA"){						
+					loader1.source=errorCls;						
+				}	
+				}
+			}
+		]]>
+	</fx:Script>				
+		<mx:Image id="loader1"/> 	
+	
+</s:MXAdvancedDataGridItemRenderer>
+

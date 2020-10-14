@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 
+		 toolTip="h" toolTipCreate="createCustomToolTip(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.controls.Label;
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			import mx.graphics.SolidColor;
+			import mx.graphics.SolidColorStroke;
+			
+			import spark.core.SpriteVisualElement;
+			import spark.primitives.Ellipse;
+			import spark.primitives.Path;
+			import spark.primitives.supportClasses.FilledElement;
+			
+			private var ptt:PanelToolTip;
+			
+			public var ttip:String;
+			
+			protected function createCustomToolTip(event:ToolTipEvent):void
+			{
+				ptt = new PanelToolTip();
+				ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit)
+				event.toolTip = ptt;
+			}
+			
+			private function onTooltipInit(event:Event):void
+			{
+				ptt.removeEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				ptt.lblSummary.text = ttip;
+				ptt.group.invalidateDisplayList();
+			}
+			
+					
+		]]>
+	</fx:Script>
+	
+	<s:Ellipse width="8" height="8">
+		<s:stroke>
+			<s:SolidColorStroke color="0X000000" />
+		</s:stroke>
+		<s:fill>
+			<s:SolidColor color="0x00AA00"/>
+		</s:fill>
+	</s:Ellipse>
+</s:Group>

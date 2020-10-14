@@ -1,0 +1,1179 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0038)http://api.jquery.com/jQuery.template/ -->
+<!DOCTYPE html><HTML lang="en"><HEAD><TITLE>jQuery.template() – jQuery 
+API</TITLE>
+<META content="text/html; charset=UTF-8" http-equiv="content-type"><LINK title="jQuery API » jQuery.template() Comments Feed" 
+rel="alternate" type="application/rss+xml" href="http://api.jquery.com/jQuery.template/feed/">
+<LINK title="RSD" rel="EditURI" type="application/rsd+xml" href="http://api.jquery.com/xmlrpc.php?rsd">
+<LINK rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://api.jquery.com/wp-includes/wlwmanifest.xml"><LINK 
+title="jQuery API" rel="index" href="http://api.jquery.com/"><LINK title=".addClass()" 
+rel="start" href="http://api.jquery.com/addClass/"><LINK title=".tmpl()" rel="prev" 
+href="http://api.jquery.com/tmpl/"><LINK title="jQuery.tmplItem()" rel="next" 
+href="http://api.jquery.com/jquery.tmplitem/">
+<META name="GENERATOR" content="MSHTML 9.00.8112.16434"><LINK rel="canonical" 
+href="http://api.jquery.com/jQuery.template/"><LINK rel="shortlink" href="http://api.jquery.com/?p=2382"><LINK 
+rel="pingback" href="http://api.jquery.com/xmlrpc.php"><LINK rel="stylesheet" 
+type="text/css" 
+href="jQuery_template()%20–%20jQuery%20API_files/reset.css"><LINK rel="stylesheet" 
+type="text/css" 
+href="jQuery_template()%20–%20jQuery%20API_files/style.css"><LINK rel="stylesheet" 
+href="jQuery_template()%20–%20jQuery%20API_files/prettify.css">
+<SCRIPT type="text/javascript" src="jQuery_template()%20–%20jQuery%20API_files/jquery.min.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="jQuery_template()%20–%20jQuery%20API_files/custom.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="jQuery_template()%20–%20jQuery%20API_files/jquery.livesearch.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="jQuery_template()%20–%20jQuery%20API_files/navi.js"></SCRIPT>
+<LINK rel="shortcut icon" type="image/x-icon" href="http://static.jquery.com/favicon.ico"></HEAD>
+<BODY id="jq-interior" class="api-jquery-com single">
+<DIV id="jq-siteContain">
+<DIV id="jq-header"><A id="jq-siteLogo" title="jQuery Home" href="http://jquery.com/"><IMG 
+alt="jQuery: Write Less, Do More." src="jQuery_template()%20–%20jQuery%20API_files/logo_jquery_215x53.gif" 
+width="215" height="53"></A>
+<DIV id="jq-primaryNavigation">
+<UL>
+  <LI class="jq-jquery jq-current"><A title="jQuery Home" href="http://jquery.com/">jQuery</A></LI>
+  <LI class="jq-plugins"><A title="jQuery Plugins" href="http://plugins.jquery.com/">Plugins</A></LI>
+  <LI class="jq-ui"><A title="jQuery UI" href="http://jqueryui.com/">UI</A></LI>
+  <LI class="jq-meetup"><A title="jQuery Meetups" href="http://meetups.jquery.com/">Meetups</A></LI>
+  <LI class="jq-forum"><A title="jQuery Forum" 
+  href="http://forum.jquery.com/">Forum</A></LI>
+  <LI class="jq-blog"><A title="jQuery Blog" 
+  href="http://blog.jquery.com/">Blog</A></LI>
+  <LI class="jq-about"><A title="About jQuery" 
+  href="http://jquery.org/about">About</A></LI>
+  <LI class="jq-donate"><A title="Donate to jQuery" href="http://jquery.org/donate">Donate</A></LI></UL></DIV><!-- /#primaryNavigation -->
+<DIV id="jq-secondaryNavigation">
+<UL>
+  <LI class="jq-download jq-first"><A href="http://docs.jquery.com/Downloading_jQuery">Download</A></LI>
+  <LI class="jq-documentation jq-current"><A 
+  href="http://docs.jquery.com/">Documentation</A></LI>
+  <LI class="jq-tutorials"><A 
+  href="http://docs.jquery.com/Tutorials">Tutorials</A></LI>
+  <LI class="jq-bugTracker"><A href="http://dev.jquery.com/">Bug 
+Tracker</A></LI>
+  <LI class="jq-discussion jq-last"><A 
+  href="http://docs.jquery.com/Discussion">Discussion</A></LI></UL></DIV><!-- /#secondaryNavigation -->
+<FORM id="jq-primarySearchForm" method="get" action="http://api.jquery.com" 
+autocomplete="off">
+<DIV><INPUT name="ns0" value="1" type="hidden"><LABEL 
+for="jq-primarySearch">Search <SPAN 
+class="jq-jquery">jQuery</SPAN></LABEL><INPUT accessKey="f" id="jq-primarySearch" 
+title="Search jQuery" name="s" type="text"><BUTTON id="jq-searchGoButton" name="go" 
+type="submit"><SPAN>Go</SPAN></BUTTON></DIV></FORM><!--
+        <h1 id="blog-title"><span><a href="http://api.jquery.com/" title="jQuery API" rel="home">jQuery API</a></span></h1>
+        <div id="blog-description">jQuery API Reference</div>
+-->
+<H1>jQuery API</H1></DIV><!-- /#header -->
+<DIV id="jq-content" class="jq-clearfix">
+<DIV id="access">
+<DIV class="skip-link"><A title="Skip to content" href="http://api.jquery.com/jQuery.template/#content">Skip 
+to content</A></DIV>
+<DIV id="menu">
+<UL>
+  <LI class="page_item page-item-1295"><A title="api" href="http://api.jquery.com/api/">api</A></LI>
+  <LI class="page_item page-item-1772"><A title="jsonp" href="http://api.jquery.com/jsonp/">jsonp</A></LI>
+  <LI class="page_item page-item-3413"><A title="Types" href="http://api.jquery.com/Types/">Types</A></LI>
+  <LI class="page_item page-item-3608"><A title="Extending Ajax: Prefilters, Converters, and Transports" 
+  href="http://api.jquery.com/extending-ajax/">Extending Ajax: Prefilters, 
+  Converters, and Transports</A></LI></UL></DIV></DIV><!-- #access -->
+<DIV id="jq-primaryContent">
+<DIV id="content">
+<DIV id="post-2382" class="hentry p1 post publish category-templates untagged y2010 m10 d03 h02 plugin-entry">
+<DIV class="entry-content b-wrap">
+<DIV class="entry-title roundTop">
+<H2 class="plugin-header">jQuery Plugin</H2>
+<H1 class="jq-clearfix">jQuery.template()</H1>
+<DIV class="entry-meta jq-clearfix">
+<DIV class="banner">This feature and its documentation are in beta and subject 
+to change before final release.</DIV>            Categories:            <SPAN 
+class="category"><A title="View all posts in Plugins" href="http://api.jquery.com/category/plugins/">Plugins</A> 
+&gt; <A title="View all posts in Templates" href="http://api.jquery.com/category/plugins/templates/">Templates</A></SPAN></DIV></DIV>
+<DIV class="toc">
+<H4><SPAN>Contents:</SPAN></H4>
+<UL class="toc-list">
+  <LI><A 
+  href="http://api.jquery.com/jQuery.template/#jQuery-template1">jQuery.template( 
+  name , template &nbsp;) </A>
+  <UL>
+    <LI>jQuery.template( name, template )              </LI></UL></LI>
+  <LI><A 
+  href="http://api.jquery.com/jQuery.template/#jQuery-template2">jQuery.template( 
+  template &nbsp;) </A>
+  <UL>
+    <LI>jQuery.template( template )              </LI></UL></LI></UL></DIV>
+<DIV id="jQuery-template1" class="entry plugin method">
+<H2 class="jq-clearfix roundTop section-title"><SPAN 
+class="name">jQuery.template( name, template )</SPAN> <SPAN 
+class="returns">Returns: <A class="return" href="http://api.jquery.com/Types/#function">function</A></SPAN>
+</H2>
+<DIV class="jq-box roundBottom entry-details">
+<P class="desc"><STRONG>Description: </STRONG>Create a reusable named template 
+(compiled from markup).</P>
+<UL class="signatures">
+  <LI id="jQuery-template-name-template" class="signature">
+  <H4 class="name"><SPAN class="versionAdded">version added: <A href="http://api.jquery.com/category/version/1.4.3/">1.4.3</A></SPAN>jQuery.template( 
+  name, template )</H4>
+  <P class="arguement"><STRONG>name</STRONG>A string naming the compiled 
+  template.</P>
+  <P class="arguement"><STRONG>template</STRONG>The HTML markup and/or text to 
+  be used as template. Can be a string, or an HTML element (or jQuery object 
+  wrapping an element) whose content is to be used as template</P></LI></UL>
+<DIV class="download">
+<P>This documentation topic concerns the <EM> jQuery Templates</EM> plugin 
+(jquery-tmpl), which can be downloaded from: <A href="http://github.com/jquery/jquery-tmpl">http://github.com/jquery/jquery-tmpl</A>.</P></DIV>
+<DIV class="longdesc">
+<P>Note: For information about how to render templates, see <A href="http://api.jquery.com/tmpl">.tmpl()</A> 
+and <A href="http://api.jquery.com/jquery.tmpl">jQuery.tmpl()</A>.</P>
+<P>This method compiles the markup in the <CODE>template</CODE> parameter as a 
+named template, which can be referenced using the string specified in the 
+<CODE>name</CODE> parameter.</P>
+<P>The return value is the compiled-template function. </P>
+<P>See also <A href="http://api.jquery.com/template">template()</A>.</P>
+<BLOCKQUOTE>
+  <P>Note: The named template is added to the <CODE>$.template</CODE> map.</P>
+  <UL>
+    <LI>To determine if a string <CODE>"someName"</CODE> is the name of a named 
+    template, test whether <CODE>$.template["someName"]</CODE> is defined.</LI>
+    <LI>To remove a previously created named template, use<BR> <CODE>delete 
+    $.template["someName"];</CODE></LI></UL></BLOCKQUOTE>
+<P><STRONG>Example:</STRONG> Create a compiled template associated with the name 
+"summaryTemplate" and then reference it by name for rendering: </P><PRE>// Convert the markup string into a named template
+$.template( "summaryTemplate", "&lt;li&gt;${Name}&lt;/li&gt;" );
+
+function renderList() {
+    // Render the movies data using the named template: "summaryTemplate"
+    $.tmpl( "summaryTemplate", movies ).appendTo( "#moviesList" );
+}
+</PRE>
+<P><STRONG>Example:</STRONG> Use the return value rather than the 
+<CODE>name</CODE> string to reference the compiled template:</P><PRE>// Convert the markup string into a compiled template
+var myTemplate = $.template( null, "&lt;li&gt;${Name}&lt;/li&gt;" ); 
+
+function renderList() {
+    // Render movies data using the compiled template: myTemplate
+    $.tmpl( myTemplate, movies ).appendTo( "#moviesList" );
+}
+</PRE>
+<P><STRONG>Example:</STRONG> Create a named template and reference it by name as 
+a nested template: </P><PRE>&lt;script id="movieTemplate" type="text/x-jquery-tmpl"&gt;
+    {{tmpl "summaryTemplate"}}
+    &lt;tr&gt;&lt;td&gt;Director: ${Director}&lt;/td&gt;&lt;/tr&gt;
+&lt;/script&gt;
+___________
+
+// Convert the markup string into a named template,
+// referenced by the {{tmpl}} tag
+$.template( "summaryTemplate", "&lt;tr&gt;&lt;td&gt;${Name}&lt;/td&gt;&lt;/tr&gt;" );
+
+// Render the movies data, using the named template as a nested template
+$( "#movieTemplate" ).tmpl( movies ).appendTo( "#movieList" );
+</PRE>
+<H4 id="optimizing-template-rendering">Optimizing Template Rendering</H4>
+<P>When a template is rendered, using <A 
+href="http://api.jquery.com/tmpl">.tmpl()</A> or <A href="http://api.jquery.com/jquery.tmpl">jQuery.tmpl()</A>, 
+the markup is first converted into a compiled-template function. In the case of 
+markup obtained from a string, the use of <CODE>.template()</CODE> as in the 
+above examples ensures that the conversion from markup to a compiled-template 
+function only happens once. </P>
+<P>On the other hand, passing a markup string template directly to 
+<CODE>.tmpl()</CODE> or to <CODE>{{tmpl}}</CODE> for rendering will not be 
+optimal from a performance point of view, since the markup will be re-compiled 
+every time:</P><PRE>var markup = "&lt;li&gt;${Name}&lt;/li&gt;";
+
+function renderList() {
+  // Sub-optimal: the markup string will be
+  // recompiled each time renderList is called
+  $.tmpl( markup, movies ).appendTo( "#moviesList" );
+}
+</PRE>
+<P>Note: In the case of inline templates declared within a script block, caching 
+occurs automatically, so the following example <EM>does</EM> correspond to best 
+practice:</P>
+<P><STRONG>Example:</STRONG> Rendering an inline template directly without 
+compiling as a named template.</P><PRE>&lt;script id="summaryTemplate" type="text/x-jquery-tmpl"&gt;
+    &lt;li&gt;${Name}&lt;/li&gt;
+&lt;/script&gt;
+___________
+
+function renderList() {
+  // The template will be compiled only once,
+  // so this is approach can be optimal.
+  $( "#summaryTemplate" ).tmpl( movies ).appendTo( "#moviesList" );
+}
+</PRE>
+</DIV>
+<H3>Examples:</H3>
+<DIV id="entry-examples" class="entry-examples">
+<DIV id="example-0">
+<H4>Example: <SPAN class="desc">Render template obtained from a markup 
+string.</SPAN></H4><PRE class="prettyprint"><CODE class="example demo-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+table { border-collapse:collapse; margin:8px; background-color:#f8f8f8; }
+table td { border:1px solid blue; padding:3px; }
+&lt;/style&gt;
+  &lt;script src="http://code.jquery.com/jquery-latest.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  
+&lt;button id="showBtn"&gt;Show movies&lt;/button&gt;&lt;br/&gt;
+&lt;table&gt;&lt;tbody id="movieList"&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;script&gt;
+  var movies = [
+  { Name: "The Red Violin", ReleaseYear: "1998", Director: "François Girard" },
+  { Name: "Eyes Wide Shut", ReleaseYear: "1999", Director: "Stanley Kubrick" },
+  { Name: "The Inheritance", ReleaseYear: "1976", Director: "Mauro Bolognini" }
+  ];
+
+var markup = "&lt;tr&gt;&lt;td colspan='2'&gt;${Name}&lt;/td&gt;&lt;td&gt;Released: ${ReleaseYear}&lt;/td&gt;&lt;td&gt;Director: ${Director}&lt;/td&gt;&lt;/tr&gt;"
+
+/* Compile markup string as a named template */
+$.template( "movieTemplate", markup );
+
+/* Render the named template */
+$( "#showBtn" ).click( function() {
+  $( "#movieList" ).empty();
+  $.tmpl( "movieTemplate", movies ).appendTo( "#movieList" );
+});
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</CODE></PRE>
+<H4>Demo:</H4>
+<DIV class="demo code-demo"></DIV></DIV>
+<DIV id="example-1">
+<H4>Example: <SPAN class="desc">Switch between templates obtained from markup 
+strings.</SPAN></H4><PRE class="prettyprint"><CODE class="example demo-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+table { border-collapse:collapse; margin:8px; background-color:#f8f8f8; }
+table td { border:1px solid blue; padding:3px; }
+&lt;/style&gt;
+  &lt;script src="http://code.jquery.com/jquery-latest.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  
+&lt;button id="switchBtn"&gt;Show full details&lt;/button&gt;&lt;br/&gt;
+&lt;table&gt;&lt;tbody id="movieList"&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;script&gt;
+var movies = [
+  { Name: "The Red Violin", ReleaseYear: "1998", Director: "François Girard" },
+  { Name: "Eyes Wide Shut", ReleaseYear: "1999", Director: "Stanley Kubrick" },
+  { Name: "The Inheritance", ReleaseYear: "1976", Director: "Mauro Bolognini" }
+];
+
+function renderTemplate( container, template, data ) {
+  $( container ).empty();
+  $.tmpl( template, data ).appendTo( container );
+}
+
+/* Compile markup as named templates */
+$.template(
+  "titleTemplate",
+  "&lt;tr&gt;&lt;td&gt;${Name}&lt;/td&gt;&lt;/tr&gt;"
+);
+$.template(
+  "detailTemplate",
+  "&lt;tr&gt;&lt;td colspan='2'&gt;${Name}&lt;/td&gt;&lt;td&gt;Released: ${ReleaseYear}&lt;/td&gt;&lt;td&gt;Director: ${Director}&lt;/td&gt;&lt;/tr&gt;"
+);
+
+var details = false;
+
+$( "#switchBtn" ).click( function() {
+  details = !details;
+  $(this).text( details ? "Show titles" : "Show full details" );
+  /* Render using the other named template */
+  renderTemplate( "#movieList", (details ? "detailTemplate" : "titleTemplate"), movies );
+});
+
+renderTemplate( "#movieList", "titleTemplate", movies );
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</CODE></PRE>
+<H4>Demo:</H4>
+<DIV class="demo code-demo"></DIV></DIV>
+<DIV id="example-2">
+<H4>Example: <SPAN class="desc">Use a markup string as a nested template.</SPAN>
+</H4><PRE class="prettyprint"><CODE class="example demo-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+table { border-collapse:collapse; border:2px solid blue; margin:8px; background-color:#f8f8f8; }
+table tr { border:1px solid blue; } table td { padding:2px; }
+.title { border-bottom:none; } .detail { border-top:none; }
+&lt;/style&gt;
+  &lt;script src="http://code.jquery.com/jquery-latest.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  
+&lt;tmpl id="movieTemplate" type="text/x-jquery-tmpl"&gt; 
+  {{tmpl "titleTemplate"}}
+  &lt;tr class="detail"&gt;&lt;td&gt;Director: ${Director}&lt;/td&gt;&lt;/tr&gt;
+&lt;/tmpl&gt;
+
+&lt;table&gt;&lt;tbody id="movieList"&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;script&gt;
+var movies = [
+  { Name: "The Red Violin", Director: "François Girard" },
+  { Name: "Eyes Wide Shut", Director: "Stanley Kubrick" },
+  { Name: "The Inheritance", Director: "Mauro Bolognini" }
+];
+
+/* Convert the markup string into a named template,
+   referenced by the {{tmpl}} tag */
+$.template( "titleTemplate", "&lt;tr class='title'&gt;&lt;td&gt;${Name}&lt;/td&gt;&lt;/tr&gt;" );
+
+/* Render the movies data, using the named template as a nested template */
+$( "#movieTemplate" ).tmpl( movies ).appendTo( "#movieList" );
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</CODE></PRE>
+<H4>Demo:</H4>
+<DIV class="demo code-demo"></DIV></DIV></DIV></DIV></DIV>
+<DIV id="jQuery-template2" class="entry plugin method">
+<H2 class="jq-clearfix roundTop section-title"><SPAN 
+class="name">jQuery.template( template )</SPAN> <SPAN class="returns">Returns: 
+<A class="return" 
+href="http://api.jquery.com/Types/#function">function</A></SPAN></H2>
+<DIV class="jq-box roundBottom entry-details">
+<P class="desc"><STRONG>Description: </STRONG>Returns a compiled-template 
+function.</P>
+<UL class="signatures">
+  <LI id="jQuery-template-template" class="signature">
+  <H4 class="name"><SPAN class="versionAdded">version added: <A href="http://api.jquery.com/category/version/1.4.3/">1.4.3</A></SPAN>jQuery.template( 
+  template )</H4>
+  <P class="arguement"><STRONG>template</STRONG>The template markup to be 
+  compiled, or a string corresponding to a named template.</P></LI></UL>
+<DIV class="download">
+<P>This documentation topic concerns the <EM> jQuery Templates</EM> plugin 
+(jquery-tmpl), which can be downloaded from: <A href="http://github.com/jquery/jquery-tmpl">http://github.com/jquery/jquery-tmpl</A>.</P></DIV>
+<DIV class="longdesc">
+<P>Note: For information about how to render templates, see <A href="http://api.jquery.com/tmpl">.tmpl()</A> 
+and <A href="http://api.jquery.com/jquery.tmpl">jQuery.tmpl()</A>.</P>
+<P>If the <CODE>template</CODE> parameter is the name string for a named 
+template created using <CODE>$.template( name, template )</CODE>, this method 
+returns the compiled template for the named template (equivalent to 
+<CODE>$.template[name]</CODE>).</P>
+<P>Otherwise, if the <CODE>template</CODE> parameter is a string containing HTML 
+markup, then this method will return a compiled template for the markup 
+provided.</P>
+<P>If the <CODE>template</CODE> parameter is a string containing pure text (no 
+HTML tags), then the string is treated as a selector for an inline template, 
+whose content will be used as markup. Similarly if <CODE>template</CODE> is an 
+HTML element (or jQuery object wrapping an element), then the content will be 
+used as markup for the returned compiled template.</P>
+<P><STRONG>Example:</STRONG> Switch the template item to a different template, 
+using $.template( name ), : <PRE>// Create the compiled templates
+$.template( "summaryTemplate", "&lt;tr&gt;...&lt;/tr&gt;" );
+$.template( "detailTemplate", "&lt;tr&gt;...&lt;/tr&gt;" );
+
+// Render the summaryTemplate with the "movies" data 
+$.tmpl( "summaryTemplate", movies ).appendTo( "#movieList" );
+
+$( "tr" ).click( function () {
+    // Switch the template for this template item to
+    // a different named template, then update the rendered item
+    var tmplItem = $.tmplItem(this);
+    tmplItem.tmpl = $.template( "detailTemplate" );
+    tmplItem.update();
+});
+</PRE>
+<P></P></DIV>
+<H3>Example:</H3>
+<DIV id="entry-examples-1" class="entry-examples">
+<DIV id="example-1-0">
+<H4><SPAN class="desc">Dynamic switching of templates, using $.template() to 
+obtain compiled template.</SPAN></H4><PRE class="prettyprint"><CODE class="example demo-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+  table { cursor:pointer; border-collapse:collapse; 
+        border:2px solid blue; width:300px; margin:8px; }
+  table tr { border:1px solid blue; color:blue; background-color:#f8f8f8; } 
+  table td { padding:3px; } table tr:hover { color:red; }
+  .movieDetail { background-color:yellow; } 
+  .movieDetail.row1 { border-bottom:none; } 
+  .movieDetail.row2 { border-top:none; }
+&lt;/style&gt;
+  &lt;script src="http://code.jquery.com/jquery-latest.min.js"&gt;&lt;/script&gt;
+  &lt;script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  
+Click for details:
+&lt;table&gt;&lt;tbody id="movieList"&gt;&lt;/tbody&gt;&lt;/table&gt;
+
+&lt;script&gt;
+var movies = [
+  { Name: "The Red Violin", ReleaseYear: "1998", Director: "François Girard" },
+  { Name: "Eyes Wide Shut", ReleaseYear: "1999", Director: "Stanley Kubrick" },
+  { Name: "The Inheritance", ReleaseYear: "1976", Director: "Mauro Bolognini" }
+];
+
+var selectedItem = null;
+
+/* Create the compiled templates */
+$.template(
+  "summaryTemplate",
+  "&lt;tr class='movieSummary'&gt;&lt;td colspan='2'&gt;${Name}&lt;/td&gt;&lt;/tr&gt;"
+);
+$.template(
+  "detailTemplate",
+  "&lt;tr class='movieDetail row1'&gt;&lt;td colspan='2'&gt;${Name}&lt;/td&gt;&lt;/tr&gt;&lt;tr class='movieDetail row2'&gt;&lt;td&gt;${ReleaseYear}&lt;/td&gt;&lt;td&gt;Director: ${Director}&lt;/td&gt;&lt;/tr&gt;"
+);
+
+/* Render the summaryTemplate with the "movies" data */ 
+$.tmpl( "summaryTemplate", movies ).appendTo( "#movieList" );
+
+$( "#movieList" )
+.delegate( ".movieSummary", "click", function () {
+  if (selectedItem) {
+    /* Switch the template for this template item to
+    the named template, then update the rendered item */
+    selectedItem.tmpl = $.template( "summaryTemplate" );
+    selectedItem.update();
+  }
+  selectedItem = $.tmplItem(this);
+  /* Switch the template for this template item */
+  selectedItem.tmpl = $.template( "detailTemplate" );
+  selectedItem.update();
+})
+.delegate( ".movieDetail", "click", function () {
+  /* Switch the template for this template item */
+  selectedItem.tmpl = $.template( "summaryTemplate" );
+  selectedItem.update();
+  selectedItem = null;
+});
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</CODE></PRE>
+<H4>Demo:</H4>
+<DIV class="demo code-demo"></DIV></DIV></DIV></DIV></DIV></DIV></DIV><!-- .post -->
+<H1 id="comments" class="roundTop section-title">Support and Contributions</H1>
+<DIV class="jq-box roundBottom">
+<P>Need help with <STRONG>jQuery.template()</STRONG> or have a question about 
+it? Visit the <A href="http://forum.jquery.com/">jQuery Forum</A> or the 
+<STRONG>#jquery</STRONG> channel on <A 
+href="irc://irc.freenode.net/">irc.freenode.net</A>.</P>
+<P>Think you've discovered a jQuery bug related to 
+<STRONG>jQuery.template()</STRONG>? <A href="http://docs.jquery.com/How_to_Report_Bugs">Report 
+it</A> to the jQuery core team.</P>
+<P>Found a problem with this documentation? <A id="api-error" href="http://api.jquery.com/jQuery.template/#rpt-issue">Report 
+it</A> to the jQuery API team.</P>
+<FORM id="rpt-issue" method="post" action="#comments">      * All fields are 
+required      
+<FIELDSET>
+<DIV style="left: -1000em; position: absolute;"><INPUT name="address" type="text"><INPUT 
+name="date" value="08 Nov 2011" type="hidden"></DIV>
+<DIV><LABEL for="api_name">Name:</LABEL><INPUT id="api_name" 
+name="fullname"></DIV>
+<DIV><LABEL for="api_email">Email Address:</LABEL><INPUT id="api_email" name="email"></DIV>
+<DIV><LABEL for="api_title">Subject:</LABEL><INPUT id="api_title" name="api_title" 
+value="Documentation problem with jQuery.template()"></DIV>
+<DIV><LABEL for="api_comment">Comment:</LABEL><TEXTAREA id="api_comment" name="api_comment"></TEXTAREA></DIV><BUTTON 
+disabled="disabled" type="submit">Report</BUTTON></FIELDSET></FORM>
+<SCRIPT>jQuery(function($) { $('#rpt-issue').hide();$('#api-error').bind('click',function(e) {e.preventDefault();$('#rpt-issue').slideDown().find('button').prop('disabled', false);});});</SCRIPT>
+<!-- <ul class="comment-instructions">
+    <li><h3 style="margin-top: 0; font-size: 1.4em">Support requests, bug reports, and off-topic comments will be <em>deleted</em> without warning.</h3></li>
+    <li>Please do post corrections or additional examples for jQuery.template() below. We aim to quickly move corrections into the documentation.</li>
+    <li>If you need help, post at the <a href="http://forum.jquery.com/">forums</a> or in the #jquery IRC channel.</li>
+    <li>Report bugs on the <a href="http://dev.jquery.com/newticket/">bug tracker</a> or the <a href="http://forum.jquery.com/developing-jquery-core">jQuery Forum</a>.</li>
+    <li>Discussions about the API specifically should be addressed in the <a href="http://forum.jquery.com/developing-jquery-core">Developing jQuery Core forum</a>.</li>
+  </ul> -->
+<DIV style="margin-top: 2em;">
+<DIV id="disqus_thread">
+<DIV id="dsq-content">
+<UL id="dsq-comments">
+  <LI id="dsq-comment-6130">
+  <DIV id="dsq-comment-header-6130" class="dsq-comment-header"><CITE id="dsq-cite-6130"> 
+     http://kathawa.myopenid.com/                            <SPAN id="dsq-author-user-6130">Bara</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6130" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6130" class="dsq-comment-message">
+  <P>Is it possible to create a template from an external HTML file?  I would 
+  really like to have my templates be re-usable throughout my application, so 
+  having all of the markup inline isn't as convenient.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6134">
+  <DIV id="dsq-comment-header-6134" class="dsq-comment-header"><CITE id="dsq-cite-6134"><SPAN 
+  id="dsq-author-user-6134">BorisMoore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6134" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6134" class="dsq-comment-message">
+  <P>Yes, for remote templates, you can get a template markup as a string using 
+  any AJAX call you want, or you can simply use a static script block pointing 
+  to a js file which defines the string. Then you should use jQuery.template to 
+  compile the template from the string, and go from there, rendering it using 
+  jQuery.tmpl</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6159">
+  <DIV id="dsq-comment-header-6159" class="dsq-comment-header"><CITE id="dsq-cite-6159"> 
+     http://twitter.com/yoxview                            <SPAN id="dsq-author-user-6159">YoxView</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6159" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6159" class="dsq-comment-message">
+  <P>Any plans to add conditions to templates?<BR>For example, a boolean value 
+  (or truthy/falsy statement) in the data object might display or not some text 
+  or image. </P>
+  <P>“&lt;div&gt;${!!imageUrl ? “&lt;img src=”${this}”&gt;” : 
+  ''}&lt;/div&gt;”</P>
+  <P>Thanks for the great work, I really love this feature!<BR>Yossi.</P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-6171">
+  <DIV id="dsq-comment-header-6171" class="dsq-comment-header"><CITE id="dsq-cite-6171"><SPAN 
+  id="dsq-author-user-6171">Warwick Bracken</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6171" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6171" class="dsq-comment-message">
+  <P>What about iterating through n-deep objects? Is there a simple notation for 
+  that?</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6172">
+  <DIV id="dsq-comment-header-6172" class="dsq-comment-header"><CITE id="dsq-cite-6172"> 
+     http://borismoore.com                            <SPAN id="dsq-author-user-6172">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6172" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6172" class="dsq-comment-message">
+  <P>Take a look at the template tag topics for {{each}}, {{tmpl}} and {{wrap}}. 
+  They all allow you to iterate over data, and to nest tags, so you can drill 
+  down into hierarchical data.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6173">
+  <DIV id="dsq-comment-header-6173" class="dsq-comment-header"><CITE id="dsq-cite-6173"> 
+     http://borismoore.com                            <SPAN id="dsq-author-user-6173">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6173" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6173" class="dsq-comment-message">
+  <P>Yes, it is already there. Take a look at the template tag topics for {{if}} 
+  and {{else}}</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6195">
+  <DIV id="dsq-comment-header-6195" class="dsq-comment-header"><CITE id="dsq-cite-6195"> 
+     http://twitter.com/yoxview                            <SPAN id="dsq-author-user-6195">YoxView</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6195" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6195" class="dsq-comment-message">
+  <P>Oh, I didn't notice. Looks great!<BR>I think it'd be a good idea to make a 
+  comment on the conditional tags on this page as well, make it easier for 
+  people who got directly here.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6208">
+  <DIV id="dsq-comment-header-6208" class="dsq-comment-header"><CITE id="dsq-cite-6208"><SPAN 
+  id="dsq-author-user-6208">Mark</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6208" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6208" class="dsq-comment-message">
+  <P>How to I evaluate bool? This always evals to false, even when the JSON data 
+  is true (really true, not just a “true” string)</P>
+  <P>{{if Active}}Active{{else}}Inactive{{/if}}</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6209">
+  <DIV id="dsq-comment-header-6209" class="dsq-comment-header"><CITE id="dsq-cite-6209"><SPAN 
+  id="dsq-author-user-6209">Mark</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6209" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6209" class="dsq-comment-message">
+  <P>Never mind, I just realized only this did not work {{if !Active}} the 
+  normal {{if Active}}Active{{else}}Inactive{{/if}} works fine</P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-6226">
+  <DIV id="dsq-comment-header-6226" class="dsq-comment-header"><CITE id="dsq-cite-6226"> 
+     http://twitter.com/rapextras                            <SPAN id="dsq-author-user-6226">rapextras</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6226" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6226" class="dsq-comment-message">
+  <P>Uh, er… i'm really baffled… this is a plugin!? OMG! I'd think this would be 
+  a part of the core – pretty soon.  This is really gonna make back-end html'ing 
+  rather non-existent… and push (ahem! those of us using MVC and other like 
+  patterns with ) 'view's separate from the code… to the forefront… </P>
+  <P>whoever DID create/develop these should win a jQuery Emmy <IMG class="wp-smiley" 
+  alt=":)" src="jQuery_template()%20–%20jQuery%20API_files/icon_smile.gif"> </P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-6227">
+  <DIV id="dsq-comment-header-6227" class="dsq-comment-header"><CITE id="dsq-cite-6227"> 
+     http://twitter.com/rapextras                            <SPAN id="dsq-author-user-6227">rapextras</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6227" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6227" class="dsq-comment-message">
+  <P>thank you – i just realized as I was going over to “git”-me a copy of this 
+  to test it out, when I recalled it was you… nice (scratch that) outstanding 
+  work.</P>
+  <P>tho I don't use smarty templates in parsing html, there are a good many who 
+  do, and thus it would make avg html'rs go from zero-hero in just this ONE 
+  plugin of jquery… again, well done.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6383">
+  <DIV id="dsq-comment-header-6383" class="dsq-comment-header"><CITE id="dsq-cite-6383"><SPAN 
+  id="dsq-author-user-6383">smith</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6383" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6383" class="dsq-comment-message">
+  <P>..would be interesting to know exactly what involvement M$ have had in this 
+  project..</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6386">
+  <DIV id="dsq-comment-header-6386" class="dsq-comment-header"><CITE id="dsq-cite-6386"><SPAN 
+  id="dsq-author-user-6386">Jordan</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6386" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6386" class="dsq-comment-message">
+  <P>In the documentation above, it claims that the existence of a template may 
+  be tested:</P>
+  <P>“To determine if a string “someName” is the name of a named template, test 
+  whether $.templates["someName"] is defined.”</P>
+  <P>However, $.templates is undefined no matter how many precompiled templates 
+  I load.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6433">
+  <DIV id="dsq-comment-header-6433" class="dsq-comment-header"><CITE id="dsq-cite-6433"><SPAN 
+  id="dsq-author-user-6433">Nick Franceschina</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6433" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6433" class="dsq-comment-message">
+  <P>yes, I just noticed this… you have to use 
+  $.template["someName"]<BR>documentation is incorrect</P></DIV></DIV></LI>
+  <LI id="dsq-comment-6684">
+  <DIV id="dsq-comment-header-6684" class="dsq-comment-header"><CITE id="dsq-cite-6684"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-6684">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6684" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6684" class="dsq-comment-message">
+  <P>For jQuery templates, basically one developer (me). You can see different 
+  contributions here <A href="http://github.com/jquery/jquery-tmpl/graphs/impact" 
+  rel="nofollow">http://github.com/jquery/jquery-tmpl/graphs/impact</A></P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-6892">
+  <DIV id="dsq-comment-header-6892" class="dsq-comment-header"><CITE id="dsq-cite-6892"><SPAN 
+  id="dsq-author-user-6892">ca</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-6892" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-6892" class="dsq-comment-message">
+  <P>what's the best way to keep multiple -separate- templates in a single scrip 
+  tag? is it not advisable to do this for any (performance) reason? seems that 
+  it would be better to have related templates in a single script tag, to avoid 
+  dozens of script tags on the page or many ajax calls?</P>
+  <P>i haven't tried this, but would something like this be a good approach?</P>
+  <P>var templateX = 
+  $(templateScriptTag).find(templateSelector);<BR>jQuery.template( 
+  “myTemplateX”, templateX );</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7152">
+  <DIV id="dsq-comment-header-7152" class="dsq-comment-header"><CITE id="dsq-cite-7152"><SPAN 
+  id="dsq-author-user-7152">chovy</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7152" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7152" class="dsq-comment-message">
+  <P>This did not appear to work for me. Can you provide a simple example 
+  loading a template file from a script tag?</P>
+  <P>How do I get a handle on the template itself?</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7308">
+  <DIV id="dsq-comment-header-7308" class="dsq-comment-header"><CITE id="dsq-cite-7308"> 
+     http://twitter.com/oscargodson                            <SPAN id="dsq-author-user-7308">Oscar 
+  Godson</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7308" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7308" class="dsq-comment-message">
+  <P>It took me a few tries too until I realized this is NOT included with 
+  jQuery even though it says it is. You need to include it:<BR>&lt;script 
+  src=”http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js”&gt;&lt;/script&gt;</P>
+  <P>I wish they'd remove the “Version added 1.4.3″ to this page. Completely 
+  confusing.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7461">
+  <DIV id="dsq-comment-header-7461" class="dsq-comment-header"><CITE id="dsq-cite-7461"><SPAN 
+  id="dsq-author-user-7461">fasteater</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7461" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7461" class="dsq-comment-message">
+  <P>Is there a way to preserve events bound to items in a template? I'm working 
+  with a third party tool (Telerik) that renders clientside controls without 
+  delegate binding.</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7492">
+  <DIV id="dsq-comment-header-7492" class="dsq-comment-header"><CITE id="dsq-cite-7492"><SPAN 
+  id="dsq-author-user-7492">Zannino Francesco</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7492" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7492" class="dsq-comment-message">
+  <P>Can I use a json variables as data for the template ?</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7491">
+  <DIV id="dsq-comment-header-7491" class="dsq-comment-header"><CITE id="dsq-cite-7491"><SPAN 
+  id="dsq-author-user-7491">Zannino Francesco</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7491" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7491" class="dsq-comment-message">
+  <P>Oh , yes !!! very great plug in. <BR>All jquery plugins are great.</P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-7582">
+  <DIV id="dsq-comment-header-7582" class="dsq-comment-header"><CITE id="dsq-cite-7582"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-7582">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7582" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7582" class="dsq-comment-message">
+  <P>Well each topic states that it <I>concerns the jQuery Templates plugin 
+  (jquery-tmpl), which can be downloaded from: <A href="http://github.com/jquery/jquery-tmpl" 
+  rel="nofollow">http://github.com/jquery/jquery-tmpl</A></I>. </P>
+  <P>The jquery.tmpl script is available from that github repository, or as 
+  Oscar says, from the CDN at “<A href="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" 
+  rel="nofollow">http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js</A>“. 
+  (Each demo includes a script reference to the script…) </P>
+  <P>The jQuery version is more to do with the version the plugin depends 
+  on…</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7581">
+  <DIV id="dsq-comment-header-7581" class="dsq-comment-header"><CITE id="dsq-cite-7581">http://www.borismoore.com 
+                             <SPAN id="dsq-author-user-7581">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7581" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7581" class="dsq-comment-message">
+  <P>The best way to provide a template via a static script is to provide the 
+  template as a string in the script, and to compile it as a named template (as 
+  explained above) either in your static script, or in inline script. For 
+  example:</P>
+  <P>template1.js:<BR>var template1Markup = “&lt;li&gt;${foo}&lt;/li&gt;”;<BR>// 
+  Compile the template <BR>$.template( “template1″, template1Markup ); </P>
+  <P>&lt;script type=”text/javascript” src=”template1.js”&gt;&lt;/script&gt;</P>
+  <P>&lt;script type=”text/javascript”&gt;<BR>	$.tmpl( “templatet1″, data 
+  ).appendTo(“#results”);<BR>&lt;/script&gt;</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7580">
+  <DIV id="dsq-comment-header-7580" class="dsq-comment-header"><CITE id="dsq-cite-7580"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-7580">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7580" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7580" class="dsq-comment-message">
+  <P>See my reply below on <A href="http://api.jquery.com/jQuery.template/#comment-111872875" 
+  rel="nofollow">remote templates as scripts</A>.</P>
+  <P>Following that approach, you can define several named templates in the same 
+  script:</P>
+  <P>$.template( “template1″, template1Markup ); <BR>$.template( “template2″, 
+  template2Markup );</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7885">
+  <DIV id="dsq-comment-header-7885" class="dsq-comment-header"><CITE id="dsq-cite-7885"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-7885">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7885" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7885" class="dsq-comment-message">
+  <P>Well each topic states that it <I>concerns the jQuery Templates plugin 
+  (jquery-tmpl), which can be downloaded from: <A href="http://github.com/jquery/jquery-tmpl" 
+  rel="nofollow">http://github.com/jquery/jquery-tmpl</A></I>. </P>
+  <P>The jquery.tmpl script is available from that github repository, or as 
+  Oscar says, from the CDN at “<A href="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js" 
+  rel="nofollow">http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js</A>“. 
+  (Each demo includes a script reference to the script…) </P>
+  <P>The jQuery version is more to do with the version the plugin depends 
+  on…</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7884">
+  <DIV id="dsq-comment-header-7884" class="dsq-comment-header"><CITE id="dsq-cite-7884">http://www.borismoore.com 
+                             <SPAN id="dsq-author-user-7884">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7884" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7884" class="dsq-comment-message">
+  <P>The best way to provide a template via a static script is to provide the 
+  template as a string in the script, and to compile it as a named template (as 
+  explained above) either in your static script, or in inline script. For 
+  example:</P>
+  <P>template1.js:<BR>var template1Markup = “&lt;li&gt;${foo}&lt;/li&gt;”;<BR>// 
+  Compile the template <BR>$.template( “template1″, template1Markup ); </P>
+  <P>&lt;script type=”text/javascript” src=”template1.js”&gt;&lt;/script&gt;</P>
+  <P>&lt;script type=”text/javascript”&gt;<BR>	$.tmpl( “templatet1″, data 
+  ).appendTo(“#results”);<BR>&lt;/script&gt;</P></DIV></DIV></LI>
+  <LI id="dsq-comment-7883">
+  <DIV id="dsq-comment-header-7883" class="dsq-comment-header"><CITE id="dsq-cite-7883"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-7883">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-7883" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-7883" class="dsq-comment-message">
+  <P>See my reply below on <A href="http://api.jquery.com/jQuery.template/#comment-111872875" 
+  rel="nofollow">remote templates as scripts</A>.</P>
+  <P>Following that approach, you can define several named templates in the same 
+  script:</P>
+  <P>$.template( “template1″, template1Markup ); <BR>$.template( “template2″, 
+  template2Markup );</P></DIV></DIV></LI>
+  <LI id="dsq-comment-8151">
+  <DIV id="dsq-comment-header-8151" class="dsq-comment-header"><CITE id="dsq-cite-8151"> 
+     http://twitter.com/dariobarila                            <SPAN id="dsq-author-user-8151">Dario 
+  Barilà</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8151" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8151" class="dsq-comment-message">
+  <P>Thank you Boris, this rock! Is like Dancing with Data! <IMG class="wp-smiley" 
+  alt=";)" src="jQuery_template()%20–%20jQuery%20API_files/icon_wink.gif"> </P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-8154">
+  <DIV id="dsq-comment-header-8154" class="dsq-comment-header"><CITE id="dsq-cite-8154"> 
+     http://www.borismoore.com                            <SPAN id="dsq-author-user-8154">Boris 
+  Moore</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8154" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8154" class="dsq-comment-message">
+  <P>The best way to provide a template via a static script is to provide the 
+  template as a string in the script, and to compile it as a named template (as 
+  explained above) either in your static script, or in inline script. For 
+  example:</P>
+  <P>template1.js:<BR>var template1Markup = “&lt;li&gt;${foo}&lt;/li&gt;”;<BR>// 
+  Compile the template <BR>$.template( “template1″, template1Markup ); </P>
+  <P>&lt;script type=”text/javascript” src=”template1.js”&gt;&lt;/script&gt;</P>
+  <P>&lt;script type=”text/javascript”&gt;<BR>	$.tmpl( “templatet1″, data 
+  ).appendTo(“#results”);<BR>&lt;/script&gt;</P></DIV></DIV></LI>
+  <LI id="dsq-comment-8244">
+  <DIV id="dsq-comment-header-8244" class="dsq-comment-header"><CITE id="dsq-cite-8244"> 
+     http://twitter.com/Gopithpa                            <SPAN id="dsq-author-user-8244">Gopi 
+  Thapa</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8244" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8244" class="dsq-comment-message">
+  <P>Thank u</P></DIV></DIV></LI>
+  <LI id="dsq-comment-8322">
+  <DIV id="dsq-comment-header-8322" class="dsq-comment-header"><CITE id="dsq-cite-8322"><SPAN 
+  id="dsq-author-user-8322">Dylan Rosario</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8322" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8322" class="dsq-comment-message">
+  <P>I have another way of doing this much easier. See next comment.</P>
+  </DIV></DIV></LI>
+  <LI id="dsq-comment-8591">
+  <DIV id="dsq-comment-header-8591" class="dsq-comment-header"><CITE id="dsq-cite-8591"><SPAN 
+  id="dsq-author-user-8591">Rafay</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8591" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8591" class="dsq-comment-message">
+  <P>I would better go with jTemplates… they are awesome in case of separation 
+  of Template html files in another directory… and calling them as 
+  setTemplateUrl('/Templates/MyTemplate.htm')</P></DIV></DIV></LI>
+  <LI id="dsq-comment-8724">
+  <DIV id="dsq-comment-header-8724" class="dsq-comment-header"><CITE id="dsq-cite-8724"><SPAN 
+  id="dsq-author-user-8724">Kaisellgren</SPAN></CITE></DIV>
+  <DIV id="dsq-comment-body-8724" class="dsq-comment-body">
+  <DIV id="dsq-comment-message-8724" class="dsq-comment-message">
+  <P>“Note: The named template is added to the $.templates map.”</P>
+  <P>This is wrong. They exist within jQuery.template map.</P>
+</DIV></DIV></LI></UL></DIV></DIV>
+<SCRIPT type="text/javascript">
+/* <![CDATA[ */
+    var disqus_url = 'http://api.jquery.com/jQuery.template/';
+    var disqus_identifier = '2382 http://api.jquery.com/?p=2382';
+    var disqus_container_id = 'disqus_thread';
+    var disqus_domain = 'disqus.com';
+    var disqus_shortname = 'jquery';
+    var disqus_title = "jQuery.template()";
+        var disqus_config = function () {
+        var config = this; // Access to the config object
+
+        /* 
+           All currently supported events:
+            * preData — fires just before we request for initial data
+            * preInit - fires after we get initial data but before we load any dependencies
+            * onInit  - fires when all dependencies are resolved but before dtpl template is rendered
+            * afterRender - fires when template is rendered but before we show it
+            * onReady - everything is done
+         */
+
+        config.callbacks.preData.push(function() {
+            // clear out the container (its filled for SEO/legacy purposes)
+            document.getElementById(disqus_container_id).innerHTML = '';
+        });
+                config.callbacks.onReady.push(function() {
+            // sync comments in the background so we don't block the page
+            DISQUS.request.get('?cf_action=sync_comments&post_id=2382');
+        });
+                    };
+    var facebookXdReceiverPath = 'http://api.jquery.com/wp-content/plugins/disqus-comment-system/xd_receiver.htm';
+/* ]]> */
+</SCRIPT>
+
+<SCRIPT type="text/javascript">
+/* <![CDATA[ */
+    var DsqLocal = {
+        'trackbacks': [
+        ],
+        'trackback_url': "http:\/\/api.jquery.com\/jQuery.template\/trackback\/"    };
+/* ]]> */
+</SCRIPT>
+
+<SCRIPT type="text/javascript">
+/* <![CDATA[ */
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = 'http://' + disqus_shortname + '.' + disqus_domain + '/embed.js?pname=wordpress&pver=2.67';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+/* ]]> */
+</SCRIPT>
+</DIV></DIV></DIV><!-- #content --></DIV><!-- #jq-primaryContent -->
+<DIV id="jq-interiorNavigation">
+<H2 class="jq-clearfix roundTop section-title"><A 
+href="http://api.jquery.com/">jQuery API</A></H2>
+<DIV class="roundBottom jq-box">
+<UL class="xoxo">
+  <LI>
+  <UL>
+    <LI><A href="http://api.jquery.com/category/version/1.7/">New or Changed in 
+    1.7</A></LI>
+    <LI><A href="http://api.jquery.com/api/">Raw XML API Dump</A></LI>
+    <LI><A href="http://api.jquery.com/browser/">Dynamic API Browser</A></LI>
+    <LI><A href="http://www.packtpub.com/jquery-1-4-reference-guide/book">jQuery 
+    API Book</A></LI></UL></LI></UL><!--
+      <br />
+      <div class="sideBarFeature">
+        <strong>Dynamic API Browser</strong>
+        <a href="http://api.jquery.com/browser/" style="border:0px;"><img src="http://static.jquery.com/api/images/badge.jpg" style="border:0px;width:100%;"/></a>
+      </div>
+      <div class="sideBarFeature">
+        <strong>jQuery API Book</strong>
+        <a href="http://www.packtpub.com/" style="border-width:0;"><img src="http://static.jquery.com/books/jquery-ref-guide.png" style="border-width:0;"/></a>
+      </div>
+--></DIV>
+<H2 class="jq-clearfix roundTop section-title">Browse the jQuery API</H2>
+<DIV class="roundBottom jq-box">
+<UL class="xoxo">
+  <LI id="categories">
+  <UL>
+    <LI><A href="http://api.jquery.com/">All</A></LI>
+    <LI class="cat-item cat-item-13"><A title="View all posts filed under Ajax" 
+    href="http://api.jquery.com/category/ajax/">Ajax</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-39"><A title="View all posts filed under Global Ajax Event Handlers" 
+      href="http://api.jquery.com/category/ajax/global-ajax-event-handlers/">Global 
+      Ajax Event Handlers</A></LI>
+      <LI class="cat-item cat-item-40"><A title="View all posts filed under Helper Functions" 
+      href="http://api.jquery.com/category/ajax/helper-functions/">Helper 
+      Functions</A></LI>
+      <LI class="cat-item cat-item-37"><A title="View all posts filed under Low-Level Interface" 
+      href="http://api.jquery.com/category/ajax/low-level-interface/">Low-Level 
+      Interface</A></LI>
+      <LI class="cat-item cat-item-38"><A title="View all posts filed under Shorthand Methods" 
+      href="http://api.jquery.com/category/ajax/shorthand-methods/">Shorthand 
+      Methods</A></LI></UL></LI>
+    <LI class="cat-item cat-item-7"><A title="View all posts filed under Attributes" 
+    href="http://api.jquery.com/category/attributes/">Attributes</A></LI>
+    <LI class="cat-item cat-item-99"><A title="View all posts filed under Callbacks Object" 
+    href="http://api.jquery.com/category/callbacks-object/">Callbacks Object</A>
+    </LI>
+    <LI class="cat-item cat-item-5"><A title="View all posts filed under Core" 
+    href="http://api.jquery.com/category/core/">Core</A></LI>
+    <LI class="cat-item cat-item-10"><A title="View all posts filed under CSS" 
+    href="http://api.jquery.com/category/css/">CSS</A></LI>
+    <LI class="cat-item cat-item-51"><A title="View all posts filed under Data" 
+    href="http://api.jquery.com/category/data/">Data</A></LI>
+    <LI class="cat-item cat-item-93"><A title="View all posts filed under Deferred Object" 
+    href="http://api.jquery.com/category/deferred-object/">Deferred Object</A>
+    </LI>
+    <LI class="cat-item cat-item-97"><A title="View all posts filed under Deprecated" 
+    href="http://api.jquery.com/category/deprecated/">Deprecated</A></LI>
+    <LI class="cat-item cat-item-50"><A title="View all posts filed under Dimensions" 
+    href="http://api.jquery.com/category/dimensions/">Dimensions</A></LI>
+    <LI class="cat-item cat-item-12"><A title="View all posts filed under Effects" 
+    href="http://api.jquery.com/category/effects/">Effects</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-52"><A title="View all posts filed under Basics" 
+      href="http://api.jquery.com/category/effects/basics/">Basics</A></LI>
+      <LI class="cat-item cat-item-55"><A title="View all posts filed under Custom" 
+      href="http://api.jquery.com/category/effects/custom-effects/">Custom</A>
+      </LI>
+      <LI class="cat-item cat-item-54"><A title="View all posts filed under Fading" 
+      href="http://api.jquery.com/category/effects/fading/">Fading</A></LI>
+      <LI class="cat-item cat-item-53"><A title="View all posts filed under Sliding" 
+      href="http://api.jquery.com/category/effects/sliding/">Sliding</A></LI></UL>
+    </LI>
+    <LI class="cat-item cat-item-11"><A title="View all posts filed under Events" 
+    href="http://api.jquery.com/category/events/">Events</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-36"><A title="View all posts filed under Browser Events" 
+      href="http://api.jquery.com/category/events/browser-events/">Browser 
+      Events</A></LI>
+      <LI class="cat-item cat-item-32"><A title="View all posts filed under Document Loading" 
+      href="http://api.jquery.com/category/events/document-loading/">Document 
+      Loading</A></LI>
+      <LI class="cat-item cat-item-31"><A title="View all posts filed under Event Handler Attachment" 
+      href="http://api.jquery.com/category/events/event-handler-attachment/">Event 
+      Handler Attachment</A></LI>
+      <LI class="cat-item cat-item-66"><A title="View all posts filed under Event Object" 
+      href="http://api.jquery.com/category/events/event-object/">Event 
+      Object</A></LI>
+      <LI class="cat-item cat-item-34"><A title="View all posts filed under Form Events" 
+      href="http://api.jquery.com/category/events/form-events/">Form Events</A>
+      </LI>
+      <LI class="cat-item cat-item-35"><A title="View all posts filed under Keyboard Events" 
+      href="http://api.jquery.com/category/events/keyboard-events/">Keyboard 
+      Events</A></LI>
+      <LI class="cat-item cat-item-33"><A title="View all posts filed under Mouse Events" 
+      href="http://api.jquery.com/category/events/mouse-events/">Mouse 
+      Events</A></LI></UL></LI>
+    <LI class="cat-item cat-item-56"><A title="View all posts filed under Forms" 
+    href="http://api.jquery.com/category/forms/">Forms</A></LI>
+    <LI class="cat-item cat-item-67"><A title="View all posts filed under Internals" 
+    href="http://api.jquery.com/category/internals/">Internals</A></LI>
+    <LI class="cat-item cat-item-9"><A title="View all posts filed under Manipulation" 
+    href="http://api.jquery.com/category/manipulation/">Manipulation</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-25"><A title="View all posts filed under Class Attribute" 
+      href="http://api.jquery.com/category/manipulation/class-attribute/">Class 
+      Attribute</A></LI>
+      <LI class="cat-item cat-item-29"><A title="View all posts filed under Copying" 
+      href="http://api.jquery.com/category/manipulation/copying/">Copying</A>
+      </LI>
+      <LI class="cat-item cat-item-28"><A title="View all posts filed under DOM Insertion, Around" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-around/">DOM 
+      Insertion, Around</A></LI>
+      <LI class="cat-item cat-item-27"><A title="View all posts filed under DOM Insertion, Inside" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-inside/">DOM 
+      Insertion, Inside</A></LI>
+      <LI class="cat-item cat-item-48"><A title="View all posts filed under DOM Insertion, Outside" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-outside/">DOM 
+      Insertion, Outside</A></LI>
+      <LI class="cat-item cat-item-30"><A title="View all posts filed under DOM Removal" 
+      href="http://api.jquery.com/category/manipulation/dom-removal/">DOM 
+      Removal</A></LI>
+      <LI class="cat-item cat-item-26"><A title="View all posts filed under DOM Replacement" 
+      href="http://api.jquery.com/category/manipulation/dom-replacement/">DOM 
+      Replacement</A></LI>
+      <LI class="cat-item cat-item-23"><A title="View all posts filed under General Attributes" 
+      href="http://api.jquery.com/category/manipulation/general-attributes/">General 
+      Attributes</A></LI>
+      <LI class="cat-item cat-item-24"><A title="View all posts filed under Style Properties" 
+      href="http://api.jquery.com/category/manipulation/style-properties/">Style 
+      Properties</A></LI></UL></LI>
+    <LI class="cat-item cat-item-41"><A title="View all posts filed under Miscellaneous" 
+    href="http://api.jquery.com/category/miscellaneous/">Miscellaneous</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-44"><A title="View all posts filed under Collection Manipulation" 
+      href="http://api.jquery.com/category/miscellaneous/collection-manipulation/">Collection 
+      Manipulation</A></LI>
+      <LI class="cat-item cat-item-45"><A title="View all posts filed under Data Storage" 
+      href="http://api.jquery.com/category/miscellaneous/data-storage/">Data 
+      Storage</A></LI>
+      <LI class="cat-item cat-item-43"><A title="View all posts filed under DOM Element Methods" 
+      href="http://api.jquery.com/category/miscellaneous/dom-element-methods/">DOM 
+      Element Methods</A></LI>
+      <LI class="cat-item cat-item-42"><A title="View all posts filed under Setup Methods" 
+      href="http://api.jquery.com/category/miscellaneous/setup-methods/">Setup 
+      Methods</A></LI></UL></LI>
+    <LI class="cat-item cat-item-49"><A title="View all posts filed under Offset" 
+    href="http://api.jquery.com/category/offset/">Offset</A></LI>
+    <LI class="cat-item cat-item-85"><A title="View all posts filed under Plugins" 
+    href="http://api.jquery.com/category/plugins/">Plugins</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-87"><A title="View all posts filed under Data Link" 
+      href="http://api.jquery.com/category/plugins/data-link/">Data Link</A>
+</LI>
+      <LI class="cat-item cat-item-83"><A title="View all posts filed under Templates" 
+      href="http://api.jquery.com/category/plugins/templates/">Templates</A>
+      </LI></UL></LI>
+    <LI class="cat-item cat-item-68"><A title="View all posts filed under Properties" 
+    href="http://api.jquery.com/category/properties/">Properties</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-59"><A title="View all posts filed under Properties of jQuery Object Instances" 
+      href="http://api.jquery.com/category/properties/jquery-object-instance-properties/">Properties 
+      of jQuery Object Instances</A></LI>
+      <LI class="cat-item cat-item-58"><A title="View all posts filed under Properties of the Global jQuery Object" 
+      href="http://api.jquery.com/category/properties/global-jquery-object-properties/">Properties 
+      of the Global jQuery Object</A></LI></UL></LI>
+    <LI class="cat-item cat-item-6"><A title="View all posts filed under Selectors" 
+    href="http://api.jquery.com/category/selectors/">Selectors</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-17"><A title="View all posts filed under Attribute" 
+      href="http://api.jquery.com/category/selectors/attribute-selectors/">Attribute</A>
+      </LI>
+      <LI class="cat-item cat-item-16"><A title="View all posts filed under Basic" 
+      href="http://api.jquery.com/category/selectors/basic-css-selectors/">Basic</A>
+      </LI>
+      <LI class="cat-item cat-item-61"><A title="View all posts filed under Basic Filter" 
+      href="http://api.jquery.com/category/selectors/basic-filter-selectors/">Basic 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-65"><A title="View all posts filed under Child Filter" 
+      href="http://api.jquery.com/category/selectors/child-filter-selectors/">Child 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-62"><A title="View all posts filed under Content Filter" 
+      href="http://api.jquery.com/category/selectors/content-filter-selector/">Content 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-18"><A title="View all posts filed under Form" 
+      href="http://api.jquery.com/category/selectors/form-selectors/">Form</A>
+      </LI>
+      <LI class="cat-item cat-item-60"><A title="View all posts filed under Hierarchy" 
+      href="http://api.jquery.com/category/selectors/hierarchy-selectors/">Hierarchy</A>
+      </LI>
+      <LI class="cat-item cat-item-96"><A title="View all posts filed under jQuery Extensions" 
+      href="http://api.jquery.com/category/selectors/jquery-selector-extensions/">jQuery 
+      Extensions</A></LI>
+      <LI class="cat-item cat-item-63"><A title="View all posts filed under Visibility Filter" 
+      href="http://api.jquery.com/category/selectors/visibility-filter-selectors/">Visibility 
+      Filter</A></LI></UL></LI>
+    <LI class="cat-item cat-item-8"><A title="View all posts filed under Traversing" 
+    href="http://api.jquery.com/category/traversing/">Traversing</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-20"><A title="View all posts filed under Filtering" 
+      href="http://api.jquery.com/category/traversing/filtering/">Filtering</A>
+      </LI>
+      <LI class="cat-item cat-item-22"><A title="View all posts filed under Miscellaneous Traversing" 
+      href="http://api.jquery.com/category/traversing/miscellaneous-traversal/">Miscellaneous 
+      Traversing</A></LI>
+      <LI class="cat-item cat-item-21"><A title="View all posts filed under Tree Traversal" 
+      href="http://api.jquery.com/category/traversing/tree-traversal/">Tree 
+      Traversal</A></LI></UL></LI>
+    <LI class="cat-item cat-item-14"><A title="View all posts filed under Utilities" 
+    href="http://api.jquery.com/category/utilities/">Utilities</A></LI>
+    <LI class="cat-item cat-item-69"><A title="View all posts filed under Version" 
+    href="http://api.jquery.com/category/version/">Version</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-70"><A title="View all posts filed under Version 1.0" 
+      href="http://api.jquery.com/category/version/1.0/">Version 1.0</A></LI>
+      <LI class="cat-item cat-item-71"><A title="View all posts filed under Version 1.0.4" 
+      href="http://api.jquery.com/category/version/1.0.4/">Version 1.0.4</A>
+</LI>
+      <LI class="cat-item cat-item-72"><A title="View all posts filed under Version 1.1" 
+      href="http://api.jquery.com/category/version/1.1/">Version 1.1</A></LI>
+      <LI class="cat-item cat-item-73"><A title="View all posts filed under Version 1.1.2" 
+      href="http://api.jquery.com/category/version/1.1.2/">Version 1.1.2</A>
+</LI>
+      <LI class="cat-item cat-item-74"><A title="View all posts filed under Version 1.1.3" 
+      href="http://api.jquery.com/category/version/1.1.3/">Version 1.1.3</A>
+</LI>
+      <LI class="cat-item cat-item-75"><A title="View all posts filed under Version 1.1.4" 
+      href="http://api.jquery.com/category/version/1.1.4/">Version 1.1.4</A>
+</LI>
+      <LI class="cat-item cat-item-76"><A title="View all posts filed under Version 1.2" 
+      href="http://api.jquery.com/category/version/1.2/">Version 1.2</A></LI>
+      <LI class="cat-item cat-item-77"><A title="View all posts filed under Version 1.2.3" 
+      href="http://api.jquery.com/category/version/1.2.3/">Version 1.2.3</A>
+</LI>
+      <LI class="cat-item cat-item-78"><A title="View all posts filed under Version 1.2.6" 
+      href="http://api.jquery.com/category/version/1.2.6/">Version 1.2.6</A>
+</LI>
+      <LI class="cat-item cat-item-79"><A title="View all posts filed under Version 1.3" 
+      href="http://api.jquery.com/category/version/1.3/">Version 1.3</A></LI>
+      <LI class="cat-item cat-item-80"><A title="View all posts filed under Version 1.4" 
+      href="http://api.jquery.com/category/version/1.4/">Version 1.4</A></LI>
+      <LI class="cat-item cat-item-81"><A title="View all posts filed under Version 1.4.1" 
+      href="http://api.jquery.com/category/version/1.4.1/">Version 1.4.1</A>
+</LI>
+      <LI class="cat-item cat-item-82"><A title="View all posts filed under Version 1.4.2" 
+      href="http://api.jquery.com/category/version/1.4.2/">Version 1.4.2</A>
+</LI>
+      <LI class="cat-item cat-item-90"><A title="View all posts filed under Version 1.4.3" 
+      href="http://api.jquery.com/category/version/1.4.3/">Version 1.4.3</A>
+</LI>
+      <LI class="cat-item cat-item-91"><A title="View all posts filed under Version 1.4.4" 
+      href="http://api.jquery.com/category/version/1.4.4/">Version 1.4.4</A>
+</LI>
+      <LI class="cat-item cat-item-92"><A title="View all posts filed under Version 1.5" 
+      href="http://api.jquery.com/category/version/1.5/">Version 1.5</A></LI>
+      <LI class="cat-item cat-item-94"><A title="View all posts filed under Version 1.5.1" 
+      href="http://api.jquery.com/category/version/1.5.1/">Version 1.5.1</A>
+</LI>
+      <LI class="cat-item cat-item-95"><A title="View all posts filed under Version 1.6" 
+      href="http://api.jquery.com/category/version/1.6/">Version 1.6</A></LI>
+      <LI class="cat-item cat-item-98"><A title="View all posts filed under Version 1.7" 
+      href="http://api.jquery.com/category/version/1.7/">Version 1.7</A></LI></UL>
+    </LI></UL></LI></UL></DIV></DIV><!-- #jq-interiorNavigation --></DIV><!-- /#secondaryNavigation -->
+<DIV id="jq-footer" class="jq-clearfix">
+<DIV id="jq-credits">
+<P id="jq-copyright">© 2010 <A href="http://jquery.org/">The jQuery 
+Project</A></P>
+<P id="jq-hosting">Sponsored by <A class="jq-mediaTemple" href="http://mediatemple.net/">Media 
+Temple</A> and <A href="http://jquery.org/sponsors">others</A>.</P></DIV>
+<DIV id="jq-footerNavigation">
+<UL>
+  <LI class="jq-download jq-first"><A href="http://docs.jquery.com/Downloading_jQuery">Download</A></LI>
+  <LI class="jq-documentation"><A 
+  href="http://docs.jquery.com/">Documentation</A></LI>
+  <LI class="jq-tutorials"><A 
+  href="http://docs.jquery.com/Tutorials">Tutorials</A></LI>
+  <LI class="jq-bugTracker"><A href="http://dev.jquery.com/">Bug 
+Tracker</A></LI>
+  <LI class="jq-discussion jq-last"><A 
+  href="http://docs.jquery.com/Discussion">Discussion</A></LI></UL></DIV><!-- /#jq-footerNavigation --></DIV><!-- /#jq-footer -->
+</DIV><!-- /#siteContain -->
+<SCRIPT type="text/javascript">
+var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-1076265-1']); _gaq.push(['_trackPageview']); _gaq.push(['_setDomainName', '.jquery.com']);
+(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);})();
+</SCRIPT>
+
+<SCRIPT src="jQuery_template()%20–%20jQuery%20API_files/prettify.js"></SCRIPT>
+<!-- <script src="/wp-content/themes/jquery.0002/demos.js?v=20110228"></script> -->
+<SCRIPT src="jQuery_template()%20–%20jQuery%20API_files/demo.js"></SCRIPT>
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+Page Caching using disk: basic
+Database Caching 3/6 queries in 0.006 seconds using disk: basic
+Object Caching 878/917 objects using disk: basic
+
+Served from: api.jquery.com @ 2011-11-08 06:44:44 --></BODY></HTML>

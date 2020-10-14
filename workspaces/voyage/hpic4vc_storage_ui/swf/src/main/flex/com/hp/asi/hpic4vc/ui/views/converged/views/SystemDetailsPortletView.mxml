@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:components="assets.components.*">
+	
+	<fx:Metadata>
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.converged.views.SystemDetailsPortletViewMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+		import com.hp.asi.hpic4vc.ui.utils.Helper;
+		
+		import mx.collections.ArrayCollection;
+		import mx.resources.ResourceManager;
+		
+		// Add actionscript code here. Most logic should be in the mediator class, but
+		// any UI formatting related code can be written here.
+		
+		[Bindable]
+		public var systemSummaryDP:ArrayCollection;
+		
+		[Bindable]
+		public var noInfoFound:String;
+		
+		[Bindable]
+		public var errorMessage:String;
+		
+		[Bindable]
+		public var rowCount:int;
+		
+	]]>
+	</fx:Script>
+	
+	<!-- Add your Flex components here -->
+	<components:Hpic4vc_HierarchialDatagrid id="dataGrid"
+											resultDP="{systemSummaryDP}" 
+											errorFoundLabel="{errorMessage}"
+											noInfoFoundLabel="{noInfoFound}"
+											rowCount="{rowCount}"/>
+</mx:VBox>

@@ -1,0 +1,1250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://v1_0soap.api.alc.hp.com" 
+                  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+                  xmlns:impl="http://v1_0soap.api.alc.hp.com" 
+                  xmlns:intf="http://v1_0soap.api.alc.hp.com" 
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:tns1="http://returnObjects.alc.hp.com" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://v1_0soap.api.alc.hp.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+   <element name="login">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResponse">
+    <complexType>
+     <sequence>
+      <element name="loginReturn" type="impl:LoginResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="Result">
+    <sequence>
+     <element name="returnCode" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="LoginResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element name="token" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="logout">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="logoutResponse">
+    <complexType>
+     <sequence>
+      <element name="logoutReturn" type="impl:Result"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="listFolders">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="listFoldersResponse">
+    <complexType>
+     <sequence>
+      <element name="listFoldersReturn" type="impl:ListFoldersResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="Folder">
+    <sequence>
+     <element name="creationDate" nillable="true" type="xsd:string"/>
+     <element name="description" nillable="true" type="xsd:string"/>
+     <element name="folderType" nillable="true" type="xsd:string"/>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="imageSizeMB" type="xsd:int"/>
+     <element name="imageType" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="osSubType" nillable="true" type="xsd:string"/>
+     <element name="osType" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ListFoldersResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element maxOccurs="unbounded" name="folders" nillable="true" type="impl:Folder"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="updateFolderInfo">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateFolderInfoResponse">
+    <complexType>
+     <sequence>
+      <element name="updateFolderInfoReturn" type="impl:Result"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitFolder">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+      <element name="in5" type="xsd:string"/>
+      <element name="in6" type="xsd:string"/>
+      <element name="in7" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitFolderResponse">
+    <complexType>
+     <sequence>
+      <element name="submitFolderReturn" type="impl:ScheduleResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ScheduleResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element name="dsIpAddress" nillable="true" type="xsd:string"/>
+       <element name="dsType" nillable="true" type="xsd:string"/>
+       <element maxOccurs="unbounded" name="scheduleIds" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="getScheduleStatus">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getScheduleStatusResponse">
+    <complexType>
+     <sequence>
+      <element name="getScheduleStatusReturn" type="impl:ScheduleStatusResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ScheduleStatus">
+    <sequence>
+     <element name="endTimeEpoch" type="xsd:long"/>
+     <element name="exitCode" type="xsd:int"/>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="percentComplete" type="xsd:int"/>
+     <element name="startTimeEpoch" type="xsd:long"/>
+     <element name="status" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="ScheduleStatusX">
+    <complexContent>
+     <extension base="impl:ScheduleStatus">
+      <sequence>
+       <element name="errorText" nillable="true" type="xsd:string"/>
+       <element name="failureMode" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ScheduleStatusResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element maxOccurs="unbounded" name="scheduleStatusSet" nillable="true" type="impl:ScheduleStatus"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="setScheduleStatus">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+      <element name="in5" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="setScheduleStatusResponse">
+    <complexType>
+     <sequence>
+      <element name="setScheduleStatusReturn" type="impl:SetScheduleResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="SetScheduleResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element name="combinedStatus" type="xsd:int"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="listManagedNodesPerDS">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="listManagedNodesPerDSResponse">
+    <complexType>
+     <sequence>
+      <element name="listManagedNodesPerDSReturn" type="impl:ManagedNodeResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ListManagedNodes">
+    <sequence>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="uuid" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ManagedNodeResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element maxOccurs="unbounded" name="nodeList" nillable="true" type="impl:ListManagedNodes"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="getManagedNodeDetails">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getManagedNodeDetailsResponse">
+    <complexType>
+     <sequence>
+      <element name="getManagedNodeDetailsReturn" type="impl:ManagedNodeDetailsResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <!--
+   <complexType name="ArrayOf_xsd_string">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   -->
+    <complexType name="ArrayOf_xsd_string">
+        <complexContent>
+            <restriction base="soapenc:Array">
+                <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+            </restriction>
+        </complexContent>
+    </complexType>
+
+   <element name="eraseDisk">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="eraseDiskResponse">
+    <complexType>
+     <sequence>
+      <element name="eraseDiskReturn" type="impl:EraseDiskResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="EraseDiskResult">
+    <sequence>
+     <element name="dsIpAddress" nillable="true" type="xsd:string"/>
+     <element name="dsType" nillable="true" type="xsd:string"/>
+     <element name="jobID" nillable="true" type="impl:ArrayOf_xsd_string"/>
+     <element name="retCode" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <element name="removeManagedNodePerDS">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="removeManagedNodePerDSResponse">
+    <complexType>
+     <sequence>
+      <element name="removeManagedNodePerDSReturn" type="impl:Result"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="registerManagedNodeForDS">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="registerManagedNodeForDSResponse">
+    <complexType>
+     <sequence>
+      <element name="registerManagedNodeForDSReturn" type="impl:Result"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="postClone">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+      <element name="in5" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="postCloneResponse">
+    <complexType>
+     <sequence>
+      <element name="postCloneReturn" type="impl:ScheduleResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preClone">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="preCloneResponse">
+    <complexType>
+     <sequence>
+      <element name="preCloneReturn" type="impl:ScheduleResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitFolders">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="in5" type="xsd:string"/>
+      <element name="in6" type="xsd:string"/>
+      <element name="in7" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="submitFoldersResponse">
+    <complexType>
+     <sequence>
+      <element name="submitFoldersReturn" type="impl:SubmitFoldersResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="SubmitFoldersResult">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element maxOccurs="unbounded" name="schedules" nillable="true" type="impl:ScheduleResult"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="getScheduleStatusX">
+    <complexType>
+     <sequence>
+      <element name="in0" type="xsd:string"/>
+      <element name="in1" type="xsd:string"/>
+      <element name="in2" type="xsd:string"/>
+      <element maxOccurs="unbounded" name="in3" type="xsd:string"/>
+      <element name="in4" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="getScheduleStatusXResponse">
+    <complexType>
+     <sequence>
+      <element name="getScheduleStatusXReturn" type="impl:ScheduleStatusResultX"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ScheduleStatusResultX">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element maxOccurs="unbounded" name="scheduleStatusSet" nillable="true" type="impl:ScheduleStatusX"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+
+   <complexType name="ManagedNodeResult2">
+    <complexContent>
+     <extension base="impl:Result">
+      <sequence>
+       <element name="id" nillable="true" type="xsd:string"/>
+       <element name="name" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="NetworkInterfaces">
+    <sequence>
+     <element name="dhcp" nillable="true" type="xsd:boolean"/>
+     <element name="dnsDomain" nillable="true" type="xsd:string"/>
+     <element name="dnsServers" nillable="true" type="impl:ArrayOf_xsd_string"/>
+     <element name="gateways" nillable="true" type="impl:ArrayOf_xsd_string"/>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="ipAddress" nillable="true" type="xsd:string"/>
+     <element name="ipMask" nillable="true" type="xsd:string"/>
+     <element name="macAddress" nillable="true" type="xsd:string"/>
+     <element name="winsServers" nillable="true" type="impl:ArrayOf_xsd_string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ManagedNodeDetailsResult">
+    <complexContent>
+     <extension base="impl:ManagedNodeResult2">
+      <sequence>
+       <element name="dnsSuffixes" nillable="true" type="impl:ArrayOf_xsd_string"/>
+       <element maxOccurs="unbounded" name="networkInterfaces" nillable="true" type="impl:NetworkInterfaces"/>
+       <element name="processorArchitecture" nillable="true" type="xsd:string"/>
+       <element name="processorCount" nillable="true" type="xsd:int"/>
+       <element name="processorDescription" nillable="true" type="xsd:string"/>
+       <element name="processorSpeed" nillable="true" type="xsd:int"/>
+       <element name="uuid" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+
+   </schema>
+
+  <schema elementFormDefault="qualified" targetNamespace="http://returnObjects.alc.hp.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://v1_0soap.api.alc.hp.com"/>
+   <complexType name="Result">
+    <sequence>
+     <element name="returnCode" type="xsd:int"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="updateFolderInfoRequest">
+
+      <wsdl:part element="impl:updateFolderInfo" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="postCloneRequest">
+
+      <wsdl:part element="impl:postClone" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getScheduleStatusRequest">
+
+      <wsdl:part element="impl:getScheduleStatus" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getManagedNodeDetailsResponse">
+
+      <wsdl:part element="impl:getManagedNodeDetailsResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="updateFolderInfoResponse">
+
+      <wsdl:part element="impl:updateFolderInfoResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="registerManagedNodeForDSRequest">
+
+      <wsdl:part element="impl:registerManagedNodeForDS" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeManagedNodePerDSRequest">
+
+      <wsdl:part element="impl:removeManagedNodePerDS" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="preCloneRequest">
+
+      <wsdl:part element="impl:preClone" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="eraseDiskResponse">
+
+      <wsdl:part element="impl:eraseDiskResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setScheduleStatusRequest">
+
+      <wsdl:part element="impl:setScheduleStatus" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="loginRequest">
+
+      <wsdl:part element="impl:login" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getManagedNodeDetailsRequest">
+
+      <wsdl:part element="impl:getManagedNodeDetails" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitFoldersRequest">
+
+      <wsdl:part element="impl:submitFolders" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getScheduleStatusResponse">
+
+      <wsdl:part element="impl:getScheduleStatusResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getScheduleStatusXResponse">
+
+      <wsdl:part element="impl:getScheduleStatusXResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="preCloneResponse">
+
+      <wsdl:part element="impl:preCloneResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="logoutResponse">
+
+      <wsdl:part element="impl:logoutResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setScheduleStatusResponse">
+
+      <wsdl:part element="impl:setScheduleStatusResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="removeManagedNodePerDSResponse">
+
+      <wsdl:part element="impl:removeManagedNodePerDSResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="listFoldersResponse">
+
+      <wsdl:part element="impl:listFoldersResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="loginResponse">
+
+      <wsdl:part element="impl:loginResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="listManagedNodesPerDSRequest">
+
+      <wsdl:part element="impl:listManagedNodesPerDS" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitFolderRequest">
+
+      <wsdl:part element="impl:submitFolder" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="logoutRequest">
+
+      <wsdl:part element="impl:logout" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="listManagedNodesPerDSResponse">
+
+      <wsdl:part element="impl:listManagedNodesPerDSResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="postCloneResponse">
+
+      <wsdl:part element="impl:postCloneResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitFolderResponse">
+
+      <wsdl:part element="impl:submitFolderResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="registerManagedNodeForDSResponse">
+
+      <wsdl:part element="impl:registerManagedNodeForDSResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="submitFoldersResponse">
+
+      <wsdl:part element="impl:submitFoldersResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="eraseDiskRequest">
+
+      <wsdl:part element="impl:eraseDisk" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getScheduleStatusXRequest">
+
+      <wsdl:part element="impl:getScheduleStatusX" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="listFoldersRequest">
+
+      <wsdl:part element="impl:listFolders" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="SoapApi">
+
+      <wsdl:operation name="login">
+
+         <wsdl:input message="impl:loginRequest" name="loginRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:loginResponse" name="loginResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="logout">
+
+         <wsdl:input message="impl:logoutRequest" name="logoutRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:logoutResponse" name="logoutResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listFolders">
+
+         <wsdl:input message="impl:listFoldersRequest" name="listFoldersRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:listFoldersResponse" name="listFoldersResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateFolderInfo">
+
+         <wsdl:input message="impl:updateFolderInfoRequest" name="updateFolderInfoRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:updateFolderInfoResponse" name="updateFolderInfoResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitFolder">
+
+         <wsdl:input message="impl:submitFolderRequest" name="submitFolderRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:submitFolderResponse" name="submitFolderResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getScheduleStatus">
+
+         <wsdl:input message="impl:getScheduleStatusRequest" name="getScheduleStatusRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getScheduleStatusResponse" name="getScheduleStatusResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setScheduleStatus">
+
+         <wsdl:input message="impl:setScheduleStatusRequest" name="setScheduleStatusRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setScheduleStatusResponse" name="setScheduleStatusResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listManagedNodesPerDS">
+
+         <wsdl:input message="impl:listManagedNodesPerDSRequest" name="listManagedNodesPerDSRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:listManagedNodesPerDSResponse" name="listManagedNodesPerDSResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getManagedNodeDetails">
+
+         <wsdl:input message="impl:getManagedNodeDetailsRequest" name="getManagedNodeDetailsRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getManagedNodeDetailsResponse" name="getManagedNodeDetailsResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eraseDisk">
+
+         <wsdl:input message="impl:eraseDiskRequest" name="eraseDiskRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:eraseDiskResponse" name="eraseDiskResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeManagedNodePerDS">
+
+         <wsdl:input message="impl:removeManagedNodePerDSRequest" name="removeManagedNodePerDSRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:removeManagedNodePerDSResponse" name="removeManagedNodePerDSResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="registerManagedNodeForDS">
+
+         <wsdl:input message="impl:registerManagedNodeForDSRequest" name="registerManagedNodeForDSRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:registerManagedNodeForDSResponse" name="registerManagedNodeForDSResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="postClone">
+
+         <wsdl:input message="impl:postCloneRequest" name="postCloneRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:postCloneResponse" name="postCloneResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preClone">
+
+         <wsdl:input message="impl:preCloneRequest" name="preCloneRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:preCloneResponse" name="preCloneResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitFolders">
+
+         <wsdl:input message="impl:submitFoldersRequest" name="submitFoldersRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:submitFoldersResponse" name="submitFoldersResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getScheduleStatusX">
+
+         <wsdl:input message="impl:getScheduleStatusXRequest" name="getScheduleStatusXRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getScheduleStatusXResponse" name="getScheduleStatusXResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="Alc1_0SoapBinding" type="impl:SoapApi">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="login">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="loginRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="loginResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="logout">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="logoutRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="logoutResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listFolders">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listFoldersRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listFoldersResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="updateFolderInfo">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="updateFolderInfoRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="updateFolderInfoResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitFolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitFolderRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitFolderResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getScheduleStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getScheduleStatusRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getScheduleStatusResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setScheduleStatus">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setScheduleStatusRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setScheduleStatusResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="listManagedNodesPerDS">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="listManagedNodesPerDSRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="listManagedNodesPerDSResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getManagedNodeDetails">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getManagedNodeDetailsRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getManagedNodeDetailsResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="eraseDisk">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="eraseDiskRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="eraseDiskResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="removeManagedNodePerDS">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="removeManagedNodePerDSRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="removeManagedNodePerDSResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="registerManagedNodeForDS">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="registerManagedNodeForDSRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="registerManagedNodeForDSResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="postClone">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="postCloneRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="postCloneResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="preClone">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="preCloneRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="preCloneResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="submitFolders">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="submitFoldersRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="submitFoldersResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getScheduleStatusX">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getScheduleStatusXRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getScheduleStatusXResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="SoapApiService">
+
+      <wsdl:port binding="impl:Alc1_0SoapBinding" name="Alc1_0">
+
+         <wsdlsoap:address location="https://localhost:50000/mxsoap/services/Alc1_0"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

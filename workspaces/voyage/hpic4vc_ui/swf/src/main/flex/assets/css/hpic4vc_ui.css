@@ -1,0 +1,1026 @@
+/* CSS file
+Copyright 2012 Hewlett-Packard Development Company, L.P.
+ */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "components.*";
+@namespace controls "com.hp.asi.hpic4vc.ui.controls.*";
+@namespace support "com.hp.asi.hpic4vc.ui.controls.support.*";
+
+.labelText {
+   font-size: 16;
+   font-weight: bold;
+}
+
+.subLabelText {
+	font-size: 14;
+	font-weight: bold;
+}
+
+.vcNetworkLabel
+{
+	fontWeight:bold;
+	color:#000000;
+	fontSize:13;
+}
+
+
+global
+{
+	font-family: Arial;
+	borderColor: #D8D8D8;
+	chromeColor: #ECEFF2;
+	selection-color: #B3E0FF;
+	roll-over-color: #D1ECFF;
+	color: #333333;
+	focus-color: #70B2EE;
+}
+
+.mxDataGridHeader {
+	fontSize: 10;
+	verticalAlign: left;
+}
+
+mx|AdvancedDataGrid
+{
+	alternatingRowColors: #ffffff, #f3f7fb;
+	borderVisible: true;
+	verticalGridLineColor: #D8D8D8;
+	borderColor: #D8D8D8;
+	fontSize: 12;
+	fontWeight: normal;
+	minWidth: 100;
+	paddingLeft: 5;
+	paddingRight: 5;	
+}
+
+.labelToolTips
+{
+	color: #333333;
+	backgroundColor: #FFFFFF;
+	fontSize: 10;
+	fontFamily: Arial;
+}
+
+/*
+components|Hpic4vc_DataGrid
+{
+	alternatingRowColors: #ffffff, #f3f7fb;
+	borderVisible: true;
+	borderColor: #D8D8D8;
+	fontSize: 10;
+	fontWeight: normal;
+	minWidth: 100;
+}
+*/
+
+/*s|NavigatorContent
+{
+	focusColor: #b3e0ff;
+	selectionColor: #b3e0ff;
+	alternatingRowColors: #ffffff, #f3f7fb;
+	borderVisible: true;
+	borderColor: #D8D8D8;
+	fontWeight: normal;
+}*/
+
+s|TextInput {
+	borderStyle: solid;
+	borderColor: #777777;
+	borderThickness: 1;
+	cornerRadius: 4;
+	backgroundAlpha: 1;
+	backgroundColor: #555555;
+	color: #333333;
+	fontWeight: bold;
+}
+
+.portletVBoxKey
+{
+	backgroundColor: #e4eff6;
+}
+
+.portletVBoxValue
+{
+	backgroundColor: #ffffff;
+}
+
+.portletHBox
+{
+	textAlign: left;
+}
+
+.portletVBox
+{
+	textAlign: left;
+	backgroundColor: #ffffff;
+}
+
+.portletText
+{
+	fontWeight: normal;
+	paddingTop: 5;
+	paddingBottom: 5;
+	paddingLeft: 2;
+	height: 27;
+	backgroundColor: #ffffff;
+	color: #333333;
+} 
+
+.portletLabel
+{
+	fontWeight: normal;
+	paddingTop: 5;
+	paddingBottom: 5;	
+	paddingLeft: 6;
+	backgroundColor: #e4eff6;
+	color: #333333;
+	height: 27;
+}
+
+
+.headerText
+{
+	fontSize: 12;
+	color: #666666;
+	fontWeight: bold;
+}
+.popBtLabel
+{
+	color: #666666;
+	fontWeight: bold;
+}
+s|ComboBox.HeaderCmbBox
+{
+/*	//chromeColor: #FFFFFF;*/
+	chromeColor: #C5C3C3;
+/*	selection-color: #B3E0FF;*/
+	roll-over-color: #2B5480;
+}
+.customGearButton
+{
+	overSkin:Embed(source="/assets/images/gear_large_black.png");
+	upSkin:Embed(source="/assets/images/gear_large_gray.png");
+	downSkin:Embed(source="/assets/images/gear_large_black.png");
+}
+.customHelpButton
+{
+	overSkin:Embed(source="assets/images/help_black.png");
+	upSkin:Embed(source="assets/images/help_gray.png");
+	downSkin:Embed(source="assets/images/help_black.png");
+}
+.customRefreshButton
+{
+	overSkin:Embed(source="assets/images/refresh_cache_black.png");
+	upSkin:Embed(source="assets/images/refresh_cache_gray.png");
+	downSkin:Embed(source="assets/images/refresh_cache_black.png");
+}
+mx|TitleWindow.refreshPopUp
+{
+	borderAlpha: 0.5;
+	chromeColor: #B9BBBF;
+	cornerRadius: 5;
+	dropShadowVisible: false;
+	paddingBottom: 0;
+	paddingLeft: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+}
+s|Button
+{
+	chromeColor: #FEFEFE;
+	color: #333333;
+	cornerRadius: 3;
+	focusColor: #C7E9FF;
+	font: Arial;
+	fontSize: 12px;
+	fontWeight: normal;
+} 
+mx|Canvas.refreshPopup
+{
+	backgroundColor: #dadfe5;
+	cornerRadius: 5;
+}
+mx|ButtonBar.buttonBar
+{
+	chromeColor: #ECEFF2;
+	focusColor: #B3E0FF;
+	selectionColor: #B3E0FF;
+	height: 25;
+}
+mx|Panel.overviewPortlet
+{
+	cornerRadius: 5;
+	horizontalScrollPolicy: off;
+	verticalScrollPolicy: off;
+	
+}
+
+s|Panel.spark_overviewPortlet
+{
+	cornerRadius: 5;
+	horizontalScrollPolicy: off;
+	verticalScrollPolicy: off;
+	
+}
+mx|DataGrid.overviewPortletDatagrid
+{
+	verticalGridLines: false;
+	fontSize: 12;
+	fontWeight: normal;
+	minWidth: 100;
+	paddingLeft: 10;
+	paddingRight: 10;
+	header-separator-skin: ClassReference("mx.skins.ProgrammaticSkin");  
+	header-sort-separator-skin: ClassReference("mx.skins.ProgrammaticSkin");  
+}
+.moreLink {
+	focusColor: #FFFFFF;
+	rollOverColor: #FFFFFF;
+	selectionColor: #FFFFFF; 
+	color: #336699;
+}
+mx|PopUpButton.customActionsPopUpButton
+{
+    shadowColor: #333333;
+	color: #333333;
+	cornerRadius: 0;
+}
+.errorMessage
+{
+	color: #cb2027;
+	height: 27;
+}
+
+.loadingMessage
+{
+	color: #333333;
+	width: 160;
+	height: 27;
+}
+
+mx|Text.gettingStartedBoldText
+{
+	fontSize: 15;
+	fontWeight: bold;
+}
+
+/**
+* Style name to apply for the info message for chart labels 
+*/
+.chartLabelStyle{
+	paddingLeft:20;
+	verticalAlign:middle;
+}
+/**
+* Style name to apply for the info message for chart labels for the datastores component
+*/
+.chartLabelStyleNoPadding{
+	verticalAlign:middle;
+}
+/**
+* Style name to apply for the info message for array summary labels - only applicable if showArraySummaryModel=true (for Storage Array Component) 
+*/
+.titleStyle{
+	fontWeight:bold;
+	verticalAlign:middle;
+}
+/**
+* Style name to apply for the error message for array summary labels  - only applicable if showArraySummaryModel=true (for Storage Array Component) 
+*/
+.titleErrorStyle{
+	color:#FF0000;
+}
+/**
+* Style name to apply for the error message for chart labels 
+*/
+.chartLabelErrorStyle{
+	color:#FF0000;
+}
+/**
+* Style for the data tip. 
+*/
+support|DataTipRenderer{
+	borderColor: #A7C3DF;
+	borderWeight:2;
+}
+
+.filterText {
+	fontSize: 12;
+	color: #666666;
+	fontWeight: normal;
+}
+
+.datagridFooterBox {
+	backgroundColor: #ECEFF2;
+	borderVisible: true;
+	borderColor: #E7E7E7;
+	dropShadowVisible: false;
+	horizontalAlign: right;
+	verticalAlign: top;
+}
+
+.gettingStartedTitle
+{
+	alignmentBaseline: ideographicBottom;
+	fontSize: 25;
+	fontWeight: bold;
+}
+.paddingComponents
+{
+	paddingBottom: 10;
+	paddingLeft: 10;
+	paddingRight: 10;
+	paddingTop: 10;
+}
+.gettingStartedTextFont
+{
+	fontSize: 15;
+}
+
+.gettingStartedPagesHeaderText {
+	color: #A0A0A0;
+	fontSize: 15; 
+	fontWeight: bold;
+}
+.certMgmtText
+{
+	fontSize: 15;
+	paddingLeft: 15;
+}
+.certMgmtLabel
+{
+	alignmentBaseline: ideographicBottom;
+	fontSize: 15;
+}
+.hBoxPadding
+{
+	paddingLeft: 16;
+}
+mx|Panel.CPStyle {
+	cornerRadius: 5;
+	dropShadowVisible: false;
+	borderAlpha: 1;
+	paddingTop: 4;
+	paddingLeft: 4;
+	paddingRight: 4;
+	verticalGap: 4;
+	openIcon: Embed(source="assets/images/chevron_gray_open.png");
+	closedIcon: Embed(source="assets/images/chevron_gray_closed.png");
+}
+
+
+.hierarchialDatagrid
+{
+	borderColor: #D8D8D8;
+	/*disclosureClosedIcon:Embed(source='assets/images/chevron_gray_closed.png');
+	disclosureOpenIcon:Embed(source="assets/images/chevron_gray_open.png");
+	defaultLeafIcon: null;
+	folderClosedIcon: null;
+	folderOpenIcon: null;  */
+	selectable: false;
+	borderVisible: false;
+	horizontalGridLines: true;
+	horizontalGridLineColor: #D8D8D8;
+	color: #333333;
+	verticalGridLines: false;
+	paddingLeft: 0;
+	paddingBottom: 0;
+	paddingRight: 0;
+	paddingTop: 0;
+	rowHeight: 26;
+	verticalAlign: middle;
+}
+
+
+mx|LinkButton.htmlLink {  
+	color: #58cad4;  
+	fontFamily: Arial;  
+	fontSize: 11;  
+	fontWeight: normal;  
+	textDecoration: underline;  
+	textRollOverColor: #FF0000;  
+	textSelectedColor: #2A00FF;  
+	leading: 0;  
+	paddingLeft: 5;  
+	paddingRight: 5;  
+	paddingBottom: 1;  
+	paddingTop: 1;  
+	skin: ClassReference(null); 
+}
+
+.vmGrayStyle
+{
+	color:#777777;
+	fontSize:12;
+}
+
+
+.vmNameStyle
+{
+	color:#000000;
+	fontSize:14;
+	
+}
+
+/* Stylesheet data to support HPDataGrid by Flexicious */
+
+
+@namespace s "library://ns.adobe.com/flex/spark";
+
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+@namespace nestedtreedatagrid "com.flexicious.nestedtreedatagrid.*";
+
+@namespace print "com.flexicious.nestedtreedatagrid.print.*";
+@namespace pager "com.flexicious.nestedtreedatagrid.pager.*";
+@namespace controls "com.flexicious.controls.*";
+@namespace grids "com.hp.asi.hpic4vc.ui.controls.grids.*";
+@namespace support "com.hp.asi.hpic4vc.ui.controls.support.*";
+
+controls|MultiSelectComboBox{
+	buttonBoxStyleName:"msbButtonBox";
+	buttonStyleName:"msbButton";
+	searchBoxStyleName:"searchBox";
+}
+controls|TextInput{
+	watermarkStyleName:"watermarkStyle";
+}
+
+support|HPProgressBar{
+	barSkin:ClassReference("com.hp.asi.hpic4vc.ui.skins.HPProgressBarSkin");
+	indeterminateSkin:ClassReference("com.hp.asi.hpic4vc.ui.skins.HPProgressIndeterminateSkin");
+}
+support|FilterTextInput{
+	borderSkin : ClassReference("com.hp.asi.hpic4vc.ui.skins.HPTextInputBorderSkin");
+	insideIcon : Embed(source="assets/images/magnifyingGlassIcon.png");
+	outsideIcon : Embed(source="assets/images/arrow_down.png");
+	watermarkStyleName : "hpwatermark";
+}
+support|HighlightTextInput{
+	borderSkin : ClassReference("com.hp.asi.hpic4vc.ui.skins.HPTextInputBorderSkin");
+	insideIcon : Embed(source="assets/images/magnifyingGlassIcon.png");
+	outsideIcon : Embed(source="assets/images/arrow_down.png"); 
+	watermarkStyleName : "hpwatermark";
+}
+.hpwatermark{
+	
+	color:#bbbbbb;
+	fontStyle:normal;
+}
+.HPTitleWindow{
+	skinClass : ClassReference("com.hp.asi.hpic4vc.ui.skins.HPTitleWindowSkin");
+	cornerRadius : 6;
+	dropShadowVisible:false;
+	borderColor:#7D7D7F;
+}
+mx|Menu{
+	alternatingItemColors: #ffffff,#ffffff;
+	dropShadowVisible:true;
+	textAlign:left;
+	rollOverColor:#5A7D9B;
+	textRollOverColor:#ffffff;
+	color : #333333;
+	separatorSkin:ClassReference("com.hp.asi.hpic4vc.ui.skins.MyMenuSeparator");
+	borderColor:#D6D3D6;
+	fontSize:12;
+	
+}
+
+
+
+grids|HPDataGrid{
+	lockedSeperatorThickness:3;
+	font-family: "Arial";
+	font-size : 12;
+	color : #333333;
+	alternatingItemColors: #f3f7fb, #ffffff;
+	rollOverColor:#d1ecff;
+	selectionColor:#b3e0ff;
+	
+	headerColors: #eceff2,#eceff2;
+	pagerColors : #eceff2,#eceff2;
+	
+	headerVerticalGridLineColor: #666666;
+	headerVerticalGridLines:true;
+	headerVerticalGridLineThickness:1;
+	headerBackroundColor: #eceff2;
+	headerStyleName:"dataGridStyles";
+	
+	lockedSeperatorColor: #a8acaf;
+	lockedSeperatorThickness:2;
+	
+	
+	headerPaddingLeft :5;
+	filterPaddingLeft :5;
+	footerPaddingLeft :5;
+	
+	verticalGridLineColor:#d8d8d8;
+	horizontalGridLineColor:#d8d8d8;
+	
+	pagerVerticalGridLineColor:#d8d8d8;
+	pagerHorizontalGridLineColor:#d8d8d8;
+	
+	headerVerticalGridLineColor:#d8d8d8;
+	headerHorizontalGridLineColor:#d8d8d8;
+	
+	filterVerticalGridLineColor:#d8d8d8;
+	filterHorizontalGridLineColor:#d8d8d8;
+	
+	footerVerticalGridLineColor:#d8d8d8;
+	footerHorizontalGridLineColor:#d8d8d8;
+	
+	borderColor:#d8d8d8;
+	
+	pagerHorizontalGridLines:false;
+	pagerDrawTopBorder:true;
+	
+}
+
+
+
+nestedtreedatagrid|FlexDataGrid{
+	columnMoveResizeSeparatorColor: #000000;	
+	columnMoveAlpha: 0.8;
+	
+	backgroundColor: #FFFFFF, #FFFFFF;
+	
+	alternatingItemColors: #EFF3FA, #FFFFFF;
+	alternatingTextColors: #000000, #000000;
+	
+	dragAlpha:0.8;
+	dragRowBorderStyle:"solid";
+	editItemColors: #F5F9FC, #C5CED6;
+	editTextColor: #000000;
+	
+	errorBackgroundColor: #FCDCDF;
+	errorBorderColor: #F23E2C;
+	
+	verticalGridLineColor: #696969;
+	verticalGridLines:true;
+	verticalGridLineThickness:1;
+	
+	horizontalGridLineColor: #696969;
+	horizontalGridLines:false;
+	horizontalGridLineThickness:1;
+	
+	textDisabledColor: #AFAFAF;
+	
+	
+	columnGroupVerticalGridLineColor: #666666;
+	columnGroupVerticalGridLines:true;
+	columnGroupVerticalGridLineThickness:1;
+	
+	columnGroupHorizontalGridLineColor: #666666;
+	columnGroupHorizontalGridLines:true;
+	columnGroupHorizontalGridLineThickness:1;
+	columnGroupDrawTopBorder:false;
+	
+	
+	
+	headerVerticalGridLineColor: #666666;
+	headerVerticalGridLines:true;
+	headerVerticalGridLineThickness:1;
+	
+	headerHorizontalGridLineColor: #666666;
+	headerHorizontalGridLines:true;
+	headerHorizontalGridLineThickness:1;
+	headerDrawTopBorder:false;
+	
+	filterVerticalGridLineColor: #666666;
+	filterVerticalGridLines:true;
+	filterVerticalGridLineThickness:1;
+	
+	filterHorizontalGridLineColor: #666666;
+	filterHorizontalGridLines:true;
+	filterHorizontalGridLineThickness:1;
+	filterDrawTopBorder:false;
+	
+	footerVerticalGridLineColor: #666666;
+	footerVerticalGridLines:true;
+	footerVerticalGridLineThickness:1;
+	
+	footerHorizontalGridLineColor: #666666;
+	footerHorizontalGridLines:true;
+	footerHorizontalGridLineThickness:1;
+	footerDrawTopBorder:false;
+	
+	pagerVerticalGridLineColor: #666666;
+	pagerVerticalGridLines:true;
+	pagerVerticalGridLineThickness:1;
+	
+	pagerHorizontalGridLineColor: #666666;
+	pagerHorizontalGridLines:true;
+	pagerHorizontalGridLineThickness:1;
+	
+	
+	rendererVerticalGridLineColor: #666666;
+	rendererVerticalGridLines:true;
+	rendererVerticalGridLineThickness:1;
+	
+	rendererHorizontalGridLineColor: #666666;
+	rendererHorizontalGridLines:true;
+	rendererHorizontalGridLineThickness:1;
+	rendererDrawTopBorder:false;
+	
+	headerRollOverColors: #CEDBEF, #CEDBEF;
+	headerColors: #E6E6E6, #FFFFFF;
+	
+	columnGroupRollOverColors: #CEDBEF, #CEDBEF;
+	columnGroupColors: #E6E6E6, #FFFFFF;
+	
+	footerRollOverColors: #CEDBEF, #CEDBEF;
+	footerColors: #BFBFBF, #BFBFBF;
+	
+	fixedColumnFillColors: #BFBFBF,#BFBFBF;
+	
+	filterRollOverColors: #CEDBEF, #CEDBEF;
+	filterColors: #CFCFCF, #CFCFCF;
+	
+	activeCellColor: #B7DBFF;
+	
+	pagerRollOverColors: #E6E6E6, #FFFFFF;
+	pagerColors: #E6E6E6, #FFFFFF;
+	
+	rendererRollOverColors: #FFFFFF, #FFFFFF;
+	rendererColors:  #FFFFFF,#FFFFFF;
+	
+	lockedSeperatorColor: #000000;
+	lockedSeperatorThickness: 2;
+	
+	dropIndicatorColor: #000000;
+	dropIndicatorThickness: 2;
+	
+	textSelectedColor:#000000;
+	textRollOverColor:#000000;
+	selectionDisabledColor: null;
+	selectionDisabledTextColor:#DDDDDD;
+	
+	disclosureClosedIcon: Embed(source="Assets.swf",symbol="TreeDisclosureClosed");
+	disclosureOpenIcon: Embed(source="Assets.swf",symbol="TreeDisclosureOpen");
+	sortArrowSkin: ClassReference("mx.skins.spark.DataGridSortArrow");
+	stretchCursor: Embed(source="Assets.swf",symbol="cursorStretch");
+	
+	paddingBottom: 2;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	
+	columnGroupPaddingBottom: 2;
+	columnGroupPaddingLeft: 2;
+	columnGroupPaddingRight: 2;
+	columnGroupPaddingTop: 2;
+	
+	headerPaddingBottom: 2;
+	headerPaddingLeft: 2;
+	headerPaddingRight: 2;
+	headerPaddingTop: 2;
+	
+	filterPaddingBottom: 2;
+	filterPaddingLeft: 2;
+	filterPaddingRight: 2;
+	filterPaddingTop: 2;
+	
+	footerPaddingBottom: 2;
+	footerPaddingLeft: 2;
+	footerPaddingRight: 2;
+	footerPaddingTop: 2;
+	
+	pagerPaddingBottom: 2;
+	pagerPaddingLeft: 2;
+	pagerPaddingRight: 2;
+	pagerPaddingTop: 2;
+	
+	rendererPaddingBottom: 2;
+	rendererPaddingLeft: 2;
+	rendererPaddingRight: 2;
+	rendererPaddingTop: 2;
+	
+	borderSides:"left,right,top,bottom";
+	borderThickness:1;
+	borderColor: #666666;
+	
+	headerStyleName:"dataGridStyles";
+	footerStyleName:"dataGridStyles";
+	
+	columnGroupStyleName:"columnGroupStyle";
+	columnGroupClosedIcon: Embed(source="Assets.swf",symbol="TreeDisclosureClosed");
+	columnGroupOpenIcon: Embed(source="Assets.swf",symbol="TreeDisclosureOpen");
+	
+	multiColumnSortNumberStyleName:"multiColumnSortNumberStyle";
+	multiColumnSortNumberHeight:15;
+	multiColumnSortNumberWidth:10;
+}
+
+print|PrintFlexDataGrid{
+	columnMoveResizeSeparatorColor: #000000;	
+	columnMoveAlpha: 0.8;
+	textDisabledColor: #7F7F7F;
+	backgroundColor: #FFFFFF, #FFFFFF;
+	fixedColumnFillColors: #BFBFBF,#BFBFBF;
+	activeCellColor: #B7DBFF;
+	
+	alternatingItemColors: #FFFFFF, #FFFFFF;
+	alternatingTextColors: #000000, #000000;
+	
+	verticalGridLineColor: #696969;
+	verticalGridLines:true;
+	verticalGridLineThickness:1;
+	
+	horizontalGridLineColor: #696969;
+	horizontalGridLines:false;
+	horizontalGridLineThickness:1;
+	
+	activeCellColor: #6689FF;
+	
+	
+	headerVerticalGridLineColor: #666666;
+	headerVerticalGridLines:true;
+	headerVerticalGridLineThickness:1;
+	
+	
+	columnGroupVerticalGridLineColor: #666666;
+	columnGroupVerticalGridLines:true;
+	columnGroupVerticalGridLineThickness:1;
+	
+	columnGroupHorizontalGridLineColor: #666666;
+	columnGroupHorizontalGridLines:true;
+	columnGroupHorizontalGridLineThickness:1;
+	columnGroupDrawTopBorder:false;
+	
+	headerHorizontalGridLineColor: #666666;
+	headerHorizontalGridLines:true;
+	headerHorizontalGridLineThickness:1;
+	headerDrawTopBorder:false;
+	
+	filterVerticalGridLineColor: #666666;
+	filterVerticalGridLines:true;
+	filterVerticalGridLineThickness:1;
+	
+	filterHorizontalGridLineColor: #666666;
+	filterHorizontalGridLines:true;
+	filterHorizontalGridLineThickness:1;
+	filterDrawTopBorder:false;
+	
+	footerVerticalGridLineColor: #666666;
+	footerVerticalGridLines:true;
+	footerVerticalGridLineThickness:1;
+	
+	footerHorizontalGridLineColor: #666666;
+	footerHorizontalGridLines:true;
+	footerHorizontalGridLineThickness:1;
+	footerDrawTopBorder:false;
+	
+	pagerVerticalGridLineColor: #666666;
+	pagerVerticalGridLines:true;
+	pagerVerticalGridLineThickness:1;
+	
+	pagerHorizontalGridLineColor: #666666;
+	pagerHorizontalGridLines:true;
+	pagerHorizontalGridLineThickness:1;
+	
+	
+	rendererVerticalGridLineColor: #666666;
+	rendererVerticalGridLines:true;
+	rendererVerticalGridLineThickness:1;
+	
+	rendererHorizontalGridLineColor: #666666;
+	rendererHorizontalGridLines:true;
+	rendererHorizontalGridLineThickness:1;
+	rendererDrawTopBorder:false;
+	
+	headerRollOverColors: #CEDBEF, #CEDBEF;
+	headerColors: #E6E6E6, #FFFFFF;
+	
+	columnGroupRollOverColors: #CEDBEF, #CEDBEF;
+	columnGroupColors: #E6E6E6, #FFFFFF;
+	
+	footerRollOverColors: #BFBFBF, #BFBFBF;
+	footerColors: #BFBFBF, #BFBFBF;
+	
+	filterRollOverColors: #CFCFCF, #CFCFCF;
+	filterColors: #CFCFCF, #CFCFCF;
+	
+	
+	pagerRollOverColors: #E6E6E6, #FFFFFF;
+	pagerColors: #E6E6E6, #FFFFFF;
+	
+	rendererRollOverColors: #FFFFFF, #FFFFFF;
+	rendererColors:  #FFFFFF,#FFFFFF;
+	
+	lockedSeperatorColor: #000000;
+	lockedSeperatorThickness: 2;
+	
+	textSelectedColor:#000000;
+	textRollOverColor:#000000;
+	selectionDisabledColor: null;
+	selectionDisabledTextColor:#DDDDDD;
+	
+	disclosureClosedIcon: Embed(source="Assets.swf",symbol="TreeDisclosureClosed");
+	disclosureOpenIcon: Embed(source="Assets.swf",symbol="TreeDisclosureOpen");
+	sortArrowSkin: ClassReference("mx.skins.spark.DataGridSortArrow");
+	stretchCursor: Embed(source="Assets.swf",symbol="cursorStretch");
+	
+	paddingBottom: 2;
+	paddingLeft: 2;
+	paddingRight: 2;
+	paddingTop: 2;
+	
+	columnGroupPaddingBottom: 2;
+	columnGroupPaddingLeft: 2;
+	columnGroupPaddingRight: 2;
+	columnGroupPaddingTop: 2;
+	
+	headerPaddingBottom: 2;
+	headerPaddingLeft: 2;
+	headerPaddingRight: 2;
+	headerPaddingTop: 2;
+	
+	filterPaddingBottom: 2;
+	filterPaddingLeft: 2;
+	filterPaddingRight: 2;
+	filterPaddingTop: 2;
+	
+	footerPaddingBottom: 2;
+	footerPaddingLeft: 2;
+	footerPaddingRight: 2;
+	footerPaddingTop: 2;
+	
+	pagerPaddingBottom: 2;
+	pagerPaddingLeft: 2;
+	pagerPaddingRight: 2;
+	pagerPaddingTop: 2;
+	
+	rendererPaddingBottom: 2;
+	rendererPaddingLeft: 2;
+	rendererPaddingRight: 2;
+	rendererPaddingTop: 2;
+	
+	borderSides:"left,right,top,bottom";
+	borderThickness:1;
+	borderColor: #666666;
+	
+	columnGroupStyleName:"columnGroupStyle";
+	columnGroupClosedIcon: Embed(source="Assets.swf",symbol="TreeDisclosureClosed");
+	columnGroupOpenIcon: Embed(source="Assets.swf",symbol="TreeDisclosureOpen");
+	
+	
+	
+	headerStyleName:"dataGridStyles";
+	footerStyleName:"dataGridStyles";
+	multiColumnSortNumberStyleName:"multiColumnSortNumberStyle";
+	multiColumnSortNumberHeight:15;
+	multiColumnSortNumberWidth:10;
+	
+}
+.dataGridStyles
+{
+	font-size: 10;
+	fontWeight: normal;
+}
+.columnGroupStyle
+{
+	text-align:center;	
+}
+.multiColumnSortNumberStyle
+{
+	fontSize: 10;
+	paddingTop:0;
+	paddingBottom:0;
+	paddingLeft:0;
+	paddingRight:0;
+}
+
+
+
+pager|ImageButton{
+	corner-radius:2;
+	
+	background-colors: #E8EEF5,#FFFFFF;
+	hover-background-colors: #FFFFFF,#DAE0E4;
+	down-background-colors: #DAE0E4,#FFFFFF;
+	disabled-background-colors: #CFCFCF,#CFCFCF;
+	
+	border-thickness:1;
+	hover-border-thickness:1;
+	down-border-thickness:1;
+	disabled-border-thickness:1;
+	
+	border-color:#CCD5DB;
+	hover-border-color:#CCD5DB;
+	down-border-color:#CCD5DB;
+	disabled-border-color:#0F0F0F;
+	
+	image-padding-left:4;
+	image-padding-top:4;
+	image-padding-bottom:6;
+	image-padding-right:2;
+	
+	label-padding-left:2;
+	label-padding-top:4;
+}	
+
+.watermark{
+	font-style : "italic";
+}
+controls|MultiSelectComboBox{
+	buttonBoxStyleName:"msbButtonBox";
+	buttonStyleName:"msbButton";
+	searchBoxStyleName:"searchBox";
+}
+controls|TextInput{
+	watermarkStyleName:"watermarkStyle";
+}
+
+.searchBox{
+	textAlign:"left";
+}
+.msbButtonBox{
+	backgroundColor:#FFFFFF;
+	borderStyle:"solid";
+	borderColor:#000000;
+	horizontalAlign:"right";
+	horizontalGap:2;
+}
+.msbButton{
+	color: #555555;
+	fontSize: 11;  
+	textDecoration: underline;  
+	textRollOverColor: #000000;  
+	leading: 0;  
+	paddingLeft: 2;  
+	paddingRight: 2;  
+	paddingBottom: 1;  
+	paddingTop: 1;  
+	skin: ClassReference(null);  
+}
+.watermarkStyle{
+	color:#bbbbbb;
+	fontStyle:italic;
+}
+.pagerImageButton
+{
+	image-padding-left:0;
+	image-padding-top:0;
+	image-padding-bottom:0;
+	image-padding-right:0;
+	
+	label-padding-left:0;
+	label-padding-top:0;
+	label-padding-bottom:0;
+	label-padding-right:0;
+	
+	background-colors:"";
+	border-color:"";
+	
+}
+mx|ToolTip{
+	fontFamily:"Arial";
+	fontSize:12;
+	
+}
+
+.deploymentTextInput{
+	borderStyle: solid;
+	borderColor: #777777;
+	borderThickness: 1;
+	cornerRadius: 4;
+	backgroundAlpha: 1;
+	backgroundColor: #555555;
+	color: #333333;
+	fontWeight: bold;
+	paddingLeft : 10;
+	paddingTop:10;
+}
+
+@namespace dashboard "com.hp.asi.hpic4vc.ui.controls.dashboard.*";
+@namespace dashboard1 "com.flexicious.components.dashboard.*";
+@namespace container "com.flexicious.components.container.*";
+dashboard|HPDashboard {
+	backgroundColors: #FBFBFB,#CECECE;
+	borderAlpha: 0.5;
+	borderColor: #000000;
+	cornerRadius: 2;
+	borderWeight:1;
+	skinClass: ClassReference("com.hp.asi.hpic4vc.ui.controls.dashboard.skins.DashboardSkin");
+	dragAlpha:0.8;
+	dragRowBorderStyle:"dragRowBorder"
+}
+dashboard|HPDashlet {
+	backgroundColor: #ffffff;
+	skinClass: ClassReference("com.hp.asi.hpic4vc.ui.controls.dashboard.skins.DashletSkin");
+} 
+
+controls|ImageButton{
+	overfill:#999999, #CCCCCC;
+	downfill:#CCCCCC, #999999;
+	overbordercolor: #999999;
+	downbordercolor: #999999;
+}
+
+container|DashedBorderContainer{
+	borderThickness : 3;
+	borderColor : #0000ff;
+	backgroundColor : #999999;
+	backgroundAlpha:0.5;
+}

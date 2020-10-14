@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.events.UpdateNetworkEvent;
+			[Bindable]
+			private var vmotionChecked:Boolean = false;
+			[Bindable]
+			private var purposeValue:String;
+			[Bindable]
+			public var uuidValue:String;
+			private const VMOTION:String = "VMOTION";			
+			
+			override public function set data(value:Object):void
+			{
+				vmotionChecked = false;
+				vmotionCheckedChkBox.selected=false;
+				super.data = value;
+				if (value){
+				if (value && value.purpose == VMOTION)
+				{
+					vmotionChecked = true;
+				}
+				uuidValue=value.uuid;
+				}
+			}
+			private function ch_change(evt:Event):void {
+				var ch:CheckBox = evt.currentTarget as CheckBox;
+				if(ch.selected){
+					purposeValue= VMOTION;
+				}
+				else{
+					purposeValue="null";
+				}
+				//updateVmotion(purposeValue,uuidValue);	
+				var flag:Boolean=updateVmotion(purposeValue,uuidValue);
+				if(!flag){
+					ch.selected=false;
+				}
+			}
+			private function updateVmotion(val:String,uuid:String):Boolean
+			{				
+				var vmotionEvent:UpdateNetworkEvent = new UpdateNetworkEvent(UpdateNetworkEvent.VMOTIONEVENT,true)
+				vmotionEvent.vmotionPurposeValue = val;
+				vmotionEvent.uuidSelectedValue= uuid;
+				vmotionEvent.mgmtselectedValue=vmotionChecked;
+				dispatchEvent(vmotionEvent);		
+				return vmotionEvent.mgmtselectedValue;				
+			}
+		]]>
+	</fx:Script>
+	<s:CheckBox id="vmotionCheckedChkBox" selected="{vmotionChecked}" click="ch_change(event)" left="60"/>
+	
+</s:MXAdvancedDataGridItemRenderer>
+

@@ -1,0 +1,56 @@
+<project name="uim_webserver" default="build-dist">
+   <description>
+       Ant build script example for the Java service 'hpic4vc_server_provider'.
+       The output is a bundle in target/hpic4vc_server_provider.jar that can be
+       copied in the "plugins" folder of the plugin's package.
+       -----------------------------------------------------------------------
+       NOTE: you don't need to use this build script during development with
+       Eclipse or STS.  See the SDK documentation on plugin deployment and
+       packaging for more information.
+       -----------------------------------------------------------------------
+   </description>
+
+   <property name="BUILD_DIR" value="${basedir}/dist"/>
+   <property name="BUILD_DIR2" value="${basedir}/build"/>
+   
+   <!-- remove the dist folder -->
+   <target name="clean">
+      <delete dir="${BUILD_DIR}" />
+	  <delete dir="${BUILD_DIR2}" />      
+   </target>
+
+   <target name="run-setup.py" depends="clean">
+   		<echo>
+   	      Building uim webserver component
+   	    </echo>
+
+   	    <!-- Run setup.py command  -->
+
+   	    <exec dir="${basedir}" executable="cmd.exe" output="buildUim.log" >
+   	      <arg line="/c python setup.py py2exe"/>
+   	    </exec>
+
+   	    <echo>
+   	      Done building uim webserver component
+   	    </echo>   </target>
+
+   <!-- Build the jar bundle -->
+   <target name="build-dist" depends="run-setup.py">   	
+   		
+   	    <!-- copy and rename config.json.skel to config.json -->
+   	
+   	    <move file="${BUILD_DIR}\config.json.skel" tofile="${BUILD_DIR}\config.json"/> 	   
+    	
+   		<move todir="${BUILD_DIR}/uim">
+	   	    <fileset dir="${BUILD_DIR}"/>	   	    
+   	  	</move>
+
+   	
+   		<zip destfile="${BUILD_DIR}\uim.zip"
+   	         basedir="${BUILD_DIR}\"
+        />
+
+
+   </target>
+</project>
+

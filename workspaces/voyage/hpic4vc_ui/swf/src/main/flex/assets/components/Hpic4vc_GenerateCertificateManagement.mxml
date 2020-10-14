@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   controlBarVisible="true" cornerRadius="3"
+			   creationComplete="handleCreationComplete();" styleName="refreshPopUp">
+	<!--title="{Helper.getString('Form_generateCertTitle')}"-->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.StringModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import flash.net.navigateToURL;
+			
+			import mx.controls.Alert;
+			import mx.events.ValidationResultEvent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			import mx.validators.Validator;
+
+			
+			[Bindable]
+			public var serviceGuid:String;
+			
+			[Bindable]
+			public var _proxy:Hpic4vc_providerProxy;
+			
+			private var validators:Array;
+			
+			[Bindable]
+			public var _logger:ILogger = Log.getLogger("Hpic4vc_GenerateCertificateManagement");
+			
+			private function handleCreationComplete():void {
+				validators = new Array();
+				validators.push(country_stringValidator);
+				validators.push(state_stringValidator);
+				validators.push(locality_stringValidator);
+				validators.push(organization_stringValidator);
+				validators.push(commonName_stringValidator);
+				PopUpManager.centerPopUp(this);
+				_proxy.getPluginHostName(serviceGuid, onGettingPluginHostName);
+				closeButton.visible = false;
+				yellowBoxId.visible = false;
+				installSuccessId.visible = false;
+			}
+			
+			private function onGettingPluginHostName(event:MethodReturnEvent):void {
+				if (event == null || event.result == null)
+					_logger.debug("Plugin Host Name not found");
+				
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+					Alert.show(stringModel.errorMessage);
+				else {
+					var pluginHostName:String = stringModel.data;
+					var i:int = pluginHostName.lastIndexOf(":");
+					var j:int = pluginHostName.indexOf(":");
+					commonName.text = pluginHostName.substring(j+3, i);
+				}
+			}
+			
+			private function validateAndProcessGenerate():void {
+				var certArgs:Array = new Array();
+				var errorArray:Array = Validator.validateAll(validators);
+				var isValid:Boolean = errorArray.length == 0;
+				if(!isValid){
+					
+					var resultEvt:ValidationResultEvent;
+					var errorMessages:Array = new Array();
+					
+					for each (resultEvt in errorArray){
+						errorMessages.push(resultEvt.message);
+					}
+					
+				}
+				else {
+					certArgs[0] = country.text;
+					certArgs[1] = state.text;
+					certArgs[2] = locality.text;
+					certArgs[3] = organization.text;
+					certArgs[4] = commonName.text;
+					if(organizationalUnit.text != "")
+						certArgs[5] = organizationalUnit.text;
+					else
+						certArgs[5] = "";
+					if(email.text != "")
+						certArgs[6] = email.text;
+					else
+						certArgs[6] = "";
+					if(surname.text != "")
+						certArgs[7] = surname.text;
+					else
+						certArgs[7] = "";
+					if(givenName.text != "")
+						certArgs[8] = givenName.text;
+					else
+						certArgs[8] = "";
+					_proxy.generateSelfSignedCertificate(serviceGuid, certArgs, onGenerateSelfSignedCert);
+				}
+			}
+			
+			private function onGenerateSelfSignedCert(event:MethodReturnEvent):void{
+				
+				if (event == null || event.result == null)
+					_logger.debug("No data returned for Generate Self Signed Certificate");
+				
+				var stringModel:StringModel = event.result as StringModel;
+				if (stringModel.errorMessage != null)
+						Alert.show(stringModel.errorMessage);
+				else {
+				//	Alert.show(stringModel.data);
+					certReqId.text = stringModel.data;
+					yellowBoxId.visible = true;
+					installSuccessId.visible = true;
+				}
+			//	removePopUp();
+			}
+			
+			private function helpClicked():void {
+				_proxy.getGenerateSelfSignedHelp(serviceGuid, onGettingSelfSignedHelp);
+			}
+			
+			private function onGettingSelfSignedHelp(event:MethodReturnEvent):void {			
+				if (event == null || event.result == null)
+					_logger.debug("Generate Self Signed Certificate help link not found");
+				var urlString:String = event.result as String;
+				navigateToURL(new URLRequest(urlString), "_blank");
+			}
+			
+			private function removePopUp():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function copy_click():void {
+				System.setClipboard(certReqId.text);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:StringValidator id="country_stringValidator" source="{country}" property="text" requiredFieldError="{Helper.getString('countryReqField.text')}"/>
+		<mx:StringValidator id="state_stringValidator" source="{state}" property="text" requiredFieldError="{Helper.getString('stateReqField.text')}"/>
+		<mx:StringValidator id="locality_stringValidator" source="{locality}" property="text" required="true" requiredFieldError="{Helper.getString('localityReqField')}" />
+		<mx:StringValidator id="organization_stringValidator" source="{organization}" property="text" requiredFieldError="{Helper.getString('orgReqField')}"/>
+		<mx:StringValidator id="commonName_stringValidator" source="{commonName}" property="text" requiredFieldError="{Helper.getString('cnReqField')}"/>
+	</fx:Declarations>
+	
+	<mx:Image x="5" y="-26" width="22" height="22"
+			  source="@Embed(source='/assets/images/hp-logo.png')"/>
+	<s:Label x="33" y="-21" text="{Helper.getString('Form_generateCertTitle')}" fontWeight="bold"/>
+	<mx:Image x="952" y="-29"
+			  source="@Embed(source='/assets/images/help_circle.png')" click="helpClicked()"
+			  buttonMode="true"/>
+	<!--mx:Text x="519" y="-26" width="12" text=" "/-->
+	<s:HGroup>
+		<s:VGroup>
+		<s:Form id="certForm" fontWeight="normal">
+			<s:layout>
+				<s:FormLayout gap="-10"/>
+			</s:layout>
+			<s:FormItem label="{Helper.getString('Form_country')}" required="true">
+				<s:TextInput id="country" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_state')}" required="true">
+				<s:TextInput id="state" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_locality')}" required="true">
+				<s:TextInput id="locality" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_organization')}" required="true">
+				<s:TextInput id="organization" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_commonName')}" required="true">
+				<s:TextInput id="commonName" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_organizationUnit')}">
+				<s:TextInput id="organizationalUnit" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_email')}">
+				<s:TextInput id="email" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_surname')}">
+				<mx:TextInput id="surname" width="100%"/>
+			</s:FormItem> 
+			
+			<s:FormItem label="{Helper.getString('Form_givenName')}">
+				<s:TextInput id="givenName" width="100%"/>
+			</s:FormItem> 
+			
+		</s:Form>
+		</s:VGroup>
+		<s:VGroup minWidth="516">
+			<s:Label text="{Helper.getString('selfSignedCert.text')}" alignmentBaseline="ideographicBottom"/>
+			<mx:Box width="99%" height="308" borderVisible="true" borderStyle="solid" verticalScrollPolicy="auto">
+				<mx:Text id="certReqId" width="99%" fontFamily="_typewriter"/>
+			</mx:Box>
+			<mx:Box id="yellowBoxId" width="99%" height="40" borderVisible="true" borderStyle="solid" backgroundColor="#FFFFCC" visible="false">
+				<mx:Text id="installSuccessId" width="99%" text="{Helper.getString('generateSelfSignedCertSuccess.text')}" visible="false"/>
+			</mx:Box>
+		</s:VGroup>
+	</s:HGroup>
+	<mx:HBox width="99%" y="370">
+		<mx:Spacer width="30%"/>
+		<mx:Button label="{Helper.getString('Form_genrateButtonText')}" click="validateAndProcessGenerate();"/>
+		<mx:Spacer width="80%"/>
+		<mx:Button id="copyCert" label="{Helper.getString('Form_copyLabel')}" click="copy_click();"/>
+	</mx:HBox>
+	<s:controlBarContent>
+		<s:Spacer width="99%"/> 
+		<!--s:Button label="{Helper.getString('Form_genrateButtonText')}" click="validateAndProcessGenerate();" toolTip="Generate"/-->
+		<s:Button id="closeButtonId" label="{Helper.getString('Form_closeLabel')}"
+				  click="removePopUp();"/>
+	</s:controlBarContent>
+	
+</s:TitleWindow>
+

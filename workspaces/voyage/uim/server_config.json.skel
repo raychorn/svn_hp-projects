@@ -1,0 +1,579 @@
+{
+    "private_config" : {
+        "hpsim" : 
+        {
+            "port" : "50000",
+            "wsdl_url" : ""
+        },
+        "device_poll" : "300",
+        "event_poll" : "30",
+        "power_cost" : "0",
+        "bottleneck_oversub": "1.3",
+        "webserver": {
+            "timeout" : "60",
+            "req_queue": "10",
+            "num_threads": "50"
+        },
+        "threadpool": {
+            "num_threads": "100"
+        }
+     },
+
+    "public_config" :{
+        "apps" : { 
+            "hostcomm":{
+                "url": "/static/apps/hostcomm/hostcomm.html"
+            },
+            "hostdetail": {
+                "url" : "/static/apps/hostdetail/hostdetail.html"
+            },            
+            "networkdiagram": {
+                "url" : "/static/apps/networkdiagram/networkdiagram.html"
+            },
+            "networkdetail": {
+                "url" : "/static/apps/networkdetail/networkdetail.html"
+            },
+            "hostinfradetail": {
+                "url" : "/static/apps/hostinfradetail/hostinfradetail.html"
+            },
+            "hostoverview" : { 
+                "boxes" : [
+                    {   				
+                        "id": "hostinfo",                        
+                        "template": "/static/apps/hostoverview/templates/hostcontenttemplate.html",
+                        "title": "Host Information",
+                        "data_url": "/services/host/hostsummary",                
+                        "column": 2,
+                        "refresh": true
+                    },
+                    {   
+                        "id": "network",
+                        "template": "/static/apps/hostoverview/templates/networkcontenttemplate.html",
+                        "title": "Networking",
+                        "data_url": "/services/host/networksummary",                
+                        "column": 3
+                    },                         
+                    {   
+                        "id": "infrastructure",
+                        "template": "/static/apps/hostoverview/templates/infrastructurecontenttemplate.html",
+                        "title": "Infrastructure",
+                        "data_url": "/services/host/hostinfrasummary",                
+                        "column": 2,
+                        "blade": true
+                    }
+                ]
+            },
+            "hostfwupdate": {
+                "display_name" : "Firmware Update",
+                "url" : "/static/apps/hostfwupdate/hostfwupdate.html"
+            },
+            "clusterfwupdate": {
+                "display_name" : "Firmware Update",
+                "url" : "/static/apps/clusterfwupdate/clusterfwupdate.html"
+            },
+            "clusterdetail": {
+                "url" : "/static/apps/clusterdetail/clusterdetail.html"
+            },            
+            "clusterinfradetail": {
+                "url" : "/static/apps/clusterinfradetail/clusterinfradetail.html"
+            },            
+            "clusteroverview" : {
+                "boxes" : [
+                    {   
+                        "id": "clustersummary",
+                        "template": "/static/apps/clusteroverview/templates/clusterContentTemplate.html",
+                        "title": "Cluster",
+                        "data_url": "/services/host/clustersummary",                
+                        "column": 2
+                    },
+                    {   
+                        "id": "clusterinfrastructure",
+                        "template": "/static/apps/clusteroverview/templates/infrastructurecontenttemplate.html",
+                        "title": "Infrastructure",
+                        "data_url": "/services/host/clusterinfrasummary",                
+                        "column": 2,
+                        "blade": true
+                    }           
+                ]
+            },            
+            "hostproperties": {
+                "url" : "/static/apps/hostproperties/hostproperties.html"
+            },
+            "clusterproperties": {
+                "url" : "/static/apps/clusterproperties/clusterproperties.html"
+            },
+            "serverconfig": {
+                "url" : "/static/apps/serverconfig/serverconfig.html"
+            },
+            "serverpassword": {
+                "url" : "/static/apps/serverpassword/serverpassword.html"
+            }
+        },
+        
+        "providers" : {
+            "enclosures":{
+                "list":{
+                    "web_root": "server_root",
+                    "path": "/enclosures/list"
+                },
+                "summary":{
+                    "web_root": "server_root",
+                    "path": "/enclosure/summary"
+                }
+            },
+            "enclosurehosts":{
+                "list":{
+                    "web_root": "server_root",
+                    "path": "/enclosurehosts/list"
+                }
+            },
+            "hponeview": {
+                "managedservers": {
+                    "web_root": "server_root",
+                    "path": "/hponeview/managedservers"
+                }
+            },
+            "credentials": {
+                "credential": {
+                    "web_root": "server_root",
+                    "path": "/credentials"
+                }
+            },
+            "host" : {
+                "clustersummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clustersummary"
+                },
+                "clusterdetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterdetail"
+                },
+                "clusterinfrasummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterinfrasummary"
+                },
+                "clusterinfradetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterinfradetail"
+                },
+                "clusterswfwsummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterswfwsummary"
+                },
+                "clusterswfwdetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterswfwdetail"
+                },
+                "hoststatus": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hoststatus"
+                },                
+                "clusterstatus": {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterstatus"
+                },                
+                "hostsummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostsummary"
+                },                
+                "hostdetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostdetail"
+                }, 
+                "hostcomm": {
+                    "path": "/services/hostcommsummary",
+                    "web_root": "server_root"
+                },
+                "uidcontrol": {
+                    "web_root" : "server_root",
+                    "path" : "/uidcontrol"
+                },
+                "powercontrol": {
+                    "web_root" : "server_root",
+                    "path" : "/powercontrol"
+                },
+                "rediscovernode": {
+                    "web_root" : "server_root",
+                    "path" : "/rediscovernode"
+                },
+                "hostswfwsummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostswfwsummary"
+                },
+                "hostswfwdetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostswfwdetail"
+                },
+                "hostinfrasummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostinfrasummary"
+                },
+                "hostinfradetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostinfradetail"
+                },
+                "networksummary": {
+                    "web_root" : "server_root",
+                    "path" : "/services/networksummary"
+                },
+                "networkdetail": {
+                    "web_root" : "server_root",
+                    "path" : "/services/networkdetail"
+                },
+                "launchtools" : {
+                    "web_root" : "server_root",
+                    "path" : "/services/hostlaunchtools"
+                },
+                "simlaunchinfo": {
+                    "path": "/services/hostsimlaunchinfo",
+                    "web_root": "server_root"
+                },
+                "clusterlaunchtools" : {
+                    "web_root" : "server_root",
+                    "path" : "/services/clusterlaunchtools"
+                },
+                "deployment" : {
+                    "web_root" : "server_root",
+                    "path" : "/deployment"
+                },
+                "firmware" : {
+                    "web_root" : "server_root",
+                    "path" : "/firmware"
+                },
+                "firmware_jobs" : {
+                    "web_root" : "server_root",
+                    "path" : "/firmware/jobs"
+                },
+                "config": {
+                    "web_root" : "server_root",
+                    "path" : "/settings/config"
+                },
+                "password": {
+                    "web_root" : "server_root",
+                    "path" : "/settings/password"
+                },
+                "vcpassword": {
+                    "web_root" : "server_root",
+                    "path" : "/settings/password"
+                },
+                "hostproperties": {
+                    "web_root" : "server_root",
+                    "path" : "/settings/hostproperties"
+                },
+                "clusterproperties": {
+                    "web_root" : "server_root",
+                    "path" : "/settings/clusterproperties"
+                },
+                "smart_components": {
+                    "web_root" : "server_root",
+                    "path" : "/smart_components"
+                },
+                "supportdata": {
+                    "web_root" : "server_root",
+                    "path" : "/supportdata"
+                },
+                "icsp": {
+                    "web_root" : "server_root",
+                    "path" : "/icsp"
+                },
+                
+                "firmware_baseline":{
+                    "web_root" : "server_root",
+                    "path" : "/firmwarebaseline"
+                },
+
+                "cluster_hosts":{
+                    "web_root" : "server_root",
+                    "path" : "/clusterhosts"
+                }
+
+            }        
+        },        
+        "pages" : {
+            "host_overview" : {
+                "more_menu_items" : [         
+                    {
+                        "display_name" : "Host",
+                        "appId": "hostdetail"
+                    },
+                    {
+                        "display_name" : "Networking",
+                        "appId": "networkdetail"
+                    },
+                    {
+                        "display_name" : "Network Diagram",
+                        "appId": "networkdiagram",
+                        "blade": true
+                    },
+                    {
+                        "display_name" : "Infrastructure",
+                        "appId": "hostinfradetail",
+                        "blade": true
+                    }                          
+                ],
+                "action_menu_items" : [
+                    {
+                        "display_name" : "Toggle UID",
+                        "appId" : "uidcontrol",
+                        "method": "PUT",
+                        "type": "FUNC",
+                        "role": -1,
+                        "role_not": -2
+                    },
+                    {
+                        "display_name" : "Power Control",
+                        "appId" : "powercontrol",
+                        "method": "PUT",
+                        "type": "FUNC",
+                        "role": -1,
+                        "role_not": -2,
+                        "web_client_only": true
+                    },
+                    {
+                        "display_name" : "Rediscover Node",
+                        "appId" : "rediscovernode",
+                        "method": "PUT",
+                        "type": "FUNC",
+                        "role": -1,
+                        "role_not": -2,
+                        "web_client_only": true
+                    },
+                    {
+                        "display_name" : "Firmware",
+                        "appId" : "hostfwupdate",                        
+                        "role": -1,
+                        "role_not": -2,
+                        "web_root" : "uim_root",
+                        "path" : "/static/schosting_help.html" 
+                    }
+                ],
+                "settings" : [
+                    {
+                        "type": "app",
+                        "display_name" : "Host Properties",
+                        "appId" : "hostproperties",
+                        "role": -1,
+                        "url":"infrastructure_credentials.html"
+                    },
+                    {
+                        "display_name": "Communication Status", 
+                        "type": "app", 
+                        "appId": "hostcomm"                        
+                    }
+                ]
+            },
+            "cluster_overview" : {
+                "action_menu_items" : [
+                    {
+                        "display_name" : "Firmware",
+                        "appId" : "clusterfwupdate",                        
+                        "role": -1,
+                        "role_not": -2,
+                        "web_root" : "uim_root",
+                        "path" : "/static/schosting_help.html" 
+                    },
+                    {
+                        "display_name" : "Configure Network",
+                        "appId" : "clusterConfigure",                        
+                        "role": -1,
+                        "role_not": -2,
+                        "web_root" : "uim_root",
+                        "path" : "/static/schosting_help.html",
+                        "web_client_only": true
+                    }
+                ],
+                "more_menu_items" : [   
+                    {   
+                        "display_name" : "Cluster",
+                        "appId" : "clusterdetail"
+                    },
+                    {
+                        "display_name" : "Infrastructure",
+                        "appId": "clusterinfradetail",
+                        "blade": true
+                    }             
+                ],
+                "settings" : [
+                    {
+                        "type": "app",
+                        "display_name" : "Cluster Properties",
+                        "appId" : "clusterproperties",
+                        "role": -1
+                    }
+                ]
+            },
+
+            "home_settings" : 
+            {
+                "menu_items" : 
+                [
+                    {
+                        "display_name" : "Server Password Management",
+                        "appId": "serverpassword",
+                        "role": -1
+                    },
+                    {
+                        "display_name" : "Server Module Configuration",
+                        "appId": "serverconfig",
+                        "role": -1
+                    }
+                ]
+            }
+        },
+        
+        "flex" : 
+        {
+            "monitor":
+			{
+				"host" : 
+				{
+					"pages" : 
+					[
+					],
+					"boxes" : 
+					[	
+					],
+					"summary_portlet" :
+					[
+						{
+							"order" : "1",
+							"component" : "assets.components.Hpic4vc_SummaryPortlet_Server"						
+						}
+					]
+				},
+				"cluster" : 
+				{
+					"pages" : 
+					[
+					  
+					],
+					"boxes" : 
+					[   
+						
+					]
+				}
+			},
+			"manage":
+			{
+				"host" : 
+				{
+					"pages" : 
+					[
+						{
+							"display_name_key" : "Host",
+							"order" : "3",
+							"component" : "assets.components.Hpic4vc_Server_Host",
+							"help_topic" : "s_Viewing_Host_Information.html",
+							"sub_pages" : []
+						},
+						{
+							"display_name_key" : "Networking",
+							"order" : "5",
+							"component" : "assets.components.Hpic4vc_Server_Networking",
+							"help_topic" : "Server_Networking.html",
+							"sub_pages" : []
+						},
+						{
+							"display_name_key" : "Infrastructure",
+							"order" : "4",
+							"component" : "assets.components.Hpic4vc_Server_Infrastructure",
+							"help_topic" : "s_Viewing_host_Infrastructure.html",
+							"sub_pages" : [],
+							"bladeOnly": true
+						}
+					],
+                    "boxes" : 
+                    [   
+                        {
+                            "display_name_key" : "Host_Information",
+                            "column" : "2",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Overview_Host"
+                        },
+                        {
+                            "display_name_key" : "Infrastructure",
+                            "column" : "2",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview_Infrastructure",
+                            "bladeOnly": true
+                        },
+                        {
+                            "display_name_key" : "Networking",
+                            "column" : "2",
+                            "order" : "3",
+                            "component" : "assets.components.Hpic4vc_Overview_Networking"
+                        }
+                    ]
+				},
+				"cluster" : 
+				{
+					"pages" : 
+					[
+						{
+							"display_name_key" : "Cluster",
+							"order" : "3",
+							"component" : "assets.components.Hpic4vc_Cluster",
+                            "help_topic" : "s_Viewing_Cluster_Information.html"
+						},
+						{
+							"display_name_key" : "Infrastructure",
+							"order" : "4",
+							"component" : "assets.components.Hpic4vc_ClusterInfrastructure_Detail",
+                            "help_topic" : "Cluster_Infrastructure.html",
+							"bladeOnly": true
+						},
+                        {
+							"display_name_key" : "Networking",
+							"order" : "5",
+							"component" : "assets.components.Hpic4vc_ClusterMismatch",
+                            "help_topic" : "cluster_networking.html"
+						}			
+					],
+                    "boxes" : 
+                    [   
+                        {
+                            "display_name_key" : "Cluster",
+                            "column" : "2",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Overview_ClusterSummary"
+                        },
+                        {
+                            "display_name_key" : "Infrastructure",
+                            "column" : "2",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview_ClusterInfrastructure",
+                            "bladeOnly": true
+                        },
+                        {
+                            "display_name_key" : "Networking",
+                            "column" : "2",
+                            "order" : "3",
+                            "component" : "assets.components.Hpic4vc_Overview_ClusterNetworking"
+                        }
+                    ]
+				}
+				
+			}
+        },        
+        "productPages" : [
+            {
+                "title" : "Managing_Servers",
+                "url"   : "Managing_Servers.html",
+                "order" : "2"
+            },
+            {
+                "title" : "Server_Networking",
+                "url"   : "Server_Networking.html",
+                "order" : "4"
+            }	    
+        ],
+        "configurationPages" : [
+            {
+                "title"  : "Configure_Infrastructure",
+                "url"    : "com.hp.asi.hpic4vc.ui.insightManagement.infrastructureCredentials",
+                "order"  : "3",
+                "helpUrl": "infrastructure_credentials.html" 
+            }	    
+        ]
+    }
+}

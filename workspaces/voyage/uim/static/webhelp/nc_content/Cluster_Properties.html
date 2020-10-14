@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Setting the power cost for a cluster</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:24+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="Server_Properties_nc.html" title="Changing Server Management properties"/><link rel="prev" href="Server_Properties_nc.html" title="Changing Server Management properties"/><link rel="next" href="v16117911.html" title="Using the Insight Control Deployment Wizard"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('Server_Properties_nc','icon4Server_Properties_nc','link4Cluster_Properties','v15744267')" onunload="clearbgcolortoc('link4Cluster_Properties','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="Server_Properties_nc.html">Changing Server Management properties</a> &gt; Setting the power cost for a cluster</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v16117911.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="Cluster_Properties"/><h1 class="sectiontitle">Setting the power cost for a cluster</h1></div></div></div><a id="v14394928" class="indexterm"/><p><a id="v14394929"/>Before entering the power cost settings for a
+cluster, ensure that the cluster meets the following requirements:</p>
+	
+	<div class="itemizedlist"><a id="v14394930"/><ul type="disc"><li><p><a id="v14394931"/><a id="v14394932"/>The cluster contains
+at least one HP ProLiant server or BladeSystem enclosure.</p>
+	
+	</li><li><p><a id="v14394933"/><a id="v14394934"/>The cluster is DRS-enabled.</p>
+	
+	</li><li><p><a id="v14394935"/><a id="v14394936"/>The cluster is configured
+for DPM.</p>
+	
+	</li></ul></div><p><a id="v14394937"/>To determine if the cluster is DRS-enabled, navigate
+to the vCenter Server <span><strong class="guimenu">Summary</strong></span> tab for the cluster and review the cluster information.</p>
+	
+	<p><a id="v14394938"/>From the HP Insight Management Administration
+page, select <span><strong class="guimenu">Server Module Configuration</strong></span> screen for the cluster, enter the power cost. Entering
+the power cost for a cluster generates the cost advantage information,
+which is displayed for each host on the Cluster detail page.</p>
+	
+	<p><a id="v14394939"/>The Cost Advantage value is calculated as follows:</p>
+	
+	<p><a id="v14394940"/>Cost Advantage = (number of hours the server
+was down) × (power cost) × (average power)</p>
+	
+	<p><a id="v14394941"/>Entering the Power Cost will only calculate the
+Cost Advantage if all of the requirements in this section are applicable
+for the cluster. If the requirements are not met by the cluster, the
+cost advantage is always zero.</p>
+	
+	<h4><a id="v16161784"/>Related
+topic</h4><div class="itemizedlist"><a id="v16161785"/><ul type="disc"><li><p><a id="v16161926"/><a id="v16161927"/><a href="Server_Properties_nc.html" title="Changing Server Management properties">Changing Server Management properties</a></p>
+	
+	</li></ul></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="Server_Properties_nc.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="Server_Properties_nc.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v16117911.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Changing Server Management properties </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Using the Insight Control Deployment Wizard</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

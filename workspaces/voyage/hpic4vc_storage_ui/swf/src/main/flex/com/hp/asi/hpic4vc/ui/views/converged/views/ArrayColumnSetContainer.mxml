@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<lists:ColumnSetContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:lists="com.vmware.ui.lists.*">
+   <fx:Script>
+
+   </fx:Script>
+
+   <lists:items>
+      <lists:ColumnContainer uid="com.hp.converged.array.column.name">
+         <lists:dataInfo>
+            <lists:ColumnDataSourceInfo requestedProperties="{['arrayName']}"/>
+         </lists:dataInfo>
+         <lists:component>
+            <mx:AdvancedDataGridColumn
+               headerText="Array Stuff Here"
+               dataField="arrayName"/>
+         </lists:component>
+      </lists:ColumnContainer>
+   </lists:items>
+</lists:ColumnSetContainer>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"  width="1000" height="500" close="closeWindow()" showCloseButton="true" xmlns:components="assets.components.*" >
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.events.IndexChangedEvent;
+			import mx.managers.PopUpManager;
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var objReferenceId:String;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			 public var helpUrl:String;
+			
+			public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_uiView = hpic4vc_uiView;
+			}
+			
+			private function closeWindow():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function onViewStackChange(event:IndexChangedEvent):void
+			{
+				var canvasTest:Canvas = (myViewStack.selectedChild as Canvas);
+				if(canvasTest.id =="smartComponentUpdate"){
+					var smartComponentUpdate:Hpic4vc_SmartComponent_Update = canvasTest.getChildAt(0) as Hpic4vc_SmartComponent_Update;
+					smartComponentUpdate.getData();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:VGroup  width="100%" height="100%" paddingRight="0">
+		<mx:ToggleButtonBar dataProvider="{myViewStack}"/>
+		<mx:ViewStack id="myViewStack"  change="onViewStackChange(event)"
+					  width="100%" height="100%" creationPolicy="all">
+			<mx:Canvas id="smartComponentUpdate" label="Smart  Component Update" horizontalScrollPolicy="off">
+				<components:Hpic4vc_SmartComponent_Update id="componentsUpdate" width="100%" height="100%" objReferenceId="{objReferenceId}"/>
+			</mx:Canvas>
+			
+			<mx:Canvas id="manageSmartComponents" label="Manage Smart Components" >
+				<components:Hpic4vc_Firmware_ManageSmartComponents id="manage" width="100%" height="100%" objReferenceId="{objReferenceId}" helpUrl="{helpUrl}" />
+			</mx:Canvas>
+		</mx:ViewStack>
+	</s:VGroup>	
+	
+</mx:TitleWindow>

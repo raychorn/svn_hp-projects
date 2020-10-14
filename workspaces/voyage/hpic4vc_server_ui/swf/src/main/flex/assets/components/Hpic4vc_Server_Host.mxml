@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="100%" height="100%"
+		 creationComplete="init()"
+		 implements="assets.components.Hpic4vc_BaseComponent">
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Server_HostMediator")]
+	</fx:Metadata>
+	
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- Script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.HostDetailViewModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+
+            [Bindable]
+            public var dataNotFound:String;
+            
+            [Bindable]
+            public var errorFound:String;
+			
+            [Bindable]
+            public var hostDetail:HostDetailViewModel;
+
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+
+
+            [Bindable]
+            private var loading:String;
+            
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+            private function init():void{
+                errorFound = "";
+                dataNotFound = "";
+                this.currentState = "loadingData";
+                loading = Helper.getString("loading");
+            }
+         
+            
+            private function setColumnWidth():void{
+                var i:int;
+                for (i=0;i< hostDetail.memoryInfo.columns.length; i++){
+                    if (AdvancedDataGridColumn(hostDetail.memoryInfo.columns[i]).headerText == 'Location')
+						AdvancedDataGridColumn(hostDetail.memoryInfo.columns[i]).width = 250;
+                }
+                for (i=0;i< hostDetail.cpuInfo.columns.length; i++){
+                    if (AdvancedDataGridColumn(hostDetail.cpuInfo.columns[i]).headerText == 'Description')
+						AdvancedDataGridColumn(hostDetail.cpuInfo.columns[i]).width = 300;
+                }
+                for (i=0;i< hostDetail.softwareInfo.columns.length; i++){
+					AdvancedDataGridColumn(hostDetail.softwareInfo.columns[i]).width = 350;
+                }
+                for (i=0;i< hostDetail.firmwareInfo.columns.length; i++){
+					AdvancedDataGridColumn(hostDetail.firmwareInfo.columns[i]).width = 350;
+                }
+
+                for (i=0;i< hostDetail.iloLog.columns.length; i++){
+                    if (AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).headerText == 'Description')
+						AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).width = 450;
+                    
+                    if (AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).headerText == 'Last Update')
+						AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).width = 150;
+
+                    if (AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).headerText == 'Initial Update')
+						AdvancedDataGridColumn(hostDetail.iloLog.columns[i]).width = 150;
+                }
+
+                for (i=0;i< hostDetail.imlLog.columns.length; i++){
+                    if (AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).headerText == 'Description')
+						AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).width = 450;
+
+                    if (AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).headerText == 'Last Update')
+						AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).width = 150;
+                    
+                    if (AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).headerText == 'Initial Update')
+						AdvancedDataGridColumn(hostDetail.imlLog.columns[i]).width = 150;
+                }
+            }
+            
+            private function resizeDataGridColumns():void {
+                setColumnWidth();
+                memInfoDataGrid.rowCount = hostDetail.memoryInfo.list.length + 1;
+                cpuInfoDataGrid.rowCount = hostDetail.cpuInfo.list.length + 1;              
+                firmwareInfoDataGrid.rowCount = hostDetail.firmwareInfo.list.length + 1;
+                softwareInfoDataGrid.rowCount = hostDetail.softwareInfo.list.length + 1;
+                iloLogDataGrid.rowCount =  (hostDetail.iloLog.list.length > 10) ? 10: hostDetail.iloLog.list.length  + 1;
+                imlLogDataGrid.rowCount = (hostDetail.imlLog.list.length> 10)? 10 : hostDetail.imlLog.list.length + 1;
+                
+            }
+		]]>
+	</fx:Script>	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+        <!--<mx:ArrayCollection id="hostinfo" source="{hostDetail.hostInfo.lvList}"/>-->
+	</fx:Declarations>
+	
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- <mx:Panel height="100%" controlBarVisible="true"> -->
+    <mx:states>
+        <mx:State name="loadingData"/>
+        <mx:State name="errorFound"/>
+        <mx:State name="showDetail"/>
+        <mx:State name="dataNotFound"/>
+    </mx:states>
+
+    <mx:HBox height="30" includeIn="loadingData">
+        <s:Label text="{loading}" verticalCenter="0" />					 
+    </mx:HBox>
+    
+    <mx:HBox height="30" includeIn="dataNotFound">
+        <s:Label text="{dataNotFound}"/>					 
+    </mx:HBox>
+    
+    <mx:HBox height="30" includeIn="errorFound">
+		<mx:Text width="100%" id="errorId" text="{errorFound}" styleName="errorMessage" />					 
+    </mx:HBox>
+    
+    <mx:VBox height="100%" width="100%" includeIn="showDetail">
+        <mx:Panel width="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_INFO')}" >
+            <mx:VBox width="100%" styleName="portletVBoxValue" >
+                <mx:HBox horizontalGap="0" width="99%">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0" >
+                        <mx:Repeater id="hostinfoLabel" dataProvider="{hostDetail.hostInfo.lvList}">
+                            <s:Label width="200" text="{(hostinfoLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="hostinfoValue" dataProvider="{hostDetail.hostInfo.lvList}">
+                            <s:Label text="{(hostinfoValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_STATUS')}">
+            <mx:VBox width="100%" styleName="portletVBoxValue" >
+				<mx:HBox horizontalGap="0" width="99%">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0" >
+                        <mx:Repeater id="statusLabel" dataProvider="{hostDetail.serverStatus.lvList}">
+                            <s:Label width="200" text="{(statusLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="statusValue" dataProvider="{hostDetail.serverStatus.lvList}">
+                            <s:Label text="{(statusValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_POWER')}" >
+			<mx:VBox verticalGap="20" 
+				width="100%" styleName="portletVBoxValue" visible="{(hostDetail.serverPower.lvList == null || hostDetail.serverPower.lvList.length == 0)}" 
+					 includeInLayout="{(hostDetail.serverPower.lvList == null || hostDetail.serverPower.lvList.length == 0)}">
+				<s:Label text="{Helper.getString('POWER_READINGS_NOT_AVAILABLE')}" paddingTop="15" paddingBottom="15" paddingLeft="10"/>
+			</mx:VBox>
+            <mx:VBox width="100%" styleName="portletVBoxValue" visible="{(hostDetail.serverPower.lvList.length > 0)}"
+					 includeInLayout="{(hostDetail.serverPower.lvList.length > 0)}">
+				<mx:HBox horizontalGap="0" width="99%">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0" >
+                        <mx:Repeater id="powerLabel" dataProvider="{hostDetail.serverPower.lvList}">
+                            <s:Label width="200" text="{(powerLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="powerValue" dataProvider="{hostDetail.serverPower.lvList}">
+                            <s:Label text="{(powerValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_MEMORY')}" >
+			<mx:VBox verticalGap="20" 
+					 width="100%" styleName="portletVBoxValue" visible="{(hostDetail.memoryInfo.list == null || hostDetail.memoryInfo.list.length == 0)}" 
+					 includeInLayout="{(hostDetail.memoryInfo.list == null || hostDetail.memoryInfo.list.length == 0)}">
+				<s:Label text="{Helper.getString('MEMORY_INFORMATION_NOT_AVAILABLE')}" paddingTop="15" paddingBottom="15" paddingLeft="10"/>
+			</mx:VBox>
+            <mx:AdvancedDataGrid id="memInfoDataGrid" columns="{hostDetail.memoryInfo.columns}"
+                         dataProvider="{hostDetail.memoryInfo.list}" visible="{hostDetail.memoryInfo.list.length  > 0}" includeInLayout="{hostDetail.memoryInfo.list.length>0}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_CPU')}" >
+			<mx:VBox verticalGap="20" 
+					 width="100%" styleName="portletVBoxValue" visible="{(hostDetail.cpuInfo.list == null || hostDetail.cpuInfo.list.length == 0)}" 
+					 includeInLayout="{(hostDetail.cpuInfo.list == null || hostDetail.cpuInfo.list.length == 0)}">
+				<s:Label text="{Helper.getString('CPU_INFORMATION_NOT_AVAILABLE')}" paddingTop="15" paddingBottom="15" paddingLeft="10"/>
+			</mx:VBox>
+            <mx:AdvancedDataGrid id="cpuInfoDataGrid" columns="{hostDetail.cpuInfo.columns}"
+                         dataProvider="{hostDetail.cpuInfo.list}"
+						 visible="{hostDetail.cpuInfo.list.length > 0}"
+						 includeInLayout="{hostDetail.cpuInfo.list.length > 0}"
+						 >
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_FIRMWARE')}" >
+            <mx:AdvancedDataGrid id="firmwareInfoDataGrid" columns="{hostDetail.firmwareInfo.columns}"
+                         dataProvider="{hostDetail.firmwareInfo.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_SOFTWARE')}" >
+            <mx:AdvancedDataGrid id="softwareInfoDataGrid" columns="{hostDetail.softwareInfo.columns}"
+                         dataProvider="{hostDetail.softwareInfo.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_ILO_LOGS')}" >
+            <mx:AdvancedDataGrid  id="iloLogDataGrid" columns="{hostDetail.iloLog.columns}" wordWrap="true" variableRowHeight="true"
+                         dataProvider="{hostDetail.iloLog.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="{Helper.getString('SERVER_HOST_IML_LOG')}"  >
+            <mx:AdvancedDataGrid id="imlLogDataGrid" columns="{hostDetail.imlLog.columns}" wordWrap="true" variableRowHeight="true"
+                         dataProvider="{hostDetail.imlLog.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+		<s:Spacer height="5" />
+        
+    </mx:VBox>
+</mx:Canvas>
+

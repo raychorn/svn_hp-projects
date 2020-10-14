@@ -1,0 +1,77 @@
+<script type="text/javascript">
+    var ClusterProperties = {
+
+        
+        startApp : function(){
+            ClusterProperties.loadprop();
+            $("#clusterpropnav_center").remove();
+        },
+        
+        passwordformatter: function(){
+            return '****************';
+        },
+        
+        setReadOnly: function(elem){
+            $(elem).attr("readonly", "readonly");
+        },
+
+        errorTextFormat: function(data)
+        {
+            if(data.responseText.length == 0)
+            {
+                return data.status + ':' + data.statusText
+            }
+            return data.responseText            
+        },
+        
+        loadprop : function() {
+            var query = window.location.search;
+            //alert('in loadprop');
+            var clusterpropurl = '/settings/clusterproperties'+ query;
+            $("#clusterprop").jqGrid( {
+            	url: clusterpropurl,
+            	datatype: 'json',
+            	jsonReader: {
+            	  root : 'clusterprop',
+            	  repeatitems: false
+            	},
+            	mtype: 'GET',
+                colNames: ['User Name', 'Password', 'Type'],
+                colModel :[ 
+                  {name:'username', editable:true, edittype: 'text', width:300, editrules: {required:true, edithidden:true}, hidden:true}, 
+                  {name:'password', editable:true, edittype: 'password', width:300, editrules: {required:true, edithidden:true}, hidden:true}, 
+                  {name:'type', editable:true, editrules: {edithidden: false}, editoptions: {dataInit: ClusterProperties.setReadOnly}, width:300} 
+                ],
+            	rowNum:20,
+            	caption: 'Cluster Properties',
+            	loadError: function(xhr, status, error){alert(xhr); alert(status);alert(error);},
+            	pager: '#clusterpropnav'        	
+            }).navGrid('#clusterpropnav', {edit:true, add:false, del:false, search:false}, 
+                                         {url: '/settings/clusterproperties' + query, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, errorTextFormat: ClusterProperties.errorTextFormat}, 
+                                         {}, 
+                                         {}, 
+                                         {}, 
+                                         {} );       
+        }
+    };
+    
+    ClusterProperties.startApp();    
+	
+</script>
+
+
+<div id="clusterproperties" style="display:none;">
+
+    <div style="font-size:12px;">
+    This page is for modifying credentials for the selected cluster.<br/>
+    Once the changes are submitted, credentials will be modified for all the iLO's in this cluster.   
+    </div>
+    
+    <br/>
+
+    <table class="box_contents" id="clusterprop" width="100%"><tr><td/></tr></table>
+    <div id="clusterpropnav"></div>
+    <br/>
+
+    <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('clusteroverview');">Back</a></div>    
+</div>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.network.PNIC;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.containers.Grid;
+			import mx.containers.GridItem;
+			import mx.containers.GridRow;
+			import mx.controls.Text;
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			import mx.utils.StringUtil;
+			
+			import spark.components.VGroup;
+			
+			[Bindable]
+			private var portMapping:String = "";
+			
+			[Bindable]
+			private var duplex:String = '';
+			
+			[Bindable]
+			private var nicLabel:String;
+			
+			[Bindable]
+			private var nicIcon:Class;
+			
+			[Bindable]
+			private var displayLabel:String;
+			
+			[Bindable]
+			private var ttip:String = '';
+			
+			[Bindable]
+			private var flexNIC:Boolean = false;
+			
+			public function set pnicValue(value:PNIC):void
+			{
+				var pnic:PNIC = value;
+				
+				if(pnic.physicalPortMapping != null) 
+				{                    
+					var mezz:String = pnic.physicalPortMapping.mezz;
+					
+					// BLOMs aka Flexible LOMs should be displayed as LOM1:1-a not BLOM1:1-a to match the OA and VC GUIs                
+					if(mezz && mezz.indexOf('BLOM')==0)
+					{
+						mezz = mezz.substr(1);
+					}
+					
+					// Convert port mapping data to the format displayed in the VC GUI
+					if(mezz == 'UNKNOWN')
+					{
+						portMapping = mezz.concat(' => Bay ', pnic.physicalPortMapping.ioBay);
+					}                    
+						
+					else if(pnic.physicalPortMapping.portType == 'subport')
+					{                        
+						var physFuncMap:Object = {'VIRT-NIC1':'a', 'VIRT-NIC2':'b', 'VIRT-NIC3':'c', 'VIRT-NIC4':'d' };                        
+						flexNIC = true;
+						nicLabel = mezz.concat(':',pnic.physicalPortMapping.port.replace('PORT',''));
+						if(pnic.physicalPortMapping.physFunc in physFuncMap)
+						{
+							nicLabel = nicLabel.concat('-', physFuncMap[pnic.physicalPortMapping.physFunc]);
+						}
+						else
+						{
+							portMapping = nicLabel.concat('-', pnic.physicalPortMapping.physFunc);
+						}
+						portMapping = nicLabel.concat(' => Bay ', pnic.physicalPortMapping.ioBay);
+					}
+					else
+					{                        
+						nicLabel = portMapping.concat(mezz,':',pnic.physicalPortMapping.port.replace('PORT',''));                                                         
+						portMapping = nicLabel.concat(' => Bay ', pnic.physicalPortMapping.ioBay);                                                         
+					}
+				}
+				
+				//FC adapters give speed in Gbps while FCoE adapters are in Kbps
+				var speedUnit:String = 'Gb';
+				//var speed:Number = pnic.speedGb;
+				var speed:Number =  int(pnic.speedGb*10)/10; 
+				
+				if (pnic.linkSpeed) 
+				{                    
+					duplex = pnic.linkSpeed.duplex ? "Full" : "Half";
+				}
+				
+				//Lets genrate poup data as well
+				
+				var mac:String = pnic.mac.toLowerCase().replace(/-/g, ':');
+				
+				ttip = StringUtil.substitute("Device:  {0}\nPhysical Device: {1}\nName:  {2}\nPort mapping: {3}\nMAC Address:  {4}\nDriver:  {5}\nPCI locator:  {6}\nSpeed:  {7} {10}\nDuplex:  {8}\nWake-On-LAN supported:  {9}",
+					pnic.device,
+					nicLabel,
+					pnic.deviceName,
+					portMapping,                    
+					mac,
+					pnic.driver,
+					pnic.pci,
+					speed,
+					duplex,
+					pnic.wakeOnLanSupported ? "Yes" : "No",
+					speedUnit
+				);
+				
+				if (speed) {
+					if(flexNIC)
+						nicIcon = Images.FLEXNIC; //this.image("/static/img/network-diagram/flexnic.png", 0, 0, 16, 16);
+					else
+						nicIcon = Images.PNIC;
+				} else {
+					if(flexNIC)
+						nicIcon = Images.FLEXNIC_DOWN; //this.image("/static/img/network-diagram/flexnic.png", 0, 0, 16, 16);
+					else
+						nicIcon = Images.PNIC_DOWN;
+				}
+				
+				displayLabel = StringUtil.substitute("{0} {1} {2} {3}",
+					pnic.device,                            
+					nicLabel,
+					speed, speedUnit);
+				
+				
+			}
+			
+			
+			protected function createCustomToolTip(event:ToolTipEvent):void
+			{
+				var ptt:PanelToolTip = new PanelToolTip();
+				ptt.title = "Physical Adapter";
+				ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit)
+				event.toolTip = ptt;
+			}
+			
+			private function onTooltipInit(event:Event):void
+			{
+				(event.currentTarget as PanelToolTip).removeEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				(event.currentTarget as PanelToolTip).lblSummary.text = ttip;
+				(event.currentTarget as PanelToolTip).group.invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout gap="0" />
+	</s:layout>
+	<s:HGroup verticalAlign="middle" paddingLeft="10">
+		
+		<s:Image source="{nicIcon}" />
+		<mx:Label text="{displayLabel}" />
+		<s:Image source="{Images.BUBBLE}" toolTip="hello" toolTipCreate="createCustomToolTip(event)" />
+		
+	</s:HGroup>
+	
+</s:Group>

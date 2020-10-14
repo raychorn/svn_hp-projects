@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testrun name="" >
+<testsuite  name="Default Test Suite" project="hpic4vc_ui_tests">
+<testsuite name="com.hp.asi.hpic4vc.ui.utils:IPAddressValidatorTest" type="testsuiteclass"/>
+<testsuite name="com.hp.asi.hpic4vc.ui.utils:IPAddressValidatorTestSuite" type="testcaseclass"/>
+</testsuite>
+<portNumber value="8765" />
+</testrun>

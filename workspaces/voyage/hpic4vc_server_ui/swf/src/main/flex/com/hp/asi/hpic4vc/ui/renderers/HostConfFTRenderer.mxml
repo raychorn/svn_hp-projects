@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.events.UpdateNetworkEvent;
+			[Bindable]
+			private var ftChecked:Boolean = false;
+			[Bindable]
+			private var purposeValue:String;
+			[Bindable]
+			public var uuidValue:String;
+			private const FT_LOGGING:String = "FT_LOGGING";
+			
+			
+			override public function set data(value:Object):void
+			{
+				ftChecked = false;
+				ftCheckedchkBox.selected=false;
+				super.data = value;
+				if (value){
+				if (value && value.purpose == FT_LOGGING)
+				{
+					ftChecked = true;
+				}
+				uuidValue=value.uuid;
+				}
+			}
+			private function ch_change(evt:Event):void {
+				var ch:CheckBox = evt.currentTarget as CheckBox;
+				if(ch.selected){
+					purposeValue= FT_LOGGING;
+				}
+				else{
+					purposeValue="null";
+				}
+				var flag:Boolean=updateFT(purposeValue,uuidValue);
+				if(!flag){
+					ch.selected=false;
+				}				
+			}
+			private function updateFT(val:String,uuid:String):Boolean
+			{				
+				var ftEvent:UpdateNetworkEvent = new UpdateNetworkEvent(UpdateNetworkEvent.FTEVENT,true)
+				ftEvent.ftPurposeValue = val;
+				ftEvent.uuidSelectedValue= uuid;
+				ftEvent.mgmtselectedValue=ftChecked;
+				dispatchEvent(ftEvent);		
+				return ftEvent.mgmtselectedValue;					
+			}
+		]]>
+	</fx:Script>
+	<s:CheckBox id="ftCheckedchkBox" selected="{ftChecked}" click="ch_change(event)" left="60"/>
+	
+</s:MXAdvancedDataGridItemRenderer>
+

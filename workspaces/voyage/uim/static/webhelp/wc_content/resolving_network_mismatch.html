@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Host network configuration</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:51:54+00:00--><meta name="description" content="This is the host network configuration content for the IC4VC&#xA;OLH and User Guide."/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="Managing_Servers.html" title="Managing hosts"/><link rel="prev" href="Server_Networking.html" title="Viewing host networking information"/><link rel="next" href="setting_reference_host.html" title="Setting a reference host in a cluster"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('Managing_Servers','icon4Managing_Servers','link4resolving_network_mismatch','v15744267')" onunload="clearbgcolortoc('link4resolving_network_mismatch','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="Managing_Servers.html">Managing hosts</a> &gt; Host network configuration</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="setting_reference_host.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="resolving_network_mismatch"/><h1 class="sectiontitle">Host network configuration</h1></div></div></div><a id="d0e4242" class="indexterm"/><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE" class="changed"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b><div class="itemizedlist"><ul type="disc"><li class=""><p>If management network is not specified, an error indicating
+this is displayed instead of status at the top of the Networking Portlet
+in the Overview page. The same error message is displayed in the Host
+Network Configuration table in Network Detail Page.</p>
+	
+	</li><li class=""><p>The host network configuration feature is not supported
+for hosts running the ESX classic version.</p>
+	
+	</li></ul></div></p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><div class="procedure"><ol type="1"><li><p>The host network configuration status on the networking
+portlet of the Host Overview page indicates one of the following:</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>OK (<span class="inlinemediaobject"><img src="images/ok_icon.png"/></span>)</b></span> —indicates the host
+networking configuration matches the networks configured in the Virtual
+Connect Profile for this host. No action is required on a host in
+this state.</p>
+	
+	</li><li><p><span class="bold"><b>Mismatch (<span class="inlinemediaobject"><img src="images/red_status_icon.png"/></span>)</b></span> —indicates the host
+configuration does not match the networks configured in the Virtual
+Connect Profile for this host. Clicking the networking configuration
+status will display the recommended actions for configuring the VMware
+host network based on the network preferences and Virtual Connect
+profile networks. Clicking on <span><strong class="guilabel">Apply Recommended Actions</strong></span> will
+help modify the host configuration to match the reference host.</p>
+	
+	</li><li><p><span class="bold"><b>? (<span class="inlinemediaobject"><img src="images/help_icon.png"/></span>) </b></span> —indicates the host
+configuration status is not known. This is due to the fact that a
+reference host has not been configured for the cluster.</p>
+	
+	</li><li><p><span class="bold"><b>NA (<span class="inlinemediaobject"><img src="images/na_icon.png"/></span>) </b></span> —indicates the host
+configuration status is not applicable. This is due to the fact that
+the host does not have a Virtual Connect profile available against
+it.</p>
+	
+	<div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>For information on setting up a reference host, see <a href="setting_reference_host.html" title="Setting a reference host in a cluster">Setting a reference host in a cluster</a>.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></li></ul></div></li><li><p>Click the network configuration status icon.</p>
+	
+	<p>The
+Host Network Configuration screen is displayed. This displays the
+overall network status, the virtual connect profile status and the
+host network status for the current host. Recommended actions are
+included for configuring the VMware host network based on the network
+preference and Virtual Connect networks.</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li><p>The Server Profile Status indicates whether the Virtual
+Connect profile for this host matches the profile of the reference
+host.  </p>
+	
+	<p>If the Server Profile Status is Mismatch, the
+required changes need to be made using the Virtual Connect Manager
+to ensure that the Virtual Connect profile of this host matches that
+of the reference host.</p>
+	
+	</li><li><p>The Host Network Status indicates whether the host
+configuration with regard to its Virtual Connect profile is correct.
+ </p>
+	
+	<p>If the Virtual Connect profile status is OK, then a
+mismatch in the Host Network Status can be corrected by triggering
+a host configuration using the Apply Recommended Action.</p>
+	
+	</li><li><p>The Host Network Configuration Status is a combination
+of both the above status indicators.</p>
+	
+	</li></ul></div><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b><div class="itemizedlist"><ul type="disc"><li><p>Ensure that the Virtual Connect profile status for
+each host in the cluster is OK. If it is not, you will need to modify
+the Virtual Connect profile (ethernet connections section) for that
+host using the Virtual Connect Manager interface to match the Virtual
+Connect profile configuration of the reference host. This will ensure
+that the same set of networks is available on both the hosts.</p>
+	
+	</li><li><p>The host configure option should be triggered only
+after the Virtual Connect profile for the host matches the reference
+host.</p>
+	
+	</li></ul></div></p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></li><li><p>Click <span><strong class="guibutton">Apply Recommended Actions</strong></span>.</p>
+	
+	<p>Confirmation screen is displayed which lists all the networking
+configuration changes that will be done. Review the changes that will
+be made.</p>
+	
+	</li><li><p>Click <span><strong class="guibutton">Apply</strong></span> to perform the actions.</p>
+	
+	<p>Once the changes are applied, the final status is shown in the
+news feed section. To view progress updates, access the Tasks page
+under HP Insight Management.</p>
+	
+	</li></ol></div><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b><div class="itemizedlist"><ul type="disc"><li><p>Host network configuration can fail on hosts having
+VMs running on them. The status and task details are shown under tasks
+for the host.  Insight Control for vCenter does not move the VMs before performing
+host network configuration. The cluster on which the host resides
+must be DRS enabled to handle VM movement automatically, or the VMs
+must be manually moved from the host before attempting host network
+configuration for the host.</p>
+	
+	</li><li><p>If host network configuration fails after the host
+is put into maintenance mode, the host remains in maintenance mode
+and is not added back into the cluster. If this occurs, view the task
+details to determine the cause of the failure and resolve the issue
+manually (typically a vCenter/host configuration modification). The
+host configure operation should then be retried so the host is configured
+correctly and added back into the cluster.</p>
+	
+	</li></ul></div></p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="Server_Networking.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="Managing_Servers.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="setting_reference_host.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Viewing host networking information </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Setting a reference host in a cluster</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

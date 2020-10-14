@@ -1,0 +1,245 @@
+<script id="hostinfradetail_oa_template" type="text/x-jquery-tmpl" >   
+    
+    {{if oa_status.oaRole != 'OA_ABSENT'}}
+        <tr><td>${oa_info.bayNumber}</td><td>${oa_info.name}</td><td>${oa_status.oaRole}</td><td>${oa_network.ipAddress}</td><td>${oa_info.fwVersion}</td><td>${oa_info.serialNumber}</td><td>${oa_info.partNumber}</td><td>${oa_info.sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${oa_info.bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+    
+</script>
+
+<script id="hostinfradetail_interconnect_template" type="text/x-jquery-tmpl" >    
+    {{if name != "[Unknown]"}}
+        <tr><td>${bayNumber}</td><td>${name}</td><td>${serialNumber}</td><td>${partNumber}</td><td>${sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+</script>
+
+<script id="hostinfradetail_ps_template" type="text/x-jquery-tmpl" >    
+    {{if serialNumber}}
+        <tr><td>${bayNumber}</td><td>${HostInfraDetail.getExtraDataValue( $data, "productName") }</td><td style="text-align:right">${capacity}</td><td style="text-align:right">${actualOutput}</td><td>${serialNumber}</td><td>${modelNumber}</td><td>${sparePartNumber}</td></tr>    
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>    
+    {{/if}}
+</script>
+
+<script id="hostinfradetail_fan_template" type="text/x-jquery-tmpl" >    
+    {{if presence != "ABSENT"}}
+        <tr><td>${bayNumber}</td><td>${name}</td><td class="numerical-value">${fanSpeed}</td><td class="numerical-value">${maxFanSpeed}</td><td class="numerical-value">${powerConsumed}</td><td>${partNumber}</td><td>${sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+</script>
+
+<script id="hostinfradetail_blade_template" type="text/x-jquery-tmpl" >    
+    <tr><td>${bayNumber}</td><td>${serverName}</td><td>${name}</td><td>${numberofCpus}</td><td>${numberOfNics}</td><td>${partNumber}</td><td>${sparePartNumber}</td><td>${romVersion}</td></tr>        
+</script>
+
+<script id="hostinfradetail_thermal_template" type="text/x-jquery-tmpl" >
+    <table>
+    <tr><td>Redundancy</td><td>${redundancy}</td></tr>                
+    <tr><td>Good Fans</td><td class="numerical-value">${goodFans}</td></tr>    
+    <tr><td>Wanted Fans</td><td class="numerical-value">${wantedFans}</td></tr>    
+    <tr><td>Needed Fans</td><td class="numerical-value">${neededFans}</td></tr>        
+    </table>
+</script>
+
+<script id="hostinfradetail_power_template" type="text/x-jquery-tmpl" >
+    <table>
+    <tr><td>Redundancy</td><td>${redundancy}</td></tr>        
+    <tr><td>Capacity</td><td class="numerical-value">${capacity} W</td></tr>    
+    <tr><td>Redundant Capacity</td><td class="numerical-value">${redundantCapacity} W</td></tr>    
+    <tr><td>Output Power</td><td class="numerical-value">${outputPower} W</td></tr>    
+    <tr><td>Power Consumed</td><td class="numerical-value">${powerConsumed} W</td></tr>    
+    <tr><td>Good Power Supplies</td><td class="numerical-value">${goodPowerSupplies}</td></tr>    
+    <tr><td>Wanted Power Supplies</td><td class="numerical-value">${wantedPowerSupplies}</td></tr>    
+    <tr><td>Needed Power Supplies</td><td class="numerical-value">${neededPowerSupplies}</td></tr>        
+    </table>
+</script>
+
+<script id="hostinfradetail_enclosure_template" type="text/x-jquery-tmpl" >
+    <table>    
+    <tr><td>Enclosure</td><td>${enclosureName}</td></tr>    
+    <tr><td>Product Name</td><td>${name}</td></tr>    
+    <tr><td>Rack</td><td>${rackName}</td></tr>    
+    <tr><td>Blade Bays</td><td>${bladeBays}</td></tr>    
+    <tr><td>Fan Bays</td><td>${fanBays}</td></tr>    
+    <tr><td>Power Supply Bays</td><td>${powerSupplyBays}</td></tr>    
+    <tr><td>Interconnect Tray Bays</td><td>${interconnectTrayBays}</td></tr>    
+    <tr><td>Serial Number</td><td>${serialNumber}</td></tr>    
+    <tr><td>UUID</td><td>${uuid}</td></tr>    
+    <tr><td>Part Number</td><td>${partNumber}</td></tr>    
+    <tr><td>Midplane Spare Part Number</td><td>${chassisSparePartNumber}</td></tr>    
+    </table>
+</script>
+
+<script id="hostinfradetail_oasyslog_template" type="text/x-jquery-tmpl" >
+    <tr>
+        <td>
+            ${$item.data}
+        </td>
+    </tr>
+</script>
+
+<script id="hostinfradetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">                
+        <div class="bigbox_header ui-widget-header">Enclosure</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                {{tmpl(enclosure_info) "#hostinfradetail_enclosure_template"}}                              
+            </div>
+        </div>        
+        
+        <div class="bigbox_header ui-widget-header">Power</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                {{tmpl(power) "#hostinfradetail_power_template"}}                              
+            </div>
+        </div>        
+        
+        <div class="bigbox_header ui-widget-header">Thermal</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                {{tmpl(thermal) "#hostinfradetail_thermal_template"}}                              
+            </div>
+        </div>        
+        <!--
+        <div class="bigbox_header ui-widget-header">Blades</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">           
+                <table>
+                <tr><th>Bay</th><th>Server Name</th><th>Model</th><th>CPUs</th><th>NICs</th><th>Part Number</th><th>Spare Part Number</th><th>ROM Version</th></tr>
+                {{tmpl(blade_info.bladeInfo) "#hostinfradetail_blade_template"}}                              
+                </table>
+            </div>
+        </div>        
+        -->
+        <div class="bigbox_header ui-widget-header">Fans</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">           
+                <table>
+                <tr><th>Bay</th><th>Product Name</th><th>Fan Speed (rpm)</th><th>Max Fan Speed (rpm)</th><th>Power Consumed (W)</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                {{tmpl(fan_info.fanInfo) "#hostinfradetail_fan_template"}}                              
+                </table>
+            </div>
+        </div>        
+        
+        <div class="bigbox_header ui-widget-header">Power Supplies</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">           
+                <table>
+                <tr><th>Bay</th><th>Product Name</th><th>Capacity (W)</th><th>Output (W)</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                {{tmpl(ps_info.powerSupplyInfo) "#hostinfradetail_ps_template"}}                              
+                </table>
+            </div>
+        </div>    
+        
+        <div class="bigbox_header ui-widget-header">Interconnects</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">           
+                <table>
+                <tr><th>Bay</th><th>Product Name</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                {{tmpl(tray_info.interconnectTrayInfo) "#hostinfradetail_interconnect_template"}}                              
+                </table>
+            </div>
+        </div>    
+        
+        <div class="bigbox_header ui-widget-header">Onboard Administrator Modules</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">           
+                <table>
+                <tr><th>Bay</th><th>Product Name</th><th>Role</th><th>IP</th><th>Firmware Version</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                {{tmpl(oa_info_status) "#hostinfradetail_oa_template"}}                              
+                </table>
+            </div>
+        </div>    
+        
+        {{if syslog }}
+        <div class="bigbox_header ui-widget-header">Onboard Administrator Syslog</div>
+        <div class="bigbox_contents">
+            {{if syslog.length > 0}}
+                <div class="bigbox_line">
+                    <div style="height: 200px;overflow-y: scroll;">
+                    <table>                    
+                        {{tmpl(syslog) "#hostinfradetail_oasyslog_template"}}              
+                    </table>    
+                    </div>
+                </div>
+            {{else}}
+                Log is empty or unavailable.
+            {{/if}}
+        </div>
+        {{/if}}
+        
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var HostInfraDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        getExtraDataValue : function(data, name)
+        {
+            for(i in data.extraData)
+            {
+                if(data.extraData[i]._name == name)
+                {
+                    return data.extraData[i].value;
+                }
+            }
+            return "";
+        },
+        
+        refresh_data : function()
+        {                            
+            if (HostInfraDetail.isActive())
+            {                                
+                $.getJSON("/services/host/hostinfradetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#hostinfradetail').empty();
+                        if(data.oa)
+                        {
+                            $.tmpl('hostinfradetail_template', data.oa).appendTo( "#hostinfradetail" );                        
+                        }
+                        else
+                        {
+                            $('#hostinfradetail').html("<h3>Infrastructure information is unavailable</h3>");
+                        }
+                        HostInfraDetail.refreshTimeoutId = setTimeout("HostInfraDetail.refresh_data()", 120000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#hostinfradetail_template").template('hostinfradetail_template');
+            HostInfraDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            HostInfraDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(HostInfraDetail.activeOverride == true)
+            {
+                HostInfraDetail.activeOverride = false;
+                return true;
+            }
+            return $("#hostinfradetail").is(":visible");
+        }
+    };
+    
+    HostInfraDetail.startApp();
+    AppManager.addAppListener(HostInfraDetail.refresh_data);
+</script>
+
+
+<div id="hostinfradetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

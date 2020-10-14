@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Viewing VMs to volumes</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:52:01+00:00--><meta name="description" content="This is the Viewing VMs to volumes content for the IC4VC OLH&#xA;and User Guide."/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v11164267.html" title="Viewing detailed storage information"/><link rel="prev" href="s_Viewing_replications_201003021128.html" title="Viewing replications"/><link rel="next" href="HP_Infrastructure_page.html" title="Using the HP Infrastructure page"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v11164267','icon4v11164267','link4v14486433','v15744267')" onunload="clearbgcolortoc('link4v14486433','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v11164267.html">Viewing detailed storage information</a> &gt; Viewing VMs to volumes</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="HP_Infrastructure_page.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="v14486433"/><h1 class="sectiontitle">Viewing VMs to volumes</h1></div></div></div><a id="v14941940" class="indexterm"/><a id="v14941941" class="indexterm"/><p><a id="v14486434"/>The VMs to volumes page displays the following
+information:</p>
+	
+	<div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>The same VM can appear multiple times, based
+on the number of available paths to a storage disk.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><div class="itemizedlist"><a id="v14486437"/><ul type="disc"><li><p><a id="v14486438"/><a id="v14486439"/><span><strong class="guilabel">Virtual Machine</strong></span>—VM
+name</p>
+	
+	</li><li><p><a id="v14486440"/><a id="v14486441"/><span><strong class="guilabel">VM Provisioned
+Capacity</strong></span>—Amount of storage provisioned on the host as virtual
+disks (VMDKs or RDMs)</p>
+	
+	</li><li><p><a id="v14486442"/><a id="v14486443"/><span><strong class="guilabel">VM Allocated
+Capacity</strong></span>—Amount of storage used on the host as virtual
+disks (VMDKs or RDMs)</p>
+	
+	</li><li><p><a id="v14486444"/><a id="v14486445"/><span><strong class="guilabel">Virtual Disk
+Name</strong></span>—Virtual disk name assigned by VMware</p>
+	
+	</li><li><p><a id="v14486447"/><a id="v14486448"/><span><strong class="guilabel">Virtual Disk
+Type</strong></span>—Virtual disk type (VMDK or RDM)</p>
+	
+	</li><li><p><a id="v17717785"/><a id="v17717786"/><span><strong class="guilabel">Virtual Disk
+Provisioned Capacity</strong></span>—Actual size of the VMware virtual
+disk</p>
+	
+	</li><li><p><a id="v17717788"/><a id="v17717789"/><span><strong class="guilabel">Virtual Disk
+Allocated Capacity</strong></span>—Allocated capacity of VMware virtual
+disk</p>
+	
+	</li><li><p><a id="v14486457"/><a id="v14486458"/><span><strong class="guilabel">VMware Provisioned</strong></span>—Thick
+or thin</p>
+	
+	</li><li><p><a id="v17759644"/><a id="v17759645"/><span><strong class="guilabel">Datastore</strong></span>—The
+datastore that contains the VM</p>
+	
+	</li><li><p><a id="v11016259"/><a id="v11016260"/><span><strong class="guilabel">VMware Disk
+Identifier</strong></span>—Disk name assigned by VMware</p>
+	
+	</li><li><p><a id="v11311712"/><a id="v11311713"/><span><strong class="guilabel">Array Disk
+Name</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v11049313"/><ul type="disc"><li><p><a id="v11049318"/><a id="v11049319"/>HP StoreVirtual—Volume
+name</p>
+	
+	</li><li><p><a id="v17717721"/><a id="v17717722"/>HP 3PAR StoreServ—Volume
+name</p>
+	
+	</li><li><p><a id="v11049316"/><a id="v11049317"/>HP EVA—Path for the
+virtual disk on the storage array</p>
+	
+	</li><li><p><a id="v11049320"/><a id="v11049321"/>HP MSA P2000 G3—Volume
+name</p>
+	
+	</li><li><p><a id="v11049314"/><a id="v11049315"/>HP XP P9000/HP XP—Emulation
+type and LDKC:CU:LDEV (for example, HP OPEN-V-CVS (00:04:3F))</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486475"/><a id="v14486476"/><span><strong class="guilabel">Array Disk
+Type</strong></span>—Array disk type</p>
+	
+	</li><li><p><a id="v11311723"/><a id="v11311724"/><span><strong class="guilabel">Array Name</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v11049322"/><ul type="disc"><li><p><a id="v11049327"/><a id="v11049328"/>HP StoreVirtual—Management
+group name</p>
+	
+	</li><li><p><a id="v17717724"/><a id="v17717725"/>HP 3PAR StoreServ—Array
+display name</p>
+	
+	</li><li><p><a id="v11049325"/><a id="v11049326"/>HP EVA—Array display
+name</p>
+	
+	</li><li><p><a id="v11049329"/><a id="v11049330"/>HP MSA P2000 G3—System
+name</p>
+	
+	</li><li><p><a id="v11049323"/><a id="v11049324"/>HP XP P9000/HP XP—Array
+serial number</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486473"/><a id="v14486474"/><span><strong class="guilabel">Array Type</strong></span>—HP
+array type</p>
+	
+	</li><li><p><a id="v17717791"/><a id="v17717792"/><span><strong class="guilabel">Array Disk
+Total Capacity</strong></span>—Total amount of storage available to the
+datastore</p>
+	
+	</li><li><p><a id="v17717794"/><a id="v17717795"/><span><strong class="guilabel">Array Disk
+Allocated Capacity</strong></span>—Size of the virtual disk on the array</p>
+	
+	</li><li><p><a id="v17717797"/><a id="v17717798"/><span><strong class="guilabel">Array Disk
+Provisioned</strong></span>—Whether the virtual disk uses thick or thin
+provisioning</p>
+	
+	</li><li><p><a id="v14486510"/><a id="v14486511"/><span><strong class="guilabel">Array Controller</strong></span>—Controller
+used for this path</p>
+	
+	</li><li><p><a id="v14486512"/><a id="v14486513"/><span><strong class="guilabel">Array Port</strong></span>—Storage
+array's port identifier used for this path</p>
+	
+	</li><li><p><a id="v14486514"/><a id="v14486515"/><span><strong class="guilabel">Host Group</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v16142998"/><ul type="disc"><li><p><a id="v16143003"/><a id="v16143004"/>HP StoreVirtual—Name
+configured for the host's IQN in the management console</p>
+	
+	</li><li><p><a id="v17717817"/><a id="v17717818"/>HP 3PAR StoreServ—Name
+of the host object containing the host WWN for this path</p>
+	
+	</li><li><p><a id="v16143001"/><a id="v16143002"/>HP EVA—Name of the
+host object containing the host WWN for this path</p>
+	
+	</li><li><p><a id="v16143005"/><a id="v16143006"/>HP MSA P2000 G3—Nickname
+of the host with the host WWN for this path</p>
+	
+	</li><li><p><a id="v16142999"/><a id="v16143000"/>HP XP P9000/HP XP—Name
+of the host group containing the HBA WWN on the array port for this
+path</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486525"/><a id="v14486526"/><span><strong class="guilabel">Host Access</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v16143007"/><ul type="disc"><li><p><a id="v16143014"/><a id="v16143015"/>HP StoreVirtual—Host
+access level assigned to the presentation of the disk to the host
+(for example, READ/WRITE or READ-ONLY)</p>
+	
+	</li><li><p><a id="v17717820"/><a id="v17717821"/>HP 3PAR StoreServ—N/A.
+3PAR storage volumes operate in a read-only/read-write configuration.</p>
+	
+	</li><li><p><a id="v16143012"/><a id="v16143013"/>HP EVA—Host access
+level assigned to the presentation of the disk to the host (for example,
+READ/WRITE or READ-ONLY)</p>
+	
+	</li><li><p><a id="v16143016"/><a id="v16143017"/>HP MSA P2000 G3—Access
+setting for volume mapping (for example, READ/WRITE or READ-ONLY)</p>
+	
+	</li><li><p><a id="v16143008"/><a id="v16143009"/>HP XP P9000/HP XP—Host
+access level assigned to the volume</p>
+	
+	<div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>The HP XP P9000/HP XP array does not allow host
+access to be specified on a per-host or per-path basis.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486536"/><a id="v14486537"/><span><strong class="guilabel">Host Mode</strong></span></p><div class="itemizedlist"><ul type="disc"><li><p>HP StoreVirtual—Not applicable</p>
+	
+	</li><li><p>HP 3PAR StoreServ—Not applicable</p>
+	
+	</li><li><p>HP EVA—Host mode assigned to the HP EVA host object</p>
+	
+	</li><li><p>HP MSA P2000 G3—Name of the host's profile</p>
+	
+	</li><li><p>HP XP P9000/HP XP—Host mode assigned to the host group</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div>
+	
+	</li><li><p><a id="v14486478"/><a id="v14486479"/><span><strong class="guilabel">Host Name</strong></span>—Host
+name</p>
+	
+	</li><li><p><a id="v14486480"/><a id="v14486481"/><span><strong class="guilabel">Current Owner</strong></span>—Specifies
+whether the host is the current owner of the selected VM</p>
+	
+	</li><li><p><a id="v14486482"/><a id="v14486483"/><span><strong class="guilabel">Host HBA Port
+WWN</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v14486484"/><ul type="disc"><li><p><a id="v14486489"/><a id="v14486490"/>HP StoreVirtual—IQN
+assigned to the host</p>
+	
+	</li><li><p><a id="v18113827"/><a id="v18113828"/>HP 3PAR StoreServ (FC)—WWN
+for the host port on the host end of this path </p>
+	
+	</li><li><p><a id="v18113829"/><a id="v18113830"/>HP 3PAR StoreServ (iSCSI)—IQN
+assigned to the host</p>
+	
+	</li><li><p><a id="v14486487"/><a id="v14486488"/>HP EVA—WWN for the
+host port on the host end of this path</p>
+	
+	</li><li><p><a id="v14486491"/><a id="v14486492"/>HP MSA P2000 G3 (FC, SAS)—WWN
+for the host port on the host end of this path</p>
+	
+	</li><li><p><a id="v14486493"/><a id="v14486494"/>HP MSA P2000 G3 (iSCSI)—IQN
+assigned to the host</p>
+	
+	</li><li><p><a id="v14486485"/><a id="v14486486"/>HP XP P9000/HP XP—WWN
+for the host port on the host end of this path</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486495"/><a id="v14486496"/><span><strong class="guilabel">Array Port
+WWN</strong></span></p>
+	
+	<div class="itemizedlist"><a id="v14486497"/><ul type="disc"><li><p><a id="v14486502"/><a id="v14486503"/>HP StoreVirtual—IQN
+used by the host for connecting to this disk on this storage array</p>
+	
+	</li><li><p><a id="v17717813"/><a id="v17717814"/>HP 3PAR StoreServ (FC)—WWN
+for the storage array port on the storage array end of this path</p>
+	
+	</li><li><p><a id="v17969644"/><a id="v17969645"/>HP 3PAR StoreServ (iSCSI)—IQN
+used by the host for connecting to this disk on this storage array</p>
+	
+	</li><li><p><a id="v14486500"/><a id="v14486501"/>HP EVA—WWN for the
+storage array port on the storage array end of this path</p>
+	
+	</li><li><p><a id="v14486504"/><a id="v14486505"/>HP MSA P2000 G3 (FC, SAS)—WWN
+for the storage array port on the storage array end of this path</p>
+	
+	</li><li><p><a id="v14486506"/><a id="v14486507"/>HP MSA P2000 G3 (iSCSI)—IQN
+used by the host for connecting to this disk on this storage array</p>
+	
+	</li><li><p><a id="v14486498"/><a id="v14486499"/>HP XP P9000/HP XP—WWN
+for the storage array port on the storage array end of this path</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div></li><li><p><a id="v14486508"/><a id="v14486509"/><span><strong class="guilabel">LUN Number</strong></span>—LUN
+used for presenting the storage disk from the storage array port to
+the host HBA port</p>
+	
+	</li><li><p><a id="v14486542"/><a id="v14486543"/><span><strong class="guilabel">Path ID</strong></span>—Path
+ID assigned by VMware</p>
+	
+	</li><li><p><a id="v14486538"/><a id="v14486539"/><span><strong class="guilabel">Preferred
+Path</strong></span></p><div class="itemizedlist"><ul type="disc"><li><p>HP StoreVirtual—Not applicable</p>
+	
+	</li><li><p>HP 3PAR StoreServ—Not applicable</p>
+	
+	</li><li><p>HP EVA—Specifies whether the path uses a port on
+the controller that is configured as the preferred path for the vdisk
+(Yes, No, No preference)</p>
+	
+	</li><li><p>HP MSA P2000 G3—Not applicable</p>
+	
+	</li><li><p>HP XP P9000/HP XP—Not applicable</p>
+	
+	</li><li><p>HP StoreOnce Backup—Not applicable</p>
+	
+	</li></ul></div>
+	
+	</li><li><p><a id="v14486540"/><a id="v14486541"/><span><strong class="guilabel">Active Path</strong></span>—Specifies
+whether the path is active or in standby status</p>
+	
+	</li></ul></div><h4><a id="v18107185"/>Related
+topics</h4><div class="itemizedlist"><a id="v18107186"/><ul type="disc"><li><p><a id="v18107187"/><a id="v18107188"/><a href="Refreshing_Data.html" title="Refreshing Storage Module for vCenter data">Refreshing Storage Module for vCenter data</a></p>
+	
+	</li><li><p><a id="v18107190"/><a id="v18107191"/><a href="v11040809.html" title="Customizing Storage Module for vCenter tables">Customizing Storage Module for vCenter tables</a></p>
+	
+	</li></ul></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="s_Viewing_replications_201003021128.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v11164267.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="HP_Infrastructure_page.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Viewing replications </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Using the HP Infrastructure page</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

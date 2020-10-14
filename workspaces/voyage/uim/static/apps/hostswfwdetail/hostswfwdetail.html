@@ -1,0 +1,89 @@
+<script id="hostswfwdetail_software_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="hostswfwdetail_firmware_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="hostswfwdetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">        
+        <div class="bigbox_header ui-widget-header">Software</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof software != 'undefined' && software.length > 0}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(software) "#hostswfwdetail_software_template"}}              
+                    </table>                    
+                {{else}}
+                    Software information is unavailable.
+                {{/if}}
+            </div>
+        </div>
+        <div class="bigbox_header ui-widget-header">Firmware</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof firmware != 'undefined' && firmware.length > 0}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(firmware) "#hostswfwdetail_firmware_template"}}              
+                    </table>    
+                {{else}}
+                    Firmware information is unavailable.
+                {{/if}}
+            </div>
+        </div>
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="hostswfwexportlink">Export (csv)</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var HostSwFwDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (HostSwFwDetail.isActive())
+            {                                
+                $.getJSON("/agservices/hostswfwdetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#hostswfwdetail').empty();
+                        $.tmpl('hostswfwdetail_template', data).appendTo( "#hostswfwdetail" );                        
+                        HostSwFwDetail.refreshTimeoutId = setTimeout("HostSwFwDetail.refresh_data()", 120000);
+                        $('#hostswfwexportlink').attr("href", '/hostswfwexport' + "?" + window.location.search.substring(1));
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#hostswfwdetail_template").template('hostswfwdetail_template');
+            HostSwFwDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            HostSwFwDetail.refresh_data();                       
+        },
+        
+        isActive: function(){
+            if(HostSwFwDetail.activeOverride == true)
+            {
+                HostSwFwDetail.activeOverride = false;
+                return true;
+            }
+            return $("#hostswfwdetail").is(":visible");
+        }
+    };
+    
+    HostSwFwDetail.startApp();
+    AppManager.addAppListener(HostSwFwDetail.refresh_data);
+</script>
+
+
+<div id="hostswfwdetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

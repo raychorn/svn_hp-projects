@@ -1,0 +1,501 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0049)http://api.jquery.com/category/plugins/templates/ -->
+<!DOCTYPE html><HTML lang="en"><HEAD><TITLE>Templates – jQuery API</TITLE>
+<META content="text/html; charset=UTF-8" http-equiv="content-type"><LINK rel="pingback" 
+href="http://api.jquery.com/xmlrpc.php"><LINK rel="stylesheet" type="text/css" 
+href="Templates%20–%20jQuery%20API_files/reset.css"><LINK rel="stylesheet" type="text/css" 
+href="Templates%20–%20jQuery%20API_files/style.css"><LINK rel="stylesheet" href="Templates%20–%20jQuery%20API_files/prettify.css">
+<SCRIPT type="text/javascript" src="Templates%20–%20jQuery%20API_files/jquery.min.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="Templates%20–%20jQuery%20API_files/custom.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="Templates%20–%20jQuery%20API_files/jquery.livesearch.js"></SCRIPT>
+
+<SCRIPT type="text/javascript" src="Templates%20–%20jQuery%20API_files/navi.js"></SCRIPT>
+<LINK rel="shortcut icon" type="image/x-icon" href="http://static.jquery.com/favicon.ico">
+<META name="GENERATOR" content="MSHTML 9.00.8112.16434"></HEAD>
+<BODY id="jq-interior" class="api-jquery-com ">
+<DIV id="jq-siteContain">
+<DIV id="jq-header"><A id="jq-siteLogo" title="jQuery Home" href="http://jquery.com/"><IMG 
+alt="jQuery: Write Less, Do More." src="Templates%20–%20jQuery%20API_files/logo_jquery_215x53.gif" 
+width="215" height="53"></A>
+<DIV id="jq-primaryNavigation">
+<UL>
+  <LI class="jq-jquery jq-current"><A title="jQuery Home" href="http://jquery.com/">jQuery</A></LI>
+  <LI class="jq-plugins"><A title="jQuery Plugins" href="http://plugins.jquery.com/">Plugins</A></LI>
+  <LI class="jq-ui"><A title="jQuery UI" href="http://jqueryui.com/">UI</A></LI>
+  <LI class="jq-meetup"><A title="jQuery Meetups" href="http://meetups.jquery.com/">Meetups</A></LI>
+  <LI class="jq-forum"><A title="jQuery Forum" 
+  href="http://forum.jquery.com/">Forum</A></LI>
+  <LI class="jq-blog"><A title="jQuery Blog" 
+  href="http://blog.jquery.com/">Blog</A></LI>
+  <LI class="jq-about"><A title="About jQuery" 
+  href="http://jquery.org/about">About</A></LI>
+  <LI class="jq-donate"><A title="Donate to jQuery" href="http://jquery.org/donate">Donate</A></LI></UL></DIV><!-- /#primaryNavigation -->
+<DIV id="jq-secondaryNavigation">
+<UL>
+  <LI class="jq-download jq-first"><A href="http://docs.jquery.com/Downloading_jQuery">Download</A></LI>
+  <LI class="jq-documentation jq-current"><A 
+  href="http://docs.jquery.com/">Documentation</A></LI>
+  <LI class="jq-tutorials"><A 
+  href="http://docs.jquery.com/Tutorials">Tutorials</A></LI>
+  <LI class="jq-bugTracker"><A href="http://dev.jquery.com/">Bug 
+Tracker</A></LI>
+  <LI class="jq-discussion jq-last"><A 
+  href="http://docs.jquery.com/Discussion">Discussion</A></LI></UL></DIV><!-- /#secondaryNavigation -->
+<FORM id="jq-primarySearchForm" method="get" action="http://api.jquery.com" 
+autocomplete="off">
+<DIV><INPUT name="ns0" value="1" type="hidden"><LABEL 
+for="jq-primarySearch">Search <SPAN 
+class="jq-jquery">jQuery</SPAN></LABEL><INPUT accessKey="f" id="jq-primarySearch" 
+title="Search jQuery" name="s" type="text"><BUTTON id="jq-searchGoButton" name="go" 
+type="submit"><SPAN>Go</SPAN></BUTTON></DIV></FORM><!--
+        <h1 id="blog-title"><span><a href="http://api.jquery.com/" title="jQuery API" rel="home">jQuery API</a></span></h1>
+        <div id="blog-description">jQuery API Reference</div>
+-->
+<H1>jQuery API</H1></DIV><!-- /#header -->
+<DIV id="jq-content" class="jq-clearfix">
+<DIV id="access">
+<DIV class="skip-link"><A title="Skip to content" href="http://api.jquery.com/category/plugins/templates/#content">Skip 
+to content</A></DIV>
+<DIV id="menu">
+<UL>
+  <LI class="page_item page-item-1295"><A title="api" href="http://api.jquery.com/api/">api</A></LI>
+  <LI class="page_item page-item-1772"><A title="jsonp" href="http://api.jquery.com/jsonp/">jsonp</A></LI>
+  <LI class="page_item page-item-3413"><A title="Types" href="http://api.jquery.com/Types/">Types</A></LI>
+  <LI class="page_item page-item-3608"><A title="Extending Ajax: Prefilters, Converters, and Transports" 
+  href="http://api.jquery.com/extending-ajax/">Extending Ajax: Prefilters, 
+  Converters, and Transports</A></LI></UL></DIV></DIV><!-- #access --><!-- TEMPLATE PLUGIN CATEGORY -->
+<DIV id="jq-primaryContent" class="jq-box round">
+<H1 class="page-title">Templates</H1>
+<DIV id="content">
+<P><BR>
+<DIV class="archive-meta">
+<P>These documentation topics concern the <EM>jQuery Templates</EM> plugin 
+(jquery-tmpl), which can be downloaded from: <A href="http://github.com/jquery/jquery-tmpl">http://github.com/jquery/jquery-tmpl</A>.</P>
+<P><STRONG>Note: The jQuery team has decided not to take this plugin past beta. 
+It is no longer being actively developed or maintained. The docs remain here for 
+the time being (for reference) until a suitable replacement template plugin is 
+ready.</STRONG></P>
+<P><STRONG>For more on the history of this change, see <A href="http://blog.jquery.com/2011/04/16/official-plugins-a-change-in-the-roadmap/">Official 
+Plugins: A Change in the Roadmap</A> and <A href="http://www.borismoore.com/2011/10/jquery-templates-and-jsviews-roadmap.html">jQuery 
+Templates and JsViews: The Roadmap</A></STRONG></P>
+<HR>
+
+<P>A template contains markup with binding expressions. The template is applied 
+to data objects or arrays, and rendered into the HTML DOM.
+<P>The beta1 version of jQuery Templates is available on CDN at:</P>
+<UL>
+  <LI><A href="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js">http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js</A></LI>
+  <LI><A href="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js">http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js</A></LI>
+</UL></DIV>
+<UL class="method-list">
+  <LI id="post-2024" class="keynav hentry p12 post publish category-templates untagged y2010 m08 d11 h06 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to .tmpl()" 
+  href="http://api.jquery.com/tmpl/" rel="bookmark">.tmpl()</A></H2>
+  <P class="desc">Take the first element in the matched set and render its 
+  content as a template, using the specified data.</P></LI>
+  <LI id="post-2355" class="keynav hentry p1 post publish category-templates untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to jQuery.tmpl()" 
+  href="http://api.jquery.com/jquery.tmpl/" 
+  rel="bookmark">jQuery.tmpl()</A></H2><SPAN class="entry-meta"><SPAN class="beta">Beta</SPAN><SPAN 
+  class="cat-links"></SPAN></SPAN>
+  <P class="desc">Render the specified HTML content as a template, using the 
+  specified data.</P></LI>
+  <LI id="post-2359" class="keynav hentry p13 post publish category-templates untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to .tmplItem()" 
+  href="http://api.jquery.com/tmplitem/" 
+  rel="bookmark">.tmplItem()</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"></SPAN></SPAN>
+  <P class="desc">Return the <CODE>tmplItem</CODE> data structure for the 
+  rendered template that the matched element is part of.</P></LI>
+  <LI id="post-2141" class="keynav hentry p2 post publish category-templates untagged y2010 m10 d03 h02 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to jQuery.tmplItem()" 
+  href="http://api.jquery.com/jquery.tmplitem/" 
+  rel="bookmark">jQuery.tmplItem()</A></H2><SPAN class="entry-meta"><SPAN class="beta">Beta</SPAN><SPAN 
+  class="cat-links"></SPAN></SPAN>
+  <P class="desc">Return the <CODE>tmplItem</CODE> data structure for the 
+  rendered template that the specified element is part of.</P></LI>
+  <LI id="post-2138" class="keynav hentry p3 post publish category-templates untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to .template()" 
+  href="http://api.jquery.com/template/" 
+  rel="bookmark">.template()</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"></SPAN></SPAN>
+  <P class="desc">Compile the contents of the matched element as a reusable 
+  compiled template.</P></LI>
+  <LI id="post-2382" class="keynav hentry p4 post publish category-templates untagged y2010 m10 d03 h02 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to jQuery.template()" 
+  href="http://api.jquery.com/jQuery.template/" 
+  rel="bookmark">jQuery.template()</A></H2><SPAN class="entry-meta"><SPAN class="beta">Beta</SPAN><SPAN 
+  class="cat-links"></SPAN></SPAN>
+  <P class="desc">Create a reusable named template (compiled from 
+  markup).</P></LI>
+  <LI id="post-2592" class="keynav hentry p7 post publish category-template-tags untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to ${} Template Tag" 
+  href="http://api.jquery.com/template-tag-equal/" rel="bookmark">${} Template 
+  Tag</A></H2><SPAN class="entry-meta"><SPAN class="beta">Beta</SPAN><SPAN 
+  class="cat-links"><A title="View all posts in Template Tags" href="http://api.jquery.com/category/plugins/templates/template-tags/" 
+  rel="category tag">Template Tags</A></SPAN></SPAN>
+  <P class="desc">Used for insertion of data values in the rendered template. 
+  Evaluates the specified field (property) on the current data item, or the 
+  specified JavaScript function or expression.</P></LI>
+  <LI id="post-2608" class="keynav hentry p8 post publish category-template-tags untagged y2010 m10 d03 h02 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{html}} Template Tag" 
+  href="http://api.jquery.com/template-tag-html/" rel="bookmark">{{html}} 
+  Template Tag</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"><A title="View all posts in Template Tags" 
+  href="http://api.jquery.com/category/plugins/templates/template-tags/" rel="category tag">Template 
+  Tags</A></SPAN></SPAN>
+  <P class="desc">Used for insertion of HTML markup strings in the rendered 
+  template. Evaluates the specified field on the current data item, or the 
+  specified JavaScript function or expression.</P></LI>
+  <LI id="post-2611" class="keynav hentry p9 post publish category-template-tags untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{if}} Template Tag" 
+  href="http://api.jquery.com/template-tag-if/" rel="bookmark">{{if}} Template 
+  Tag</A></H2><SPAN class="entry-meta"><SPAN class="beta">Beta</SPAN><SPAN 
+  class="cat-links"><A title="View all posts in Template Tags" href="http://api.jquery.com/category/plugins/templates/template-tags/" 
+  rel="category tag">Template Tags</A></SPAN></SPAN>
+  <P class="desc">Used for conditional insertion of content. Renders the content 
+  between the opening and closing template tags only if the specified data item 
+  field, JavaScript function or expression does not evaluate to false (or to 
+  zero, null, type "undefined", or the empty string ).</P></LI>
+  <LI id="post-2603" class="keynav hentry p6 post publish category-template-tags untagged y2010 m10 d03 h02 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{else}} Template Tag" 
+  href="http://api.jquery.com/template-tag-else/" rel="bookmark">{{else}} 
+  Template Tag</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"><A title="View all posts in Template Tags" 
+  href="http://api.jquery.com/category/plugins/templates/template-tags/" rel="category tag">Template 
+  Tags</A></SPAN></SPAN>
+  <P class="desc">Used in association with the {{if}}...{{/if}} tag to provide 
+  alternative content based on the values of one or more expressions. The 
+  {{else}} tag can be used without a parameter, as in: {{if 
+  a}}...{{else}}...{{/if}}, or with a parameter, as in: {{if a}}...{{else 
+  b}}...{{/if}}.</P></LI>
+  <LI id="post-2597" class="keynav hentry p5 post publish category-template-tags untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{each}} Template Tag" 
+  href="http://api.jquery.com/template-tag-each/" rel="bookmark">{{each}} 
+  Template Tag</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"><A title="View all posts in Template Tags" 
+  href="http://api.jquery.com/category/plugins/templates/template-tags/" rel="category tag">Template 
+  Tags</A></SPAN></SPAN>
+  <P class="desc">Used to iterate over a data array, and render the content 
+  between the opening and closing template tags once for each data 
+  item.</P></LI>
+  <LI id="post-2403" class="keynav hentry p10 post publish category-template-tags untagged y2010 m10 d03 h02 alt">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{tmpl}} Template Tag" 
+  href="http://api.jquery.com/template-tag-tmpl/" rel="bookmark">{{tmpl}} 
+  Template Tag</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"><A title="View all posts in Template Tags" 
+  href="http://api.jquery.com/category/plugins/templates/template-tags/" rel="category tag">Template 
+  Tags</A></SPAN></SPAN>
+  <P class="desc">Used for composition of templates. Renders one or more nested 
+  template items within the rendered output of the parent template.</P></LI>
+  <LI id="post-2615" class="keynav hentry p11 post publish category-template-tags untagged y2010 m10 d03 h02">
+  <H2 class="entry-title"><A class="title-link" title="Permalink to {{wrap}} Template Tag" 
+  href="http://api.jquery.com/template-tag-wrap/" rel="bookmark">{{wrap}} 
+  Template Tag</A></H2><SPAN class="entry-meta"><SPAN 
+  class="beta">Beta</SPAN><SPAN class="cat-links"><A title="View all posts in Template Tags" 
+  href="http://api.jquery.com/category/plugins/templates/template-tags/" rel="category tag">Template 
+  Tags</A></SPAN></SPAN>
+  <P class="desc">Used for composition of templates which incorporate wrapped 
+  HTML content. Rendered template items can combine wrapped HTML content with 
+  template markup.</P></LI></UL></DIV><!-- #content --></DIV><!-- #jq-primaryContent -->
+<DIV id="jq-interiorNavigation">
+<H2 class="jq-clearfix roundTop section-title"><A 
+href="http://api.jquery.com/">jQuery API</A></H2>
+<DIV class="roundBottom jq-box">
+<UL class="xoxo">
+  <LI>
+  <UL>
+    <LI><A href="http://api.jquery.com/category/version/1.7/">New or Changed in 
+    1.7</A></LI>
+    <LI><A href="http://api.jquery.com/api/">Raw XML API Dump</A></LI>
+    <LI><A href="http://api.jquery.com/browser/">Dynamic API Browser</A></LI>
+    <LI><A href="http://www.packtpub.com/jquery-1-4-reference-guide/book">jQuery 
+    API Book</A></LI></UL>
+  <DIV style="background: rgb(238, 238, 238); padding: 6px; color: rgb(51, 51, 51); margin-top: 5px;" 
+  class="round notice">Keyboard navigation now available! Use up, down, tab, 
+  shift+tab, shift+upArrow and enter to navigate.</DIV></LI></UL><!--
+      <br />
+      <div class="sideBarFeature">
+        <strong>Dynamic API Browser</strong>
+        <a href="http://api.jquery.com/browser/" style="border:0px;"><img src="http://static.jquery.com/api/images/badge.jpg" style="border:0px;width:100%;"/></a>
+      </div>
+      <div class="sideBarFeature">
+        <strong>jQuery API Book</strong>
+        <a href="http://www.packtpub.com/" style="border-width:0;"><img src="http://static.jquery.com/books/jquery-ref-guide.png" style="border-width:0;"/></a>
+      </div>
+--></DIV>
+<H2 class="jq-clearfix roundTop section-title">Browse the jQuery API</H2>
+<DIV class="roundBottom jq-box">
+<UL class="xoxo">
+  <LI id="categories">
+  <UL>
+    <LI><A href="http://api.jquery.com/">All</A></LI>
+    <LI class="cat-item cat-item-13"><A title="View all posts filed under Ajax" 
+    href="http://api.jquery.com/category/ajax/">Ajax</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-39"><A title="View all posts filed under Global Ajax Event Handlers" 
+      href="http://api.jquery.com/category/ajax/global-ajax-event-handlers/">Global 
+      Ajax Event Handlers</A></LI>
+      <LI class="cat-item cat-item-40"><A title="View all posts filed under Helper Functions" 
+      href="http://api.jquery.com/category/ajax/helper-functions/">Helper 
+      Functions</A></LI>
+      <LI class="cat-item cat-item-37"><A title="View all posts filed under Low-Level Interface" 
+      href="http://api.jquery.com/category/ajax/low-level-interface/">Low-Level 
+      Interface</A></LI>
+      <LI class="cat-item cat-item-38"><A title="View all posts filed under Shorthand Methods" 
+      href="http://api.jquery.com/category/ajax/shorthand-methods/">Shorthand 
+      Methods</A></LI></UL></LI>
+    <LI class="cat-item cat-item-7"><A title="View all posts filed under Attributes" 
+    href="http://api.jquery.com/category/attributes/">Attributes</A></LI>
+    <LI class="cat-item cat-item-99"><A title="View all posts filed under Callbacks Object" 
+    href="http://api.jquery.com/category/callbacks-object/">Callbacks Object</A>
+    </LI>
+    <LI class="cat-item cat-item-5"><A title="View all posts filed under Core" 
+    href="http://api.jquery.com/category/core/">Core</A></LI>
+    <LI class="cat-item cat-item-10"><A title="View all posts filed under CSS" 
+    href="http://api.jquery.com/category/css/">CSS</A></LI>
+    <LI class="cat-item cat-item-51"><A title="View all posts filed under Data" 
+    href="http://api.jquery.com/category/data/">Data</A></LI>
+    <LI class="cat-item cat-item-93"><A title="View all posts filed under Deferred Object" 
+    href="http://api.jquery.com/category/deferred-object/">Deferred Object</A>
+    </LI>
+    <LI class="cat-item cat-item-97"><A title="View all posts filed under Deprecated" 
+    href="http://api.jquery.com/category/deprecated/">Deprecated</A></LI>
+    <LI class="cat-item cat-item-50"><A title="View all posts filed under Dimensions" 
+    href="http://api.jquery.com/category/dimensions/">Dimensions</A></LI>
+    <LI class="cat-item cat-item-12"><A title="View all posts filed under Effects" 
+    href="http://api.jquery.com/category/effects/">Effects</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-52"><A title="View all posts filed under Basics" 
+      href="http://api.jquery.com/category/effects/basics/">Basics</A></LI>
+      <LI class="cat-item cat-item-55"><A title="View all posts filed under Custom" 
+      href="http://api.jquery.com/category/effects/custom-effects/">Custom</A>
+      </LI>
+      <LI class="cat-item cat-item-54"><A title="View all posts filed under Fading" 
+      href="http://api.jquery.com/category/effects/fading/">Fading</A></LI>
+      <LI class="cat-item cat-item-53"><A title="View all posts filed under Sliding" 
+      href="http://api.jquery.com/category/effects/sliding/">Sliding</A></LI></UL>
+    </LI>
+    <LI class="cat-item cat-item-11"><A title="View all posts filed under Events" 
+    href="http://api.jquery.com/category/events/">Events</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-36"><A title="View all posts filed under Browser Events" 
+      href="http://api.jquery.com/category/events/browser-events/">Browser 
+      Events</A></LI>
+      <LI class="cat-item cat-item-32"><A title="View all posts filed under Document Loading" 
+      href="http://api.jquery.com/category/events/document-loading/">Document 
+      Loading</A></LI>
+      <LI class="cat-item cat-item-31"><A title="View all posts filed under Event Handler Attachment" 
+      href="http://api.jquery.com/category/events/event-handler-attachment/">Event 
+      Handler Attachment</A></LI>
+      <LI class="cat-item cat-item-66"><A title="View all posts filed under Event Object" 
+      href="http://api.jquery.com/category/events/event-object/">Event 
+      Object</A></LI>
+      <LI class="cat-item cat-item-34"><A title="View all posts filed under Form Events" 
+      href="http://api.jquery.com/category/events/form-events/">Form Events</A>
+      </LI>
+      <LI class="cat-item cat-item-35"><A title="View all posts filed under Keyboard Events" 
+      href="http://api.jquery.com/category/events/keyboard-events/">Keyboard 
+      Events</A></LI>
+      <LI class="cat-item cat-item-33"><A title="View all posts filed under Mouse Events" 
+      href="http://api.jquery.com/category/events/mouse-events/">Mouse 
+      Events</A></LI></UL></LI>
+    <LI class="cat-item cat-item-56"><A title="View all posts filed under Forms" 
+    href="http://api.jquery.com/category/forms/">Forms</A></LI>
+    <LI class="cat-item cat-item-67"><A title="View all posts filed under Internals" 
+    href="http://api.jquery.com/category/internals/">Internals</A></LI>
+    <LI class="cat-item cat-item-9"><A title="View all posts filed under Manipulation" 
+    href="http://api.jquery.com/category/manipulation/">Manipulation</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-25"><A title="View all posts filed under Class Attribute" 
+      href="http://api.jquery.com/category/manipulation/class-attribute/">Class 
+      Attribute</A></LI>
+      <LI class="cat-item cat-item-29"><A title="View all posts filed under Copying" 
+      href="http://api.jquery.com/category/manipulation/copying/">Copying</A>
+      </LI>
+      <LI class="cat-item cat-item-28"><A title="View all posts filed under DOM Insertion, Around" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-around/">DOM 
+      Insertion, Around</A></LI>
+      <LI class="cat-item cat-item-27"><A title="View all posts filed under DOM Insertion, Inside" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-inside/">DOM 
+      Insertion, Inside</A></LI>
+      <LI class="cat-item cat-item-48"><A title="View all posts filed under DOM Insertion, Outside" 
+      href="http://api.jquery.com/category/manipulation/dom-insertion-outside/">DOM 
+      Insertion, Outside</A></LI>
+      <LI class="cat-item cat-item-30"><A title="View all posts filed under DOM Removal" 
+      href="http://api.jquery.com/category/manipulation/dom-removal/">DOM 
+      Removal</A></LI>
+      <LI class="cat-item cat-item-26"><A title="View all posts filed under DOM Replacement" 
+      href="http://api.jquery.com/category/manipulation/dom-replacement/">DOM 
+      Replacement</A></LI>
+      <LI class="cat-item cat-item-23"><A title="View all posts filed under General Attributes" 
+      href="http://api.jquery.com/category/manipulation/general-attributes/">General 
+      Attributes</A></LI>
+      <LI class="cat-item cat-item-24"><A title="View all posts filed under Style Properties" 
+      href="http://api.jquery.com/category/manipulation/style-properties/">Style 
+      Properties</A></LI></UL></LI>
+    <LI class="cat-item cat-item-41"><A title="View all posts filed under Miscellaneous" 
+    href="http://api.jquery.com/category/miscellaneous/">Miscellaneous</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-44"><A title="View all posts filed under Collection Manipulation" 
+      href="http://api.jquery.com/category/miscellaneous/collection-manipulation/">Collection 
+      Manipulation</A></LI>
+      <LI class="cat-item cat-item-45"><A title="View all posts filed under Data Storage" 
+      href="http://api.jquery.com/category/miscellaneous/data-storage/">Data 
+      Storage</A></LI>
+      <LI class="cat-item cat-item-43"><A title="View all posts filed under DOM Element Methods" 
+      href="http://api.jquery.com/category/miscellaneous/dom-element-methods/">DOM 
+      Element Methods</A></LI>
+      <LI class="cat-item cat-item-42"><A title="View all posts filed under Setup Methods" 
+      href="http://api.jquery.com/category/miscellaneous/setup-methods/">Setup 
+      Methods</A></LI></UL></LI>
+    <LI class="cat-item cat-item-49"><A title="View all posts filed under Offset" 
+    href="http://api.jquery.com/category/offset/">Offset</A></LI>
+    <LI class="cat-item cat-item-85 current-cat-parent"><A title="View all posts filed under Plugins" 
+    href="http://api.jquery.com/category/plugins/">Plugins</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-87"><A title="View all posts filed under Data Link" 
+      href="http://api.jquery.com/category/plugins/data-link/">Data Link</A>
+</LI>
+      <LI class="cat-item cat-item-83 current-cat"><A title="View all posts filed under Templates" 
+      href="http://api.jquery.com/category/plugins/templates/">Templates</A>
+      </LI></UL></LI>
+    <LI class="cat-item cat-item-68"><A title="View all posts filed under Properties" 
+    href="http://api.jquery.com/category/properties/">Properties</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-59"><A title="View all posts filed under Properties of jQuery Object Instances" 
+      href="http://api.jquery.com/category/properties/jquery-object-instance-properties/">Properties 
+      of jQuery Object Instances</A></LI>
+      <LI class="cat-item cat-item-58"><A title="View all posts filed under Properties of the Global jQuery Object" 
+      href="http://api.jquery.com/category/properties/global-jquery-object-properties/">Properties 
+      of the Global jQuery Object</A></LI></UL></LI>
+    <LI class="cat-item cat-item-6"><A title="View all posts filed under Selectors" 
+    href="http://api.jquery.com/category/selectors/">Selectors</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-17"><A title="View all posts filed under Attribute" 
+      href="http://api.jquery.com/category/selectors/attribute-selectors/">Attribute</A>
+      </LI>
+      <LI class="cat-item cat-item-16"><A title="View all posts filed under Basic" 
+      href="http://api.jquery.com/category/selectors/basic-css-selectors/">Basic</A>
+      </LI>
+      <LI class="cat-item cat-item-61"><A title="View all posts filed under Basic Filter" 
+      href="http://api.jquery.com/category/selectors/basic-filter-selectors/">Basic 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-65"><A title="View all posts filed under Child Filter" 
+      href="http://api.jquery.com/category/selectors/child-filter-selectors/">Child 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-62"><A title="View all posts filed under Content Filter" 
+      href="http://api.jquery.com/category/selectors/content-filter-selector/">Content 
+      Filter</A></LI>
+      <LI class="cat-item cat-item-18"><A title="View all posts filed under Form" 
+      href="http://api.jquery.com/category/selectors/form-selectors/">Form</A>
+      </LI>
+      <LI class="cat-item cat-item-60"><A title="View all posts filed under Hierarchy" 
+      href="http://api.jquery.com/category/selectors/hierarchy-selectors/">Hierarchy</A>
+      </LI>
+      <LI class="cat-item cat-item-96"><A title="View all posts filed under jQuery Extensions" 
+      href="http://api.jquery.com/category/selectors/jquery-selector-extensions/">jQuery 
+      Extensions</A></LI>
+      <LI class="cat-item cat-item-63"><A title="View all posts filed under Visibility Filter" 
+      href="http://api.jquery.com/category/selectors/visibility-filter-selectors/">Visibility 
+      Filter</A></LI></UL></LI>
+    <LI class="cat-item cat-item-8"><A title="View all posts filed under Traversing" 
+    href="http://api.jquery.com/category/traversing/">Traversing</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-20"><A title="View all posts filed under Filtering" 
+      href="http://api.jquery.com/category/traversing/filtering/">Filtering</A>
+      </LI>
+      <LI class="cat-item cat-item-22"><A title="View all posts filed under Miscellaneous Traversing" 
+      href="http://api.jquery.com/category/traversing/miscellaneous-traversal/">Miscellaneous 
+      Traversing</A></LI>
+      <LI class="cat-item cat-item-21"><A title="View all posts filed under Tree Traversal" 
+      href="http://api.jquery.com/category/traversing/tree-traversal/">Tree 
+      Traversal</A></LI></UL></LI>
+    <LI class="cat-item cat-item-14"><A title="View all posts filed under Utilities" 
+    href="http://api.jquery.com/category/utilities/">Utilities</A></LI>
+    <LI class="cat-item cat-item-69"><A title="View all posts filed under Version" 
+    href="http://api.jquery.com/category/version/">Version</A>
+    <UL class="children">
+      <LI class="cat-item cat-item-70"><A title="View all posts filed under Version 1.0" 
+      href="http://api.jquery.com/category/version/1.0/">Version 1.0</A></LI>
+      <LI class="cat-item cat-item-71"><A title="View all posts filed under Version 1.0.4" 
+      href="http://api.jquery.com/category/version/1.0.4/">Version 1.0.4</A>
+</LI>
+      <LI class="cat-item cat-item-72"><A title="View all posts filed under Version 1.1" 
+      href="http://api.jquery.com/category/version/1.1/">Version 1.1</A></LI>
+      <LI class="cat-item cat-item-73"><A title="View all posts filed under Version 1.1.2" 
+      href="http://api.jquery.com/category/version/1.1.2/">Version 1.1.2</A>
+</LI>
+      <LI class="cat-item cat-item-74"><A title="View all posts filed under Version 1.1.3" 
+      href="http://api.jquery.com/category/version/1.1.3/">Version 1.1.3</A>
+</LI>
+      <LI class="cat-item cat-item-75"><A title="View all posts filed under Version 1.1.4" 
+      href="http://api.jquery.com/category/version/1.1.4/">Version 1.1.4</A>
+</LI>
+      <LI class="cat-item cat-item-76"><A title="View all posts filed under Version 1.2" 
+      href="http://api.jquery.com/category/version/1.2/">Version 1.2</A></LI>
+      <LI class="cat-item cat-item-77"><A title="View all posts filed under Version 1.2.3" 
+      href="http://api.jquery.com/category/version/1.2.3/">Version 1.2.3</A>
+</LI>
+      <LI class="cat-item cat-item-78"><A title="View all posts filed under Version 1.2.6" 
+      href="http://api.jquery.com/category/version/1.2.6/">Version 1.2.6</A>
+</LI>
+      <LI class="cat-item cat-item-79"><A title="View all posts filed under Version 1.3" 
+      href="http://api.jquery.com/category/version/1.3/">Version 1.3</A></LI>
+      <LI class="cat-item cat-item-80"><A title="View all posts filed under Version 1.4" 
+      href="http://api.jquery.com/category/version/1.4/">Version 1.4</A></LI>
+      <LI class="cat-item cat-item-81"><A title="View all posts filed under Version 1.4.1" 
+      href="http://api.jquery.com/category/version/1.4.1/">Version 1.4.1</A>
+</LI>
+      <LI class="cat-item cat-item-82"><A title="View all posts filed under Version 1.4.2" 
+      href="http://api.jquery.com/category/version/1.4.2/">Version 1.4.2</A>
+</LI>
+      <LI class="cat-item cat-item-90"><A title="View all posts filed under Version 1.4.3" 
+      href="http://api.jquery.com/category/version/1.4.3/">Version 1.4.3</A>
+</LI>
+      <LI class="cat-item cat-item-91"><A title="View all posts filed under Version 1.4.4" 
+      href="http://api.jquery.com/category/version/1.4.4/">Version 1.4.4</A>
+</LI>
+      <LI class="cat-item cat-item-92"><A title="View all posts filed under Version 1.5" 
+      href="http://api.jquery.com/category/version/1.5/">Version 1.5</A></LI>
+      <LI class="cat-item cat-item-94"><A title="View all posts filed under Version 1.5.1" 
+      href="http://api.jquery.com/category/version/1.5.1/">Version 1.5.1</A>
+</LI>
+      <LI class="cat-item cat-item-95"><A title="View all posts filed under Version 1.6" 
+      href="http://api.jquery.com/category/version/1.6/">Version 1.6</A></LI>
+      <LI class="cat-item cat-item-98"><A title="View all posts filed under Version 1.7" 
+      href="http://api.jquery.com/category/version/1.7/">Version 1.7</A></LI></UL>
+    </LI></UL></LI></UL></DIV></DIV><!-- #jq-interiorNavigation --></DIV><!-- /#secondaryNavigation -->
+<DIV id="jq-footer" class="jq-clearfix">
+<DIV id="jq-credits">
+<P id="jq-copyright">© 2010 <A href="http://jquery.org/">The jQuery 
+Project</A></P>
+<P id="jq-hosting">Sponsored by <A class="jq-mediaTemple" href="http://mediatemple.net/">Media 
+Temple</A> and <A href="http://jquery.org/sponsors">others</A>.</P></DIV>
+<DIV id="jq-footerNavigation">
+<UL>
+  <LI class="jq-download jq-first"><A href="http://docs.jquery.com/Downloading_jQuery">Download</A></LI>
+  <LI class="jq-documentation"><A 
+  href="http://docs.jquery.com/">Documentation</A></LI>
+  <LI class="jq-tutorials"><A 
+  href="http://docs.jquery.com/Tutorials">Tutorials</A></LI>
+  <LI class="jq-bugTracker"><A href="http://dev.jquery.com/">Bug 
+Tracker</A></LI>
+  <LI class="jq-discussion jq-last"><A 
+  href="http://docs.jquery.com/Discussion">Discussion</A></LI></UL></DIV><!-- /#jq-footerNavigation --></DIV><!-- /#jq-footer -->
+</DIV><!-- /#siteContain -->
+<SCRIPT type="text/javascript">
+var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-1076265-1']); _gaq.push(['_trackPageview']); _gaq.push(['_setDomainName', '.jquery.com']);
+(function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);})();
+</SCRIPT>
+<!-- Performance optimized by W3 Total Cache. Learn more: http://www.w3-edge.com/wordpress-plugins/
+
+Page Caching using disk: basic
+Database Caching 1/14 queries in 0.016 seconds using disk: basic
+Object Caching 945/966 objects using disk: basic
+
+Served from: api.jquery.com @ 2011-11-08 06:46:49 --></BODY></HTML>

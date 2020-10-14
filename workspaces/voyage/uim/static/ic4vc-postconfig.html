@@ -1,0 +1,149 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>IC4VC server configuration</title>
+
+<link id="jquery-ui-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/jquery-ui-1.8.16.custom.css"/>
+<link id="main-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/jquery.bubblepopup.v2.3.1.css" /> 
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jscrollpane.css" />
+
+
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/ui.multiselect.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.tmpl.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.contextmenu.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.cookie.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.bubblepopup.v2.3.1.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.layout-latest.js" ></script>
+<script type="text/javascript" src="/static/js/oss/raphael.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.raphael-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.pie-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.bar.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.line.js"></script>
+<script type="text/javascript" src="/static/js/oss/jscrollpane.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqote2.min.js" ></script>
+<script type="text/javascript" src="/static/js/i18n/strings.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqGrid.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jqote_dynamic.js" ></script>
+
+<link rel="stylesheet" type="text/css" href="/static/css/hptools.css" />
+<script type="text/javascript" src="/static/js/hptools.js"></script>
+<script type="text/javascript" src="/static/js/appmanager.js"></script>
+<script type="text/javascript" src="/static/js/helpers.js" ></script>
+<script type="text/javascript" src="/static/js/cookiehelper.js" ></script>
+<script type="text/javascript" src="/static/js/network-diagram.js" ></script>
+
+<script type="text/javascript">
+    var PostInstallConfig = {
+        
+        startApp: function(){
+            PostInstallConfig.loadPassword();
+            $("#gridnavigator_center").remove();
+        },
+        
+        beforeEditShowForm: function (formid) {
+            $("#tr_type", formid).hide();
+            $("#tr_host", formid).hide();
+            $("#password").val("");
+        },
+        
+        beforeAddShowForm: function (formid) {
+            $("#tr_type", formid).hide();
+        },
+        
+        fieldValidate: function(value, colname) {
+            if(value.length<1) 
+                return [false, colname + " cannot be blank."];
+            else
+            {
+                return [true,""];
+            }
+        },
+        errorTextFormat: function(data)
+        {
+            if(data.responseText.length == 0)
+            {
+                return data.status + ':' + data.statusText;
+            }
+            return data.responseText;
+        },
+        
+        loadPassword: function () {
+            var query = window.location.search;
+            var vcpasswordurl = '/settings/vcpassword'+query;
+        
+            $("#pwlist").jqGrid( {
+                url: vcpasswordurl,
+                datatype: 'json',
+                jsonReader: {
+                  root : 'pwdb',
+                  repeatitems: false
+                },
+                mtype: 'GET',
+                colNames: ['vCenter IP Address/DNS name', 'Type', 'Username', 'Password', 'Unique ID', ],
+                colModel :[ 
+                  {name:'host', key:true, index:'host', editable:true, sortable:false, width:250, sortable:false, editrules:{custom:true, custom_func:PostInstallConfig.fieldValidate}},
+                  {name:'type', index:'type', editable:true, 
+    		          edittype:'select', 
+    		          editoptions:{value: {'vCenter':'vCenter'}}, 
+    		          width:300, editrules:{edithidden:true}},                   
+                  {name:'username', index:'username', editable:true, width:150, sortable:false, required:true, editrules:{custom:true, custom_func:PostInstallConfig.fieldValidate}}, 
+                  {name:'password', hidden: true, width:300, editable:true, edittype:'password', required:true, editrules:{edithidden:true, custom:true, custom_func:PostInstallConfig.fieldValidate}},
+                  {name:'id', index:'id', width:300, hidden: true}
+                ],
+                rowNum:20,
+                caption: 'List of vCenters registered with HP Insight Control for vCenter',
+                pager: '#gridnavigator'
+            }).navGrid('#gridnavigator', {
+                edit:false, add:true, del:true, search:false, deltitle:"Delete the selected vCenter",
+                addtitle:"Register a new vCenter instance", edittitle:"Edit the selected vCenter information",
+                refreshtitle:"Refresh the vCenter registration list"}, 
+                {url: '/settings/vcpassword', width: 450, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, 
+                    editCaption: "Edit the selected vCenter information", 
+                    errorTextFormat: PostInstallConfig.errorTextFormat, beforeShowForm: PostInstallConfig.beforeEditShowForm
+                }, 
+                {url: '/settings/vcpassword', width: 450, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, 
+                    addCaption: "Add a new vCenter", errorTextFormat: PostInstallConfig.errorTextFormat, beforeShowForm: PostInstallConfig.beforeAddShowForm
+                }, 
+                {url: '/settings/vcpassword', width: 450, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, 
+                    msg: "Delete the selected vCenter", errorTextFormat: PostInstallConfig.errorTextFormat, 
+                    serializeDelData: function (postdata) {
+                        var rowdata = jQuery('#pwlist').getRowData(postdata.id);
+                        // append rowdata to postdata
+                        return {id: postdata.id, oper: postdata.oper, host: rowdata.host, type: 'vCenter', username: rowdata.username, password: ''};
+                    }
+                }, 
+                {}, 
+                {} 
+                );
+        }
+    }
+   
+    $(document).ready(function() {
+        $.ajaxSetup({ cache: false });
+        PostInstallConfig.startApp();
+    });
+
+</script>
+
+</head>
+
+<body>
+<div style="margin: 20px;">
+    <div id="hp-header" style=" height:71px; border-bottom:3px groove #F5F5F5;">
+        <h1 style="padding-top:20px;"> HP Insight Control for vCenter - vCenter registration </h1>
+    </div>
+    <br>
+    <div id="vcpassword">
+        <table class="box_contents" id="pwlist" width="100%"><tr><td/></tr></table>
+        <div id="gridnavigator"></div>
+        <br/>
+    </div>
+</div>
+</body>
+</html>

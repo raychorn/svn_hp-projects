@@ -1,0 +1,2793 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="generator"
+content="HTML Tidy for Java (vers. 2009-12-01), see jtidy.sourceforge.net" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<meta http-equiv="Content-Type"
+content="text/html; charset=utf-8" />
+<title>HP Insight Control for VMware vCenter Server Help
+System</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.74.3" />
+<meta name="description"
+content="Abstract This help system contains detailed instructions
+for configuring and using HP Insight Control for VMware vCenter Server. It is intended
+for system administrators who are experienced in virtual and physical
+IT infrastructure administration and understand server virtualization,
+storage, and networking concepts." />
+<meta name="keywords" content="Insight
+Control for VMware vCenter Server, IC4VC" />
+<meta name="generator"
+content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)" />
+<link rel="StyleSheet" href="styles.css" type="text/css"
+media="screen" />
+<base target="" />
+</head>
+<body class="draft" bgcolor="white" text="black" link="#003366"
+alink="#003366">
+<!--Date and time: 2013-09-26T17:51:36+00:00--><script
+type="text/javascript">
+//<![CDATA[
+cc=0
+var openbooks = new Array()
+openbooks["firstbookicon"]="open"
+ 
+
+
+function showsubtoc(elmnt)
+{
+document.getElementById(elmnt).style.display="block"
+}
+function hidemenu(elmnt)
+{
+document.getElementById(elmnt).style.display="none"
+}
+
+function changetocimage(icon)
+{
+var bi = document.getElementById(icon).id
+var f = openbooks[bi];
+var ext = ".jpg"
+// 0 means closed icon and 1 means open icon
+switch (f)
+{
+case 0:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+openbooks[bi] = 1
+break
+case 1:
+document.getElementById(icon).src="images/collasped_closed_book_icon" + ext
+openbooks[bi] = 0
+break
+default:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+openbooks[bi] = 1
+break
+}
+}
+
+function dynamicmenu(element,icon)
+{
+var bi = document.getElementById(icon).id
+var f = openbooks[bi];
+var ext = ".jpg"
+// 0 means closed icon and 1 means open icon
+
+switch (f)
+{
+case 0:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+document.getElementById(element).style.display="block"
+openbooks[bi] = 1
+break
+case 1:
+document.getElementById(icon).src="images/collasped_closed_book_icon" + ext
+document.getElementById(element).style.display="none"
+openbooks[bi] = 0
+break
+default:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+document.getElementById(element).style.display="block"
+openbooks[bi] = 1
+break
+}
+
+
+}
+
+function showtoclocation(element,icon,link,ancestor)
+{
+
+var ar = ancestor;
+var ari = 'icon4' + ancestor;
+// var bi = document.getElementById(icon).id
+// var f = openbooks[bi];
+var ext = ".jpg"
+// 0 means closed icon and 1 means open icon
+if (ar != '0')
+{
+showsubtoc(ar);
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+}
+var ii = icon;
+
+ window.status="highlighting current topic: " +  ii ;
+
+var ml = link;
+
+
+if (ii == '0') 
+{
+
+}
+else {
+var bi = document.getElementById(icon).id
+
+var f = openbooks[bi];
+var ext = ".jpg"
+// 0 means closed icon and 1 means open icon
+
+switch (f)
+{
+case 0:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+document.getElementById(element).style.display="block"
+document.getElementById(link).style.backgroundColor="#e0e6f8";
+openbooks[bi] = 1
+break
+case 1:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+document.getElementById(element).style.display="block"
+document.getElementById(link).style.backgroundColor="#e0e6f8";
+openbooks[bi] = 0
+// for show location in toc we will always leave the book icon open
+break
+default:
+document.getElementById(icon).src="images/expanded_open_book_icon" + ext
+document.getElementById(element).style.display="block"
+document.getElementById(link).style.backgroundColor="#e0e6f8";
+openbooks[bi] = 1
+break
+
+}
+}
+}
+
+function cleartoclocation(link,element)
+{
+var g = element;
+var ig = 'icon4' + element;
+var ext = ".jpg"
+
+document.getElementById(link).style.backgroundColor="#ffffff";
+if (g != 0)
+{
+hidemenu(element);
+document.getElementById(ig).src="images/collasped_closed_book_icon" + ext
+}
+}
+
+function reloadtoc_nav()
+{
+window.parent.parent.frames['mainhelp_pane'].location.reload();
+}
+
+
+
+
+//]]>
+</script>
+<div class="navheader">
+<hr />
+</div>
+<div id="content">
+<div class="toc">
+<p><b>Contents</b></p>
+<p class="helpnav"><a accesskey="h" href="book.html"
+target="mainhelp_pane">home</a></p>
+<dl>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top" id="sys-legal"><span name="page_icon"
+margin-left="5pt" id="icon4sys-legal"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="chapter" id="link4sys-legal"><a
+href="sys-legal.html" target="mainhelp_pane"
+class="tocmenulink">Legal Notices</a></span></td>
+</tr>
+</table>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top" id="Overview"><span name="page_icon"
+margin-left="5pt" id="icon4Overview"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="chapter" id="link4Overview"><a
+href="Overview.html" target="mainhelp_pane"
+class="tocmenulink">Overview</a></span></td>
+</tr>
+</table>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15695823"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15695823','icon4v15695823')"
+style="cursor:pointer" /></span></td>
+<td><span class="chapter" id="link4v15695823"><a
+href="v15695823.html" target="mainhelp_pane"
+class="tocmenulink">Configuring Insight Control for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15695823" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_rolebasedsecurtiy"><span name="page_icon"
+margin-left="5pt" id="icon4s_rolebasedsecurtiy"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_rolebasedsecurtiy"><a
+href="s_rolebasedsecurtiy.html" target="mainhelp_pane"
+class="tocmenulink">Role-based security</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_vCenter_Credential_Management"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_vCenter_Credential_Management"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_vCenter_Credential_Management"><a
+href="s_vCenter_Credential_Management.html" target="mainhelp_pane"
+class="tocmenulink">vCenter Credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_OneView_Credential_Management"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_OneView_Credential_Management"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_OneView_Credential_Management"><a
+href="s_OneView_Credential_Management.html" target="mainhelp_pane"
+class="tocmenulink">HP OneView Credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="infrastructure_credentials"><span
+name="page_icon" margin-left="5pt"
+id="icon4infrastructure_credentials"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4infrastructure_credentials"><a
+href="infrastructure_credentials.html" target="mainhelp_pane"
+class="tocmenulink">Infrastructure credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Generate_Self-signed_Certificate"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Generate_Self-signed_Certificate"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Generate_Self-signed_Certificate"><a
+href="s_Generate_Self-signed_Certificate.html"
+target="mainhelp_pane" class="tocmenulink">Certificate
+Management</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4s_Configuring_the_Server_Module_for_vCenter"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('s_Configuring_the_Server_Module_for_vCenter','icon4s_Configuring_the_Server_Module_for_vCenter')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section"
+id="link4s_Configuring_the_Server_Module_for_vCenter"><a
+href="s_Configuring_the_Server_Module_for_vCenter.html"
+target="mainhelp_pane" class="tocmenulink">Configuring the Server
+Module for vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="s_Configuring_the_Server_Module_for_vCenter"
+class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Server_Password"><span name="page_icon"
+margin-left="5pt" id="icon4s_Server_Password"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Server_Password"><a
+href="s_Server_Password.html" target="mainhelp_pane"
+class="tocmenulink">Server Credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Server_Module_Configuration"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Server_Module_Configuration"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Server_Module_Configuration"><a
+href="s_Server_Module_Configuration.html" target="mainhelp_pane"
+class="tocmenulink">Server Module Configuration</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4s_associatinghostilo"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('s_associatinghostilo','icon4s_associatinghostilo')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4s_associatinghostilo"><a
+href="s_associatinghostilo.html" target="mainhelp_pane"
+class="tocmenulink">Associating the VMware host to
+iLO</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="s_associatinghostilo" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v17443675"><span name="page_icon"
+margin-left="5pt" id="icon4v17443675"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v17443675"><a
+href="v17443675.html" target="mainhelp_pane"
+class="tocmenulink">Automatic association</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v17443682"><span name="page_icon"
+margin-left="5pt" id="icon4v17443682"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v17443682"><a
+href="v17443682.html" target="mainhelp_pane"
+class="tocmenulink">Manual association</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116946"><span name="page_icon"
+margin-left="5pt" id="icon4m116946"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116946"><a href="m116946.html"
+target="mainhelp_pane" class="tocmenulink">Onboard Administrator
+Single Sign-On</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_accessingmanagementtools"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_accessingmanagementtools"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_accessingmanagementtools"><a
+href="s_accessingmanagementtools.html" target="mainhelp_pane"
+class="tocmenulink">Accessing management tools</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4StorageProperties"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('StorageProperties','icon4StorageProperties')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4StorageProperties"><a
+href="StorageProperties.html" target="mainhelp_pane"
+class="tocmenulink">Configuring the Storage Module for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="StorageProperties" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="About_Storage_Admin_Portal"><span
+name="page_icon" margin-left="5pt"
+id="icon4About_Storage_Admin_Portal"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4About_Storage_Admin_Portal"><a
+href="About_Storage_Admin_Portal.html" target="mainhelp_pane"
+class="tocmenulink">About the Storage Administrator
+Portal</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14678784"><span name="page_icon"
+margin-left="5pt" id="icon4v14678784"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14678784"><a
+href="v14678784.html" target="mainhelp_pane"
+class="tocmenulink">Configuring storage systems and management
+servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4adding_arrays_management_servers"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('adding_arrays_management_servers','icon4adding_arrays_management_servers')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section"
+id="link4adding_arrays_management_servers"><a
+href="adding_arrays_management_servers.html" target="mainhelp_pane"
+class="tocmenulink">Adding storage systems and management
+servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="adding_arrays_management_servers" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_arrays_management_servers_1"><span
+name="page_icon" margin-left="5pt"
+id="icon4add_arrays_management_servers_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4add_arrays_management_servers_1"><a
+href="add_arrays_management_servers_1.html" target="mainhelp_pane"
+class="tocmenulink">Add Storage System or Management
+Server</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P4000_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_P4000_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P4000_1"><a
+href="add_P4000_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P4000_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_P4000_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P4000_2"><a
+href="add_P4000_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P4000_3"><span name="page_icon"
+margin-left="5pt" id="icon4add_P4000_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P4000_3"><a
+href="add_P4000_3.html" target="mainhelp_pane"
+class="tocmenulink">Add HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_3PAR_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_3PAR_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_3PAR_1"><a
+href="add_3PAR_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_3PAR_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_3PAR_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_3PAR_2"><a
+href="add_3PAR_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_3PAR_3"><span name="page_icon"
+margin-left="5pt" id="icon4add_3PAR_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_3PAR_3"><a
+href="add_3PAR_3.html" target="mainhelp_pane"
+class="tocmenulink">Add HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_EVA_CV_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_EVA_CV_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_EVA_CV_1"><a
+href="add_EVA_CV_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP EVA Command View management
+servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_EVA_CV_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_EVA_CV_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_EVA_CV_2"><a
+href="add_EVA_CV_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP EVA Command View management
+servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_EVA_CV_3"><span name="page_icon"
+margin-left="5pt" id="icon4add_EVA_CV_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_EVA_CV_3"><a
+href="add_EVA_CV_3.html" target="mainhelp_pane"
+class="tocmenulink">Add HP EVA Command View management
+servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_EVA_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_EVA_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_EVA_1"><a
+href="add_EVA_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP EVAs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_EVA_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_EVA_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_EVA_2"><a
+href="add_EVA_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP EVAs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P2000_G3_MSA_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_P2000_G3_MSA_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P2000_G3_MSA_1"><a
+href="add_P2000_G3_MSA_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP MSA P2000 G3 storage
+systems</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P2000_G3_MSA_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_P2000_G3_MSA_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P2000_G3_MSA_2"><a
+href="add_P2000_G3_MSA_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP MSA P2000 G3 storage
+systems</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P2000_G3_MSA_3"><span name="page_icon"
+margin-left="5pt" id="icon4add_P2000_G3_MSA_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P2000_G3_MSA_3"><a
+href="add_P2000_G3_MSA_3.html" target="mainhelp_pane"
+class="tocmenulink">Add HP MSA P2000 G3 storage
+systems</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_P9000_arrays_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_P9000_arrays_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_P9000_arrays_1"><a
+href="add_P9000_arrays_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP XP 9000 storage systems</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_XP_arrays_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_XP_arrays_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_XP_arrays_1"><a
+href="add_XP_arrays_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP XP storage systems</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_storeonce_1"><span name="page_icon"
+margin-left="5pt" id="icon4add_storeonce_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_storeonce_1"><a
+href="add_storeonce_1.html" target="mainhelp_pane"
+class="tocmenulink">Add HP StoreOnce Backup</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="add_storeonce_2"><span name="page_icon"
+margin-left="5pt" id="icon4add_storeonce_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4add_storeonce_2"><a
+href="add_storeonce_2.html" target="mainhelp_pane"
+class="tocmenulink">Add HP StoreOnce Backup</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Modifying_Arrays"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Modifying_Arrays','icon4Modifying_Arrays')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Modifying_Arrays"><a
+href="Modifying_Arrays.html" target="mainhelp_pane"
+class="tocmenulink">Modifying configured storage systems and
+management servers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Modifying_Arrays" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_CVEVA_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_CVEVA_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_CVEVA_1"><a
+href="modify_CVEVA_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP EVA Command View</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_CVEVA_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_CVEVA_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_CVEVA_2"><a
+href="modify_CVEVA_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP EVA Command View</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_CVEVA_3"><span name="page_icon"
+margin-left="5pt" id="icon4modify_CVEVA_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_CVEVA_3"><a
+href="modify_CVEVA_3.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP EVA Command View</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_EVA_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_EVA_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_EVA_1"><a
+href="modify_EVA_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP EVA</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_EVA_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_EVA_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_EVA_2"><a
+href="modify_EVA_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP EVA</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_3PAR_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_3PAR_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_3PAR_1"><a
+href="modify_3PAR_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_3PAR_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_3PAR_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_3PAR_2"><a
+href="modify_3PAR_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_3PAR_3"><span name="page_icon"
+margin-left="5pt" id="icon4modify_3PAR_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_3PAR_3"><a
+href="modify_3PAR_3.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP 3PAR StoreServ</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_XP_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_XP_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_XP_1"><a
+href="modify_XP_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP XP storage system</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P9000_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P9000_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P9000_1"><a
+href="modify_P9000_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP XP P9000 storage
+system</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P4000_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P4000_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P4000_1"><a
+href="modify_P4000_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P4000_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P4000_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P4000_2"><a
+href="modify_P4000_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P4000_3"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P4000_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P4000_3"><a
+href="modify_P4000_3.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP StoreVirtual</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P2000_G3_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P2000_G3_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P2000_G3_1"><a
+href="modify_P2000_G3_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP MSA P2000 G3 array</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P2000_G3_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P2000_G3_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P2000_G3_2"><a
+href="modify_P2000_G3_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP MSA P2000 G3 array</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_P2000_G3_3"><span name="page_icon"
+margin-left="5pt" id="icon4modify_P2000_G3_3"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_P2000_G3_3"><a
+href="modify_P2000_G3_3.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP MSA P2000 G3 array</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_storeonce_1"><span name="page_icon"
+margin-left="5pt" id="icon4modify_storeonce_1"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_storeonce_1"><a
+href="modify_storeonce_1.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP StoreOnce Backup</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="modify_storeonce_2"><span name="page_icon"
+margin-left="5pt" id="icon4modify_storeonce_2"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4modify_storeonce_2"><a
+href="modify_storeonce_2.html" target="mainhelp_pane"
+class="tocmenulink">Modify HP StoreOnce Backup</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="Removing_Arrays"><span name="page_icon"
+margin-left="5pt" id="icon4Removing_Arrays"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4Removing_Arrays"><a
+href="Removing_Arrays.html" target="mainhelp_pane"
+class="tocmenulink">Removing a storage system or management
+server</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v16106651"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v16106651','icon4v16106651')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v16106651"><a
+href="v16106651.html" target="mainhelp_pane"
+class="tocmenulink">Configuring the VMware VASA
+provider</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v16106651" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_registeringVASAProvider_wc"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_registeringVASAProvider_wc"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_registeringVASAProvider_wc"><a
+href="s_registeringVASAProvider_wc.html" target="mainhelp_pane"
+class="tocmenulink">Registering the VASA Provider from the vSphere
+Web Client</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v16136670"><span name="page_icon"
+margin-left="5pt" id="icon4v16136670"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v16136670"><a
+href="v16136670.html" target="mainhelp_pane"
+class="tocmenulink">Adding a CA-signed certificate</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15744267"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15744267','icon4v15744267')"
+style="cursor:pointer" /></span></td>
+<td><span class="chapter" id="link4v15744267"><a
+href="v15744267.html" target="mainhelp_pane"
+class="tocmenulink">Using Insight Control for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15744267" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_accessingic4vcwc"><span name="page_icon"
+margin-left="5pt" id="icon4s_accessingic4vcwc"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_accessingic4vcwc"><a
+href="s_accessingic4vcwc.html" target="mainhelp_pane"
+class="tocmenulink">Accessing Insight Control for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Insight_Management_pages"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Insight_Management_pages"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Insight_Management_pages"><a
+href="s_Insight_Management_pages.html" target="mainhelp_pane"
+class="tocmenulink">HP Insight Management pages</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15744296"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15744296','icon4v15744296')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v15744296"><a
+href="v15744296.html" target="mainhelp_pane"
+class="tocmenulink">Using the Server Module for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15744296" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Navigating_the_HP_Insight_Management_tab_with_the_Server_Module"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_Navigating_the_HP_Insight_Management_tab_with_the_Server_Module"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Navigating_the_HP_Insight_Management_tab_with_the_Server_Module"><a
+ href="s_Navigating_the_HP_Insight_Management_tab_with_the_Server_Module.html"
+ target="mainhelp_pane" class="tocmenulink">Navigating HP Insight
+Management with the Server Module</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Server_Properties_nc"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Server_Properties_nc','icon4Server_Properties_nc')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Server_Properties_nc"><a
+href="Server_Properties_nc.html" target="mainhelp_pane"
+class="tocmenulink">Changing Server Management
+properties</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Server_Properties_nc" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="Cluster_Properties"><span name="page_icon"
+margin-left="5pt" id="icon4Cluster_Properties"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4Cluster_Properties"><a
+href="Cluster_Properties.html" target="mainhelp_pane"
+class="tocmenulink">Setting the power cost for a
+cluster</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4configuring_server_provisioning"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('configuring_server_provisioning','icon4configuring_server_provisioning')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section"
+id="link4configuring_server_provisioning"><a
+href="configuring_server_provisioning.html" target="mainhelp_pane"
+class="tocmenulink">Server provisioning</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="configuring_server_provisioning" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="connecting_provisioning_server"><span
+name="page_icon" margin-left="5pt"
+id="icon4connecting_provisioning_server"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4connecting_provisioning_server"><a
+href="connecting_provisioning_server.html" target="mainhelp_pane"
+class="tocmenulink">Connecting to the HP provisioning
+server</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="running_server_provisioning_wizard"><span
+name="page_icon" margin-left="5pt"
+id="icon4running_server_provisioning_wizard"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4running_server_provisioning_wizard"><a
+href="running_server_provisioning_wizard.html"
+target="mainhelp_pane" class="tocmenulink">Running the Server
+Provisioning wizard</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="setting_network_preferences"><span
+name="page_icon" margin-left="5pt"
+id="icon4setting_network_preferences"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4setting_network_preferences"><a
+href="setting_network_preferences.html" target="mainhelp_pane"
+class="tocmenulink">Setting host network configuration
+preferences</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Managing_Clusters"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Managing_Clusters','icon4Managing_Clusters')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Managing_Clusters"><a
+href="Managing_Clusters.html" target="mainhelp_pane"
+class="tocmenulink">Managing clusters</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Managing_Clusters" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_clusteroverview"><span name="page_icon"
+margin-left="5pt" id="icon4s_clusteroverview"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_clusteroverview"><a
+href="s_clusteroverview.html" target="mainhelp_pane"
+class="tocmenulink">Cluster Overview</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_Cluster_Information"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_Cluster_Information"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_Cluster_Information"><a
+href="s_Viewing_Cluster_Information.html" target="mainhelp_pane"
+class="tocmenulink">Cluster information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="cluster_networking"><span name="page_icon"
+margin-left="5pt" id="icon4cluster_networking"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4cluster_networking"><a
+href="cluster_networking.html" target="mainhelp_pane"
+class="tocmenulink">Cluster networking information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="setting_cluster_reference_host"><span
+name="page_icon" margin-left="5pt"
+id="icon4setting_cluster_reference_host"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4setting_cluster_reference_host"><a
+href="setting_cluster_reference_host.html" target="mainhelp_pane"
+class="tocmenulink">Setting a cluster reference
+host</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="resolving_network_mismatch"><span
+name="page_icon" margin-left="5pt"
+id="icon4resolving_network_mismatch"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4resolving_network_mismatch"><a
+href="resolving_network_mismatch.html" target="mainhelp_pane"
+class="tocmenulink">Resolving a network mismatch</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="Cluster_Infrastructure"><span name="page_icon"
+margin-left="5pt" id="icon4Cluster_Infrastructure"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4Cluster_Infrastructure"><a
+href="Cluster_Infrastructure.html" target="mainhelp_pane"
+class="tocmenulink">Cluster infrastructure
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_viewing_Cluster_Firmware"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_viewing_Cluster_Firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_viewing_Cluster_Firmware"><a
+href="s_viewing_Cluster_Firmware.html" target="mainhelp_pane"
+class="tocmenulink">Cluster software and firmware</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="Cluster_Firmware"><span name="page_icon"
+margin-left="5pt" id="icon4Cluster_Firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4Cluster_Firmware"><a
+href="Cluster_Firmware.html" target="mainhelp_pane"
+class="tocmenulink">Cluster software/firmware</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Managing_Servers"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Managing_Servers','icon4Managing_Servers')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Managing_Servers"><a
+href="Managing_Servers.html" target="mainhelp_pane"
+class="tocmenulink">Managing hosts</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Managing_Servers" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Host_Overview_page"><span name="page_icon"
+margin-left="5pt" id="icon4s_Host_Overview_page"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Host_Overview_page"><a
+href="s_Host_Overview_page.html" target="mainhelp_pane"
+class="tocmenulink">Host Overview</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_Host_Information"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_Host_Information"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Viewing_Host_Information"><a
+href="s_Viewing_Host_Information.html" target="mainhelp_pane"
+class="tocmenulink">Viewing host information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_host_Infrastructure"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_host_Infrastructure"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_host_Infrastructure"><a
+href="s_Viewing_host_Infrastructure.html" target="mainhelp_pane"
+class="tocmenulink">Viewing host infrastructure
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="Server_Networking"><span name="page_icon"
+margin-left="5pt" id="icon4Server_Networking"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4Server_Networking"><a
+href="Server_Networking.html" target="mainhelp_pane"
+class="tocmenulink">Viewing host networking
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="resolving_network_mismatch"><span
+name="page_icon" margin-left="5pt"
+id="icon4resolving_network_mismatch"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4resolving_network_mismatch"><a
+href="resolving_network_mismatch.html" target="mainhelp_pane"
+class="tocmenulink">Host network configuration</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="setting_reference_host"><span name="page_icon"
+margin-left="5pt" id="icon4setting_reference_host"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4setting_reference_host"><a
+href="setting_reference_host.html" target="mainhelp_pane"
+class="tocmenulink">Setting a reference host in a
+cluster</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Network_diagram"><span name="page_icon"
+margin-left="5pt" id="icon4s_Network_diagram"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Network_diagram"><a
+href="s_Network_diagram.html" target="mainhelp_pane"
+class="tocmenulink">Using the network diagram</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_host_software_and_firmware"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_host_software_and_firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_host_software_and_firmware"><a
+href="s_host_software_and_firmware.html" target="mainhelp_pane"
+class="tocmenulink">Viewing host software and
+firmware</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_host_software_and_firmware"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_host_software_and_firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_host_software_and_firmware"><a
+href="s_Viewing_host_software_and_firmware.html"
+target="mainhelp_pane" class="tocmenulink">Host
+software/firmware</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Host_News_Feed"><span name="page_icon"
+margin-left="5pt" id="icon4s_Host_News_Feed"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Host_News_Feed"><a
+href="s_Host_News_Feed.html" target="mainhelp_pane"
+class="tocmenulink">Viewing news feed information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_server_health_status_details"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_server_health_status_details"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_server_health_status_details"><a
+href="s_server_health_status_details.html" target="mainhelp_pane"
+class="tocmenulink">Viewing health/status
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_host_monitoring_tasks"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_host_monitoring_tasks"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_host_monitoring_tasks"><a
+href="s_host_monitoring_tasks.html" target="mainhelp_pane"
+class="tocmenulink">Monitoring tasks</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="power_control"><span name="page_icon"
+margin-left="5pt" id="icon4power_control"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4power_control"><a
+href="power_control.html" target="mainhelp_pane"
+class="tocmenulink">Power cycling a server</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="rediscover_node"><span name="page_icon"
+margin-left="5pt" id="icon4rediscover_node"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4rediscover_node"><a
+href="rediscover_node.html" target="mainhelp_pane"
+class="tocmenulink">Rediscovering devices</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="firmware_baselining"><span name="page_icon"
+margin-left="5pt" id="icon4firmware_baselining"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4firmware_baselining"><a
+href="firmware_baselining.html" target="mainhelp_pane"
+class="tocmenulink">HP OneView firmware baselining</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116935"><span name="page_icon"
+margin-left="5pt" id="icon4m116935"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116935"><a href="m116935.html"
+target="mainhelp_pane" class="tocmenulink">Launching into HP
+tools</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15744503"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15744503','icon4v15744503')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v15744503"><a
+href="v15744503.html" target="mainhelp_pane"
+class="tocmenulink">Using the Storage Module for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15744503" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4s_HP_Insight_Software_tab_layout_201003171823"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('s_HP_Insight_Software_tab_layout_201003171823','icon4s_HP_Insight_Software_tab_layout_201003171823')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section"
+id="link4s_HP_Insight_Software_tab_layout_201003171823"><a
+href="s_HP_Insight_Software_tab_layout_201003171823.html"
+target="mainhelp_pane" class="tocmenulink">Navigating HP Insight
+Management with the Storage Module</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="s_HP_Insight_Software_tab_layout_201003171823"
+class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="managing_datastores"><span name="page_icon"
+margin-left="5pt" id="icon4managing_datastores"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4managing_datastores"><a
+href="managing_datastores.html" target="mainhelp_pane"
+class="tocmenulink">Managing datastores</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="managing_vms"><span name="page_icon"
+margin-left="5pt" id="icon4managing_vms"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4managing_vms"><a
+href="managing_vms.html" target="mainhelp_pane"
+class="tocmenulink">Managing VMs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Accessing_storage_information_on_the_Overview_page_201202280041"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_Accessing_storage_information_on_the_Overview_page_201202280041"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Accessing_storage_information_on_the_Overview_page_201202280041"><a
+ href="s_Accessing_storage_information_on_the_Overview_page_201202280041.html"
+ target="mainhelp_pane" class="tocmenulink">Accessing storage
+information on the Overview page</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Refreshing_Data"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Refreshing_Data','icon4Refreshing_Data')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Refreshing_Data"><a
+href="Refreshing_Data.html" target="mainhelp_pane"
+class="tocmenulink">Refreshing Storage Module for vCenter
+data</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Refreshing_Data" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Manually_refreshing_the_data_201002191829">
+<span name="page_icon" margin-left="5pt"
+id="icon4s_Manually_refreshing_the_data_201002191829"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Manually_refreshing_the_data_201002191829"><a
+href="s_Manually_refreshing_the_data_201002191829.html"
+target="mainhelp_pane" class="tocmenulink">Manually refreshing the
+cache</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v11320954"><span name="page_icon"
+margin-left="5pt" id="icon4v11320954"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v11320954"><a
+href="v11320954.html" target="mainhelp_pane"
+class="tocmenulink">Restarting a cache refresh</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Changing_the_automatic_data_refresh_settings_201002191830">
+<span name="page_icon" margin-left="5pt"
+id="icon4s_Changing_the_automatic_data_refresh_settings_201002191830"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Changing_the_automatic_data_refresh_settings_201002191830"><a
+ href="s_Changing_the_automatic_data_refresh_settings_201002191830.html"
+ target="mainhelp_pane" class="tocmenulink">Changing the automatic
+refresh settings</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v11040809"><span name="page_icon"
+margin-left="5pt" id="icon4v11040809"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v11040809"><a
+href="v11040809.html" target="mainhelp_pane"
+class="tocmenulink">Customizing Storage Module for vCenter
+tables</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Host_Storage_Overview"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Host_Storage_Overview','icon4Host_Storage_Overview')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Host_Storage_Overview"><a
+href="Host_Storage_Overview.html" target="mainhelp_pane"
+class="tocmenulink">Viewing host storage
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Host_Storage_Overview" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="host_storage_summary"><span name="page_icon"
+margin-left="5pt" id="icon4host_storage_summary"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4host_storage_summary"><a
+href="host_storage_summary.html" target="mainhelp_pane"
+class="tocmenulink">Host storage summary
+information</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Cluster_Storage_Overview"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Cluster_Storage_Overview','icon4Cluster_Storage_Overview')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Cluster_Storage_Overview"><a
+href="Cluster_Storage_Overview.html" target="mainhelp_pane"
+class="tocmenulink">Viewing cluster storage
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Cluster_Storage_Overview" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="cluster_storage_summary"><span
+name="page_icon" margin-left="5pt"
+id="icon4cluster_storage_summary"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4cluster_storage_summary"><a
+href="cluster_storage_summary.html" target="mainhelp_pane"
+class="tocmenulink">Cluster storage summary
+information</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="datastore_overview_page"><span
+name="page_icon" margin-left="5pt"
+id="icon4datastore_overview_page"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4datastore_overview_page"><a
+href="datastore_overview_page.html" target="mainhelp_pane"
+class="tocmenulink">Datastore Overview</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4Datastore_Storage_Overview"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('Datastore_Storage_Overview','icon4Datastore_Storage_Overview')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4Datastore_Storage_Overview"><a
+href="Datastore_Storage_Overview.html" target="mainhelp_pane"
+class="tocmenulink">Viewing datastore storage
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="Datastore_Storage_Overview" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="datastore_storage_summary"><span
+name="page_icon" margin-left="5pt"
+id="icon4datastore_storage_summary"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4datastore_storage_summary"><a
+href="datastore_storage_summary.html" target="mainhelp_pane"
+class="tocmenulink">Datastore storage summary
+information</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="viewing_datastore_software_firmware"><span
+name="page_icon" margin-left="5pt"
+id="icon4viewing_datastore_software_firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4viewing_datastore_software_firmware"><a
+href="viewing_datastore_software_firmware.html"
+target="mainhelp_pane" class="tocmenulink">Viewing datastore
+software and firmware information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="vm_overview_page"><span name="page_icon"
+margin-left="5pt" id="icon4vm_overview_page"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4vm_overview_page"><a
+href="vm_overview_page.html" target="mainhelp_pane"
+class="tocmenulink">VM Overview</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4VM_Storage_Overview"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('VM_Storage_Overview','icon4VM_Storage_Overview')"
+ style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4VM_Storage_Overview"><a
+href="VM_Storage_Overview.html" target="mainhelp_pane"
+class="tocmenulink">Viewing VM storage information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="VM_Storage_Overview" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="vm_storage_summary"><span name="page_icon"
+margin-left="5pt" id="icon4vm_storage_summary"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4vm_storage_summary"><a
+href="vm_storage_summary.html" target="mainhelp_pane"
+class="tocmenulink">VM storage summary information</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="viewing_VM_software_firmware"><span
+name="page_icon" margin-left="5pt"
+id="icon4viewing_VM_software_firmware"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4viewing_VM_software_firmware"><a
+href="viewing_VM_software_firmware.html" target="mainhelp_pane"
+class="tocmenulink">Viewing VM software and firmware
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v11164267"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v11164267','icon4v11164267')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v11164267"><a
+href="v11164267.html" target="mainhelp_pane"
+class="tocmenulink">Viewing detailed storage
+information</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v11164267" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_storage_disks_201003021127"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_storage_disks_201003021127"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_storage_disks_201003021127"><a
+href="s_Viewing_storage_disks_201003021127.html"
+target="mainhelp_pane" class="tocmenulink">Viewing storage
+volumes</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_virtual_disks_201003021128"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_virtual_disks_201003021128"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_virtual_disks_201003021128"><a
+href="s_Viewing_virtual_disks_201003021128.html"
+target="mainhelp_pane" class="tocmenulink">Viewing virtual
+disks</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_HBAs_201003021127"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_HBAs_201003021127"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Viewing_HBAs_201003021127"><a
+href="s_Viewing_HBAs_201003021127.html" target="mainhelp_pane"
+class="tocmenulink">Viewing HBAs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_paths_201003021127"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_paths_201003021127"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_Viewing_paths_201003021127"><a
+href="s_Viewing_paths_201003021127.html" target="mainhelp_pane"
+class="tocmenulink">Viewing paths</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_replications_201003021128"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_replications_201003021128"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_replications_201003021128"><a
+href="s_Viewing_replications_201003021128.html"
+target="mainhelp_pane" class="tocmenulink">Viewing
+replications</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14486433"><span name="page_icon"
+margin-left="5pt" id="icon4v14486433"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14486433"><a
+href="v14486433.html" target="mainhelp_pane"
+class="tocmenulink">Viewing VMs to volumes</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="HP_Infrastructure_page"><span name="page_icon"
+margin-left="5pt" id="icon4HP_Infrastructure_page"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4HP_Infrastructure_page"><a
+href="HP_Infrastructure_page.html" target="mainhelp_pane"
+class="tocmenulink">Using the HP Infrastructure
+page</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4m110111"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('m110111','icon4m110111')"
+style="cursor:pointer" /></span></td>
+<td><span class="chapter" id="link4m110111"><a href="m110111.html"
+target="mainhelp_pane" class="tocmenulink">Viewing hardware alert
+notifications</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="m110111" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4m116523"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('m116523','icon4m116523')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4m116523"><a href="m116523.html"
+target="mainhelp_pane" class="tocmenulink">Insight Control for
+vCenter events</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="m116523" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4m110904"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('m110904','icon4m110904')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4m110904"><a href="m110904.html"
+target="mainhelp_pane" class="tocmenulink">Onboard Administrator
+events</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="m110904" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112360"><span name="page_icon"
+margin-left="5pt" id="icon4m112360"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112360"><a href="m112360.html"
+target="mainhelp_pane" class="tocmenulink">vCenter Server event
+category: info</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112361"><span name="page_icon"
+margin-left="5pt" id="icon4m112361"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112361"><a href="m112361.html"
+target="mainhelp_pane" class="tocmenulink">vCenter Server event
+category: warning</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112362"><span name="page_icon"
+margin-left="5pt" id="icon4m112362"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112362"><a href="m112362.html"
+target="mainhelp_pane" class="tocmenulink">vCenter Server event
+category: error</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m110906"><span name="page_icon"
+margin-left="5pt" id="icon4m110906"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m110906"><a href="m110906.html"
+target="mainhelp_pane" class="tocmenulink">HP SNMP agent and HP CIM
+provider events</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116524"><span name="page_icon"
+margin-left="5pt" id="icon4m116524"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116524"><a href="m116524.html"
+target="mainhelp_pane" class="tocmenulink">Alarms</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img
+id="icon4IC4VC_troubleshooting_chapter"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('IC4VC_troubleshooting_chapter','icon4IC4VC_troubleshooting_chapter')"
+ style="cursor:pointer" /></span></td>
+<td><span class="chapter"
+id="link4IC4VC_troubleshooting_chapter"><a
+href="IC4VC_troubleshooting_chapter.html" target="mainhelp_pane"
+class="tocmenulink">Troubleshooting</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="IC4VC_troubleshooting_chapter" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_Viewing_the_log_files_201107060019"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Viewing_the_log_files_201107060019"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Viewing_the_log_files_201107060019"><a
+href="s_Viewing_the_log_files_201107060019.html"
+target="mainhelp_pane" class="tocmenulink">Viewing the log
+files</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15697002"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15697002','icon4v15697002')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v15697002"><a
+href="v15697002.html" target="mainhelp_pane"
+class="tocmenulink">Troubleshooting Insight Control for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15697002" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v20765155"><span name="page_icon"
+margin-left="5pt" id="icon4v20765155"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v20765155"><a
+href="v20765155.html" target="mainhelp_pane" class="tocmenulink">HP
+Insight Management tab not available in the vSphere Web
+Client</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_The_HP_Insight_Software_tab_is_not_available_in_the_vSphere_Client_201003181541"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_The_HP_Insight_Software_tab_is_not_available_in_the_vSphere_Client_201003181541"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_The_HP_Insight_Software_tab_is_not_available_in_the_vSphere_Client_201003181541"><a
+ href="s_The_HP_Insight_Software_tab_is_not_available_in_the_vSphere_Client_201003181541.html"
+ target="mainhelp_pane" class="tocmenulink">HP Insight Management
+tab not available in vSphere Client</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_The_vSphere_Client__Insight_Control_for_vCenter__or_the_Storage_Module_for_vCenter_is_unresponsive_201003181612"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_The_vSphere_Client__Insight_Control_for_vCenter__or_the_Storage_Module_for_vCenter_is_unresponsive_201003181612"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_The_vSphere_Client__Insight_Control_for_vCenter__or_the_Storage_Module_for_vCenter_is_unresponsive_201003181612"><a
+ href="s_The_vSphere_Client__Insight_Control_for_vCenter__or_the_Storage_Module_for_vCenter_is_unresponsive_201003181612.html"
+ target="mainhelp_pane" class="tocmenulink">vSphere Client, Insight
+Control for vCenter, or Storage Module for vCenter is
+unresponsive</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116802"><span name="page_icon"
+margin-left="5pt" id="icon4m116802"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116802"><a href="m116802.html"
+target="mainhelp_pane" class="tocmenulink">Slow response in the
+vSphere Client</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14941976"><span name="page_icon"
+margin-left="5pt" id="icon4v14941976"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14941976"><a
+href="v14941976.html" target="mainhelp_pane"
+class="tocmenulink">vCenter service terminates during
+startup</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14932587"><span name="page_icon"
+margin-left="5pt" id="icon4v14932587"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14932587"><a
+href="v14932587.html" target="mainhelp_pane"
+class="tocmenulink">Internet Explorer Permission denied script
+error immediately after installation</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504"><a
+ href="s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504.html"
+ target="mainhelp_pane" class="tocmenulink">Stale or corrupt cache
+or cookies results in GUI anomalies</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_disableproxy"><span name="page_icon"
+margin-left="5pt" id="icon4s_disableproxy"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_disableproxy"><a
+href="s_disableproxy.html" target="mainhelp_pane"
+class="tocmenulink">Error Communicating with iLO at VM
+host</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15697589"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15697589','icon4v15697589')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v15697589"><a
+href="v15697589.html" target="mainhelp_pane"
+class="tocmenulink">Troubleshooting the Server Module for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15697589" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v20765171"><span name="page_icon"
+margin-left="5pt" id="icon4v20765171"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v20765171"><a
+href="v20765171.html" target="mainhelp_pane"
+class="tocmenulink">Infrastructure portlet is not displayed for
+blades</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v20765174"><span name="page_icon"
+margin-left="5pt" id="icon4v20765174"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v20765174"><a
+href="v20765174.html" target="mainhelp_pane"
+class="tocmenulink">Network portlet for blades is missing the
+diagram link</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Summary_data_is_not_displayed_for_a_host_201003181701"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Summary_data_is_not_displayed_for_a_host_201003181701"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Summary_data_is_not_displayed_for_a_host_201003181701"><a
+ href="s_Summary_data_is_not_displayed_for_a_host_201003181701.html"
+ target="mainhelp_pane" class="tocmenulink">Server summary data is
+not displayed for host</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116932"><span name="page_icon"
+margin-left="5pt" id="icon4m116932"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116932"><a href="m116932.html"
+target="mainhelp_pane" class="tocmenulink">Health status or
+information is missing for specific hosts or
+clusters</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m116933"><span name="page_icon"
+margin-left="5pt" id="icon4m116933"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m116933"><a href="m116933.html"
+target="mainhelp_pane" class="tocmenulink">Auto-login not working
+for URLs provided for managed nodes by Insight Control for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14395324"><span name="page_icon"
+margin-left="5pt" id="icon4v14395324"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14395324"><a
+href="v14395324.html" target="mainhelp_pane"
+class="tocmenulink">Virtual Connect Manager launch link from
+Insight Control for vCenter prompts for login
+credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112980"><span name="page_icon"
+margin-left="5pt" id="icon4m112980"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112980"><a href="m112980.html"
+target="mainhelp_pane" class="tocmenulink">HP SIM auto-login fails
+from Insight Control for vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112979"><span name="page_icon"
+margin-left="5pt" id="icon4m112979"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112979"><a href="m112979.html"
+target="mainhelp_pane" class="tocmenulink">Clicking HP Insight
+power management launch link does not go to expected HP SIM
+page</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="m112490"><span name="page_icon"
+margin-left="5pt" id="icon4m112490"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4m112490"><a href="m112490.html"
+target="mainhelp_pane" class="tocmenulink">Events not delivered by
+Insight Control for vCenter to vCenter Server</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14395397"><span name="page_icon"
+margin-left="5pt" id="icon4v14395397"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14395397"><a
+href="v14395397.html" target="mainhelp_pane"
+class="tocmenulink">Firmware inventory information is not
+shown</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14395415"><span name="page_icon"
+margin-left="5pt" id="icon4v14395415"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14395415"><a
+href="v14395415.html" target="mainhelp_pane" class="tocmenulink">No
+Virtual Connect information is available for this host
+error</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v15696996"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v15696996','icon4v15696996')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v15696996"><a
+href="v15696996.html" target="mainhelp_pane"
+class="tocmenulink">Troubleshooting the Storage Module for
+vCenter</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v15696996" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14918125"><span name="page_icon"
+margin-left="5pt" id="icon4v14918125"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14918125"><a
+href="v14918125.html" target="mainhelp_pane"
+class="tocmenulink">Storage Administrator Portal login
+credentials</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="x_s_The_Storage_Module_for_vCenter_GUI_is_not_responsive_to_mouse_clicks_201004221505_201004221505"><span
+ name="page_icon" margin-left="5pt"
+id="icon4x_s_The_Storage_Module_for_vCenter_GUI_is_not_responsive_to_mouse_clicks_201004221505_201004221505"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4x_s_The_Storage_Module_for_vCenter_GUI_is_not_responsive_to_mouse_clicks_201004221505_201004221505"><a
+ href="x_s_The_Storage_Module_for_vCenter_GUI_is_not_responsive_to_mouse_clicks_201004221505_201004221505.html"
+ target="mainhelp_pane" class="tocmenulink">Storage Module for
+vCenter GUI not responsive to mouse clicks</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14883196"><span name="page_icon"
+margin-left="5pt" id="icon4v14883196"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14883196"><a
+href="v14883196.html" target="mainhelp_pane"
+class="tocmenulink">Refresh takes a long time to
+complete</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v11185524"><span name="page_icon"
+margin-left="5pt" id="icon4v11185524"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v11185524"><a
+href="v11185524.html" target="mainhelp_pane"
+class="tocmenulink">Error Unexpected state: The setup helper has
+not been created occurs during array or management server
+configuration</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14933381"><span name="page_icon"
+margin-left="5pt" id="icon4v14933381"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14933381"><a
+href="v14933381.html" target="mainhelp_pane" class="tocmenulink">HP
+MSA P2000 G3 array information not displayed in Storage Module
+GUI</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14918135"><span name="page_icon"
+margin-left="5pt" id="icon4v14918135"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14918135"><a
+href="v14918135.html" target="mainhelp_pane" class="tocmenulink">HP
+XP P9000 virtual disk information missing from Storage Overview
+page</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14918138"><span name="page_icon"
+margin-left="5pt" id="icon4v14918138"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14918138"><a
+href="v14918138.html" target="mainhelp_pane"
+class="tocmenulink">Concatenated replicated LUNs not recognized as
+replicated LUNs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v11550839"><span name="page_icon"
+margin-left="5pt" id="icon4v11550839"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v11550839"><a
+href="v11550839.html" target="mainhelp_pane"
+class="tocmenulink">Duplicate LUNs displayed in Storage Module for
+vCenter interface</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_A_LUN_is_displayed_multiple_times_for_a_VM_or_datastore_that_is_part_of_a_cluster_201004221502"><span
+ name="page_icon" margin-left="5pt"
+id="icon4s_A_LUN_is_displayed_multiple_times_for_a_VM_or_datastore_that_is_part_of_a_cluster_201004221502"><img
+ src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_A_LUN_is_displayed_multiple_times_for_a_VM_or_datastore_that_is_part_of_a_cluster_201004221502"><a
+ href="s_A_LUN_is_displayed_multiple_times_for_a_VM_or_datastore_that_is_part_of_a_cluster_201004221502.html"
+ target="mainhelp_pane" class="tocmenulink">LUN displayed multiple
+times for VM or datastore that is part of a cluster</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"
+id="s_Exporting_storage_information_fails_201003181540"><span
+name="page_icon" margin-left="5pt"
+id="icon4s_Exporting_storage_information_fails_201003181540"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section"
+id="link4s_Exporting_storage_information_fails_201003181540"><a
+href="s_Exporting_storage_information_fails_201003181540.html"
+target="mainhelp_pane" class="tocmenulink">Storage Administrator
+Portal information cannot be exported</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v14918139"><span name="page_icon"
+margin-left="5pt" id="icon4v14918139"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v14918139"><a
+href="v14918139.html" target="mainhelp_pane"
+class="tocmenulink">Internet Explorer script error occurs in
+environment with 100 or more LUNs</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v15937110"><span name="page_icon"
+margin-left="5pt" id="icon4v15937110"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v15937110"><a
+href="v15937110.html" target="mainhelp_pane" class="tocmenulink">HP
+MSA P2000 G3 virtual disks displayed as local or unmanaged
+disks</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v15937121"><span name="page_icon"
+margin-left="5pt" id="icon4v15937121"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v15937121"><a
+href="v15937121.html" target="mainhelp_pane"
+class="tocmenulink">Cannot configure datastore block
+size</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v15937124"><span name="page_icon"
+margin-left="5pt" id="icon4v15937124"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v15937124"><a
+href="v15937124.html" target="mainhelp_pane"
+class="tocmenulink">Cannot configure HP MSA P2000 G3 array when
+using user-created account</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v10824462"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v10824462','icon4v10824462')"
+style="cursor:pointer" /></span></td>
+<td><span class="chapter" id="link4v10824462"><a
+href="v10824462.html" target="mainhelp_pane"
+class="tocmenulink">Support and other resources</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v10824462" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v16143020"><span name="page_icon"
+margin-left="5pt" id="icon4v16143020"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v16143020"><a
+href="v16143020.html" target="mainhelp_pane"
+class="tocmenulink">Information to collect before contacting
+HP</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v16143035"><span name="page_icon"
+margin-left="5pt" id="icon4v16143035"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v16143035"><a
+href="v16143035.html" target="mainhelp_pane"
+class="tocmenulink">How to contact HP</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top"><span name="bookicon"><img id="icon4v16143043"
+src="images/collasped_closed_book_icon.jpg"
+onclick="dynamicmenu('v16143043','icon4v16143043')"
+style="cursor:pointer" /></span></td>
+<td><span class="section" id="link4v16143043"><a
+href="v16143043.html" target="mainhelp_pane"
+class="tocmenulink">Registering for software technical support and
+update service</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<dl id="v16143043" class="tocsubmenu">
+<dd>
+<table>
+<tr>
+<td valign="top" id="v16333226"><span name="page_icon"
+margin-left="5pt" id="icon4v16333226"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v16333226"><a
+href="v16333226.html" target="mainhelp_pane"
+class="tocmenulink">How to use your software technical support and
+update service</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="v16143051"><span name="page_icon"
+margin-left="5pt" id="icon4v16143051"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4v16143051"><a
+href="v16143051.html" target="mainhelp_pane" class="tocmenulink">HP
+authorized resellers</a></span></td>
+</tr>
+</table>
+</dd>
+<dd>
+<table>
+<tr>
+<td valign="top" id="s_related_information"><span name="page_icon"
+margin-left="5pt" id="icon4s_related_information"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="section" id="link4s_related_information"><a
+href="s_related_information.html" target="mainhelp_pane"
+class="tocmenulink">Related information</a></span></td>
+</tr>
+</table>
+</dd>
+</dl>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top" id="c_HP_Documentation_Feedback"><span
+name="page_icon" margin-left="5pt"
+id="icon4c_HP_Documentation_Feedback"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="chapter" id="link4c_HP_Documentation_Feedback"><a
+href="c_HP_Documentation_Feedback.html" target="mainhelp_pane"
+class="tocmenulink">Documentation feedback</a></span></td>
+</tr>
+</table>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top" id="a_firewallports"><span name="page_icon"
+margin-left="5pt" id="icon4a_firewallports"><img
+src="images/topic_page.jpg" /></span></td>
+<td><span class="appendix" id="link4a_firewallports"><a
+href="a_firewallports.html" target="mainhelp_pane"
+class="tocmenulink">Firewall port requirements</a></span></td>
+</tr>
+</table>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td valign="top" id="go01"><span name="page_icon" margin-left="5pt"
+id="icon4go01"><img src="images/topic_page.jpg" /></span></td>
+<td><span class="glossary" id="link4go01"><a href="v10830613.html"
+target="mainhelp_pane" class="tocmenulink">Glossary</a></span></td>
+</tr>
+</table>
+</dd>
+<dd class="tocmenu-chaplevel">
+<table>
+<tr>
+<td></td>
+</tr>
+</table>
+</dd>
+</dl>
+</div>
+</div>
+<div class="navfooter">
+<hr />
+<table width="100%" summary="Navigation footer" cellpadding="0pt"
+cellspacing="0pt">
+<tr>
+<td width="40%" align="left" valign="top">
+<p class="navparastyle">&#160;</p>
+</td>
+<td width="20%" align="center" valign="top">
+<p class="navparastyle">&#160;</p>
+</td>
+<td width="40%" align="right" valign="top">
+<p class="navparastyle">&#160;</p>
+</td>
+</tr>
+</table>
+<p align="right" class="copyright">Copyright © 2012, 2013
+Hewlett-Packard Development Company, L.P.</p>
+</div>
+</body>
+</html>

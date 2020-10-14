@@ -1,0 +1,404 @@
+<?xml version="1.0"?>
+<!--
+   Copyright 2005-2010 VMware, Inc.  All rights reserved.
+--><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:vim25="urn:vim25" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:vim25">
+   <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:vim25="urn:vim25" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:vim25" elementFormDefault="qualified">
+         <element name="RetrieveServiceContent" type="vim25:RetrieveServiceContentRequestType"/>
+   <complexType name="RuntimeFault">
+      <complexContent>
+         <extension base="vim25:MethodFault">
+            <sequence>
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="SecurityError">
+      <complexContent>
+         <extension base="vim25:RuntimeFault">
+            <sequence>
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="NoPermission">
+      <complexContent>
+         <extension base="vim25:SecurityError">
+            <sequence>
+               <element name="object" type="vim25:ManagedObjectReference" />
+               <element name="privilegeId" type="xsd:string" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="NotAuthenticated">
+      <complexContent>
+         <extension base="vim25:NoPermission">
+            <sequence>
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="UserSession">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="key" type="xsd:string" />
+               <element name="userName" type="xsd:string" />
+               <element name="fullName" type="xsd:string" />
+               <element name="loginTime" type="xsd:dateTime" />
+               <element name="lastActiveTime" type="xsd:dateTime" />
+               <element name="locale" type="xsd:string" />
+               <element name="messageLocale" type="xsd:string" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="MethodFault">
+      <sequence>
+         <element name="dynamicType" type="xsd:string" minOccurs="0" />
+         <element name="dynamicProperty" type="vim25:DynamicProperty" minOccurs="0" maxOccurs="unbounded" />
+         <element name="faultCause" type="vim25:LocalizedMethodFault" minOccurs="0" />
+         <element name="faultMessage" type="vim25:LocalizableMessage" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+   </complexType>
+   <complexType name="LocalizedMethodFault">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="fault" type="vim25:MethodFault" />
+               <element name="localizedMessage" type="xsd:string" minOccurs="0" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="MissingProperty">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="path" type="xsd:string" />
+               <element name="fault" type="vim25:LocalizedMethodFault" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="ObjectContent">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="obj" type="vim25:ManagedObjectReference" />
+               <element name="propSet" type="vim25:DynamicProperty" minOccurs="0" maxOccurs="unbounded" />
+               <element name="missingSet" type="vim25:MissingProperty" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="PropertySpec">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="type" type="xsd:string" />
+               <element name="all" type="xsd:boolean" minOccurs="0" />
+               <element name="pathSet" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="SelectionSpec">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="name" type="xsd:string" minOccurs="0" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="DynamicProperty">
+      <sequence>
+         <element name="name" type="xsd:string" />
+         <element name="val" type="xsd:anyType" />
+      </sequence>
+   </complexType>
+   <complexType name="ObjectSpec">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="obj" type="vim25:ManagedObjectReference" />
+               <element name="skip" type="xsd:boolean" minOccurs="0" />
+               <element name="selectSet" type="vim25:SelectionSpec" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="AboutInfo">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="name" type="xsd:string" />
+               <element name="fullName" type="xsd:string" />
+               <element name="vendor" type="xsd:string" />
+               <element name="version" type="xsd:string" />
+               <element name="build" type="xsd:string" />
+               <element name="localeVersion" type="xsd:string" minOccurs="0" />
+               <element name="localeBuild" type="xsd:string" minOccurs="0" />
+               <element name="osType" type="xsd:string" />
+               <element name="productLineId" type="xsd:string" />
+               <element name="apiType" type="xsd:string" />
+               <element name="apiVersion" type="xsd:string" />
+               <element name="instanceUuid" type="xsd:string" minOccurs="0" />
+               <element name="licenseProductName" type="xsd:string" minOccurs="0" />
+               <element name="licenseProductVersion" type="xsd:string" minOccurs="0" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="ServiceContent">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="rootFolder" type="vim25:ManagedObjectReference" />
+               <element name="propertyCollector" type="vim25:ManagedObjectReference" />
+               <element name="viewManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="about" type="vim25:AboutInfo" />
+               <element name="setting" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="userDirectory" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="sessionManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="authorizationManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="perfManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="scheduledTaskManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="alarmManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="eventManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="taskManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="extensionManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="customizationSpecManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="customFieldsManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="accountManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="diagnosticManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="licenseManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="searchIndex" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="fileManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="virtualDiskManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="virtualizationManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="snmpSystem" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="vmProvisioningChecker" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="vmCompatibilityChecker" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="ovfManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="ipPoolManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="dvSwitchManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="hostProfileManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="clusterProfileManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="complianceManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="localizationManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+               <element name="storageResourceManager" type="vim25:ManagedObjectReference" minOccurs="0" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="DynamicData">
+      <sequence>
+         <element name="dynamicType" type="xsd:string" minOccurs="0" />
+         <element name="dynamicProperty" type="vim25:DynamicProperty" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+   </complexType>
+   <complexType name="PropertyFilterSpec">
+      <complexContent>
+         <extension base="vim25:DynamicData">
+            <sequence>
+               <element name="propSet" type="vim25:PropertySpec" maxOccurs="unbounded" />
+               <element name="objectSet" type="vim25:ObjectSpec" maxOccurs="unbounded" />
+               <element name="reportMissingObjectsInResults" type="xsd:boolean" minOccurs="0" />
+            </sequence>
+         </extension>
+      </complexContent>
+   </complexType>
+   <complexType name="ManagedObjectReference">
+      <simpleContent>
+         <extension base="xsd:string">
+            <attribute name="type" type="xsd:string"/>
+         </extension>
+      </simpleContent>
+   </complexType>
+   <complexType name="RetrievePropertiesRequestType">
+      <sequence>
+         <element name="_this" type="vim25:ManagedObjectReference" />
+         <element name="specSet" type="vim25:PropertyFilterSpec" maxOccurs="unbounded" />
+      </sequence>
+   </complexType>
+   <complexType name="RetrieveServiceContentRequestType">
+      <sequence>
+         <element name="_this" type="vim25:ManagedObjectReference" />
+      </sequence>
+   </complexType>
+   <complexType name="LogoutRequestType">
+      <sequence>
+         <element name="_this" type="vim25:ManagedObjectReference" />
+      </sequence>
+   </complexType>
+   <complexType name="LoginRequestType">
+      <sequence>
+         <element name="_this" type="vim25:ManagedObjectReference" />
+         <element name="userName" type="xsd:string" />
+         <element name="password" type="xsd:string" />
+         <element name="locale" type="xsd:string" minOccurs="0" />
+      </sequence>
+   </complexType>
+         <element name="RetrieveServiceContentResponse">
+            <complexType>
+               <sequence>
+                  <element name="returnval" type="vim25:ServiceContent"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Login" type="vim25:LoginRequestType"/>
+         <element name="LoginResponse">
+            <complexType>
+               <sequence>
+                  <element name="returnval" type="vim25:UserSession"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="Logout" type="vim25:LogoutRequestType"/>
+         <element name="LogoutResponse">
+            <complexType/>
+         </element>
+         <element name="InvalidLocaleFault" type="vim25:InvalidLocale"/>
+         <element name="InvalidLoginFault" type="vim25:InvalidLogin"/>
+         <element name="InvalidPropertyFault" type="vim25:InvalidProperty"/>
+         <element name="RetrieveProperties" type="vim25:RetrievePropertiesRequestType"/>
+         <element name="RetrievePropertiesResponse">
+            <complexType>
+               <sequence>
+                  <element name="returnval" type="vim25:ObjectContent" minOccurs="0" maxOccurs="unbounded"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="RuntimeFaultFault" type="vim25:RuntimeFault"/>
+      </schema>
+   </types>
+   <message name="InvalidPropertyFaultMsg">
+      <part name="fault" element="vim25:InvalidPropertyFault"/>
+   </message>
+   <message name="RetrievePropertiesRequestMsg">
+      <part name="parameters" element="vim25:RetrieveProperties"/>
+   </message>
+   <message name="RetrievePropertiesResponseMsg">
+      <part name="parameters" element="vim25:RetrievePropertiesResponse"/>
+   </message>
+   <message name="RuntimeFaultFaultMsg">
+      <part name="fault" element="vim25:RuntimeFaultFault"/>
+   </message>
+   <message name="RetrieveServiceContentRequestMsg">
+      <part name="parameters" element="vim25:RetrieveServiceContent"/>
+   </message>
+   <message name="RetrieveServiceContentResponseMsg">
+      <part name="parameters" element="vim25:RetrieveServiceContentResponse"/>
+   </message>
+   <message name="LoginRequestMsg">
+      <part name="parameters" element="vim25:Login"/>
+   </message>
+   <message name="LoginResponseMsg">
+      <part name="parameters" element="vim25:LoginResponse"/>
+   </message>
+   <message name="LogoutRequestMsg">
+      <part name="parameters" element="vim25:Logout"/>
+   </message>
+   <message name="LogoutResponseMsg">
+      <part name="parameters" element="vim25:LogoutResponse"/>
+   </message>
+   <message name="InvalidLocaleFaultMsg">
+      <part name="fault" element="vim25:InvalidLocaleFault"/>
+   </message>
+   <message name="InvalidLoginFaultMsg">
+      <part name="fault" element="vim25:InvalidLoginFault"/>
+   </message>
+   <portType name="VimPortType">
+      <operation name="RetrieveProperties">
+         <input message="vim25:RetrievePropertiesRequestMsg"/>
+         <output message="vim25:RetrievePropertiesResponseMsg"/>
+         <fault name="InvalidPropertyFault" message="vim25:InvalidPropertyFaultMsg"/>
+         <fault name="RuntimeFault" message="vim25:RuntimeFaultFaultMsg"/>
+      </operation>
+      <operation name="RetrieveServiceContent">
+         <input message="vim25:RetrieveServiceContentRequestMsg"/>
+         <output message="vim25:RetrieveServiceContentResponseMsg"/>
+         <fault name="RuntimeFault" message="vim25:RuntimeFaultFaultMsg"/>
+      </operation>
+      <operation name="Login">
+         <input message="vim25:LoginRequestMsg"/>
+         <output message="vim25:LoginResponseMsg"/>
+         <fault name="InvalidLoginFault" message="vim25:InvalidLoginFaultMsg"/>
+         <fault name="InvalidLocaleFault" message="vim25:InvalidLocaleFaultMsg"/>
+         <fault name="RuntimeFault" message="vim25:RuntimeFaultFaultMsg"/>
+      </operation>
+      <operation name="Logout">
+         <input message="vim25:LogoutRequestMsg"/>
+         <output message="vim25:LogoutResponseMsg"/>
+         <fault name="RuntimeFault" message="vim25:RuntimeFaultFaultMsg"/>
+      </operation>
+      </portType>
+   <binding name="VimBinding" type="vim25:VimPortType">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="RetrieveProperties">
+         <soap:operation soapAction="urn:vim25/4.1" style="document"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+         <fault name="InvalidPropertyFault">
+            <soap:fault name="InvalidPropertyFault" use="literal"/>
+         </fault>
+         <fault name="RuntimeFault">
+            <soap:fault name="RuntimeFault" use="literal"/>
+         </fault>
+      </operation>
+      <operation name="RetrieveServiceContent">
+         <soap:operation soapAction="urn:vim25/4.1" style="document"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+         <fault name="RuntimeFault">
+            <soap:fault name="RuntimeFault" use="literal"/>
+         </fault>
+      </operation>
+      <operation name="Login">
+         <soap:operation soapAction="urn:vim25/4.1" style="document"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+         <fault name="InvalidLoginFault">
+            <soap:fault name="InvalidLoginFault" use="literal"/>
+         </fault>
+         <fault name="InvalidLocaleFault">
+            <soap:fault name="InvalidLocaleFault" use="literal"/>
+         </fault>
+         <fault name="RuntimeFault">
+            <soap:fault name="RuntimeFault" use="literal"/>
+         </fault>
+      </operation>
+      <operation name="Logout">
+         <soap:operation soapAction="urn:vim25/4.1" style="document"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+         <fault name="RuntimeFault">
+            <soap:fault name="RuntimeFault" use="literal"/>
+         </fault>
+      </operation>
+      </binding>
+   <service name="VimService">
+      <port binding="vim25:VimBinding" name="VimPort">
+         <soap:address location="https://localhost/sdk/vimService" />
+      </port>
+   </service>
+</definitions>

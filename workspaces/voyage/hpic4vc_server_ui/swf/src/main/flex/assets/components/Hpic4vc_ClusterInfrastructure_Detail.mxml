@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 height="100%" width="100%"
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 
+		 >
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="contentJustify" clipAndEnableScrolling="true"/>
+	</s:layout>
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_ClusterInfrastructureDetailMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.HierarchialData;
+			
+			import assets.renderers.ClusterInfrastructureDetailRenderer;
+			
+			import com.hp.asi.hpic4vc.ui.model.ClusterInfrastructureDetailModel;
+			import com.hp.asi.hpic4vc.ui.model.ClusterInfrastructureModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.HierarchicalData;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			
+			[Bindable]
+			public var clusterInfrastructureDetailModel:ClusterInfrastructureDetailModel;
+			
+			[Bindable]
+			public var clusterInfrstructureModel:ClusterInfrastructureModel;
+			
+			[Bindable]
+			public var  errorFoundLabel:String;
+			
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				currentState = "loadingData";
+			}
+
+
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="loadingData"/>
+		<s:State name="errorFound"/>
+		<s:State name="showClusterInfraDetail"/>
+		<s:State name="dataNotFound"/>
+	</s:states>
+	<!-- Loading Cluster Infrastructure Details-->	
+	<s:HGroup height="30" includeIn="loadingData">
+		<s:Label text="{Helper.getString('loading')}" verticalCenter="0"/>
+	</s:HGroup>
+
+	<!-- Cluster Infrastructure Details not found-->
+	<s:HGroup height="30" includeIn="dataNotFound">
+		<s:Label text="no data found" verticalCenter="0"/>
+	</s:HGroup>
+	
+	<!-- Error occurred while loading Cluster Infrastructure Details-->
+	<s:HGroup height="30" includeIn="errorFound">
+		<s:Label text="{Helper.getString('errorOccurred')}" verticalCenter="0"/>
+	</s:HGroup>
+	
+	<!--  Cluster Infrastructure Details-->
+	<s:HGroup includeIn="showClusterInfraDetail" width="100%" height="100%">
+		<mx:AdvancedDataGrid 
+			height="97%" width="100%"
+			folderClosedIcon="{null}"
+			folderOpenIcon="{null}"
+			variableRowHeight="true"
+			sortableColumns="false"
+			sortExpertMode="true"
+			headerStyleName="mxDataGridHeader"
+			>
+			<mx:dataProvider>
+				<mx:HierarchicalData source="{clusterInfrstructureModel.clusterInfrastructure}" 
+									 childrenField="clusterInfrastructureDetails"/>
+			</mx:dataProvider>
+			<mx:columns>
+				<mx:AdvancedDataGridColumn dataField="enclosureName" headerText="Enclosure" width="25" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="rackName" headerText="Rack" width="15" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="powerSuppliesOutOfpowerSuplliesPresent" headerText="Power Supplies" width="25" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="fanBaysOutOfFansPresent" headerText="Fans" width="20" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="powerConsumed" headerText="Power Consumed(W)" width="20" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="powerRedundancy" headerText="Power Redundancy" width="25" sortable="false"/>
+				<mx:AdvancedDataGridColumn dataField="thermalRedundancy" headerText="Thermal Redundancy" width="25" sortable="false"/>
+			</mx:columns>
+			<mx:rendererProviders>
+				<mx:AdvancedDataGridRendererProvider 
+					depth="2" 
+					columnIndex="0" 
+					columnSpan="0" 
+					renderer="assets.renderers.ClusterInfrastructureDetailRenderer"/>
+			</mx:rendererProviders>
+		</mx:AdvancedDataGrid>
+	</s:HGroup>
+
+</s:Group>

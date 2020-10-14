@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  focusEnabled="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.utils.UtilToDeploy;
+			import com.hp.asi.hpic4vc.ui.vo.ServerNodesData;
+
+
+
+			
+			[Bindable]
+			private var serverNodesData:ServerNodesData ;
+			
+			[Bindable]
+			private var serverStatus:String;
+			
+			[Bindable]
+			private var statusImage:Object;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				serverStatus = "";
+				
+				if (value && value is ServerNodesData)
+				{
+					serverNodesData = ServerNodesData(value);
+					
+					serverStatus = UtilToDeploy.getServerStatus(serverNodesData);
+					statusImage = UtilToDeploy.getStatusImage(serverNodesData);
+					
+				}
+			}
+			
+			protected function serverCheckBox_changeHandler(event:Event):void
+			{
+				
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<s:Image source="{statusImage}" toolTip="{serverStatus}" left="85"/>
+	<!--<s:Label id="lblData" top="0" left="0" right="0" bottom="0" text="{serverStatus}" />-->
+</s:MXAdvancedDataGridItemRenderer>

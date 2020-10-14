@@ -1,0 +1,107 @@
+<script id="status_outer_template" type="text/x-jquery-tmpl" >
+    <div id="status_box" class="box" style="width:98%;">
+        <div class="box_contents" id="status_box_contents">
+            <table id="StatusContents"><tr></tr></table>
+            <div id="status_pager"></div>
+        </div>
+    </div>
+    <a href="#" onclick="AppManager.loadApp('vmoverview');">Back</a>
+</script>
+
+<div id="vmstatus" style="display:none"></div>
+
+<script type="text/javascript">
+
+    var VmStatus = {
+
+        getVmMoref : function(){
+            try {
+                return getQueryParameters()['moref'].split(':')[1];
+            } catch (e){
+                return '';
+            }
+        },
+
+        startApp : function(){
+            this.createGrid();
+            $(window).resize(function() {
+                setTimeout("VmStatus.resizeGrid();", 700);
+            });
+        },
+
+        createGrid: function(){
+            jQuery("#StatusContents").jqGrid({
+                url: '/agservices/vmstatus'+ "?" + window.location.search.substring(1),
+                mtype: 'GET',
+                datatype: 'json',
+                jsonReader: {
+                    root: "result",
+                    id: "status_item",
+                    repeatitems: false
+                },
+                colNames: [
+                    'Status', 'Source', 'Detail Description'
+                ],
+                colModel: [
+                    {name: 'healthStatus', index:'status', formatter: statusFormatter, width: 50},
+                    {name: 'name', index:'source', width: 50}, 
+                    {name: 'detail', index:'detail'} 
+                ],
+                scroll: true,
+                autowidth: true,
+                hoverrows: false,
+                scrollOffset: 20,
+                viewsortcols:[true,'vertical', true],
+                gridview: true,
+                shrinkToFit: true,
+                loadonce: true,
+                rowNum: 999999999,
+                pager: '#status_pager',
+                viewrecords: true,
+                altRows: true,
+                loadComplete: function(data){
+                    setTimeout("VmStatus.resizeGrid();", 700);
+                    if (!data){
+                        return;
+                    }
+                    //setTimeout("VmStatus.refreshStatus();", 15000);
+                    $('#refresh_StatusContents').click(function(){$('#StatusContents').setGridParam({datatype:'json', page:1}).trigger('reloadGrid');});
+                }
+            });
+            jQuery("#StatusContents").navGrid('#status_pager',{
+                refresh: true,
+                search: false,
+                add: false,
+                edit: false,
+                del: false
+            });
+        },
+
+        resizeGrid : function(){
+            try{
+                $("#StatusContents").setGridWidth($("#status_box_contents").width()-4);
+                var height = $(window).height() - $("#header").height() - $("#footer").height() - $("#status_pager").height() - 120;
+                $("#StatusContents").setGridHeight(height);
+            } catch (e){}
+        },
+
+        isActive: function(){
+            return $("#vmstatus").is(":visible");
+        },
+
+        refreshStatus : function(){
+            if (VmStatus.isActive()){
+                $("#StatusContents").jqGrid('GridUnload');
+                VmStatus.createGrid();
+            }
+        }
+
+    };
+
+    $('#status_outer_template').tmpl().appendTo("#vmstatus");
+    VmStatus.startApp();
+    AppManager.addAppListener(VmStatus.refreshStatus);
+
+</script>
+
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">	
+	<fx:Script>
+		<![CDATA[	
+			import assets.components.Hpic4vc_ClusterMismatch;
+			[Bindable]
+			public var hostMoid:String;
+			import mx.collections.ArrayCollection;
+			[Embed(source="/assets/images/nextPage.png")]
+			[Bindable]
+			public var successCls:Class;
+			private var _view:Hpic4vc_ClusterMismatch;
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if (value)
+				{
+					hostMoid=value.hostMoid;
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:CheckBox id="chckId"/>
+	
+</s:MXAdvancedDataGridItemRenderer>
+

@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="650" height="360"
+		  xmlns:components="assets.components.*" creationComplete="init()">
+	
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.components.Hpic4vc_BaseMediator;
+			import assets.components.Hpic4vc_Firmware_Host;
+			import assets.components.Hpic4vc_Overview_SoftwareFirmware;
+			import assets.components.Hpic4vc_Server_NetworkDiagram;
+			import assets.components.Hpic4vc_TabNameEnum;
+			import assets.components.Hpic4vc_manage_GettingStarted;
+			
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_storage_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.FooterModel;
+			import com.hp.asi.hpic4vc.ui.model.TabModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.events.MenuEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var objReferenceId:String;
+			
+			[Bindable]
+			public var gettingStart:Hpic4vc_manage_GettingStarted;
+			
+			[Bindable]
+			public var _proxyStorage:Hpic4vc_storage_providerProxy;
+			
+			[Bindable]
+			public var objReferenceName:String;
+			
+			[Bindable]
+			public var productInfo:String;
+			
+			[Bindable]
+			public var enclosureInfo:String;
+			
+			[Bindable]
+			public var healthConsolidatedStatus:String;
+			
+			[Bindable]
+			public var warningCount:String;
+			
+			[Bindable]
+			public var errorCount:String;
+			
+			[Bindable]
+			public var okCount:String;
+			
+			[Bindable]
+			public var informationCount:String;
+			
+			[Bindable]
+			public var tasksHoverValue:ArrayCollection;
+			
+			[Bindable]
+			public var actionsCollection:ArrayCollection;
+			
+			[Bindable]
+			public var configurations:ArrayCollection;
+			
+			[Bindable]
+			public var helpUrl:String;
+			
+			[Bindable]
+			public var tempHelpUrl:String;
+			
+			[Bindable]
+			public var refreshList:ArrayCollection;
+			
+			[Bindable]
+			public var isPopulating:Boolean;
+			
+			[Bindable]
+			public var showRefreshHover:Boolean;
+			
+			[Bindable]
+			public var tasksTabModel:TabModel;
+			
+			[Bindable]
+			public var healthTabModel:TabModel;
+			
+			[Bindable]
+			public var footerData:FooterModel;
+			
+			[Bindable]
+			public var tabs:ArrayCollection;
+			
+			[Bindable]
+			public var gettingStartTabModel:TabModel;
+			
+			private var _swfwTabModel:TabModel;
+			[Bindable]
+			public function get swfwTabModel():TabModel {
+				return _swfwTabModel;
+			}
+			
+			public function set swfwTabModel(value:TabModel): void {
+				this._swfwTabModel = value;
+				gettingStarted_clickHandler(new Event(""));
+			}
+			
+			[Bindable]
+			public var overviewTabModel:TabModel;
+			[Bindable]
+			public var newsfeedTabModel:TabModel;
+			[Bindable]
+			public var storageTabModel:TabModel;
+			[Bindable]
+			public var hostTabModel:TabModel;
+			[Bindable]
+			public var infrastructureTabModel:TabModel;
+			[Bindable]
+			public var networkingTabModel:TabModel;
+			[Bindable]
+			public var clusterTabModel:TabModel;
+			
+			
+			// Error message labels                  
+			[Bindable]
+			public var noTabsFound:String;
+			[Bindable]
+			public var noHeaderInfoFound:String;
+			[Bindable]
+			public var tabsErrorMessage:String;
+			[Bindable]
+			public var headerErrorMessage:String;
+			[Bindable]
+			public var noFooterInfoFound:String;
+			[Bindable]
+			public var footerErrorMessage:String;
+			
+			public var networkSubTabSelectedValue:String = "networkDetail";
+			public var softwareFirmwareSubTabSelectedValue:String = "softwareFirmwareDetail";
+			
+			[Bindable]
+			public var tabInfo:String;
+			[Bindable]
+			public var showStatusMessagesTab:Boolean;
+			private var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+			private var uiView:Hpic4vc_uiView;
+
+			private var so: SharedObject;
+			
+			private function init():void {
+				//Added change watcher for the last tab from the json file so that by the time it hits this changewatcher all the other tab models are loaded.
+				//Note: If the order of the tabs in the json file is changed then the changewatcher should be changed to watch the last tab model.
+				//tabWatcher         = ChangeWatcher.watch(this, ["gettingStartTabModel"], gettingStarted_clickHandler);
+			  	so = SharedObject.getLocal("mydata");
+				this.currentState = "DataUnavailable";
+			//	tabWatcher           = ChangeWatcher.watch(this, ["swfwTabModel"], gettingStarted_clickHandler);
+				
+				//List Software Firmware Event
+				
+			}
+			
+			public function overview_Clicked(event:Event):void {
+				var overviewClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (overviewTabModel != null) {
+					overviewClicked.item = overviewTabModel;
+					tabBar_itemClickHandler(overviewClicked);
+					tabBar.selectedIndex = parseInt(overviewTabModel.order);
+				}
+			}
+			
+			public function component_FirmwareClicked():void{
+			//	navigateToTabInManage("swfwTab");
+			//	_hpic4vc_manage_uiView = baseMediator.getManageView();
+				
+				softwareFirmwareSubTabSelectedValue = "softwareFirmwareDetail";
+				var swfwClicked:ItemClickEvent = new ItemClickEvent(ItemClickEvent.ITEM_CLICK);
+				if (swfwTabModel != null) {
+					swfwClicked.item = swfwTabModel;
+					tabBar_itemClickHandler(swfwClicked);
+					tabBar.selectedIndex = parseInt(swfwTabModel.order);
+				}
+				
+			}
+			
+			public function component_moreOnSoftwareFirmwareClusterStatusUpdateClicked(event:Event=null):void {
+				Helper.closeAllPopups();
+				softwareFirmwareSubTabSelectedValue = "softwareFirmwareClusterStatusUpdate";
+				checkToDisplayStatusTab();
+				var swfwClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (swfwTabModel != null) {
+					swfwClicked.item = swfwTabModel;
+					tabBar_itemClickHandler(swfwClicked);
+					tabBar.selectedIndex = parseInt(swfwTabModel.order);
+				}
+			}
+			
+			public function component_moreOnSoftwareFirmwareStatusUpdateClicked(event:Event=null):void {
+				
+				Helper.closeAllPopups();
+				softwareFirmwareSubTabSelectedValue = "softwareFirmwareStatusUpdate";
+				checkToDisplayStatusTab();
+				var swfwClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (swfwTabModel != null) {
+					swfwClicked.item = swfwTabModel;
+					tabBar_itemClickHandler(swfwClicked);
+					tabBar.selectedIndex = parseInt(swfwTabModel.order);
+				}
+			}
+			
+			public function component_moreOnSoftwareFirmwareClicked(event:Event=null):void {
+				softwareFirmwareSubTabSelectedValue = "softwareFirmwareDetail";
+				checkToDisplayStatusTab();
+				baseMediator.setManageView(this);
+				var swfwClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (swfwTabModel != null) {
+					swfwClicked.item = swfwTabModel;
+					tabBar_itemClickHandler(swfwClicked);
+					tabBar.selectedIndex = parseInt(swfwTabModel.order);
+				}
+			}
+			
+			public function component_moreOnStorageClicked(event:Event):void {
+				var storageClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (storageTabModel != null) {
+					storageClicked.item = storageTabModel;
+					tabBar_itemClickHandler(storageClicked);
+					tabBar.selectedIndex = parseInt(storageTabModel.order);
+				}
+			}
+			
+			public function component_moreOnHostInformationClicked(event:Event):void {
+				var hostClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (hostTabModel != null) {
+					hostClicked.item = hostTabModel;
+					tabBar_itemClickHandler(hostClicked);
+					tabBar.selectedIndex = parseInt(hostTabModel.order);
+				}
+			}
+			
+			public function component_moreOnNetworkingClicked(event:Event):void {
+				networkSubTabSelectedValue = "networkDetail";
+				var netClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (networkingTabModel != null) {
+					netClicked.item = networkingTabModel;
+					tabBar_itemClickHandler(netClicked);
+					tabBar.selectedIndex = parseInt(networkingTabModel.order);
+				}
+			}
+			
+			public function component_moreOnInfrastructureClicked(event:Event):void {
+				var infraClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (infrastructureTabModel != null ) {
+					infraClicked.item = infrastructureTabModel;
+					tabBar_itemClickHandler(infraClicked);
+					tabBar.selectedIndex = parseInt(infrastructureTabModel.order);
+				}
+			}
+			
+			public function component_moreOnClusterSummaryClicked(event:Event):void
+			{
+				var overviewClusterSummaryClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (clusterTabModel != null) {
+					overviewClusterSummaryClicked.item = clusterTabModel;
+					tabBar_itemClickHandler(overviewClusterSummaryClicked);
+					tabBar.selectedIndex = parseInt(clusterTabModel.order);
+				}
+			}
+			
+			public function taskLabelClicked(event:Event):void {
+				uiView = baseMediator.getView();
+				var tasksClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				baseMediator.setTabClickedInfo("tasksTab");
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getMonitorMoreLinkURLs(_contextObject);
+				dispatchEvent(e);
+				if(uiView != null)
+					uiView.component_taskLabelClicked(event);
+				
+			}
+			
+			public function healthLabelClicked(event:Event):void {
+				uiView = baseMediator.getView();
+				var healthClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				baseMediator.setTabClickedInfo("healthTab");
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getMonitorMoreLinkURLs(_contextObject);
+				dispatchEvent(e);
+				if(uiView != null)
+					uiView.component_healthLabelClicked(event);
+				
+			}
+			
+			protected function gettingStarted_clickHandler(event:Event):void
+			{
+				if(so.data.hasOwnProperty("setTab") && so.data.hasOwnProperty("setContextObject")){
+					var prevTab:String = so.data.setTab;
+					var prevContextObj:String = so.data.setContextObject;
+					if (prevContextObj == _contextObject.type){  	// for same VObject only
+						var i:int = prevTab.lastIndexOf("_");
+						var stringToCompare:String = prevTab.substring(i+1, prevTab.length);
+						if (stringToCompare == "Storage")
+							tabInfo = Hpic4vc_TabNameEnum.STORAGE;
+						else if (stringToCompare == "SoftwareFirmware")
+							tabInfo = Hpic4vc_TabNameEnum.SOFTWAREFIRMWARE;
+						else if (stringToCompare == "Host")
+							tabInfo = Hpic4vc_TabNameEnum.HOST;
+						else if (stringToCompare == "Networking")
+							tabInfo = Hpic4vc_TabNameEnum.NETWORKING;
+						else if (stringToCompare == "Infrastructure")
+							tabInfo = Hpic4vc_TabNameEnum.INFRASTRUCTURE;
+						else if (stringToCompare == "Overview")
+							tabInfo = Hpic4vc_TabNameEnum.OVERVIEW;
+						else if (stringToCompare == "Cluster")
+							tabInfo = Hpic4vc_TabNameEnum.CLUSTER;	
+					}
+				}
+				
+				if(tabInfo == Hpic4vc_TabNameEnum.SOFTWAREFIRMWARE) {
+					component_moreOnSoftwareFirmwareClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.HOST) {
+					component_moreOnHostInformationClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.STORAGE) {
+					component_moreOnStorageClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.NETWORKING) {
+					component_moreOnNetworkingClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.INFRASTRUCTURE) {
+					component_moreOnInfrastructureClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.CLUSTER){
+					component_moreOnClusterSummaryClicked(event);
+				} else if(tabInfo == Hpic4vc_TabNameEnum.OVERVIEW) {
+					overview_Clicked(event);
+				} else {
+					
+					// Open the 1st tab by default. "Getting Started" in this case.
+					var gettingStartClicked:ItemClickEvent = new ItemClickEvent(event.type);
+					if (gettingStartTabModel != null) {
+						gettingStartClicked.item = gettingStartTabModel;
+						tabBar_itemClickHandler(gettingStartClicked);
+						tabBar.selectedIndex = parseInt(gettingStartTabModel.order);
+					}
+				}
+				tabInfo = null;
+			}
+			
+			protected function tabBar_itemClickHandler(event:ItemClickEvent):void
+			{
+				var tabComponentName:String = (event.item as TabModel).component;
+				var tab:* = instantiateUsingClassName(tabComponentName);
+				
+				// Get the new Help URL from the Tab object
+				helpUrl = (event.item as TabModel).helpUrl;
+				
+				// Set shared object here
+				so.data.setTab = tabComponentName;
+				so.data.setContextObject = _contextObject.type; //this is prev context object
+				so.flush();
+				
+				// Display the tab
+				if ((event.item as TabModel).displayNameKey == "Storage" || (event.item as TabModel).displayNameKey == "Getting_Started" || (event.item as TabModel).displayNameKey == "Overview" || (event.item as TabModel).displayNameKey == "Networking" || (event.item as TabModel).displayNameKey == "Software_Firmware") {
+					// Pass Hpic4vc_manage_uiView only if it is the Storage Tab, and few others for specific reasons.  
+					// Storage tab uses to update the Help links on the header.
+					checkToDisplayStatusTab();
+					tab.showManage(_contextObject, this);
+					
+				} else {
+					checkToDisplayStatusTab();
+					tab.show(_contextObject);
+				}
+				canvas.removeAllChildren();
+				canvas.addChild(tab);
+				//     Hpic4vc_BaseMediator.tab_Clicked = null;
+			}
+			
+			public function checkToDisplayStatusTab():void{
+				if(hostTabModel != null || clusterTabModel !=null){
+					showStatusMessagesTab = true;
+				}else {
+					showStatusMessagesTab = false;
+				}
+			}
+			
+			public function networkDiagramHandler(event:Event):void {
+				networkSubTabSelectedValue = "networkDiagram";
+				var netClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (networkingTabModel != null) {
+					netClicked.item = networkingTabModel;
+					tabBar_itemClickHandler(netClicked);
+					tabBar.selectedIndex = parseInt(networkingTabModel.order);
+				}
+			}		
+			
+			
+			public function instantiateUsingClassName(className:String):* {
+				var classToInstantiate : Class = getDefinitionByName(className) as Class;
+				var myClassFactory : ClassFactory = new ClassFactory(classToInstantiate);
+				var myObjectInstance : * = myClassFactory.newInstance();
+				return myObjectInstance;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="DataAvailable"/>
+		<s:State name="DataUnavailable"/>
+		<s:State name="ErrorFound"/>
+	</s:states>
+	
+	<!--mx:VBox-->
+	<!-- Storage Summary -->
+	<!--mx:HBox-->
+	<!-- Data loading -->
+	<mx:Label includeIn="DataUnavailable" width="700" text="{Helper.getString('loading')}"
+			  textAlign="center"/>
+	<!--mx:VBox includeIn="DataAvailable"-->
+	
+	<components:Hpic4vc_Header id="header" width="100%" includeIn="DataAvailable"
+							   healthConsolidatedStatus="{healthConsolidatedStatus}"
+							   warningCount="{warningCount}" errorCount="{errorCount}"
+							   okCount="{okCount}" informationCount="{informationCount}"
+							   objReferenceName="{objReferenceName}" 
+							   productInfo="{productInfo}"
+							   enclosureInfo="{enclosureInfo}"
+							   tasksHoverValue="{tasksHoverValue}"
+							   actionsList="{actionsCollection}"
+							   configList="{configurations}"
+							   helpUrl="{helpUrl}"
+							   refreshList="{refreshList}"
+							   isPopulating="{isPopulating}"
+							   noInfoFoundLabel="{noHeaderInfoFound}"
+							   taskLabelClicked="taskLabelClicked(event)"
+							   healthLabelClicked="healthLabelClicked(event)"
+							   objReferenceId="{objReferenceId}"
+							   _proxyStorage="{_proxyStorage}"
+							   showRefreshCache="{showRefreshHover}"
+							   errorMessage="{headerErrorMessage}"
+							   _contextObject="{_contextObject}"
+							   />
+	
+	<mx:Label text="{noTabsFound}" includeIn="ErrorFound"/>
+	<mx:Text width="99%" text="{tabsErrorMessage}" styleName="errorMessage" includeIn="ErrorFound"/>
+	<!--/mx:VBox-->                          
+	
+	<!--/mx:HBox-->
+	<!--/mx:VBox-->
+	<mx:Canvas height="100%" width="100%">
+		<mx:ToggleButtonBar id="tabBar" includeIn="DataAvailable"
+							dataProvider="{tabs}" 
+							labelField="displayNameValue"
+							itemClick="tabBar_itemClickHandler(event)"
+							height="25" 
+							styleName="buttonBar"
+							buttonMode="true"
+							selectedIndex="{parseInt(gettingStartTabModel.order)}"
+							/> 
+		
+		<mx:Canvas id="canvas"
+				   x="0" y="35"
+				   width="100%" height="100%"
+				   borderVisible="false">
+			
+		</mx:Canvas>
+	</mx:Canvas>
+	<components:Hpic4vc_Footer id="footer" footerData="{footerData}" includeIn="DataAvailable"
+							   noFooterInfoFoundLabel="{noFooterInfoFound}"
+							   errorMessage="{footerErrorMessage}"
+							   />
+	
+	
+</s:VGroup>
+

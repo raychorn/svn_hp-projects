@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+	
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   cornerRadius="3"
+			   controlBarVisible="true"
+			   minWidth="522" height="480"
+			   creationComplete="handleCreationComplete();" styleName="refreshPopUp" close="removePopUp();">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.CertificateModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var serviceGuid:String;
+			
+			[Bindable]
+			public var _proxy:Hpic4vc_providerProxy;
+			
+			[Bindable]
+			public var _logger:ILogger = Log.getLogger("Hpic4vc_ViewCertificate");
+			
+			private function handleCreationComplete():void {
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+				closeButton.visible = true;
+				_proxy.getInstalledCertificate(serviceGuid, onGettingInstalledCertificate);
+			}
+			
+			private function onGettingInstalledCertificate(event:MethodReturnEvent):void {
+				if (event == null || event.result == null) {
+					_logger.debug("Installed Certificate not found");
+					return;
+				}
+				else if ((event.result as CertificateModel).errorMessage != null) {
+					viewCertId.text = (event.result as CertificateModel).errorMessage;
+					return;
+				}
+				var certModel:CertificateModel = event.result as CertificateModel;
+				if (certModel.hasCertificate) {
+					if (certModel.selfSigned) {
+						viewCertId.text = certModel.certificate;
+					}
+				}
+				
+			}
+			
+			private function removePopUp():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function copy_click():void {
+				System.setClipboard(viewCertId.text);
+			}
+		]]>
+	</fx:Script>
+	<mx:Image x="5" y="-26" width="22" height="22"
+			  source="@Embed(source='/assets/images/hp-logo.png')"/>
+	<s:Label x="33" y="-21" text="{Helper.getString('Hpic4vc_CertificateManagement.viewCertButtonText')}" fontWeight="bold"/>
+	<!--mx:Image x="505" y="-29"
+			  source="@Embed(source='/assets/images/help_circle.png')" click="helpClicked()"
+			  buttonMode="true"/-->
+	
+	<s:VGroup minWidth="520" height="381">
+		<!--s:Label text="{Helper.getString('Installed Certificate')}" alignmentBaseline="ideographicBottom"/-->
+		<s:Label text=""/>
+		
+		<mx:HBox minWidth="520" height="352" borderVisible="true" borderStyle="solid" paddingLeft="5" paddingRight="5" verticalScrollPolicy="auto">
+			<!--mx:Spacer width="5"/-->
+			<mx:Text id="viewCertId" minWidth="508" fontFamily="_typewriter"/>
+		</mx:HBox>
+	</s:VGroup>
+	<mx:HBox x="1" y="383" width="99%">
+		<mx:Spacer width="85%"/>
+		<mx:Button id="copyCert" label="{Helper.getString('Form_copyLabel')}" click="copy_click();"/>
+	</mx:HBox>
+	<s:controlBarContent>
+		<s:Spacer width="99%"/>
+		<s:Button id="closeButtonId" label="{Helper.getString('Form_closeLabel')}"
+				  click="removePopUp();"/>
+	</s:controlBarContent>
+	
+</s:TitleWindow>
+

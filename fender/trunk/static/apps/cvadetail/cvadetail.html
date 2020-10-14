@@ -1,0 +1,69 @@
+<script id="cvadetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+        <div class="bigbox_header ui-widget-header">CVA Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+        <table width="100%">
+		<tr><th>vDisk</th><th>VM</th><th>Datastore</th><th>Logical Drive</th><th>Device Type</th></tr>
+            {{each vdisks}}<tr><td>${label}</td>
+		<td>${vm}</td>
+                <td>${datastore}</td>
+                <td>${logical_name}</td>
+		<td>${ssd}</td>
+            </tr>{{/each}}
+        </table>    
+            </div>
+        </div>
+        
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('cvaoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var CvaDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (CvaDetail.isActive())
+            {                                
+                $.getJSON("/services/host/cvadetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#cvadetail').empty();
+                        $.tmpl('cvadetail_template', data).appendTo( "#cvadetail" );                        
+                        CvaDetail.refreshTimeoutId = setTimeout("CvaDetail.refresh_data()", 120000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#cvadetail_template").template('cvadetail_template');
+            CvaDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            CvaDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(CvaDetail.activeOverride == true)
+            {
+                CvaDetail.activeOverride = false;
+                return true;
+            }
+            return $("#cvadetail").is(":visible");
+        }
+    };
+    
+    CvaDetail.startApp();
+    AppManager.addAppListener(CvaDetail.refresh_data);
+</script>
+
+
+<div id="cvadetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

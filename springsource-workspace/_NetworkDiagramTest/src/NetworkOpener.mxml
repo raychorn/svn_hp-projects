@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   mouseMove="application1_mouseMoveHandler(event)"
+			   >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			public function networkDiagramHandler(event:Event):void {
+				var networkDiagramPopup:_NetworkDiagramTest = PopUpManager.createPopUp(this,_NetworkDiagramTest , true) as _NetworkDiagramTest;
+				networkDiagramPopup.width = 1200;
+				networkDiagramPopup.height = 800
+				PopUpManager.centerPopUp(networkDiagramPopup);
+			}
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function application1_mouseMoveHandler(event:MouseEvent):void
+			{
+				lbl.text = "X = " + event.localX + " Y = " + event.localY;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Button label="openPopup" click="networkDiagramHandler(event)" />
+	<s:Label id="lbl" text="Point" x="200" y="100" />
+</s:Application>

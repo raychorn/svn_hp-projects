@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+<!--- The default skin class for a Flexicious DashboardContainer.  
+@langversion 3.0
+@playerversion Flash 10
+@playerversion AIR 1.5
+@productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false" 
+			 minWidth="131" minHeight="127" alpha.disabled="0.5" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:controls="com.flexicious.controls.*" xmlns:container="com.flexicious.components.container.*" >
+	<fx:Metadata>[HostComponent("com.flexicious.components.dashboard.DashboardContainer")]</fx:Metadata>
+	
+	<fx:Script fb:purpose="styling">
+		<![CDATA[
+			import com.flexicious.components.IconRepository;
+			import com.flexicious.utils.StringRepo;
+			import com.flexicious.utils.UIUtils;
+			
+			import mx.core.FlexVersion;
+			import mx.events.DropdownEvent;
+			
+			[Embed('/assets/images/indicator.png')]
+			public static const indicator:Class;
+			
+			/* Define the skin elements that should not be colorized. 
+			For panel, border and title background are skinned, but the content area, background, border, and title text are not. */
+			static private const exclusions:Array = ["background", "titleDisplay", "contentGroup","border"];
+			
+			/* exclusions before Flex 4.5 for backwards-compatibility purposes */
+			static private const exclusions_4_0:Array = ["background", "titleDisplay", "contentGroup"];
+			
+			/**
+			 * @private
+			 */
+			override public function get colorizeExclusions():Array 
+			{
+				// Since border is styleable via borderColor, no need to allow chromeColor to affect
+				// the border.  This is wrapped in a compatibility flag since this change was added  
+				// in Flex 4.5
+				if (FlexVersion.compatibilityVersion < FlexVersion.VERSION_4_5)
+				{
+					return exclusions_4_0;
+				}
+				
+				return exclusions;
+			}
+			
+			
+			
+			/**
+			 * @private
+			 */
+			override protected function initializationComplete():void
+			{
+				useChromeColor = true;
+				super.initializationComplete();
+			}
+			
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				//we've taken out all the stlying stuff from the default skin, we will be giving a  fully custom look and feel 
+				//in the skin itself
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			protected function btnSettings_openHandler(event:DropdownEvent):void
+			{
+				/* var pt:Point=new Point(0,btnSettings.height);
+				pt=btnSettings.localToGlobal(pt);
+				btnSettings.popUp.move(pt.x-btnSettings.popUp.width+btnSettings.width,pt.y+2)
+				btnSettings.selectedItems=hostComponent.openDashlets; */
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+	</s:states>
+	
+	<!-- drop shadow can't be hittable so it stays sibling of other graphics -->
+	<!--- @private -->
+	<!--<s:RectangularDropShadow id="dropShadow" blurX="20" blurY="20" alpha="0.32" distance="11" 
+							 angle="90" color="#000000" left="0" top="0" right="0" bottom="0"/>-->
+	
+	<!-- drop shadow can't be hittable so all other graphics go in this group -->
+	<s:Group left="0" right="0" top="0" bottom="0">
+		
+		<!-- top group mask -->
+		<!--- @private -->
+		<s:Group left="1" top="1" right="1" bottom="1" id="topGroupMask" >
+			<!--- @private -->
+			<s:Rect id="topMaskRect" left="0" top="0" right="0" bottom="0">
+				<s:fill>
+					<s:SolidColor alpha="0"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+		
+		
+		<!-- layer 1: border -->
+		<!--- @private -->
+		<s:Rect id="border" left="0" right="0" top="0" bottom="0" >
+			<s:stroke>
+				<!--- @private -->
+				<s:SolidColorStroke id="borderStroke" weight="1" color="0xFFFFFF"/>
+			</s:stroke>
+		</s:Rect>
+		
+		<!-- layer 2: background fill -->
+		<!--- Defines the appearance of the PanelSkin class's background. -->
+		<s:Rect id="background" left="1" top="1" right="1" bottom="1" >
+			
+		</s:Rect>
+		
+		<!-- layer 3: contents -->
+		<!--- Contains the vertical stack of titlebar and content. -->
+		<s:Group left="1" right="1" top="1" bottom="1" id="contents">
+			<s:layout>
+				<s:VerticalLayout gap="0" horizontalAlign="justify" />
+			</s:layout>
+			
+			<!--- @private -->
+			
+			<!--We wrap the content group in a scroller, because we want a scroller here-->
+			<s:Scroller width="100%" height="100%" includeInLayout="{!maximizedContentGroup.includeInLayout}">
+				<s:Group id="contentGroup">
+				</s:Group>
+			</s:Scroller>
+			<s:Group id="maximizedContentGroup" width="100%" height="100%" minWidth="0" minHeight="0" visible="false" includeInLayout="false">
+			</s:Group>
+			
+			<s:Rect id="resizeIndicator" left="0" right="0" height="1" bottom="0" visible="false"  includeInLayout="false">
+				<s:stroke>
+					<s:SolidColorStroke color="0x00000" />
+				</s:stroke>
+			</s:Rect>
+			<!--<container:DashedBorderContainer id="dropIndicator" left="0" right="0" height="1" bottom="0" visible="false"  includeInLayout="false"/>-->
+			<s:Group id="dropIndicator" left="0" right="0" height="1" bottom="0" visible="false"  includeInLayout="false" >
+				<s:Image width="22" height="20"  
+						 source="{indicator}" 
+						 />
+				<!--<s:Rect width="10" height="10" radiusX="1.5" radiusY="1.5">
+					<s:stroke>
+						<s:SolidColorStroke color="0x00000" />
+					</s:stroke>
+				</s:Rect>-->
+			</s:Group>
+		</s:Group>
+	</s:Group>
+</s:SparkSkin>

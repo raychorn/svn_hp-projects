@@ -1,0 +1,12 @@
+{{each arrays }}
+<div class="box_line">
+    ${ name }
+    <ul>        
+        <li>${volume_cnt} Volumes</li>
+        <li>Used by ${datastore_cnt} Datastores</li>
+        <li>Used by ${rdm_cnt} RDMs</li>
+        <li>Used by ${vm_cnt} VMs</li>
+    </ul>
+</div>
+{{/each}}
+<div class="box_footer"><a href="#" onclick="AppManager.loadApp('storagedetail');">More...</a></div>

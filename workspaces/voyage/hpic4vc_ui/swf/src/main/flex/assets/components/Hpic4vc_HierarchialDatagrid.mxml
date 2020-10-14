@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  width="100%" height="100%" 
+		  styleName="overviewPortlet"
+		  creationComplete="init()"
+		  autoLayout="true">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[			
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.collections.IHierarchicalCollectionViewCursor;
+			import mx.controls.Alert;
+			import mx.rpc.events.HeaderEvent;
+			
+			[Bindable]
+			public var _resultDP:ArrayCollection;	
+			[Bindable]
+			public var loading:String;
+			[Bindable]
+			public var rowCount:int;
+			[Bindable]
+			public var _noInfoFoundLabel:String;
+			[Bindable]
+			public var _errorFoundLabel:String;
+			
+			private function init():void
+			{
+				loading = Helper.getString("loading");
+				reset();
+			}
+			
+			/**
+			 * Resets the data and states of the grid
+			 */
+			public function reset():void
+			{
+				_resultDP = new ArrayCollection();
+				_noInfoFoundLabel = "";
+				_errorFoundLabel = "";
+				currentState = "DataLoading";
+			}
+			
+			public function get resultDP():ArrayCollection {
+				return _resultDP;
+			}
+			
+			public function set resultDP(value:ArrayCollection):void {
+				_resultDP = value;
+				changeState();
+			}
+			
+			public function get noInfoFoundLabel():String {
+				return _noInfoFoundLabel;
+			}
+			
+			public function set noInfoFoundLabel(value:String):void {
+				_noInfoFoundLabel = value;
+				changeState();
+			}
+			
+			public function get errorFoundLabel():String {
+				return _errorFoundLabel;
+			}
+			
+			public function set errorFoundLabel(value:String):void {
+				_errorFoundLabel = value;
+				changeState();
+			}
+			
+			private function changeState():void {
+				if(_errorFoundLabel != null && _errorFoundLabel.length > 1) {
+					this.currentState = "DataError";
+				} else if (_noInfoFoundLabel != null && _noInfoFoundLabel.length > 1) {
+					this.currentState = "NoInfoAvailable";
+				} else {
+					this.currentState = "DataAvailable";
+				}
+			}
+				
+
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="DataLoading"/>
+		<s:State name="DataError"/>
+		<s:State name="DataAvailable"/>
+		<s:State name="NoInfoAvailable"/>
+	</s:states>
+	
+	<s:VGroup height="30"  paddingTop="10" paddingLeft="10" includeIn="DataLoading">
+		<s:Label text="{loading}" verticalCenter="0" paddingTop="5" paddingLeft="5"/>
+	</s:VGroup>
+	<!-- width is set to 250 since setting it to 100% doesn't always work -->
+	<s:VGroup height="30"  paddingTop="10" paddingLeft="10" includeIn="NoInfoAvailable">
+		<mx:Text width="250" text="{_noInfoFoundLabel}" styleName="errorMessage" verticalCenter="0"/>
+	</s:VGroup>
+	
+	<s:VGroup height="30"  paddingTop="10" paddingLeft="10" includeIn="DataError">
+		<mx:Text width="250" text="{_errorFoundLabel}" styleName="errorMessage" />
+	</s:VGroup>
+	
+	<s:Group height="100%" width="100%" includeIn="DataAvailable">
+		
+		<mx:AdvancedDataGrid id="adg" width="100%" height="100%"
+							 defaultLeafIcon="{null}"
+							 folderClosedIcon="{null}"
+							 folderOpenIcon="{null}"
+							 selectable="false"
+							 disclosureOpenIcon="@Embed(source='/assets/images/chevron_gray_open.png')"
+							 disclosureClosedIcon="@Embed(source='/assets/images/chevron_gray_closed.png')"
+							 borderVisible="false"
+							 showHeaders="false"
+							 horizontalGridLines="true"
+							 horizontalGridLineColor="0xD8D8D8"
+							 color="0x333333"
+							 verticalGridLines="false"
+							 paddingLeft="0" paddingBottom="2" paddingRight="0" paddingTop="3"
+							 variableRowHeight="true"
+							 rowHeight="26"
+							 verticalAlign="middle"
+							 rowCount="{rowCount}"
+							 >
+			
+			<mx:dataProvider>
+				<mx:HierarchicalData source="{_resultDP}"
+									 childrenField="childrenData"
+									 id="hdg"/>
+			</mx:dataProvider>
+			<mx:columns>
+				<mx:AdvancedDataGridColumn dataField="key" backgroundColor="0xe4eff6" width="190"/>
+				<mx:AdvancedDataGridColumn dataField="formattedData" backgroundColor="0xffffff" />
+			</mx:columns>
+		</mx:AdvancedDataGrid> 
+		
+	</s:Group>
+</s:Group>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  height="100%" width="100%">
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_FirmwareStatusMessagesMediator")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.FirmwareJobsForClusterModel;
+			import com.hp.asi.hpic4vc.ui.model.FirmwareJobsModel;
+			import com.hp.asi.hpic4vc.ui.model.FirmwareListOfJobsForClusterModel;
+			import com.hp.asi.hpic4vc.ui.model.SmartComponentUpdateModel;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var hpic4vc_manageUiView:Hpic4vc_manage_uiView;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			private var _objReferenceId:String;
+			[Bindable]
+			public var smartComponentUpdateHostDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var uploadedComponents:DataGridWrapper;
+			[Bindable]
+			public var  firmwareListOfJobsForClusterModel:FirmwareListOfJobsForClusterModel;
+			[Bindable]
+			public var firmwareJobsForClusterModel:FirmwareJobsForClusterModel;
+			[Bindable]
+			public var firmwareJobsModel:FirmwareJobsModel;
+			[Bindable]	
+			private var getSmartComponentupdateTimer:Timer;
+			[Bindable]
+			public var errorFoundLabel:String;
+			[Bindable]
+			public var noRecordsFoundLabel:String;
+			[Bindable]
+			public var _host:String;
+			[Bindable]
+			public var serviceGuid:String;
+			[Bindable]
+			public var _mediator:Hpic4vc_FirmwareStatusMessagesMediator;
+			private var _jobsModelDataProvider:ArrayCollection = new ArrayCollection();
+			[Bindable]
+			public var _queueModelDataProvider:ArrayCollection = new ArrayCollection();
+			public var  url:String = "";
+			
+			[Bindable]
+			public function get jobsModelDataProvider():ArrayCollection
+			{
+				return _jobsModelDataProvider;
+			}
+
+			public function set jobsModelDataProvider(value:ArrayCollection):void
+			{
+				_jobsModelDataProvider = value;
+			}
+
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_manageUiView = hpic4vc_manage_uiView;
+			}
+			
+			public function selectDeleteHandlerMore(obj:Object,host:Object):void{
+				var hosts:ArrayCollection = new ArrayCollection();
+				hosts.addItem(host.toString());
+			    _mediator.selectDeleteHandlerCluster(obj,hosts.toArray()); 
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:VBox verticalAlign="middle" width="100%">
+		
+		<mx:Label text="{errorFoundLabel}" 
+				  visible="{errorFoundLabel.length>0}" 
+				  includeInLayout="{errorFoundLabel.length>0}" 
+				  styleName="errorMessage"/>
+		
+		<mx:VBox  borderStyle="solid" width="100%"  autoLayout="true" minHeight="500"
+				  paddingTop="10" paddingBottom="10" paddingLeft="20" id="liveStatusUpdateBox">
+			
+			<mx:HBox width="100%" horizontalGap="50" id="columnHeader">
+				<mx:Label text="Server" width="20%"/>
+				<mx:Label text="Job Description" width="40%"/>
+				<mx:Label text="Status" width="20%" />
+				<mx:Label text="Percent Complete" width="20%"/>	
+			</mx:HBox>
+			<mx:VBox width="100%">
+			  	<s:DataGroup id="firmwareRepeater" itemRenderer="assets.renderers.FirmwareUpdateMessageRenderer" dataProvider="{firmwareListOfJobsForClusterModel.firmwareListOfJobsForClusterModel}" >
+				  <s:layout>
+					  <s:VerticalLayout gap="0" useVirtualLayout="true"  />
+				  </s:layout>
+			  	</s:DataGroup>
+			</mx:VBox>
+			
+		</mx:VBox>	
+		
+	</mx:VBox>	
+</s:Group>

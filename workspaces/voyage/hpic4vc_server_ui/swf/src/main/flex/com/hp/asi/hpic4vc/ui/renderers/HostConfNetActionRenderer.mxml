@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">	
+	<fx:Script>
+		<![CDATA[			
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				if (value)
+				{
+				var i:int;	
+				var networkType:String = "";	
+				var vswitchAcation:String;
+				var vswitchName:String;
+				var networkTypeAction:String;
+				var displayLabel:String;
+				var uplinkName:String;
+				var uplinkAction:String;
+				vswitchAcation= value.action;
+				vswitchName= value.name;
+				if(vswitchAcation!= "NONE"){
+					displayLabel= vswitchAcation+" "+vswitchName+"\n";
+				}
+				
+							
+				for (i = 0; i < value.portGroups.list.length; i++) 
+				{
+					networkType = value.portGroups.getItemAt(i).name;	
+					networkTypeAction = value.portGroups.getItemAt(i).action;
+					if(networkTypeAction!= "NONE"){
+					displayLabel=displayLabel+networkTypeAction+" Port Group "+networkType+"\n";
+					}
+				}
+				for (i = 0; i < value.uplinks.list.length; i++) 
+				{
+					uplinkAction = value.uplinks.getItemAt(i).action;					
+					uplinkName = value.uplinks.getItemAt(i).name;
+					if(uplinkAction!= "NONE"){
+					displayLabel=displayLabel+uplinkAction+" uplink "+uplinkName+"\n";
+					}
+				}
+				network.text=displayLabel;
+			}
+			}
+		]]>
+	</fx:Script>	
+	<s:Label id="network" paddingLeft="5"/>
+</s:MXAdvancedDataGridItemRenderer>
+

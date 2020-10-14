@@ -1,0 +1,15 @@
+{{if oa}}
+<div class="box_line">
+    <table width="100%">
+        <tr><td>Enclosure</td><td>${oa.enclosure_info.enclosureName}</td></tr>
+        <tr><td>Rack</td><td>${oa.enclosure_info.rackName}</td></tr>
+        <!--<tr><td>Blades</td><td>${oa.enclosure_info.bladesPresent} of ${oa.enclosure_info.bladeBays}</td></tr>-->
+        <tr><td>Power Supplies</td><td>${oa.enclosure_info.powerSuppliesPresent} of ${oa.enclosure_info.powerSupplyBays}</td></tr>
+        <tr><td>Fans</td><td>${oa.enclosure_info.fansPresent} of ${oa.enclosure_info.fanBays}</td></tr>
+        <tr><td>Power Consumed</td><td>${oa.power.powerConsumed} W</td></tr>
+    </table>    
+</div>
+<div class="box_footer"><a href="#" onclick="AppManager.loadApp('hostinfradetail');">More...</a></div>
+{{else}}
+<div class="box_footer">Not Available</div>
+{{/if}}

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 toolTip="h"
+		 toolTipCreate="createCustomToolTip(event)"
+		 >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.CategoryAxis;
+			import mx.charts.Legend;
+			import mx.charts.LineChart;
+			import mx.charts.LinearAxis;
+			import mx.charts.chartClasses.CartesianChart;
+			import mx.charts.series.LineSeries;
+			import mx.collections.ArrayCollection;
+			import mx.containers.TileDirection;
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			import mx.graphics.SolidColor;
+			import mx.graphics.SolidColorStroke;
+			
+			import spark.components.HGroup;
+			import spark.core.SpriteVisualElement;
+			import spark.primitives.Path;
+			import spark.primitives.supportClasses.FilledElement;
+			
+			private var ptt:PanelToolTip;
+			
+			[Bindable]
+			private var path:Path = new Path();
+			
+			[Bindable]
+			public var ttip:String;
+			
+			[Bindable]
+			private var portName:String;
+			
+			private var port_rj45:String = "M0 5 L0 25 L20 25 L20 5 L15 5 L15 0 L5 0 L5 5 Z";
+			private var port_cx4:String = "M0 0 L5 25 L35 25 L40 0 Z";
+			private var port_unknown:String = "M0 0 L0 25 L25 25 L25 0 Z";    
+			private var port_fiber:String = "M0 4 L4 4 L4 0 L14 0 L14 4 L20 4 L20 0 L30 0 L30 4 L34 4 L34 22 L0 22 Z";
+			
+			private var cType:String;
+			private var hg:HGroup;
+			private var lc:LineChart;
+			private var lb1:Label;
+			private var lb2:Label;
+			private var lb3:Label;
+			private var lb4:Label;
+			
+			public function setConnector(connectorType:String, color:uint, name:String ):void
+			{
+				cType=connectorType;
+				if (connectorType.indexOf("RJ45") != -1) {
+					path.data = port_rj45;
+					this.width = 10;
+				} else if (connectorType == "CX4") {
+					path.data = port_cx4;
+					this.width = 18;
+				} else if (connectorType == "SFP-SR"){
+					path.data = port_fiber;
+					this.width = 16;
+				} else {
+					path.data = port_unknown;
+					this.width = 12;
+				}
+				
+				path.stroke = new  SolidColorStroke(0x000000);
+				path.fill = new SolidColor(color); 
+				this.addElementAt(path,0);
+				
+				portName = name;
+				
+			}
+			
+			
+			public function addLineChartToPTT(units:String,dp:ArrayCollection):void{
+				
+				lc=new LineChart();
+				lc.seriesFilters = [];
+				lc.dataProvider=dp;
+				lc.percentWidth=100;
+				lc.height = 200;
+
+				
+				var ha:LinearAxis = new LinearAxis();
+				ha.interval = 11;
+				ha.title = "Minutes Ago";
+				lc.horizontalAxis = ha;
+				
+				
+				
+				//lc.x=100;
+				//lc.y=80;
+				
+				var lineSeries1:LineSeries=new LineSeries();
+				lineSeries1.xField="min_ago";
+				lineSeries1.yField="rx_kbps";
+				var s1:SolidColorStroke=new SolidColorStroke(0x003399,2);
+				lineSeries1.setStyle("lineStroke",s1);
+				
+				var lineSeries2:LineSeries=new LineSeries();
+				lineSeries2.xField="min_ago";
+				lineSeries2.yField="tx_kbps";
+				var s2:SolidColorStroke=new SolidColorStroke(0x006633,2);
+				lineSeries2.setStyle("lineStroke",s2);
+				
+				
+				var arr2:Array=new Array();
+				arr2.push(lineSeries1);
+				arr2.push(lineSeries2);
+				lc.series=arr2;
+				
+				
+				lb1=new Label();
+				lb1.text=units;
+				lb1.setStyle("fontThickness",4);
+				lb2=new Label();
+				lb2.text="In";
+				lb2.setStyle("color",0x000066);
+				lb2.setStyle("fontThickness",4);
+				lb3=new Label();
+				lb3.text="Out";
+				lb3.setStyle("color",0x006633);
+				lb3.setStyle("fontThickness",4);
+				
+				
+				
+
+			}
+			
+			protected function createCustomToolTip(event:ToolTipEvent):void
+			{
+				ptt = new PanelToolTip();
+				ptt.addEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				ptt.toolTip = "h";
+				ptt.addEventListener(ToolTipEvent.TOOL_TIP_CREATE, createCustomToolTip);
+				event.toolTip = ptt;
+			}
+			
+			private function onTooltipInit(event:Event):void
+			{
+				ptt.removeEventListener(FlexEvent.INITIALIZE, onTooltipInit);
+				ptt.lblSummary.text = ttip;
+				
+				if(lc != null ){
+					var chartContainer:Group = new Group();
+					ptt.group.paddingRight = 10;
+					ptt.group.addElement(chartContainer);
+					chartContainer.percentWidth = 100;
+					
+					chartContainer.addElement(lc);
+					lc.x=70;
+					lc.y=0;
+					chartContainer.addElement(lb1);
+					lb1.x=15;
+					lb1.y=80;
+					chartContainer.addElement(lb2);
+					lb2.x=10;
+					lb2.y=100;
+					chartContainer.addElement(lb3);
+					lb3.x=26;
+					lb3.y=100;
+					
+				}
+				
+				ptt.group.invalidateDisplayList();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group id="container" width="{path.width}" height="{path.height}" >
+		<s:Label text="{portName}" verticalCenter="3" horizontalCenter="0" fontWeight="bold"   />
+	</s:Group>
+</s:Group>

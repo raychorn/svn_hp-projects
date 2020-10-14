@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Cloning a VM</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:34+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v14221628.html" title="Provisioning storage"/><link rel="prev" href="create_vm_from_template_6.html" title="Create Virtual Machines – Summary"/><link rel="next" href="clone_vm_1.html" title="Clone Virtual Machine – Clone Parameters"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('Clone_VM','icon4Clone_VM','link4Clone_VM','v14221628')" onunload="clearbgcolortoc('link4Clone_VM','Clone_VM')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v14221628.html">Provisioning storage</a> &gt; Cloning a VM</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="clone_vm_1.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="Clone_VM"/><h1 class="sectiontitle">Cloning a VM</h1></div></div></div><a id="v14941953" class="indexterm"/><a id="v14941954" class="indexterm"/><a id="v14941955" class="indexterm"/><p><a id="v14527732"/>You can clone one or more VMs from an existing
+VM.</p>
+	
+	<p><a id="v14775624"/>The following rules apply when cloning VMs:</p>
+	
+	<div class="itemizedlist"><a id="v14527733"/><ul type="disc"><li><p><a id="v14527736"/><a id="v14527737"/>Cloning a VM has the
+same prerequisites as creating a datastore. For more information,
+see <a href="Add_New_Datastore.html" title="Creating a datastore">Creating a datastore</a>.</p>
+	
+	</li><li><p><a id="v14527734"/><a id="v14527735"/>The source VM must exist
+in the vSphere Client.</p>
+	
+	</li><li><p><a id="v14527958"/><a id="v14527959"/>The source VM must be
+in a stopped state.</p>
+	
+	</li><li><p><a id="v14527954"/><a id="v14527955"/>The file structure for
+the cloned VMs will match the original VM. </p>
+	
+	</li><li><p><a id="v14915226"/><a id="v14915227"/>The original VM can
+have multiple datastores, but each datastore should be on one disk
+only. </p>
+	
+	</li><li><p><a id="v14915228"/><a id="v14915229"/>If the original VM has
+multiple datastores, the new VM will have the same number of datastores.</p>
+	
+	</li><li><p><a id="v14528224"/><a id="v14528225"/>The cloned VMs use the
+same storage pool as the source VM.</p>
+	
+	</li><li><p><a id="v14527739"/><a id="v14527740"/>If snapshots are used
+for creating the new VMs and datastores, the original VM files cannot
+be deleted.</p>
+	
+	</li><li><p><a id="v14527962"/><a id="v14527963"/>Each snapshot is created
+in the same storage pool as each source disk.</p>
+	
+	</li></ul></div><h3><a id="v14521333"/>Cloning a VM </h3><div class="procedure"><a id="v14527746"/><p><a id="v14527747"/>To clone one or more VMs from an existing VM:</p>
+	
+	<ol type="1"><li><p><a id="v14527748"/><a id="v14527749"/>Start the vSphere Client.</p>
+	
+	</li><li><p><a id="v14527750"/><a id="v14527751"/>Use one of the following
+methods to start the Clone Virtual Machine wizard:</p>
+	
+	<div class="itemizedlist"><a id="v14527752"/><ul type="disc"><li><p><a id="v14527753"/><a id="v14527754"/>Right-click a VM and
+select <span><strong class="guimenu">All HP Insight Management Actions</strong></span> → <span><strong class="guimenuitem">Clone VM</strong></span>.</p>
+	
+	</li><li><p><a id="v17763509"/><a id="v17763510"/>Select <span><strong class="guimenu">Actions</strong></span> → <span><strong class="guimenuitem">Clone VM</strong></span> on the HP Insight Management page for a host or cluster.</p>
+	
+	</li><li><p><a id="v14527759"/><a id="v14527760"/>Right-click a VM in
+any Storage Module for vCenter table, and then select <span><strong class="guibutton">Clone
+VM</strong></span>.</p>
+	
+	</li></ul></div><p><a id="v14527761"/>The Clone Virtual Machine wizard opens. </p>
+	
+	</li><li><p>Follow the steps in the wizard.</p>
+	
+	<p>Help is available
+for each screen if you need assistance.</p>
+	
+	</li></ol></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="create_vm_from_template_6.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v14221628.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="clone_vm_1.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Create Virtual Machines – Summary </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Clone Virtual Machine – Clone Parameters</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

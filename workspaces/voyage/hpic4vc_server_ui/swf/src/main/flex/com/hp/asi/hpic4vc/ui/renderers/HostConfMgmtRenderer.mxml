@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				width="100%"
+				autoDrawBackground="true">
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.events.UpdateNetworkEvent;
+			
+			import mx.controls.Alert;
+			import mx.utils.StringUtil;
+			[Bindable]
+			public var mgmtChecked:Boolean = false;			
+			[Bindable]
+			private var purposeValue:String;
+			[Bindable]
+			public var uuidValue:String;
+			
+			
+			private const MGMT_NETWORK:String = "MGMT_NETWORK";
+			
+			override public function set data(value:Object):void
+			{
+				mgmtChecked = false;
+				mgmtCheckedCheckBox.selected = false;
+				super.data = value;
+				if (value){
+				if (value && value.purpose == MGMT_NETWORK)
+				{
+					mgmtChecked = true;					
+				}
+				uuidValue=value.uuid;
+				}
+				//purposeDefault=value.purpose;
+			}
+			private function ch_change(evt:Event):void {
+				var ch:CheckBox = evt.currentTarget as CheckBox;
+				if(ch.selected){
+				purposeValue= MGMT_NETWORK;
+				}
+				else{
+					purposeValue="null";
+				}				
+				/*if(purposeValue != StringUtil.trim(purposeDefault) && purposeValue!= "null"){
+				Alert.show("Unselect the "+purposeDefault);
+				ch.selected=false;
+				return;
+				}*/
+				var flag:Boolean=updateMgmt(purposeValue,uuidValue);
+				if(!flag){
+					ch.selected=false;
+				}
+				
+			}
+			private function updateMgmt(val:String,uuid:String):Boolean
+			{				
+				var mgmtEvent:UpdateNetworkEvent = new UpdateNetworkEvent(UpdateNetworkEvent.MGMTEVENT,true)
+				mgmtEvent.mgmtPurposeValue = val;
+				mgmtEvent.uuidSelectedValue= uuid;
+				mgmtEvent.mgmtselectedValue=mgmtChecked;
+				dispatchEvent(mgmtEvent);		
+				return mgmtEvent.mgmtselectedValue;
+			}
+		]]>
+	</fx:Script>
+	<s:CheckBox id="mgmtCheckedCheckBox" selected="{mgmtChecked}" click="ch_change(event)" left="60"/>
+	
+</s:MXAdvancedDataGridItemRenderer>
+	

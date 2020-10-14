@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>web help search page </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+      <meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"></meta>
+      <link rel="StyleSheet" href="styles.css" type="text/css" media="screen"></link>
+      <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+      <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+      <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+      <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+      <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+      <script type="text/javascript" src="../common/webhelp.js"></script>
+      
+      <base target=""></base><script type="text/javascript">
+
+            var language = "en" ;
+  
+            var w = new Object();
+           
+txt_filesfound ="Results! ";            
+           
+txt_enter_at_least_1_char = "You must enter at least one character. ";    
+
+txt_browser_not_supported = "Your browser is not supported. Use of Mozilla Firefox is recommended. ";       
+       
+txt_please_wait = "Please wait. Search in progress... "; 
+            
+txt_results_for = "Results for:  ";         
+   
+          
+txt_Your_Search_Returned_No_Results_For = "Your search returned no results for  ";             
+           
+   
+        </script><script type="text/javascript" src="search/htmlFileList.js"></script><script type="text/javascript" src="search/htmlFileInfoList.js"></script><script type="text/javascript" src="search/encoder.js"></script><script type="text/javascript" src="search/nwSearchFnt.js"></script><script type="text/javascript" src="search/stemmers/en_stemmer.js" charset="UTF-8"></script><script type="text/javascript" src="search/index-1.js" charset="UTF-8"></script><script type="text/javascript" src="search/index-2.js" charset="UTF-8"></script><script type="text/javascript" src="search/index-3.js" charset="UTF-8"></script></head>
+   <body>
+      <div style="text-align: left; float: none; width: 100%;">
+         <form onsubmit="Verifie(ditaSearch_Form);return false" name="ditaSearch_Form" class="searchForm" id="ditaSearch_Form">
+            <fieldset class="searchFieldSet">
+               <legend>Search</legend>
+               <center><input id="textToSearch" name="textToSearch" type="text" class="searchText"></input><input onClick="Verifie(ditaSearch_Form)" type="button" class="searchButton" value="List Topics" id="doSearch"></input></center>
+            </fieldset>
+         </form>
+      </div>
+      <div id="searchResults" style="float: none; width: 100%; margin-top: 25pt;"></div>
+   </body>
+</html>

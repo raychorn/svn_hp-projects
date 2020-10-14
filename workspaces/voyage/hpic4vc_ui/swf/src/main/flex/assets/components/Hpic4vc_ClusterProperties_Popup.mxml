@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"  title="Edit Cluster Properties" width="300" height="230" close="closeWindow()" creationComplete="centerWindow()" xmlns:components="assets.components.*" >
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.managers.PopUpManager;
+			[Bindable]
+			public var ClusterPropertiesGrid:ArrayCollection;
+			[Bindable]
+			public var ClusterPropertiesAC:ArrayCollection;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			public var objReferenceId:String;
+			
+			private function centerWindow():void 
+			{
+				PopUpManager.centerPopUp(this);
+			}
+			private function closeWindow():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			private function savePassword(e:Event):void
+			{ 
+					
+					if (e.target.id == "save"){
+						var data:String = "oper=edit" +":username=" + username.text +":password=" + password.text+":type=" + type.text;
+						_proxyServer.updateClusterProperties(objReferenceId,data,updateOfClusterPropertiesDone);
+					}else{
+						PopUpManager.removePopUp(this);
+						closeWindow();
+					}
+				
+			}
+			
+			private function updateOfClusterPropertiesDone(e:MethodReturnEvent):void{
+				
+				if (e.result && e.result.errorMessage)
+					Alert.show(e.result.errorMessage);
+				else
+					Alert.show("ClusterProperties updated");
+			//	FlexGlobals.topLevelApplication.dispatchEvent(new HostPropertiesUpdatedEvent(HostPropertiesUpdatedEvent.UPDATE_HOSTPROPERTIES));
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	<mx:Form width="100%" height="100%" paddingTop="8">
+		<mx:FormItem label="User Name" enabled="true" >
+			<mx:TextInput id="username" text="{ClusterPropertiesGrid.getItemAt(0)}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Password" >
+			<mx:TextInput id="password"  displayAsPassword="true" />
+		</mx:FormItem>
+		<mx:FormItem label="Type" >
+			<mx:TextInput id="type"  text="{ClusterPropertiesGrid.getItemAt(2)}" />
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="save" label="Submit" click="savePassword(event)"/>
+		<mx:Button id="close" label="Cancel" click="closeWindow()"/>
+	</mx:ControlBar> 
+	
+	
+</mx:TitleWindow>

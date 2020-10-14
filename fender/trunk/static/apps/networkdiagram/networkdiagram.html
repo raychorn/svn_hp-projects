@@ -1,0 +1,238 @@
+
+<script type="text/javascript">   
+
+    var NetworkDiagram = {
+                
+        startApp : function()
+        {                               
+            NetworkDiagram.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/            
+            AppManager.addAppListener(NetworkDiagram.refresh_diagram);  /* This will render the diagram the first time */
+        },
+        
+        // Tool Tip
+        tip_cnt : 0,
+        activeOverride: false,        
+    
+        refresh_diagram : function()
+        {                        
+            $("#diagram_div").hide();
+            $("#networkdiagram-loading").html("Loading...");
+            $("#networkdiagram-loading").show();
+            
+            $.getJSON("/services/host/networkdetail" + "?" + window.location.search.substring(1), NetworkDiagram.drawDiagram).error(function() 
+            {                 
+                $("#diagram_div").html("<h3>Error getting Virtual Connect information for this host</h3>");         
+            });
+        },
+    
+        addTip : function(node, txt){
+            var id = 'tooltip_' + NetworkDiagram.tip_cnt++;
+            var selector = '#'+id;
+            $('body').append('<div id="' + id + '" class="tooltip" style="display:none">' + txt + '</div>');
+            $(node).mouseenter(function(){                           
+                $(selector).fadeIn(100);               
+            }).mouseleave(function(){
+               $(selector).fadeOut(100);           
+            }).mousemove(function(e){           
+                var x,y;
+                
+                x = e.clientX + 20;
+                y = e.clientY + 20;
+                
+                if(x+$(selector).width() + 20 > $(window).width())
+                {
+                    x = x - 40 - $(selector).width();
+                }                        
+                $(selector).css("left", x).css("top", y);                    
+            });
+            
+            return id;
+        },
+        // Tool Tip end
+                
+        drawDiagram : function(resp) 
+        {        
+            var i, x, y, b, v;        
+            var max_width = 0;
+            var last_width = 0;
+            var vswitches = [];
+            var dvswitches = [];
+            var vcm = [];
+            var txt="";                
+            
+            if(resp.vcm)
+            {
+                try 
+                {        
+                    $("#networkdiagram-loading").hide();
+                    $("#diagram_div").show();
+                    $(".telemetry_graph").remove();
+                    $(".tooltip").remove();
+                    $("#drawing").empty();
+                    //Set paper large enough for max config, then resize div once drawn
+                    var paper = Raphael("drawing", 1500, 15000);
+                                    
+                    var main_set = paper.set();                
+                    x = 10;
+                    y = 0;                
+                    
+                    // Draw the vSwitches    
+                    if(resp.vss)
+                    {
+                        for(i=0; i<resp.vss.length; i++) 
+                        {
+                            v = paper.hp.vmware.vswitch(resp.vss[i]);
+                            vswitches.push(v);
+                            v.translate(x, y);
+                            b = v.getBBox();
+                            last_width = b.width;
+                            y += b.height + 16;
+                            if (b.width > max_width) max_width = b.width;                    
+                            main_set.push(v);
+                        }
+                    }
+                    
+                    // Draw the Distributed vSwitches
+                    if(resp.dvss)
+                    {                    
+                        for(i=0; i<resp.dvss.length; i++)
+                        {                    
+                            v = paper.hp.vmware.dvswitch(resp.dvss[i]);
+                            dvswitches.push(v);
+                            v.translate(x, y);
+                            b = v.getBBox();
+                            last_width = b.width;
+                            y += b.height + 16;
+                            if (b.width > max_width) max_width = b.width;                    
+                            main_set.push(v);
+                        }
+                    }
+                    
+                    // Draw the Datastores
+                    if(resp.datastores)
+                    {                    
+                        for(i=0; i<resp.datastores.length; i++)
+                        {                    
+                            v = paper.hp.vmware.datastore(resp.datastores[i], last_width);                        
+                            v.translate(x, y);
+                            b = v.getBBox();
+                            last_width = b.width;
+                            y += b.height + 16;
+                            if (b.width > max_width) max_width = b.width;                    
+                            main_set.push(v);
+                        }
+                    }
+                    
+                    if(resp.vcm)
+                    {
+                        var y_first_fcm = 0;
+                        var y0 = 0;                    
+                        x += max_width + 8;
+                        max_width = 0;        
+                        
+                        // Provide room for downlinks
+                        x += 100; //64;                    
+                        y = y0;
+                                                               
+                        for(var e in resp.vcm.enclosures) 
+                        {                        
+                            for(var m in resp.vcm.enclosures[e].allVcModuleG1s)
+                            {
+                                v = paper.hp.vc.module(resp.vcm.enclosures[e].allVcModuleG1s[m], resp.vcm.enclosures[e].enclosureType);
+                                vcm.push(v);
+                                v.translate(x, y);
+                                b = v.getBBox();
+                                y += b.height + 16;
+                                if (b.width > max_width) max_width = b.width;                    
+                                main_set.push(v);
+                            }                        
+                        }
+
+                        
+                        x += max_width + 100; //64;
+                        y = y0;
+                        for(var s in resp.vcm.externalSwitches) 
+                        {
+                            v = paper.hp.vc.external_switch(resp.vcm.externalSwitches[s]);                        
+                            v.translate(x, y);
+                            b = v.getBBox();
+                            y += b.height + 8;                        
+                        }                    
+                        
+                        for(var s in resp.vcm.externalStorage) 
+                        {
+                            v = paper.hp.vc.external_storage(resp.vcm.externalStorage[s]);     
+                            if(y < y_first_fcm)y = y_first_fcm; 
+                            v.translate(x, y);
+                            b = v.getBBox();
+                            y += b.height + 8;                        
+                        }                    
+                        
+                        paper.hp.vc.connect_uplinks(resp.vcm);
+                        paper.hp.vc.connect_vs_downlinks(resp.vcm, vswitches); 
+                        paper.hp.vc.connect_dvs_downlinks(resp.vcm, dvswitches);                    
+                        
+                        paper.hp.vc.connect_fc_uplinks(resp.vcm);
+                        paper.hp.vc.connect_fc_downlinks(resp.vcm, resp.datastores);
+                        paper.hp.vc.connect_iscsi_downlinks(resp.vcm, resp.datastores);
+                        
+                        b = main_set.getBBox();                                        
+                        $("#drawing").height(b.height+10);                        
+                    }
+                
+                }
+                
+                catch(err)
+                {                    
+                    $("#diagram_div").hide();
+                    txt="Error Drawing Network Diagram.\n\n";
+                    txt+="Error number: " + err.number + "\n";
+                    txt+="Error name: " + err.name + "\n";
+                    txt+="Error message: " + err.message + "\n";            
+                    txt+="Error description: " + err.description + "\n";
+                    txt+="Click OK to continue.\n\n";
+                    alert(txt);                        
+                    return;
+                }
+                
+            }
+            else
+            {
+                $("#networkdiagram-loading").html("<h3>There is no Virtual Connect information available for this host.</h3>")
+            }            
+        },
+        
+        isActive: function(){
+            if(NetworkDiagram.activeOverride == true)
+            {
+                NetworkDiagram.activeOverride = false;
+                return true;
+            }
+            return $("#networkdiagram").is(":visible");
+        }
+        
+        
+    };
+    
+    NetworkDiagram.startApp();
+</script>
+
+
+<div id="networkdiagram" style="display:none">
+    
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:1500px" >
+        <div class="bigbox_header ui-widget-header">Virtual Connect Network Diagram</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <h3 id="networkdiagram-loading">Loading...</h3>
+                <div id="diagram_div" style="display:none">                            
+                    <div id="drawing" > </div>                    
+                </div>
+                
+            </div>
+        </div>
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="NetworkDiagram.refresh_diagram();">Refresh</a></div>
+    </div>
+    
+</div>

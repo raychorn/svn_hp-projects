@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="100%">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.FirmwareJobsModel;
+			import com.hp.asi.hpic4vc.ui.model.JobsModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.model.QueueClusterModel;
+			
+			import mx.collections.ArrayCollection;
+			
+			private var host:Object;
+			[Bindable]
+			private var columnHeaderRenderer:Number;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value ;
+				columnHeaderRenderer = parentDocument.columnHeader.width;
+			}	
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+			public function getChecked(data:Object):Boolean{
+				
+				var firmwareJobsModel1:FirmwareJobsModel = FirmwareJobsModel(data)
+				if(firmwareJobsModel1.errors.length > 0){
+					return false;
+				}
+				return true;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Label width="10%" id="hostLabel" text="{data.host}"/>
+	<mx:VBox width="100%" paddingLeft="200" verticalGap="0" >
+		<s:DataGroup  id ="errorsGroup" itemRenderer="assets.renderers.ShowFirmwareErrorRenderer" width="100%" dataProvider="{data.firmwareJobsModel.errors}" >
+			<s:layout>
+				<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+			</s:layout>
+		</s:DataGroup>
+		<mx:Label text = "Current Jobs" visible="{getChecked(data.firmwareJobsModel)}" fontWeight="bold" />  
+		<s:DataGroup  id ="jobsGroup" itemRenderer="assets.renderers.ShowFirmwareJobStatusRenderer" width="100%" dataProvider="{data.firmwareJobsModel.jobs}" >
+			<s:layout>
+				<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+			</s:layout>
+		</s:DataGroup>
+		<s:DataGroup  id="queueGroup" itemRenderer="assets.renderers.FirmwareClusterQueueRenderer" width="100%" dataProvider="{data.firmwareJobsModel.queue}" >
+			<s:layout>
+				<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+			</s:layout>
+		</s:DataGroup>
+	</mx:VBox>	
+
+	
+</s:ItemRenderer>

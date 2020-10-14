@@ -1,0 +1,119 @@
+<script id="newsfeed_outer_template" type="text/x-jquery-tmpl" >
+    <div id="newsfeed_box" class="box" style="width:98%;">
+        <div class="box_header">News Feed</div>
+        <div class="box_contents" id="nf_box_contents">
+            <table id="NewsfeedContents"><tr></tr></table>
+            <div id="nf_pager"></div>
+        </div>
+    </div>
+    <a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a>
+</script>
+
+<div id="hostnewsfeed" style="display:none"></div>
+
+<script type="text/javascript">
+
+    var HostNewsfeed = {
+
+        getHostMoref : function(){
+            try {
+                return getQueryParameters()['moref'].split(':')[1];
+            } catch (e){
+                return '';
+            }
+        },
+
+        startApp : function(){
+            this.createGrid();
+            $(window).resize(function() {
+                setTimeout("HostNewsfeed.resizeGrid();", 700);
+            });
+        },
+
+        createGrid: function(){
+            jQuery("#NewsfeedContents").jqGrid({
+                url: '/newsfeed/'+window.location.search+'&sort=-1',
+                mtype: 'GET',
+                datatype: 'json',
+                jsonReader: {
+                    root: "result",
+                    id: "nf_item",
+                    repeatitems: false
+                },
+                colNames: [
+                    'Status', 'Message', 'Source', 'Date and Time'
+                ],
+                colModel: [
+                    {name: 'status', index:'status', formatter: statusFormatter},
+                    {name: 'message', index:'message', formatter: HostNewsfeed.nfMessageFormat},
+                    {name: 'objectName', index:'eventSource'},
+                    {name: 'formattedEventDate', index:'formattedEventDate'}
+                ],
+                scroll: true,
+                autowidth: true,
+                hoverrows: false,
+                scrollOffset: 20,
+                viewsortcols:[true,'vertical', true],
+                gridview: true,
+                shrinkToFit: true,
+                loadonce: true,
+                rowNum: 999999999,
+                pager: '#nf_pager',
+                viewrecords: true,
+                altRows: true,
+                loadComplete: function(data){
+                    setTimeout("HostNewsfeed.resizeGrid();", 700);
+                    if (!data){
+                        return;
+                    }
+                    //setTimeout("HostNewsfeed.refreshNewsfeed();", 15000);
+                    $('#refresh_NewsfeedContents').click(function(){$('#NewsfeedContents').setGridParam({datatype:'json', page:1}).trigger('reloadGrid');});
+                }
+            });
+            jQuery("#NewsfeedContents").navGrid('#nf_pager',{
+                refresh: true,
+                search: false,
+                add: false,
+                edit: false,
+                del: false
+            });
+        },
+
+        resizeGrid : function(){
+            try{
+                $("#NewsfeedContents").setGridWidth($("#nf_box_contents").width()-4);
+                var height = $(window).height() - $("#header").height() - $("#footer").height() - $("#nf_pager").height() - 120;
+                $("#NewsfeedContents").setGridHeight(height);
+            } catch (e){}
+        },
+
+        isActive: function(){
+            return $("#hostnewsfeed").is(":visible");
+        },
+
+        refreshNewsfeed: function(){
+            if (HostNewsfeed.isActive()){
+                $("#NewsfeedContents").jqGrid('GridUnload');
+                HostNewsfeed.createGrid();
+            }
+        },
+
+        nfMessageFormat: function(message, options, rowObject){
+            if (typeof(rowObject['messageArguments']) != 'undefined'){
+                var args = rowObject['messageArguments'];
+            } else {
+                var args = [];
+            }
+            args.splice(0, 0, message);
+            return get_str(args);
+        }
+
+    };
+
+    $('#newsfeed_outer_template').tmpl().appendTo("#hostnewsfeed");
+    HostNewsfeed.startApp();
+    AppManager.addAppListener(HostNewsfeed.refreshNewsfeed);
+
+</script>
+
+

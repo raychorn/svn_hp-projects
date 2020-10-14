@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  creationComplete="init()"
+		  implements="assets.components.Hpic4vc_Overview_BaseComponent">
+ 
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		[DefaultMediator("assets.components.Hpic4vc_Overview_InfrastructureMediator")]
+	</fx:Metadata>
+
+    
+    <fx:Script>
+
+        <![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.ui.events.NavigationRequest;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+            public var dataNotFound:String = Helper.getString('Overview.InformationNotFound');
+			[Bindable]
+			public var errorFoundLabel:String;
+            [Bindable]
+            public var summaryPortletData:LabelValueListModel;
+            
+            
+			
+            [Bindable]
+            public var summaryPortletEventName:String;
+			[Bindable]
+			public var hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+            
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			private var loading:String;
+			
+			private var dashlet_BaseMediator:Hpic4vc_Dashlet_BaseMediator = new Hpic4vc_Dashlet_BaseMediator();
+			
+			public function showPortlet(contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			public function onLinkClicked(event:MouseEvent, link:String):void {
+				dashlet_BaseMediator.moreClicked(event, Hpic4vc_TabNameEnum.INFRASTRUCTURE);
+			}
+			
+			public function getLinks():ArrayCollection {
+				return new ArrayCollection([Helper.getString("more")]);
+			}          
+            
+            private function init():void
+            {
+                this.currentState = "loadingPortlet";
+				loading = Helper.getString("loading");
+            }            
+        ]]>
+        
+    </fx:Script>
+	<s:states>
+		<s:State name="loadingPortlet"/>
+		<s:State name="errorLoadingPortlet"/>
+		<s:State name="showSummaryPortlet"/>
+		<s:State name="dataNotFound"/>
+	</s:states>
+	
+	<s:VGroup x="10" y="20" width="100%"
+			  paddingLeft="10" paddingRight="10"
+			  paddingBottom="10" paddingTop="10">
+		
+		<mx:VBox width="100%" paddingRight="0">
+			<mx:HBox height="30" includeIn="loadingPortlet" width="100%">
+				<s:Label text="{loading}" verticalCenter="0" width="100%"/>					 
+			</mx:HBox>
+			
+			<mx:HBox height="30" includeIn="dataNotFound" width="100%">
+				<s:Label text="{dataNotFound}" width="100%"/>					 
+			</mx:HBox>
+			
+			<mx:HBox includeIn="errorLoadingPortlet" width="100%">
+				<mx:Text id="errorId" text="{errorFoundLabel}" styleName="errorMessage" width="100%"/>					 
+			</mx:HBox>
+			
+			<mx:HBox includeIn="showSummaryPortlet" width="100%" 
+					 horizontalGap="0"
+					 >
+				<mx:VBox width="100%" styleName="portletVBoxKey"  verticalGap="0">
+					<mx:Repeater id="hostinfoLabel" dataProvider="{summaryPortletData.lvList}">
+						<s:Label width="150" text="{(hostinfoLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+						<mx:HRule width="100%" strokeWidth="1" />
+					</mx:Repeater>
+				</mx:VBox>	
+				
+				<mx:VBox width="100%" height="100%" styleName="portletVBoxValue" verticalGap="0" >
+					<mx:Repeater id="hostinfoValue" dataProvider="{summaryPortletData.lvList}">
+						<s:Label paddingLeft="5" width="175" text="{(hostinfoValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+						<mx:HRule width="100%" strokeWidth="1" />
+					</mx:Repeater>
+				</mx:VBox>	
+			</mx:HBox>
+		</mx:VBox>
+	</s:VGroup>
+</s:VGroup>

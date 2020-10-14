@@ -1,0 +1,116 @@
+<script type="text/javascript">
+
+    var VmTasks = {
+
+        getVmMoref : function(){
+            try {
+                return getQueryParameters()['moref'];
+            } catch (e){
+                return '';
+            }
+        },
+
+        startApp : function(){
+            this.createGrid();
+            $(window).resize(function() {
+                setTimeout("VmTasks.resizeGrid();", 700);
+            });
+        },
+
+        createGrid: function(){
+            jQuery("#TaskContents").jqGrid({
+                url: '/tasks/'+window.location.search+'&sort=-1',
+                mtype: 'GET',
+                datatype: 'json',
+                jsonReader: {
+                    root: "result."+VmTasks.getVmMoref(),
+                    id: "task_item",
+                    repeatitems: false
+                },
+                colNames: [
+                    'Status', 'Task Name', 'Task Details', 'Username', 'Start Time', 'Completed Time'
+                ],
+                colModel: [
+                    {name: 'status', index:'status', formatter: statusFormatter},
+                    {name: 'taskName', index:'taskName', formatter: VmTasks.tasksMessageFormat},
+                    {name: 'taskDetails', index:'taskDetails', formatter: VmTasks.tasksDetailFormat},
+                    {name: 'userName', index:'userName'},
+                    {name: 'formattedStartTime', index:'formattedStartTime'},
+                    {name: 'formattedCompletedTime', index:'formattedCompletedTime'}
+                ],
+                scroll: true,
+                autowidth: true,
+                hoverrows: false,
+                scrollOffset: 20,
+                viewsortcols:[true,'vertical', true],
+                gridview: true,
+                shrinkToFit: true,
+                loadonce: true,
+                rowNum: 999999999,
+                pager: '#task_pager',
+                viewrecords: true,
+                altRows: true,
+                loadComplete: function(data){
+                    setTimeout("VmTasks.resizeGrid();", 700);
+                    if (!data){
+                        return;
+                    }
+                    //setTimeout("VmTasks.refreshTasks();", 15000);
+                    $('#refresh_TaskContents').click(function(){$('#TaskContents').setGridParam({datatype:'json', page:1}).trigger('reloadGrid');});
+                }
+            });
+            jQuery("#TaskContents").navGrid('#task_pager',{
+                refresh: true,
+                search: false,
+                add: false,
+                edit: false,
+                del: false
+            });
+        },
+
+        resizeGrid : function(){
+            try{
+                $("#TaskContents").setGridWidth($("#task_box_contents").width()-4);
+                var height = $(window).height() - $("#header").height() - $("#footer").height() - $("#task_pager").height() - 120;
+                $("#TaskContents").setGridHeight(height);
+            }catch (e){}
+        },
+
+        isActive: function(){
+            return $("#vmtasks").is(":visible");
+        },
+
+        refreshTasks: function(){
+            if (VmTasks.isActive()){
+                $("#TaskContents").jqGrid('GridUnload');
+                VmTasks.createGrid();
+            }
+        },
+
+        tasksMessageFormat: function(message, options, rowObject){
+            return get_str(message, rowObject['taskNameArguments']);
+        },
+
+        tasksDetailFormat: function(message, options, rowObject){
+            return get_str(message, rowObject['taskDetailArguments']);
+        }
+
+    };
+
+
+    VmTasks.startApp();
+    AppManager.addAppListener(VmTasks.refreshTasks);
+
+</script>
+
+
+<div id="vmtasks" style="display:none">
+    <div id="tasks_box" class="box" style="width:98%;">
+        <div class="box_header">Tasks</div>
+        <div class="box_contents" id="task_box_contents">
+            <table id="TaskContents"><tr></tr></table>
+            <div id="task_pager"></div>
+        </div>
+    </div>
+    <a href="#" onclick="AppManager.loadApp('vmoverview');">Back</a>
+</div>

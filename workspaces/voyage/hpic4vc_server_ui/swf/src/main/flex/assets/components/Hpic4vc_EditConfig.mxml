@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   close="PopUpManager.removePopUp(this);"
+			   creationComplete="handleCreationComplete();" styleName="refreshPopUp"
+			   title="Edit Record">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.AdvancedDataGrid;
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.Validator;
+			
+			[Bindable]
+			public var _proxy:Hpic4vc_server_providerProxy;
+			[Bindable]
+			public var serviceGuid:String;
+			[Bindable]
+			public var currentData:ArrayCollection;
+			[Bindable]
+			public var parentGrid:AdvancedDataGrid;
+			private var validatorvalue:Array;
+
+			
+			private function handleCreationComplete():void {
+				validatorvalue= new Array
+					validatorvalue.push(Value_numberValidator);
+				
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+			}
+			
+			private function handleButtonClick(str:String):void {
+				// Check credentials (not shown) then remove pop up.
+				if (str == "submit"){
+					var oper:String;
+					var data:String = "oper=edit" + ":" + "param_name=" + currentData.getItemAt(0) + ":param_value=" + value.text ;
+					_proxy.updateServerConfiguration(serviceGuid, data, onConfigurationUpdate);
+				}
+			}
+			
+			private function onConfigurationUpdate(e:MethodReturnEvent):void{
+				if (e.result && e.result.errorMessage)
+					Alert.show(e.result.errorMessage);
+				else
+					Alert.show(Helper.getString('ALERT_EDIT_CONFIGURATION'));
+				PopUpManager.removePopUp(this);
+				FlexGlobals.topLevelApplication.dispatchEvent(new AddOrDeleteCredentialsEvent(AddOrDeleteCredentialsEvent.UPDATE_CREDENTIALS));
+				//  parentGrid.invalidateDisplayList();
+			}
+			
+			private function validateAndSubmit(e:Event):void{
+				var errorArray:Array = Validator.validateAll(validatorvalue);
+				var isValid:Boolean = errorArray.length == 0;
+				if(!isValid){
+					
+					var resultEvt:ValidationResultEvent;
+					var errorMessages:Array = new Array();
+					
+					for each (resultEvt in errorArray){
+						errorMessages.push(resultEvt.message);
+					}
+				}
+				else{
+					handleButtonClick(e.currentTarget.id)
+					
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	<s:NumberValidator id="Value_numberValidator" source="{value}" property="text" requiredFieldError="Value must be a valid number"/>
+	</fx:Declarations>
+	<s:VGroup>
+		<s:Form id="srvCfgForm">
+			
+			<s:FormItem label="Value">
+				<s:TextInput id="value" text="{currentData.getItemAt(1)}"/>
+			</s:FormItem> 
+		</s:Form>
+		<mx:HRule width="100%"/>
+		<mx:HBox width="100%" horizontalAlign="right"> 
+			<mx:Button id="submit" label="{Helper.getString('LABEL_SUBMIT')}" click="validateAndSubmit(event);"
+					   paddingLeft="7" buttonMode="true" enabled="true"/>
+			<mx:Button id="cancel" label="{Helper.getString('cancelLabel')}" click="PopUpManager.removePopUp(this);"
+					   paddingLeft="7" buttonMode="true" enabled="true"/>
+		</mx:HBox> 
+		
+	</s:VGroup>
+</s:TitleWindow>
+

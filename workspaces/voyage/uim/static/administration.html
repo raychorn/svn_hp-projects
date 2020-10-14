@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link id="jquery-ui-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/jquery-ui-1.8.16.custom.css"/>
+<link id="main-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/jquery.bubblepopup.v2.3.1.css" /> 
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jscrollpane.css" />
+
+
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/ui.multiselect.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.tmpl.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.contextmenu.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.cookie.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.bubblepopup.v2.3.1.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.layout-latest.js" ></script>
+<script type="text/javascript" src="/static/js/oss/raphael.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.raphael-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.pie-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.bar.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.line.js"></script>
+<script type="text/javascript" src="/static/js/oss/jscrollpane.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqote2.min.js" ></script>
+<script type="text/javascript" src="/static/js/i18n/strings.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqGrid.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jqote_dynamic.js" ></script>
+<script type="text/javascript" src="/static/js/oss/json2.js" ></script>
+
+<link rel="stylesheet" type="text/css" href="/static/css/hptools.css" />
+<script type="text/javascript" src="/static/js/hptools.js"></script>
+<script type="text/javascript" src="/static/js/appmanager.js"></script>
+<script type="text/javascript" src="/static/js/helpers.js" ></script>
+<script type="text/javascript" src="/static/js/cookiehelper.js" ></script>
+
+<script type="text/javascript">
+    
+    function more_menu_onchange(menu) {        
+        var appId = menu.options[menu.selectedIndex].value;
+        //alert(appId);
+        AppManager.loadApp(appId);
+    } 
+
+    function more_menu_onloadapp(appId) {            
+        $("#more_menu").val(appId);
+    } 
+
+    var theme_number = 0;
+    var jquery_ui_themes = [
+                            "/static/css/hp-light/jquery-ui-1.8.16.custom.css",                                
+                            "/static/css/hp-dark/jquery-ui-1.8.16.custom.css"                            
+                            ]
+    
+    var main_themes = [     
+                        "/static/css/hp-light/main.css",
+                        "/static/css/hp-dark/main.css"                        
+                        ]
+
+    var bubble_themes = [   ['grey', '#000'],
+                            ['all-grey', '#FFF']                            
+                            ];
+    
+    var main_layout;
+    var header_layout;
+    var userInfo = null;
+
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+            if (!uniqueId) {
+                uniqueId = "Don't call this twice without a uniqueId";
+            }
+            if (timers[uniqueId]) {
+                clearTimeout (timers[uniqueId]);
+            }
+            timers[uniqueId] = setTimeout(callback, ms);
+        };
+    })();
+    
+    $(window).resize(function () {
+        waitForFinalEvent(function(){            
+            if( $('#header-right').is(':hidden') )
+            {
+                $('#header-right').show();
+            }    
+            if( $('#header-left').is(':hidden') )
+            {
+                $('#header-left').show();
+            } 
+        }, 500, "force header display on small screens");
+    });
+    
+    function get_current_theme(){
+        var themeCookie = readCookie('hpicsm-theme');
+        //alert(themeCookie);
+        if(!themeCookie){
+            //Create the theme cookie
+            createCookie('hpicsm-theme', $("#jquery-ui-theme-link").attr("href"), 90);
+        }else{
+            for (i in jquery_ui_themes){
+                if(themeCookie == jquery_ui_themes[i]){
+                    theme_number = i;
+                    break;
+                }
+            } 
+            eraseCookie('hpicsm-theme');
+            createCookie('hpicsm-theme', jquery_ui_themes[theme_number], 90);
+            $("#jquery-ui-theme-link").attr("href",jquery_ui_themes[theme_number]);
+            $("#main-theme-link").attr("href",main_themes[theme_number]);
+        }
+    }
+    
+    $(document).ready(function() {
+        // Grab the user info first before we load the rest of the page.
+        try{
+            $.getJSON('/userinfo/'+location.search, function(result){
+                userInfo = result;
+                $("#username").html(result['userName']);
+                loadPage();
+            });
+            $("#fatalError").hide();
+        } catch (e){}
+
+        get_current_theme();
+
+    });
+
+    function loadPage(){
+
+    	/* Layout Manager setup */
+        main_layout = $('#container').layout({
+            defaults: {
+              closable:            false,
+              resizable:           false              
+            },
+            north : {
+                size:               70
+            },
+            south : {
+                size:               50
+            }
+        });
+        
+        header_layout = $('#header').layout({
+            defaults: {
+                closable:          false,
+                resizable:         false,
+                size:               "auto"
+            },
+            west: {
+                minSize :           250
+            },
+            east: {
+                minSize :           400
+            }
+            
+        });
+
+        /* IE caches AJAX request */
+        $.ajaxSetup({ cache: false });
+
+        /* Get config for more_menu */
+        $.getJSON("/config/pages/home_settings/menu_items", 
+            function(menu_items) {
+                for(menu in menu_items)
+                {
+                    if(is_menu_authorized(userInfo.role, menu_items[menu]))
+                    {
+                        $("#more_menu").append('<option value="' + menu_items[menu].appId + '">' + menu_items[menu].display_name + '</option>');
+                    }
+                }
+            }
+        );
+        
+        AppManager.addAppListener(more_menu_onloadapp);
+        AppManager.start('themeselect');
+        
+        if( $('#header-right').is(':hidden') )
+        {
+            $('#header-right').show();
+        }    
+        if( $('#header-left').is(':hidden') )
+        {
+            $('#header-left').show();
+        } 
+    }
+</script>
+
+</head>
+<body>
+    <div id="container" >        
+        <div id="header" class="ui-layout-north">
+            <div id="header-left" class="ui-layout-west">    
+            </div>
+            <div id="header-center" class="ui-layout-center">
+            </div>
+            <div id="header-right" class="ui-layout-east">                 
+                <div style="float:left;">&nbsp;&nbsp;&nbsp;&nbsp;</div>       
+                <div style="float:left;">
+                    <table>
+                        <tr>
+                            <td>
+                                <select id="more_menu" style="margin-right: 20px;" onchange="more_menu_onchange(this)">
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="reload_icon" class="reload_icon" onclick="window.location.reload()">&nbsp;</div>
+                <div class="divider_icon">&nbsp;</div>                
+                <a id="v15695823" onClick="launch_help(this)"><div class="help_icon">&nbsp;</div></a>
+                <div class="hp_logo" onclick="window.open(document.URL);">&nbsp;</div>
+                <br style="float:left;" />
+            </div>
+        </div>
+        <div id="main_contents" class="ui-layout-center">    
+            <div id="fatalError">
+                An error has occurred on the page. Please ensure that scripting is enabled and that the Insight Control for vCenter site is trusted in the client's Internet Explorer settings.
+                The vSphere client may need to be restarted if the site was recently added to Internet Explorer's trusted sites.
+            </div>
+        </div>
+        <div id="footer" class="ui-layout-south ui-widget-header">
+            <div id="footer-contents" >
+                <div id="footer-left">				
+				</div>
+                <div id="footer-right">
+                    User: 
+                    <span id="username" class="ui-state-highlight-color"></span>
+                </div>
+            </div>
+        </div>    
+        
+    </div>
+</body>
+</html>

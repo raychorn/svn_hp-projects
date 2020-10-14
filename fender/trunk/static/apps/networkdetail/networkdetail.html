@@ -1,0 +1,224 @@
+<script id="external_switch_template" type="text/x-jquery-tmpl" >    
+    <table border="0">
+        <tr><th>Switch Name</th><td>${$item.data['remote-system-name']}</td></tr>
+        <tr><th>Description</th><td>${$item.data['remote-system-desc']}</td></tr>
+        <tr><th>Chassis ID</th><td>${$item.data['remote-chassis-id']}</td></tr>        
+    </table>
+    <br>
+</script>
+
+<script id="external_storage_template" type="text/x-jquery-tmpl" >    
+    <table border="0">
+        <tr><th>WWN</th><td>${WWN}</td></tr>        
+    </table>
+    <br>
+</script>
+
+<script id="network_detail_vswitch_template" type="text/x-jquery-tmpl" >    
+    <tr><td>${name}</td><td>${numPorts}</td><td>${numPortsAvailable}</td>
+    <td>    
+    {{each port_groups}}${name} {{if vlanId}}&nbsp;&nbsp;VLAN ID: ${vlanId}{{/if}}<br>{{/each}}
+    </td>
+    </tr>        
+</script>
+
+<script id="network_detail_dvswitch_template" type="text/x-jquery-tmpl" >    
+    <tr><td>${name}</td>
+    <td>    
+    {{each downlink_port_groups}}${name} {{if vlanId}}&nbsp;&nbsp;VLAN ID: ${vlanId}{{/if}}<br>{{/each}}
+    </td>
+    <td>    
+    {{each uplink_port_groups}}${name}<br>{{/each}}
+    </td>
+    </tr>        
+</script>
+
+<script id="network_detail_nic_template" type="text/x-jquery-tmpl" >    
+    <tr><td>${vmnic}</td><td>${physical_nic}</td><td>${mac}</td><td>${slot}</td><td>${pci}</td>
+    {{if speedGb}}
+        <td>${speedGb}&nbsp;Gb</td>
+    {{else}}
+        <td>Not Linked</td>
+    {{/if}}    
+    <td>${vswitch}</td>    
+    </tr>        
+</script>
+
+<script id="vc_fc_fabric_template" type="text/x-jquery-tmpl" >
+    <table border="0"> 
+    <tr><th>Name</th><td width="100%">${displayName}</td></tr>    
+    </table>
+    <br>
+</script>
+
+<script id="vc_uplink_template" type="text/x-jquery-tmpl" >    
+    <tr><th>Port&nbsp;Label</th><td width="100%">${portLabel}</td></tr>
+    <tr><th>Uplink&nbsp;Type</th><td width="100%">${uplinkType}</td></tr>    
+    {{if portConnectStatus}}<tr><th>Status</th><td>${portConnectStatus}</td></tr>{{/if}}
+    {{if linkStatus}}<tr><th>Status</th><td>${linkStatus}</td></tr>{{/if}}
+    <tr><th>Speed</th><td>${speedGb} Gb</td></tr>
+    {{if connectorType}}<tr><th>Connector</th><td>${connectorType}</td></tr>{{/if}}
+    <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+</script>
+
+
+<script id="vc_network_template" type="text/x-jquery-tmpl" >
+    <tr><th>Name</th><td>${displayName}</td></tr>
+    {{if uplinkVLANId}}<tr><th>VLAN ID</th><td>${uplinkVLANId}</td></tr>{{/if}}
+    <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+</script>
+
+<script id="enclosure_template" type="text/x-jquery-tmpl" >    
+    {{each allVcModuleG1s}}
+        <tr>
+            <td>${commonIoModuleAttrs.enclosureName}</td>
+            <td>${commonIoModuleAttrs.bay}</td>
+            <td>${commonIoModuleAttrs.productName}</td>
+            <td>${commonAttrs.overallStatus}</td>
+            <td>${commonIoModuleAttrs.ipaddress}</td>
+            <td>${commonIoModuleAttrs.fwRev}</td>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                {{tmpl(networks) "#vc_network_template"}}
+                {{tmpl(fabrics) "#vc_network_template"}}
+                </table>
+            </td>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                {{tmpl(uplinks) "#vc_uplink_template"}}                
+                </table>
+            </td>
+        </tr>
+    {{/each}}
+    
+</script>
+
+<script id="networkdetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+        {{if nics }}
+        <div class="bigbox_header ui-widget-header">NICs</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">            
+                <table>
+                    <tr><th>VM NIC</th><th>Physical NIC</th><th>MAC</th><th>Slot</th><th>PCI</th><th>Link Speed</th><th>vSwitch</th></tr>
+                    {{tmpl(nics) "#network_detail_nic_template"}}               
+                    </table>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{if vss }}
+        <div class="bigbox_header ui-widget-header">vSphere Standard Switches</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">            
+                <table>
+                    <tr><th>Name</th><th>Ports</th><th>Ports Available</th><th>Port Groups</th></tr>
+                    {{tmpl(vss) "#network_detail_vswitch_template"}}               
+                    </table>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{if typeof dvss != 'undefined' && dvss.length}}
+        <div class="bigbox_header ui-widget-header">vSphere Distributed Switches</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">            
+                <table>
+                    <tr><th>Name</th><th>Downlink Port Groups</th><th>Uplink Port Groups</th></tr>
+                    {{tmpl(dvss) "#network_detail_dvswitch_template"}}               
+                    </table>
+            </div>
+        </div>
+        {{/if}}
+        
+        {{if vcm}}
+        <div class="bigbox_header ui-widget-header">Virtual Connect Network Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <table border="0">
+                    <tr><th>Enclosure</th><th>Bay</th><th>Module</th>
+                    <th>Status</th><th>IP</th><th>Firmware</th><th>Networks/Fabrics</th><th>Uplinks</th></tr>                    
+                    {{tmpl(vcm.enclosures) "#enclosure_template"}}
+                </table>    
+            </div>
+        </div>    
+        
+        {{if vcm.externalSwitches.length}}
+        <div class="bigbox_header ui-widget-header">External Switches</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                {{tmpl(vcm.externalSwitches) "#external_switch_template"}}               
+            </div>
+        </div>
+        {{/if}}
+        {{if vcm.externalStorage.length}}
+        <div class="bigbox_header ui-widget-header">External Storage</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                {{tmpl(vcm.externalStorage) "#external_storage_template"}}               
+            </div>
+        </div>
+        {{/if}}        
+        {{/if}}
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var NetworkDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (NetworkDetail.isActive())
+            {                                
+                $.getJSON("/services/host/networkdetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#networkdetail').empty();
+                        $.tmpl('networkdetail_template', data).appendTo( "#networkdetail" );                        
+                        NetworkDetail.refreshTimeoutId = setTimeout("NetworkDetail.refresh_data()", 120000);
+                    }
+                ).error(function(jqXHR, textStatus, errorThrown){
+                        var answer = confirm('Error loading network data: ' + errorThrown + '\nRetry?');
+                        if(answer)
+                        {
+                            NetworkDetail.refreshTimeoutId = setTimeout("NetworkDetail.refresh_data()", 1000);
+                        }
+                        else
+                        {
+                            $('#networkdetail').html("<h3>Error loading network data</h3><pre>" + errorThrown + "</pre>");
+                        }
+                    });
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#networkdetail_template").template('networkdetail_template');
+            NetworkDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            NetworkDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(NetworkDetail.activeOverride == true)
+            {
+                NetworkDetail.activeOverride = false;
+                return true;
+            }
+            return $("#networkdetail").is(":visible");
+        }
+    };
+    
+    NetworkDetail.startApp();
+    AppManager.addAppListener(NetworkDetail.refresh_data);
+</script>
+
+
+<div id="networkdetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

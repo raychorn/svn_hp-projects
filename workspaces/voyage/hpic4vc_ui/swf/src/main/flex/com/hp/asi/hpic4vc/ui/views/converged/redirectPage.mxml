@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 preinitialize="preInit();">
+	
+	<fx:Metadata>
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.converged.redirectPageMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.BrowserManager;
+						
+			/** URL Path of the converged infrastructure page */
+			private static const CONVERGED_INFRASTRUCTURE_URL:String = 
+				'#extensionId=com.hp.converged.main.summary;context=com.' +
+				'vmware.core.model%3A%3AURI~hpmodel%3AHPModel%3Bhp%3Ahpm' +
+				'odel%3AHPModel%3Ahpinfrastructure%2Fmain~core';
+			
+			/** URL Path of the home page */
+			private static const HOME_PAGE_URL:String = 
+				'#extensionId=vsphere.core.controlcenter.domainView';
+			
+			/** Runs before page is loaded */
+			private static function preInit():void {
+				redirect();
+			}
+
+			/** Redirects the user to the appropriate page */
+			private static function redirect():void {
+				if(BrowserManager.getInstance().url.indexOf("vsphere.core") != -1){
+					//If coming from home page go to converged infrastructure
+					goConvergedInfrastructure();
+				} else if (BrowserManager.getInstance().url.indexOf("com.hp.converged") != -1){
+				    //If coming from converged infrastructure go to home
+					goHome();
+				} else {
+					goConvergedInfrastructure();
+				}
+			}
+			
+			private static function goHome():void {
+				navigateToURL(new URLRequest(HOME_PAGE_URL),'_self');
+			}
+			
+			private static function goConvergedInfrastructure():void {
+				navigateToURL(new URLRequest(CONVERGED_INFRASTRUCTURE_URL),'_self');
+			}
+
+		]]>
+	</fx:Script>
+
+</s:Group>

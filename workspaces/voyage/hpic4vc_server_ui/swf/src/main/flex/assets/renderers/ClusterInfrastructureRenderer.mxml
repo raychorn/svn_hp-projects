@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			
+			[Bindable]
+			private var infraSummaryLabel:String;
+			
+			[Bindable]
+			private var infraSummaryValue:String;
+			
+			private var labelValueModel:LabelValueModel ;
+			[Bindable]
+			private var resetCounter:Boolean = false;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value ;
+				
+				labelValueModel = new LabelValueModel();
+				if (value && value is LabelValueModel)
+				{
+					
+					labelValueModel = LabelValueModel(value);
+					
+					if (labelValueModel.label == "nextLine")
+					{
+						resetCounter = true;
+					}
+					else
+					{
+						infraSummaryLabel = labelValueModel.label;
+						infraSummaryValue = labelValueModel.value;	
+					}
+					
+					
+				}
+				
+				{
+					if(value)
+					{
+						infraSummaryLabel = value.label;
+						infraSummaryValue = value.value;
+					}
+				}
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+		]]>
+	</fx:Script>
+	<!--<s:VGroup gap="0"  x="0" y="0" styleName="portletVBoxValue" width="100%">-->
+		<s:HGroup  width="100%">
+			<mx:VBox width="40%" backgroundColor="#e4eff6">
+				<mx:Text text="{infraSummaryLabel}" width="150" 
+						 fontWeight="normal" 
+						 paddingLeft="6" 
+						 paddingTop="5" 
+						 paddingBottom="5" 
+						 color="#333333" 
+						 height="27"
+						 />
+			</mx:VBox>
+			<mx:VBox width="60%" backgroundColor="#ffffff">
+				<s:Label text="{infraSummaryValue}" width="192" 
+						 fontWeight="normal" 
+						 paddingLeft="6" 
+						 paddingTop="5" 
+						 paddingBottom="5" 
+						 color="#333333" 
+						 height="27"
+						 />	
+			</mx:VBox>
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<s:Line width="100%" >
+				<s:stroke>
+					<s:SolidColorStroke color="0xcccccc" weight="1" joints="miter" />
+				</s:stroke>
+			</s:Line>	
+		</s:HGroup>
+		<s:HGroup width="100%">
+			<s:Line width="100%" visible="{resetCounter}" >
+				<s:stroke>
+					<s:SolidColorStroke color="gray" weight="3" joints="miter" />
+				</s:stroke>
+			</s:Line>	
+		</s:HGroup>
+		
+	<!--</s:VGroup>-->
+	
+	
+	
+	
+	
+	
+</s:ItemRenderer>

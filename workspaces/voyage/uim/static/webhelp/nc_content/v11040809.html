@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Customizing Storage Module for vCenter tables</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:31+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v15744503.html" title="Using the Storage Module for vCenter"/><link rel="prev" href="s_Changing_the_automatic_data_refresh_settings_201002191830.html" title="Changing the automatic refresh settings"/><link rel="next" href="Host_Storage_Overview.html" title="Viewing host storage information"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v15744503','icon4v15744503','link4v11040809','v15744267')" onunload="clearbgcolortoc('link4v11040809','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v15744503.html">Using the Storage Module for vCenter</a> &gt; Customizing Storage Module for vCenter tables</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Host_Storage_Overview.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="v11040809"/><h1 class="sectiontitle">Customizing Storage Module for vCenter tables</h1></div></div></div><a id="v11177644" class="indexterm"/><a id="v11177645" class="indexterm"/><p><a id="v11047764"/>Storage Module for vCenter pages include tabs
+that allow you to view additional information about hosts, VMs, and
+datastores. Click a tab to view a table that shows information about
+the selected host, VM, or datastore. </p>
+	
+	<p><a id="v11047765"/>When working with the information in the storage
+tables:</p>
+	
+	<div class="itemizedlist"><a id="v11047766"/><ul type="disc"><li><p><a id="v11047767"/><a id="v11047768"/>Click <span><strong class="guibutton">Export
+Table</strong></span> to export the information in a tab to a <code class="computeroutput">.csv</code> file.
+When prompted to browse to a download folder, select a folder, and
+then click <span><strong class="guibutton">OK</strong></span>.</p>
+	
+	</li><li><p><a id="v11047770"/><a id="v11047771"/>Enter a value in the
+text box below a column heading to filter the list by a specific value.</p>
+	
+	</li><li><p><a id="v11047779"/><a id="v11047780"/>Click the divider between
+columns and drag to resize a column.</p>
+	
+	</li><li><p><a id="v17712596"/><a id="v17712597"/>Click a column heading
+to sort the data by the selected column.</p>
+	
+	</li><li><p><a id="v11047781"/><a id="v11047782"/>Click a triangle icon to the right of a column heading
+to change the sorting order. To use ascending order, click the triangle
+that points up. To use descending order, click the triangle that points
+down.</p>
+	
+	</li><li><p><a id="v17712599"/><a id="v17712600"/>Click the heading of a column and drag the column to
+a different location in the table.</p>
+	
+	</li><li><p><a id="v17712601"/><a id="v17712602"/>Click <span><strong class="guilabel">Save
+Column Settings</strong></span> to save the changes.</p>
+	
+	</li><li><p><a id="v11047772"/><a id="v11047773"/>Click <span><strong class="guibutton">Columns</strong></span> to select the
+columns to display.</p>
+	
+	<p><a id="v17712584"/>The Select columns
+dialog box lists the currently displayed columns on the left and the
+hidden columns on the right. </p>
+	
+	<div class="itemizedlist"><a id="v17712586"/><ul type="disc"><li><p><a id="v17712587"/><a id="v17712588"/>Click the minus icon
+next to a column to remove it from the table, or click <span><strong class="guilabel">Remove
+all</strong></span> to remove every column.</p>
+	
+	</li><li><p><a id="v17712589"/><a id="v17712590"/>Click the plus icon
+next to a column to add it to the table, or click <span><strong class="guilabel">Add All</strong></span> to
+add every column.</p>
+	
+	</li><li><p><a id="v17712591"/><a id="v17712592"/>Enter a value in the
+text box above the hidden columns to filter the list by a specific
+value.</p>
+	
+	</li><li><p><a id="v17969620"/><a id="v17969621"/>Drag and drop items
+in the list to change the column display order.</p>
+	
+	</li><li><p><a id="v17712593"/><a id="v17712594"/>Click <span><strong class="guilabel">OK</strong></span> to
+save the changes after you add or remove columns.</p>
+	
+	</li></ul></div></li><li><p><a id="v11311610"/><a id="v11311611"/>Customize the tables
+as needed. The following changes are saved in cookies and are retained
+across page reloading and vSphere Client sessions:</p>
+	
+	<div class="itemizedlist"><a id="v11311612"/><ul type="disc"><li><p><a id="v11311613"/><a id="v11311614"/>Resized column widths</p>
+	
+	</li><li><p><a id="v11311615"/><a id="v11311616"/>Sorting criteria for
+one or multiple columns</p>
+	
+	</li><li><p><a id="v11311617"/><a id="v11311618"/>Information about hidden
+columns</p>
+	
+	</li></ul></div></li></ul></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="s_Changing_the_automatic_data_refresh_settings_201002191830.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v15744503.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Host_Storage_Overview.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Changing the automatic refresh settings </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Viewing host storage information</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

@@ -1,0 +1,619 @@
+<div id="clusterfwupdate">
+<div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+  <div class="bigbox_header ui-widget-header">Firmware</div>
+  <div class="bigbox_contents">
+    
+    <div id="fwupdate_tabset" style="margin-bottom: 10px;">
+        <input type="radio" id="fw_tab_update" name="fw_tabs" checked="checked" onclick="$('#SC_div').show();$('#MSC_div').hide();HostFirmwareUpdate.sc_tab_selected();" /><label for="fw_tab_update">Smart Component Update</label>
+        <input type="radio" id="fw_tab_managesc" name="fw_tabs" onclick="$('#MSC_div').show();$('#SC_div').hide();HostFirmwareUpdate.msc_tab_selected();"/><label for="fw_tab_managesc">Manage Smart Components</label>
+    </div>
+    <div id="SC_div" style="padding-left: 10px;">
+        <div style="width:500px;">
+            Host firmware can be updated using HP Smart Components. Smart Components must be made available to the host using an HTTP server. Use the form
+            below to specify Smart Component URLs (for example, http://myserver/CPXXXXXX.SCEXE). If additional URLs are specified while an update is in progress, they will be added to the Pending Jobs list.
+        </div><br /><br />
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+        <td width="50%">
+        <div id="update_form_container">
+            <table width="100%"><tr style="height:20px"><th>Smart Component Information</th></tr></table>
+
+            <div class="ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="padding: 10px; margin-bottom: 10px;">
+                <input type="radio" name="update_type" id="update_type_url" checked="true"/>&nbsp;<label for="update_type_url"><b>Update from URL</b></label><br /><br />
+                <table cellpadding="0" cellspacing="0" border="0" style="margin-left: 20px;">
+                    <tr>
+                        <td style="vertical-align:top; width: 160px;">Smart Component URL:</td>
+                        <td style="width:10px;">&nbsp;</td>
+                        <td>
+                            <input type="text" id="sc_url" style=width:350px;" /><br />
+                            (Note: If right-click or Ctrl-V actions are disabled, <a href="javascript:doPaste('sc_url');">click here</a> to paste)
+                        </td>
+                    </tr>
+                </table>
+                <br /><br />
+
+                <input type="radio" name="update_type" id="update_type_msc" />&nbsp;<label for="update_type_msc"><b>Update from Managed Smart Component</b></label><br /><br />
+                <table cellpadding="0" cellspacing="0" border="0" style="margin-left: 20px;">
+                    <tr>
+                        <td style="vertical-align:middle; width:160px;">Managed Smart Component:</td>
+                        <td style="width:10px;">&nbsp;</td>
+                        <td id="msc_list_container">
+                            Loading ...
+                        </td>
+                    </tr>
+                </table>
+                <br />
+
+                <p class="dotted_left">&nbsp;</p>
+                <br />
+                <input type="checkbox" id="force_check" />&nbsp;<label for="force_check">Force Component Update</label><br /><br />
+
+                Select Hosts:<br />
+                <div id="host_select"></div>
+
+                <div style="text-align:right;">
+                    <input type="button" id="update_button" onclick="HostFirmwareUpdate.begin_update();" value="Update"/>
+                </div>
+            </div>
+        </div>
+        </td>
+        <td style="padding-left: 20px;" width="50%">
+        <div id="update_jobs_container">
+            <table width="100%"><tr style="height:20px"><th>Smart Component Update</th></tr></table>
+            <div class="ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="padding: 10px;margin-bottom: 10px;">
+                <div id="update_status_table">
+                   <table class="logs" width="100%" id="SC_tbl">
+                    <thead>
+                        <tr>
+                          <th style="white-space:nowrap;">&nbsp;Server</th>
+                          <th style="white-space:nowrap;">&nbsp;Job Description</th>
+                          <th style="white-space:nowrap;">&nbsp;Status</th>
+                          <th style="white-space:nowrap;">&nbsp;Percent Complete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="SC_tbl_body">
+                    </tbody>
+                   </table>
+                </div>
+                <div id="update_status_message" style="display:none;">There are no firmware update jobs in progress.</div>
+                <div id="loading_container" style="display:none;">Loading ...</div>
+            </div>
+        </div>
+        </td>
+        </tr>
+        </table>
+    </div><!-- SC_div -->
+
+    <div id="MSC_div" style="display:none;">
+
+        <div id="msc_content_container" style="padding: 10px;">
+        HP Smart Components can be uploaded to Insight Control for vCenter. Once uploaded, the components
+        can be used to update firmware on ESXi hosts. <a href="javascript:HostFirmwareUpdate.open_sc_help();">More ...</a>
+        <br />
+        <br />
+
+        <div id="msc_form_container">
+        <table width="100%"><tr style="height:20px"><th>Smart Component Upload</th></tr></table>
+
+        Local Smart Component File:<br />
+        <br />
+        <!-- TODO: Get the action from the config file -->
+        <form action="" method="POST" enctype="multipart/form-data" target="hiddenFrame" id="upload_form">
+            <div id="sc_file_container"><input type="file" name="sc_file" id="sc_file" style="width:300px;" /></div>
+            <input type="hidden" value="" name="filename" id="filename" />
+            <input type="hidden" value="" name="serverGuid" id="serverGuid" />
+            <input type="hidden" value="" name="sessionId" id="sessionId" />
+            <input type="hidden" value="" name="moref" id="moref" />
+        </form>
+        <div style="text-align:right">
+            <input type="button" id="upload_button" onclick="HostFirmwareUpdate.submit_upload();" value="Upload"/>
+        </div>
+
+        </div>
+        <br />
+
+        <table width="100%"><tr style="height:20px"><th>Managed Smart Components</th></tr></table>
+
+        <table class="logs" width="100%">
+            <thead>
+                <tr>
+                  <th style="white-space:nowrap;">Name</th>
+                  <th style="white-space:nowrap;">Version</th>
+                  <th style="white-space:nowrap;">Filename</th>
+                  <th style="white-space:nowrap;"></th>
+                </tr>
+            </thead>
+            <tbody id="msc_body"></tbody>
+        </table>
+
+        <div style="display:none;">
+        <iframe id="hiddenFrame" name="hiddenFrame"></iframe>
+        </div>
+
+        </div>
+        <div id="msc_loading_container" class="containerHidden">Loading ...</div>
+
+    </div> <!-- MSC_div -->
+
+  </div>
+</div>
+<a href="#" onclick="AppManager.loadApp('clusteroverview');">Back</a>
+</div>
+
+<script type="text/html" id="jobs_table_template">
+<![CDATA[
+    <% if (typeof(this['Host']) != 'undefined') { %>
+    <tr>
+      <td style="width:20px;white-space:nowrap;padding-right:10px;">
+        <span style="cursor:pointer;white-space:nowrap;">
+            &nbsp;<b><%=this["Host"]%></b>
+        </span>
+      </td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <% if (this["FirmwareJobs"] && (typeof(this["FirmwareJobs"]["jobs"]) != 'undefined' && this["FirmwareJobs"]["jobs"].length)) { %>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="3"><p class="dotted_left"><b>Current Jobs</b></p></td>
+        </tr>
+        <% for (var i=0 ; i<this["FirmwareJobs"]["jobs"].length ; i++) { %>
+        <% var pctComplete = this["FirmwareJobs"]["jobs"][i]["PercentComplete"]; %>
+        <% var status = this["FirmwareJobs"]["jobs"][i]["Status"]; %>
+        <% var rowclass = (status == "Error") ? "odd error" : "odd"; %>
+        <tr class="<%=rowclass%>">
+            <td>&nbsp;</td>
+            <td>
+                <%=this["FirmwareJobs"]["jobs"][i]["Description"]%>
+                <br />
+                <% if (this["FirmwareJobs"]["jobs"][i]['JobState'] == 10) { %>                    
+                    <%=status+": "+ HostFirmwareUpdate.getErrorCodeText(this["FirmwareJobs"]["jobs"][i])%>
+                <% } else if (status == 'Error') { %>                    
+                    <%=status+": "+this["FirmwareJobs"]["jobs"][i]["ErrorDescription"]%>
+                <% } %>
+            </td>
+            <td style="width:10px;white-space:nowrap;padding-right:10px;" nowrap="true"><%=this["FirmwareJobs"]["jobs"][i]["Status"]%></td>
+            <td style="width:10px;white-space:nowrap;padding-right:10px;" nowrap="true">
+            <% if (status != "Error") { %>
+               <table cellpadding="0" cellspacing="0" border="0">
+                   <tr>
+                       <td style="width:40px;">
+                           <%=pctComplete%>%
+                       </td>
+                       <td style="width:5px">&nbsp;</td>
+                       <td>
+                           <div class="progressOuter">
+                               <div class="progressInner" style="width: <%=pctComplete%>px;">&nbsp;</div>
+                           </div>
+                       </td>
+                   </tr>
+               </table>
+            <% } else { %>
+                &nbsp;
+            <% } %>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">&nbsp;</td>
+        </tr>
+        <% } /* for each job */ %>
+    <% } else if (this["FirmwareJobs"] && (typeof(this["FirmwareJobs"]["jobs"]) != 'undefined' && !this["FirmwareJobs"]["jobs"].length)) { %>
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="3"><p class="dotted_left"><b>Current Jobs</b></p></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>There are no firmware jobs on this host.</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="4">&nbsp;</td>
+    </tr>
+    <% } else { %>
+    <tr>
+      <td>&nbsp;</td>
+      <td>Smart Component update is not supported on this host.</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td colspan="4">&nbsp;</td>
+    </tr>
+    <% } /* jobs exist */ %>
+    <% if (this["FirmwareJobs"] && (typeof(this["FirmwareJobs"]["queue"]) != 'undefined' && this["FirmwareJobs"]["queue"].length)) { %>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="3"><p class="dotted_left"><b>Pending Jobs</b></p></td>
+        </tr>
+        <% for (var i=0 ; i<this["FirmwareJobs"]["queue"].length ; i++) { %>
+        <% var classname = (i%2==0) ? "" : "odd"; %>
+        <tr class="<%=classname%>">
+            <td>&nbsp;</td>
+            <td>
+               <table cellpadding="0" border="0" cellspacing="0" width="100%">
+                <tr>
+                    <td>
+                        <%=this["FirmwareJobs"]["queue"][i]["package_url"]%>
+                        <% if ($.inArray(3, this['FirmwareJobs']['queue'][i]['options']) != -1) { %>(force)<% } %>
+                    </td>
+                    <td style="width:20px;">&nbsp;</td>
+                    <td><a href="javascript:HostFirmwareUpdate.delete_job('<%=this['Host']%>', '<%=this['FirmwareJobs']['queue'][i]['package_url']%>')">delete</a></td>
+                </tr>
+               </table> 
+            
+            <td style="white-space:nowrap;">Not Started</td>
+            <td>&nbsp;</td>
+        </tr>
+        <% } /* for */ %>
+    <% } else if (this["FirmwareJobs"] && (typeof(this["FirmwareJobs"]["queue"]) != 'undefined' && !this["FirmwareJobs"]["queue"].length)) { %>
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="3"><p class="dotted_left"><b>Pending Jobs</b></p></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>There are no pending jobs on this host.</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <% } /* queue exists */ %>
+    <% } /* typeof(this['Host'] != 'undefined */ %>
+]]>
+</script>
+
+<script type="text/html" id="host_select_template">
+<![CDATA[
+    <% if (this["FirmwareJobs"] && (typeof(this["FirmwareJobs"]["queue"]) != 'undefined')) { %>
+        <input type="checkbox" id="chk_<%=this['Host']%>" host_select="<%=this['Host']%>" />&nbsp;<label for="chk_<%=this['Host']%>"><%=this["Host"]%></label><br />
+    <% } %>
+]]>
+</script>
+
+<script type="text/javascript">
+
+    var HostFirmwareUpdate = {
+
+        polling: false,
+
+        getErrorCodeText : function(job){
+            switch(job['ErrorCode'])
+            {
+                case 1 : return "The installation of the deliverable was successful.  A reboot is required for the deliverable to be enabled.";
+                         
+                case 2 : return "The installation was not attempted because the version to be installed matches the version already installed.";
+                         
+                case 3 : return "The installation was not attempted because the version to be installed is older than the version already installed or the supported hardware or environment was not available.";
+                
+                case 4 : return "The installation was not attempted because the supported hardware is not present.";
+                
+                case 5 : return "The installation was canceled by the user.";
+                
+                case 6 : return "The installation could not be performed due to an unmet dependency or installation tool failure.";
+                
+                case 7 : return "The installation was not performed due to an installation failure.";
+                
+                case 500 : return "Download of the SmartComponent failed. " + job['ErrorDescription'];
+
+                default : return "Unknown Error " + job['ErrorCode'];
+            }
+        },
+        
+        getHostMoref : function(){
+            try {
+                return getQueryParameters()['moref'].split(':')[1];
+            } catch (e){
+                return '';
+            }
+        },
+
+        startApp : function(){
+            $("#fwupdate_tabset").buttonset();
+            $(".containerHidden").hide();
+            $("#loading_container").show();
+            $( "input:button").button();
+
+            $("#hiddenFrame").load(HostFirmwareUpdate.hiddenFrameLoaded);
+
+            var templates = [
+                {url: '/static/templates/managed_components_template', id:'managed_components_template'},
+                {url: '/static/templates/managed_components_list_template', id:'managed_components_list_template'},
+                {url: '/static/templates/unauthorized_template', id:'unauthorized_template'}
+            ];
+            load_templates(templates);
+            
+            /* Get the server module url */
+            //$.getJSON("/config/providers/host/smart_components/url", 
+            //    function(url) {                    
+            //        HostFirmwareUpdate.server_module_url = url;                    
+            //        $("#upload_form").attr("action",url);
+            //    }
+            //);
+            
+            $("#upload_form").attr("action","/services/host/smart_components"+location.search);
+        },
+
+        hiddenFrameLoaded: function(){
+            // This function will fire twice - once when the page initially loads, and then again when a component is posted.
+            // Since we can't post through UIM for binary files, we'll post directly to the server module API.  This will cause
+            // a permission denied error when trying to get the frame text since the server module is a different domain. We'll assume
+            // that the user posted a component when we get an exception here.  We'll then get the list of components and show the
+            // updated list.
+            try{
+                var frameText = $("#hiddenFrame").contents().find('body').text();
+                if(frameText.indexOf("successful") != -1)
+                {
+                    $.getJSON("/services/host/smart_components"+location.search, function(result){
+                        $("#msc_form_container").fadeTo(0, 1);
+                        $(":input[id='sc_file']").removeAttr("disabled");                    
+                        $(":button[id='upload_button']").removeAttr("disabled");
+                        document.getElementById('upload_form').reset();
+                        HostFirmwareUpdate.msc_loaded_callback(result);
+                    });
+                }     
+            } catch (e){
+                $.getJSON("/services/host/smart_components"+location.search, function(result){
+                    $("#msc_form_container").fadeTo(0, 1);
+                    $(":input[id='sc_file']").removeAttr("disabled");                    
+                    $(":button[id='upload_button']").removeAttr("disabled");
+                    document.getElementById('upload_form').reset();
+                    HostFirmwareUpdate.msc_loaded_callback(result);
+                });
+            }
+        },
+
+        bind_table : function(result){
+
+            $(".containerHidden").hide();
+            $("#update_status_table").show();
+
+            if (result['Error']){
+                try{
+                    var message = result['Error'][1];
+                    var html = '<img src="/static/img//icons/orange_triangle_large.png" />&nbsp;'+message;
+                    $("#update_form_container").html(html);
+                    $("#update_jobs_container").hide();
+                } catch (e){}
+                HostFirmwareUpdate.stop_polling();
+            } else {
+                var html = $('#jobs_table_template').jqote(result);
+                $("#SC_tbl_body").html(html);
+
+                if ($("#host_select").html() == ""){
+                    html = $("#host_select_template").jqote(result);
+                    $("#host_select").html(html);
+                }
+            }
+
+        },
+
+        msc_list_loaded_callback : function(result){
+            if (typeof(result['components']) != 'undefined'){
+                var html = $('#managed_components_list_template').jqote(result);
+                $("#msc_list_container").html(html);
+                $("#update_form_container").show();                
+                $('#msc_list').change(function() 
+                {
+                    $('#update_type_msc').prop('checked',true);
+                });
+            } else {
+                var html = $('#unauthorized_template').jqote(result);
+                $("#SC_div").html(html);
+            }
+        },
+
+        get_firmware_jobs : function(){
+            $.getJSON("/services/host/firmware_jobs"+location.search, HostFirmwareUpdate.jobs_callback);
+            HostFirmwareUpdate.start_polling();
+        },
+
+        sc_tab_selected : function(){
+            $(".containerHidden").hide();
+            $("#loading_container").show();
+            $.getJSON("/services/host/smart_components"+location.search, HostFirmwareUpdate.msc_list_loaded_callback);
+            HostFirmwareUpdate.get_firmware_jobs();
+        },
+
+        msc_tab_selected : function(){
+            if ($("#MSC_div").is(":visible")){
+                $("#msc_content_container").hide();
+                $("#msc_loading_container").show();
+                
+                $("#msc_form_container").fadeTo(0, 1);
+                $(":input[id='sc_file']").removeAttr("disabled");                
+                $(":button[id='upload_button']").removeAttr("disabled");                
+                document.getElementById('upload_form').reset();
+                
+                HostFirmwareUpdate.stop_polling();
+                $.getJSON("/services/host/smart_components"+location.search, HostFirmwareUpdate.msc_loaded_callback);
+            }
+        },
+
+        msc_loaded_callback : function(result){
+            $("#msc_loading_container").hide();
+            $("#msc_content_container").show();
+            HostFirmwareUpdate.bind_msc_table(result);
+        },
+
+        bind_msc_table : function(result){
+            if (typeof(result['components']) != 'undefined'){
+                var html = $('#managed_components_template').jqote(result);
+                $("#msc_body").html(html);
+            } else {
+                var html = $("#unauthorized_template").jqote(null);
+                $("#MSC_div").html(html);
+            }
+        },
+
+        jobs_callback : function(result){
+            if ($("#SC_div").is(":visible")){
+                $("#loading_container").hide();
+                HostFirmwareUpdate.bind_table(result);
+            }
+        },
+
+        start_polling : function(){
+            HostFirmwareUpdate.polling = true;
+            poll_timeout = setTimeout('HostFirmwareUpdate.poll();', 10000);
+        },
+
+        poll_callback : function(result){
+            if (HostFirmwareUpdate.isActive()){
+                HostFirmwareUpdate.jobs_callback(result);
+                poll_timeout = setTimeout('HostFirmwareUpdate.poll();', 10000);
+            }
+        },
+
+        poll : function(){
+            if (HostFirmwareUpdate.polling)
+                $.getJSON("/services/host/firmware_jobs"+location.search, HostFirmwareUpdate.poll_callback);
+        },
+
+        stop_polling : function(){
+            HostFirmwareUpdate.polling = false;
+            clearTimeout(poll_timeout);
+        },
+
+        isActive: function(){
+            return $("#clusterfwupdate").is(":visible");
+        },
+
+        checkPoll : function(){
+            if (HostFirmwareUpdate.isActive() && $("#SC_div").is(":visible")){
+                HostFirmwareUpdate.get_firmware_jobs();
+                $.getJSON("/services/host/smart_components"+location.search, HostFirmwareUpdate.msc_list_loaded_callback);
+            } else {
+                HostFirmwareUpdate.stop_polling();
+            }
+        },
+
+        delete_component : function(sc_filename){
+            var confirmString = "Are you sure?";
+            if (!confirm(confirmString))
+                return;
+            var obj = '{"sc_filename":"'+sc_filename+'"}'
+            $.deleteJSON("/services/host/smart_components"+location.search, obj.toString(), HostFirmwareUpdate.delete_component_callback);
+        },
+
+        delete_component_callback : function(result){
+            HostFirmwareUpdate.bind_msc_table(result);
+        },
+
+        submit_upload : function(){            
+            var params = getQueryParameters();
+            var filename = $("#sc_file").val();
+            if (filename == ""){
+                alert("Please select a file to upload.");
+                return;
+            }
+            $("#filename").val(filename);
+            $("#serverGuid").val(params['serverGuid']);
+            $("#sessionId").val(params['sessionId']);
+            $("#moref").val(params['moref']);
+
+            $("#upload_form").submit();
+            $("#msc_form_container").fadeTo(0, .3);
+            $(":input[id='sc_file']").attr("disabled", "true");
+            $(":button[id='upload_button']").attr("disabled", "true");
+        },
+
+        begin_update : function(){
+
+            var url = '';
+
+            var radio_id = $("input:radio[checked='true'][name='update_type']").attr('id');
+            if (radio_id == 'update_type_url'){                
+                url = $("#sc_url").val();
+                if (url.indexOf("http://") != 0  || (url.length<15)){       
+                    alert("Please enter a valid HTTP URL.");
+                    return;
+                }
+            } else {
+                url = $("#msc_list").val();                
+                if (url == '-'){
+                    alert("Please select a Smart Component from the list.");
+                    return;
+                }
+            }
+
+            var options = new Array();
+            options.push(4);
+            options.push(11);
+            if ($("#force_check").attr('checked')){
+                options.push(3);
+            }
+
+            var hosts = new Array();
+            var inputs = $("input[host_select]:checked");
+            for (var i=0 ; i<inputs.length ; i++){
+                hosts.push($(inputs[i]).attr("host_select"));
+            }
+
+            if (hosts.length == 0){
+                alert("Please select at least one host.");
+                return;
+            }
+
+            var obj = {
+                package_url: url,
+                options: options,
+                hosts: hosts
+            };
+
+            // Disable the form
+            $("#update_form_container").fadeTo(0, .3);
+            $(":input[id='sc_url']").attr("disabled", "true");
+            $(":button[id='update_button']").attr("disabled", "true");
+            $("#force_check").attr("disabled", "true");
+
+            HostFirmwareUpdate.stop_polling();
+            $.postJSON("/services/host/firmware"+location.search, obj, HostFirmwareUpdate.update_callback).error(function() { alert("Error post firmware request"); });
+        },
+
+        update_callback : function(result){
+            $("#sc_url").val('');
+            $("#update_form_container").fadeTo(0, 1);
+            $(":input[id='sc_url']").removeAttr("disabled");
+            $(":button[id='update_button']").removeAttr("disabled");
+            $("#force_check").removeAttr("disabled");
+
+            HostFirmwareUpdate.start_polling();
+            if (typeof(result['message']) != 'undefined'){
+                alert(result['message']);
+            } else {
+                HostFirmwareUpdate.bind_table(result);
+            }
+        },
+
+        delete_job : function(host, url){
+            var obj = '{"hosts":["'+host+'"], "package_url":"'+url+'"}';
+            HostFirmwareUpdate.stop_polling();
+            $.deleteJSON("/services/host/firmware"+location.search, obj.toString(), HostFirmwareUpdate.delete_callback).error(HostFirmwareUpdate.delete_error);
+        },
+
+        delete_callback : function(result){
+            HostFirmwareUpdate.bind_table(result);
+            HostFirmwareUpdate.start_polling();
+        },
+        
+        delete_error : function(jqXHR, textStatus, errorThrown){            
+            HostFirmwareUpdate.poll();
+            HostFirmwareUpdate.start_polling();
+            alert("Unable to delete job.  Installation may have already started.");
+        },
+        
+        open_sc_help : function(){
+            window.open("/static/schosting_help.html", "schosting_help", "status=0,toolbar=0,location=0,resizable=1,width=500,height=280");
+        }
+
+    };
+
+    HostFirmwareUpdate.startApp();
+    AppManager.addAppListener(HostFirmwareUpdate.checkPoll);
+
+</script>
+
+

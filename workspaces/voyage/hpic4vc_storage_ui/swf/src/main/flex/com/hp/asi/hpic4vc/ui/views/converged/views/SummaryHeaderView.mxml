@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:components="assets.components.*" 
+		 width="100%"
+		 creationComplete="init()">
+
+   <fx:Metadata>
+      [DefaultMediator("com.hp.asi.hpic4vc.ui.views.converged.views.SummaryHeaderViewMediator")]
+   </fx:Metadata>
+
+   <fx:Script><![CDATA[
+	   import com.hp.asi.hpic4vc.ui.Hpic4vc_storage_providerProxy;
+	   import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+	   import com.hp.asi.hpic4vc.ui.model.SummaryPortletModel;
+	   import com.hp.asi.hpic4vc.ui.utils.Helper;
+	   import com.hp.asi.hpic4vc.ui.views.converged.model.StorageSystemOverview;
+	   
+	   import mx.binding.utils.ChangeWatcher;
+	   import mx.collections.ArrayCollection;
+	   import mx.resources.ResourceManager;
+
+	   
+	   [Bindable]
+	   public var healthConsolidatedStatus:String;
+	  
+	   [Bindable]
+	   public var warningCount:String;
+	   
+	   [Bindable]
+	   public var errorCount:String;
+	   
+	   [Bindable]
+	   public var okCount:String;
+	   
+	   [Bindable]
+	   public var informationCount:String;
+	   
+	   [Bindable]
+	   public var objReferenceName:String;
+	   
+	   [Bindable]
+	   public var configurations:ArrayCollection;
+	   
+	   [Bindable]
+	   public var helpUrl:String;
+	   
+	   [Bindable]
+	   public var refreshList:ArrayCollection;
+	   
+	   [Bindable]
+	   public var isPopulating:Boolean;
+	   
+	   [Bindable]
+	   public var showRefreshHover:Boolean;
+	   
+	   [Bindable]
+	   public var objReferenceId:String;
+	   
+	   [Bindable]
+	   public var _proxyStorage:Hpic4vc_storage_providerProxy;
+	   
+	   [Bindable]
+	   public var noHeaderInfoFound:String;
+	   
+	   [Bindable]
+	   public var headerErrorMessage:String;
+	   
+	   [Bindable]
+	   public var tasksAvailable:String = "false";
+	   [Bindable]
+	   public var actionsAvailable:String = "false";
+	   [Bindable]
+	   public var createToolTip:String = "false";
+	   
+	   [Bindable]
+	   public var mgmtConsoleLink:String;
+	   
+	   [Bindable]
+	   public var errorFoundLabel:String;
+	   
+	   [Bindable]
+	   public var storageDetailList:ArrayCollection;
+	   
+	   [Bindable]
+	   public var storageSystemOverview:StorageSystemOverview;
+	   
+	   [Bindable]
+	   public var loadingText:String;
+	   
+	   [Bindable]
+	   public var storageSystemOverviewErrorInfoText:String;
+	   
+	   [Bindable]
+	   public var summaryPortlet:SummaryPortletModel;
+	   
+	   [Bindable]
+	   public var showLoading:Boolean;
+	   
+	   [Bindable]
+	   public var showError:Boolean;
+	   
+	   protected function onClick():void
+	   {
+		   if(mgmtConsoleLink != null) {
+			   navigateToURL(new URLRequest(mgmtConsoleLink));
+		   }
+	   }
+	   
+	   private function init():void {
+		   this.currentState = "DataUnavailable";
+		   this.loadingText = Helper.getString('loading');
+	   }
+	   
+	   public function setStorageImage(storageSystemType:String):void {
+		   xpIcon.visible 			= false;
+		   evaIcon.visible 			= false;
+		   evaIcon.visible 			= false;
+		   msaIcon.visible 			= false;
+		   lefthandIcon.visible 	= false;
+		   threeParIcon.visible 	= false;
+		   storeOnceIcon.visible 	= false;
+
+		   switch(storageSystemType){
+			   case "HP_XP":
+			   case "HP_P9000":
+				   xpIcon.visible = true;
+				   break;
+			   case "HP_EVA":
+				   evaIcon.visible = true;
+				   break;
+			   case "HP_MSA":
+			   case "HP_P2000":
+				   msaIcon.visible = true;
+				   break;
+			   case "HP_LEFTHAND":
+				   lefthandIcon.visible = true;
+				   break;
+			   case "HP_P10000":
+			   case "HP_3PAR":
+				   threeParIcon.visible = true;
+				   break;
+			   case "HP_STOREONCE":
+				   storeOnceIcon.visible = true;
+				   break;
+			   default:
+				   //If we decide to use a default image
+				   break;
+		   }
+	   }
+
+	   
+   ]]></fx:Script>
+	
+	<s:states>
+		<mx:State name="ShowAll"/>
+		<mx:State name="ShowLeftAndMiddle"/>
+		<mx:State name="DataUnavailable"/>
+	</s:states>
+	
+	<mx:VBox width="100%">
+		<components:Hpic4vc_Header id="mainHeader"
+								   width="98%"
+								   healthConsolidatedStatus="{healthConsolidatedStatus}"
+								   warningCount="{warningCount}" errorCount="{errorCount}"
+								   okCount="{okCount}" informationCount="{informationCount}"
+								   objReferenceName="{objReferenceName}"
+								   tasksAvailable="{tasksAvailable}"
+								   actionsAvailable="{actionsAvailable}"
+								   createToolTip="{createToolTip}"
+								   configList="{configurations}"
+								   helpUrl="{helpUrl}"
+								   refreshList="{refreshList}"
+								   isPopulating="{isPopulating}"
+								   noInfoFoundLabel="{noHeaderInfoFound}"
+								   objReferenceId="{objReferenceId}"
+								   _proxyStorage="{_proxyStorage}"
+								   showRefreshCache="{showRefreshHover}"
+								   errorMessage="{headerErrorMessage}"
+								   />
+		
+		<mx:VBox width="100%">
+			<!-- Storage Summary -->
+			<mx:HBox width="100%">
+				<!-- Data loading -->
+				<mx:Label includeIn="DataUnavailable" width="700" text="{loadingText}"
+						  textAlign="center" visible="{showLoading}" includeInLayout="{showLoading}"/>
+				<!-- Data Not available --> 
+				<mx:Label includeIn="DataUnavailable" styleName="errorMessage" width="700" text="{storageSystemOverviewErrorInfoText}"
+						  textAlign="center" visible="{showError}" includeInLayout="{showError}"/>
+				<!-- Left -->
+				<mx:VBox width="165" includeIn="ShowLeftAndMiddle, ShowAll" horizontalAlign="left">
+					<s:Group>
+						<mx:Image id="xpIcon" source="@Embed(source='/assets/images/storage_systems/xp_150px.png')" visible="false" x="0" y="0"/>
+						<mx:Image id="evaIcon" source="@Embed(source='/assets/images/storage_systems/eva_150px.png')" visible="false" x="0" y="0"/>
+						<mx:Image id="msaIcon" source="@Embed(source='/assets/images/storage_systems/msa_150px.png')" visible="false" x="0" y="0"/>
+						<mx:Image id="lefthandIcon" source="@Embed(source='/assets/images/storage_systems/store_virtual_150px.png')" visible="false" x="0" y="0"/>
+						<mx:Image id="threeParIcon" source="@Embed(source='/assets/images/storage_systems/3par_150px.png')" visible="false" x="0" y="0"/>
+						<mx:Image id="storeOnceIcon" source="@Embed(source='/assets/images/storage_systems/store_once_150px.png')" visible="false" x="0" y="0"/>
+					</s:Group>
+				</mx:VBox>
+				<!-- Middle -->
+				<mx:VBox includeIn="ShowLeftAndMiddle, ShowAll" width="380" horizontalAlign="left">
+					<mx:Repeater id="storageDetails" dataProvider="{storageDetailList}">
+						<mx:HBox>
+							<mx:Label width="120" height="10" paddingTop="-6" paddingBottom="-6" fontSize="11" 
+									  text="{(storageDetails.currentItem as LabelValueModel).label as String}:" />
+							<mx:Label height="10" paddingTop="-6" paddingBottom="-6" fontSize="11" 
+									  text="{(storageDetails.currentItem as LabelValueModel).value as String}" />
+						</mx:HBox>
+					</mx:Repeater>
+					<mx:Text text="{errorFoundLabel}" styleName="errorMessage" fontSize="11" />
+					<mx:LinkButton id="managementConsoleLink" styleName="gettingStartedTextFont" fontSize="11" visible="false"
+								   label="{Helper.getString('StorageSystem.launchManagementConsole')}" click="onClick()"/>
+				</mx:VBox>
+				<!-- Right -->
+				<mx:VBox includeIn="ShowAll" width="100%" horizontalAlign="right">
+					<s:VGroup>
+						<s:Label paddingLeft="16" text="{Helper.getString('StorageSystemOverview.storageProvisionedTitle')}" fontWeight="bold" fontSize="12"/>
+						<s:HGroup>
+							<components:Hpic4vc_PieChartStorageVolumes width="100" height="100" diameter="100"
+																	   percentUsed = "{Number(summaryPortlet.pieChartData.percentUsed)}"
+																	   percentFree = "{Number(summaryPortlet.pieChartData.percentFree)}"/>
+							<mx:VBox>
+								<s:Label text="{storageSystemOverview.volumesProvisioned} {Helper.getString('StorageSystemOverview.volumes')} ({storageSystemOverview.volumesThinProvisioned} {Helper.getString('StorageSystemOverview.thinProvisioned')})" 
+										 paddingBottom="0" fontSize="11" paddingTop="13"/>
+								<mx:Repeater id="overviewLabel" dataProvider="{summaryPortlet.fieldData.lvList}">
+									<mx:HBox>
+										<s:Label width="170" paddingTop="5" paddingBottom="-6" fontSize="11" 
+												 text="{(overviewLabel.currentItem as LabelValueModel).label as String}" />
+										<s:Label width="72" paddingTop="5" paddingBottom="-6" fontSize="11"  
+												 text="{(overviewLabel.currentItem as LabelValueModel).value as String}" />
+									</mx:HBox>
+								</mx:Repeater>
+								<s:Label text="{storageSystemOverview.volumesOverProvisioned} {Helper.getString('StorageSystemOverview.volumesOverprovisioned')}"
+										 paddingTop="7" paddingBottom="-6"
+										 fontSize="11" />
+							</mx:VBox>	
+						</s:HGroup>
+					</s:VGroup>
+				</mx:VBox>
+			</mx:HBox>
+		</mx:VBox>
+	</mx:VBox>
+</s:VGroup>

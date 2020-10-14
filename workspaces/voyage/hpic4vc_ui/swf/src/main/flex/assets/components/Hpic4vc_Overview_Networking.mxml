@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="350" styleName="overviewPortlet"
+         creationComplete="init()">
+		
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+		[DefaultMediator("assets.components.Hpic4vc_Overview_NetworkingMediator")]
+	</fx:Metadata>
+
+    <fx:Script>
+        <![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;			
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			
+            [Bindable]
+            public var summaryPortletData:TableModel;
+            [Bindable]
+            public var networkSummaryPortletData:DataGridWrapper;
+            [Bindable]
+            public var summaryPortletEventName:String;
+
+            [Bindable]
+            public var hostDetailDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var dataNotFound:String = Helper.getString('Overview.InformationNotFound');
+			[Bindable]
+			public var errorFoundLabel:String;
+			[Bindable]
+			private var loading:String;
+			[Bindable]
+			private var noInfoFoundWatcher:ChangeWatcher;
+			[Bindable]
+			private var errorWatcher:ChangeWatcher;			
+			[Bindable]
+			private var isBL:Boolean;
+			
+			
+			public function show (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+				if(this.hpic4vc_manage_uiView.productInfo != null)
+					isBL = this.hpic4vc_manage_uiView.productInfo.indexOf("BL",0) > -1;
+			}
+			
+            private function init():void{
+				this.currentState = "loadingPortlet";
+                hostDetailDataWatcher = ChangeWatcher.watch(this, ["summaryPortletData"], updateNetworkPortletData);
+				noInfoFoundWatcher   = ChangeWatcher.watch(this, ["dataNotFound"], noInfoAvailable);
+				errorWatcher  		 = ChangeWatcher.watch(this, ["errorFoundLabel"], errorOccurred);
+				this.title = Helper.getString('Overview.hostNetworking');
+				loading = Helper.getString("loading");
+            }
+            
+            private function updateNetworkPortletData(event:Event):void{
+				hostDetailDataWatcher.unwatch();
+				
+				networkSummaryPortletData = Helper.createDataGrid(summaryPortletData);
+				if (networkSummaryPortletData != null) {
+	                for (var i:int=0; i<networkSummaryPortletData.columns.length; i++){
+	                    AdvancedDataGridColumn(networkSummaryPortletData.columns[i]).width = 82;
+	                }
+				}
+
+				if (networkSummaryPortletData != null && networkSummaryPortletData.columns != null) {
+					if (networkSummaryPortletData.columns.length) { 
+						this.currentState = "showInfraPortlet";
+					}
+				}
+				else {
+					this.currentState = "errorLoadingPortlet";
+				}
+			}
+
+			protected function moreClicked(event:MouseEvent):void
+			{
+				var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+				baseMediator.setTabClickedInfo("networkingTab");
+				var manage_uiView:Hpic4vc_manage_uiView = baseMediator.getManageView();
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getManageMoreLinkURLs(_contextObject);;
+				dispatchEvent(e);
+				if(manage_uiView != null)
+					manage_uiView.component_moreOnNetworkingClicked(event);
+			//	hpic4vc_uiView.component_moreOnNetworkingClicked(event);
+			}   
+			
+			protected function networkDiagramClicked(event:MouseEvent):void
+			{
+				hpic4vc_manage_uiView.networkDiagramHandler(event)
+			}   
+			
+			private function noInfoAvailable(event:Event):void {
+				this.currentState = "NoInfoAvailable";
+				invalidateDisplayList();
+			}
+			
+			private function errorOccurred(event:Event):void {
+				this.currentState = "errorLoadingPortlet";
+				invalidateDisplayList();
+			}
+			
+        ]]>
+    </fx:Script>
+	<mx:states>
+		<mx:State name="loadingPortlet"/>
+		<mx:State name="errorLoadingPortlet"/>
+		<mx:State name="showInfraPortlet"/>
+		<mx:State name="NoInfoAvailable"/>		
+	</mx:states>
+	
+	<s:VGroup x="10" y="20" width="347" 
+			  paddingLeft="10" paddingRight="10"
+			  paddingBottom="10" paddingTop="10">
+		
+		<mx:VBox>
+			<mx:HBox height="30" includeIn="loadingPortlet">
+				<s:Label text="{loading}" verticalCenter="0" />					 
+			</mx:HBox>
+			<mx:VBox height="30" includeIn="NoInfoAvailable">
+				<mx:Label text="{dataNotFound}" verticalCenter="0"/>
+			</mx:VBox>
+			<mx:HBox includeIn="errorLoadingPortlet">
+				<mx:Text width="330" id="errorId" text="{errorFoundLabel}" styleName="errorMessage" />					 
+			</mx:HBox>
+			<mx:HBox  includeIn="showInfraPortlet" width="100%">
+				<mx:Text name="mismatchData" id="lbdata"/>				
+				<mx:Image id="loader1" click="moreClicked(event)" buttonMode="true"/>				
+			</mx:HBox>
+			<mx:HBox includeIn="showInfraPortlet" width="100%">
+			    <mx:Canvas>
+			        <mx:VBox>
+						<!--<mx:LinkButton id="networkMismatch" label="{Helper.getString('NetworkMismatch')}" 
+									   click="networkMismatchClicked(event)" 
+									   styleName="moreLink" visible="{isBL}"/>						
+						<s:Spacer width="15" />	-->
+				        <mx:AdvancedDataGrid id="networkSummary" columns="{networkSummaryPortletData.columns}"
+				                     dataProvider="{networkSummaryPortletData.list}">
+				            
+				        </mx:AdvancedDataGrid>
+				        <mx:HBox width="100%" styleName="portletHBox">
+							<mx:LinkButton id="moreId" label="{Helper.getString('more')}" 
+										   click="moreClicked(event)" 
+										   styleName="moreLink"/>
+							<s:Spacer width="15" />
+							<mx:LinkButton id="networkDiagram" label="{Helper.getString('networkDiagram')}" 
+										   click="networkDiagramClicked(event)" 
+										   styleName="moreLink" visible="{isBL}"/>													
+
+				        </mx:HBox>
+			        </mx:VBox>
+			    </mx:Canvas>
+			</mx:HBox>	
+		</mx:VBox>	
+	</s:VGroup>
+</mx:Panel>

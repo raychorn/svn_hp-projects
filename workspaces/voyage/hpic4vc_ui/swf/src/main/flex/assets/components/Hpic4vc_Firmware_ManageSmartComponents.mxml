@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" creationComplete="onCreationComplete()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	 <fx:Script>
+		 <![CDATA[
+			 import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			 import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			 import com.hp.asi.hpic4vc.ui.model.StringModel;
+			 import com.hp.asi.hpic4vc.ui.model.TableModel;
+			 import com.hp.asi.hpic4vc.ui.utils.Helper;
+			 import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			 import com.vmware.core.model.IResourceReference;
+			 import com.vmware.flexutil.events.MethodReturnEvent;
+			 
+			 import flash.net.navigateToURL;
+			 
+			 import mx.binding.utils.ChangeWatcher;
+			 import mx.controls.Alert;
+			 import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			 import mx.events.CloseEvent;
+			 import mx.events.ListEvent;
+			 import mx.managers.CursorManager;
+			 
+			 [Bindable]
+			 public var hpic4vc_uiView:Hpic4vc_uiView;
+			 [Bindable]
+			 public var _contextObject:IResourceReference;
+			 [Bindable]
+			 public var _proxyServer:Hpic4vc_server_providerProxy;
+			 [Bindable]
+			 private var _objReferenceId:String;
+			 [Bindable]
+			 private var fileRef:FileReference;
+			 [Bindable]
+			 private var fileSelected:Boolean = false;
+			 [Bindable]
+			 private var status:String = "Select file";
+			 [Bindable]
+			 private var binaryFile:ByteArray;
+			 [Bindable]
+			 private var fileName:String;
+			 [Bindable]
+			 public var manageSoftwareComponentsDataWatcher:ChangeWatcher;
+			 [Bindable]
+			 public var  selectedFileName:String;
+			 [Bindable]
+			 public var helpUrl:String;
+			 [Bindable]
+			 public var uploadedComponents:DataGridWrapper;
+			 [Bindable]
+			 public function get objReferenceId():String
+			 {
+				 return _objReferenceId;
+			 }
+
+			 public function set objReferenceId(value:String):void
+			 {
+				 _objReferenceId = value;
+			 }
+
+			 public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				 this.visible = true;
+				 this._contextObject = contextObject;
+				 this.hpic4vc_uiView = hpic4vc_uiView;
+			 }
+		
+			 private function onCreationComplete():void
+			 {
+				 _proxyServer = new Hpic4vc_server_providerProxy();
+				 fileRef = new FileReference();
+				 fileRef.addEventListener(Event.SELECT, selectHandler);
+				 fileRef.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler);
+				 fileRef.addEventListener(ProgressEvent.PROGRESS,progressHandler);
+				 fileRef.addEventListener(Event.COMPLETE,completeHandler);
+				 fileRef.addEventListener(Event.CANCEL,closeBrowseDialog);
+				 manageSoftwareComponentsDataWatcher = ChangeWatcher.watch(this, ["uploadedComponents"], resizeDataGridColumns);
+				 if (objReferenceId){
+					 getData();
+				 }
+				 else {
+					 manageSoftwareComponentsDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+				 }
+				 
+				 
+			 }
+			 
+			 private function getData():void{
+				 _proxyServer.getUploadedSoftwareComponents(objReferenceId, onGettingUploadedSoftwareComponents);
+			 }
+			 
+			 private function onGettingUploadedSoftwareComponents(event:MethodReturnEvent):void{
+				 if (event != null && event.result) {
+					 var detail:TableModel = event.result as TableModel;
+					 if (detail)
+						 uploadedComponents =  Helper.createDataGrid( detail );
+				 }
+			 }
+			 
+			 private function resizeDataGridColumns(evt:Event):void {
+				 uploadedSoftwareComponentsDataGrid.rowCount = uploadedComponents.list.length;
+				 setColumnWidth();
+			 }
+			 
+			 private function setColumnWidth():void{
+				 var i:int;
+				 for (i=0; i< uploadedComponents.columns.length; i++){
+					 if (AdvancedDataGridColumn(uploadedComponents.columns[i]).headerText == 'Version'){
+						 AdvancedDataGridColumn(uploadedComponents.columns[i]).width = 100;
+					 }
+					 if (AdvancedDataGridColumn(uploadedComponents.columns[i]).headerText == 'Name'){
+						 AdvancedDataGridColumn(uploadedComponents.columns[i]).width = 700
+						 AdvancedDataGridColumn(uploadedComponents.columns[i]).wordWrap = true;
+					 }
+					 if (AdvancedDataGridColumn(uploadedComponents.columns[i]).headerText == 'FileName'){
+						 AdvancedDataGridColumn(uploadedComponents.columns[i]).width = 130;
+					 }
+					 
+					 if (AdvancedDataGridColumn(uploadedComponents.columns[i]).headerText == 'Delete'){
+						 AdvancedDataGridColumn(uploadedComponents.columns[i]).width = 70;
+					 }
+				 }
+			 }
+			 
+			 
+			 private function browseFile(event:Event):void{
+				 btnBrowse.enabled = false;
+				 btnUpload.enabled = false;
+				 fileRef.browse();
+			 }
+			 
+			 private function selectHandler(event:Event):void {
+				 fileSelected = true;
+				 fileRef.load();
+				 status = "Ready";
+			 }
+			 
+			 private function ioErrorHandler(event:Event):void
+			 {
+				 if (event is IOErrorEvent)
+				 {
+					 Alert.show((event as IOErrorEvent).text.toString());
+				 }
+				 else if (event is SecurityErrorEvent)
+				 {
+					 Alert.show((event as SecurityErrorEvent).text.toString());
+				 }
+			 }
+			 
+			 private function progressHandler(event:ProgressEvent):void {
+				 status = ((event.bytesLoaded * 100) / event.bytesTotal).toString();
+				 trace("progressHandler: name=" + fileRef.name + "bytesLoaded=" + event.bytesLoaded + " bytesTotal=" +event.bytesTotal);
+			 }
+			 
+			 private function completeHandler(event:Event):void {
+				 trace("completeHandler: " + event);
+				 status = "Complete";
+				 btnBrowse.enabled = true;
+				 btnUpload.enabled = true;
+				 binaryFile = fileRef.data;
+				 fileInput.text = fileRef.name;
+				 fileName = fileRef.name;
+				 
+			 }
+			 
+			 private function closeBrowseDialog(event:Event):void{
+				 btnBrowse.enabled = true;
+				 btnUpload.enabled = true;
+			 }
+			 
+			 private function uploadFile(event:MouseEvent):void
+			 {
+				 if (!fileSelected || (fileInput.text.length == 0))
+				 {
+					 Alert.show("Select a file.");
+					 return;
+				 }
+				 mx.managers.CursorManager.setBusyCursor();
+				 fileInput.enabled = false;
+				 btnBrowse.enabled = false;
+				 btnUpload.enabled = false;
+				 _proxyServer.uploadSmartComponents(objReferenceId,fileInput.text,fileRef.data,uploadOfSmartComponentDone);
+				
+			 }
+			 
+			 private function uploadOfSmartComponentDone(event:MethodReturnEvent):void{
+				 mx.managers.CursorManager.removeBusyCursor();
+				 fileInput.enabled = true;
+				 btnBrowse.enabled = true;
+				 btnUpload.enabled = true;
+				 fileInput.text ="";
+				 var stringModel:StringModel = event.result as StringModel;
+				 if (stringModel.errorMessage != null)
+					 Alert.show(stringModel.errorMessage);
+				 else {
+					 getData();
+				 }
+			 }
+			 
+			 public function deleteItem(obj:Object):void {
+				 selectedFileName = obj.toString();
+				 Alert.show("Are You Sure?","",Alert.YES | Alert.NO, null, alertListener, null, Alert.NO);
+			 }
+			 
+			public function alertListener(eventObj:CloseEvent):void {
+				 if (eventObj.detail==Alert.YES) {
+					 deleteSoftwareComponent(selectedFileName);
+				 }else {
+					 //Dont Fire Any EVENT
+				 }
+			 }
+			 private function deleteSoftwareComponent(selectedFileName:String):void{
+				 var data:String =selectedFileName; 
+				 _proxyServer.deleteSoftwareComponent(objReferenceId,data,deleteSoftwareComponentDone);
+			 }
+			 
+			 private function deleteSoftwareComponentDone(event:MethodReturnEvent):void{
+				 var stringModel:StringModel = event.result as StringModel;
+				 if (stringModel.errorMessage != null)
+					 Alert.show(stringModel.errorMessage);
+				 else {
+					 getData();
+				 }
+			 }
+			 
+			 private function selectHandlerMore(evt:Event):void{
+				 navigateToURL(new URLRequest(helpUrl), "help");
+			 }
+			 
+		 ]]>
+	 </fx:Script>
+	
+	<mx:HBox paddingTop="20" horizontalGap="0">
+		<mx:Text id="manageSmartComponentsText" text="HP Smart Components can be uploaded to Insight Control for vCenter.Once uploaded, the components can be used to update firmware on ESXi hosts."/>
+		<mx:LinkButton label="More.." click="selectHandlerMore(event)" styleName="moreHtmlLink" />
+	</mx:HBox>
+	
+	<mx:Text id="smartComponentupload" text="Smart Component Upload" paddingTop="60" width="100%" height="100%" fontWeight="bold"/>
+	
+	<mx:Text id="localSmartComponentFile" text="Local Smart Component File:" paddingTop="100" width="100%" height="100%"/>
+	
+	<mx:HBox id="uploadContainer" paddingTop="130" width="100%" horizontalGap="5" >
+		<mx:TextInput id="fileInput" width="300"/>
+		<s:Button label="Browse" id="btnBrowse" click="browseFile(event)"/>
+		<s:Button label="Upload" id="btnUpload" click="uploadFile(event)"/>
+	</mx:HBox>
+	
+	<mx:VBox height="100%" width="100%" paddingLeft="0" paddingRight="0" paddingBottom="3" paddingTop="170">
+		<mx:Canvas height="100%" width="100%">
+			<mx:AdvancedDataGrid id="uploadedSoftwareComponentsDataGrid"  width="100%" height="100%" variableRowHeight="true"  
+								 dataProvider="{uploadedComponents.list}" columns="{uploadedComponents.columns}" >
+				<mx:rendererProviders>            
+					<mx:AdvancedDataGridRendererProvider 
+						renderer="assets.components.DeleteLinkRenderer" 
+						columnIndex="3"
+						columnSpan="1" />         
+				</mx:rendererProviders>   	
+			</mx:AdvancedDataGrid>
+			<mx:HBox id="theBox" backgroundColor="#eeeeee"
+					 visible="{uploadedSoftwareComponentsDataGrid.dataProvider.length==0}" 
+					 includeInLayout="{uploadedSoftwareComponentsDataGrid.dataProvider.length==0}"
+					 x="{uploadedSoftwareComponentsDataGrid.width/2-theBox.width/2}"
+					 y="{uploadedSoftwareComponentsDataGrid.height /2-theBox.height/2}" paddingLeft="20" paddingRight="20" paddingTop="20" paddingBottom="20"
+					 borderStyle="solid" 
+					 cornerRadius="10">
+				<mx:Label text="There are no managed components."/>
+			</mx:HBox>
+		</mx:Canvas>
+  </mx:VBox>
+</mx:Canvas>

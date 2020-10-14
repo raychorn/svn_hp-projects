@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Using HP VMware ESXi Smart Components</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:28+00:00--><meta name="description" content="This is the ESXi Smart Components content for the IC4VC OLH&#xA;and User Guide."/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="Managing_Servers.html" title="Managing hosts"/><link rel="prev" href="s_host_monitoring_tasks.html" title="Monitoring tasks"/><link rel="next" href="m116935.html" title="Launching into HP tools"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('Managing_Servers','icon4Managing_Servers','link4s_Updating_cluster_firmware','v15744267')" onunload="clearbgcolortoc('link4s_Updating_cluster_firmware','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="Managing_Servers.html">Managing hosts</a> &gt; Using HP VMware ESXi Smart Components</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="m116935.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="s_Updating_cluster_firmware"/><h1 class="sectiontitle">Using HP VMware ESXi Smart Components</h1></div></div></div><a id="v20765025" class="indexterm"/><p><a id="v18655014"/>HP Smart Components can be used to update firmware
+on an vSphere 5.x/ESXi 5.x host using the vSphere Client. </p>
+	
+	<div class="important"><table border="0" cellspacing="1" cellpadding="2" summary="IMPORTANT"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[IMPORTANT: ]" height="25px" src="images/important.gif"/></div></td><td><p><b>IMPORTANT: </b>Your vSphere 5.x/ESXi 5.x Host must have the HP Providers installed.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><h5><a id="v16139971"/>Manage Smart Components</h5><div class="procedure"><a id="v16117875"/><p><a id="v16117877"/>To update the firmware on a host, Smart Components
+must either be staged on your own web server or uploaded to the Insight
+Control for VMware vCenter server using the Manage Smart Components
+tab. </p><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b></p><div class="itemizedlist"><ul type="disc"><li><p>HP VMware ESXi Smart Components can be downloaded
+from the <a href="http://www.hp.com" target="newlphelpwindow">http://www.hp.com</a> website</p>
+	
+	</li><li><p>For more information on managing Smart Components,
+click <span><strong class="guilabel">More</strong></span>.</p>
+	
+	</li></ul></div></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><p>To upload Smart Components to the Insight Control for VMware
+vCenter server:</p>
+	
+	<ol type="1"><li><p><a id="v17967681"/><a id="v17967682"/>From the Actions drop-down
+list, select <span><strong class="guibutton">Firmware</strong></span>.</p>
+	
+	</li><li><p><a id="v16117878"/><a id="v16117879"/>Click <span><strong class="guilabel">Manage Smart
+Components</strong></span>.</p>
+	
+	</li><li><p><a id="v16117880"/><a id="v16117881"/>Select the Smart Component
+file you would like to upload to the Insight Control for VMware vCenter
+server.</p>
+	
+	</li><li><p>Click <span><strong class="guibutton">Upload</strong></span></p>
+	
+	</li></ol></div><h5><a id="v16117868"/>Update firmware using
+Smart Components</h5><p><a id="v16144798"/>To update firmware for the hosts on a cluster
+or selected hosts in the cluster, complete the following steps: </p>
+	
+	<div class="procedure"><a id="v16117870"/><ol type="1"><li><p><a id="v16117871"/><a id="v16117872"/>From the Actions drop-down
+list, select <span><strong class="guibutton">Firmware</strong></span>.</p>
+	
+	</li><li><p><a id="v16117873"/><a id="v16117874"/>Click <span><strong class="guilabel">Smart Component
+Update</strong></span>.</p>
+	
+	</li><li><p>Select a Smart Component from the drop down list or enter
+the URL of the location where a Smart Component is staged on your
+web server.</p>
+	
+	</li><li><p>Select the <span><strong class="guilabel">Force Component Update</strong></span> option
+to install the firmware even if the firmware version is already installed
+on the host</p>
+	
+	<p class="changed">Use this option if
+the firmware is going to be downgraded to an older version or updated
+with the current version that is already on the system.</p></li><li><p>If updating firmware on a cluster, select the hosts to
+be updated, or select <span><strong class="guilabel">Select All</strong></span> to update all
+hosts.</p>
+	
+	</li><li><p>Click <span><strong class="guibutton">Update</strong></span>.</p>
+	
+	</li></ol></div><div class="tip"><table border="0" cellspacing="1" cellpadding="2" summary="TIP"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[TIP: ]" height="25px" src="images/tip.gif"/></div></td><td><p><b>TIP: </b>To monitor the firmware update, click the <span><strong class="guilabel">Status Update</strong></span> link
+to display the Software/Firmware Status Update page.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="s_host_monitoring_tasks.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="Managing_Servers.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="m116935.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Monitoring tasks </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Launching into HP tools</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

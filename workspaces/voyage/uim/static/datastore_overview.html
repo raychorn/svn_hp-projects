@@ -1,0 +1,548 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link id="jquery-ui-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/jquery-ui-1.8.16.custom.css"/>
+<link id="main-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/jquery.bubblepopup.v2.3.1.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jscrollpane.css" />
+
+
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/ui.multiselect.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.tmpl.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.contextmenu.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.cookie.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.bubblepopup.v2.3.1.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.layout-latest.js" ></script>
+<script type="text/javascript" src="/static/js/oss/raphael.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.raphael-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.pie-min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.bar.js" ></script>
+<script type="text/javascript" src="/static/js/oss/g.line.js"></script>
+<script type="text/javascript" src="/static/js/oss/jscrollpane.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqote2.min.js" ></script>
+<script type="text/javascript" src="/static/js/i18n/strings.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqGrid.min.js" ></script>
+<script type="text/javascript" src="/static/js/oss/jqote_dynamic.js" ></script>
+<script type="text/javascript" src="/static/js/oss/json2.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/css/hptools.css" />
+<script type="text/javascript" src="/static/js/hptools.js"></script>
+<script type="text/javascript" src="/static/js/appmanager.js"></script>
+<script type="text/javascript" src="/static/js/helpers.js" ></script>
+<script type="text/javascript" src="/static/js/cookiehelper.js" ></script>
+<script type="text/javascript" src="/static/js/network-diagram.js" ></script>
+
+<script id="header_left_template" type="text/x-jquery-tmpl" >
+	<table>
+		<tr>
+            <td class="title">{{if ilo_server_name }}${ilo_server_name}{{else}}${vmware_name}{{/if}}</td>
+        </tr>
+		{{if product_name}}<tr><td style="font-size: 90%;">${product_name}</td></tr>{{/if}}
+		{{if bay}}<tr><td style="font-size: 90%;"> Enclosure:${enclosure} Bay:${bay}</td></tr>{{/if}}
+	</table>
+</script>
+
+<script id="launch_links_template" type="text/x-jquery-tmpl" >
+
+    {{if typeof launch_links != 'undefined' && launch_links != null}}
+        {{if launch_links.length > 1 || (typeof force_menu != 'undefined' && force_menu == 'TRUE') }}
+            <img id="${id}" class="icon tool_icon" src="${icon_url}" >
+            <div id="${id}_menu" style="display:none"> <!-- Popup menu contents -->
+                <ul style="font-size: 125%;">
+                    {{each(i, launch_link) launch_links}}
+                        {{if launch_link.type == 'LINK' }}
+                            <li><a href="#" onclick="window.open('${launch_link.url}');">${launch_link.label}</a></li>
+                        {{/if}}
+                        {{if launch_link.type == 'SSO' }}
+                            <li><a href="#" onclick="single_sign_on('${launch_link.url_base}', '${launch_link.username}', '${launch_link.password}', '${launch_link.url}');">${launch_link.label}</a></li>
+                        {{/if}}
+                    {{/each}}
+                </ul>
+            </div>
+        {{else launch_links.length == 1 }}
+            {{if launch_links[0].type == 'LINK' }}
+                <a href="#" onclick="window.open('${launch_links[0].url}');" ><img class="icon tool_icon" src="${icon_url}" ></a>
+            {{/if}}
+            {{if launch_links[0].type == 'SSO' }}
+                <a href="#" onclick="single_sign_on('${launch_link.url_base}', '${launch_link.username}', '${launch_link.password}', '${launch_link.url}');" ><img class="icon tool_icon" src="${icon_url}" ></a>
+            {{/if}}
+        {{/if}}
+        <form style="display:none;" method="post" id="autologin_SUM" target="_blank">
+            <input type="hidden" id="un_SUM" name="un">
+            <input type="hidden" id="pw_SUM" name="pw">
+            <input type="hidden" id="url_SUM" name="url">
+        </form>
+    {{/if}}
+
+</script>
+
+<script type="text/javascript">
+
+    function single_sign_on(url_base, un, sso, url)
+    {
+        document.getElementById("autologin_SUM").action = url_base;
+        document.getElementById("un_SUM").value = un;
+        document.getElementById("pw_SUM").value = sso;
+        document.getElementById("url_SUM").value = url;
+        document.getElementById("autologin_SUM").submit();
+    }
+
+
+    function more_menu_onchange(menu) {
+        var appId = menu.options[menu.selectedIndex].value;
+        AppManager.loadApp(appId);
+        $("#action_menu").val('-');
+    }
+
+    function action_menu_onchange(menu){
+        var appId = menu.options[menu.selectedIndex].value;
+        if (appId == '-'){
+            AppManager.loadApp('datastoreoverview');
+            return;
+        }
+        if (appId.indexOf("LINK:") != -1) {
+        	var url = appId.substring("LINK:".length);
+        	url = url + location.search;
+        	window.open(url);
+        	$("#action_menu").val('-');
+        } else {
+        	AppManager.loadApp(appId);
+        }
+    }
+
+    function more_menu_onloadapp(appId) {
+        $("#more_menu").val(appId);
+    }
+
+    function createTasksPopup(html, options){
+        $("#tasks_container").RemoveBubblePopup();
+        $("#tasks_container").CreateBubblePopup({
+            position : 'bottom',
+            align    : 'center',
+            width : '300px',
+            innerHtml: html,
+            innerHtmlStyle: {
+                color:'#FFFFFF',
+                'text-align':'left',
+                'font-weight' : 'bold'
+            },
+            selectable : true,
+            themeName:  options[0],
+            themePath: '/static/jquerybubblepopup-theme',
+            dropShadow: false,
+            afterShown: function(){
+                refreshTasks();
+            },
+            tail: {
+                align:'center'
+            },
+            innerHtmlStyle: {color: options[1]}
+        });
+    }
+
+    function refreshTasks(){
+        $.getJSON("/tasks/?top=10&" + window.location.search.substring(1),
+            function(tasks_data){
+                var moref = '';
+                try {
+                    moref = getQueryParameters()['moref'];
+                } catch (e){}
+                if (typeof(tasks_data['errorCode']) != 'undefined'){
+                    $("#tasks_container").SetBubblePopupInnerHtml(tasks_data['errorMessage']);
+                } else {
+                    tasks_data = tasks_data['result'][moref];
+                    var html = $("#tasks_template").jqote({arr: tasks_data});
+                    $("#tasks_container").SetBubblePopupInnerHtml(html);
+                }
+            }
+        );
+    }
+
+
+    function createStatusPopup(html, options){
+        $("#cs_icon_container").RemoveBubblePopup();
+        $("#cs_icon_container").CreateBubblePopup({
+            position : 'bottom',
+            align    : 'left',
+            width : '190px',
+            innerHtml: html,
+            innerHtmlStyle: {
+                color:'#FFFFFF',
+                'text-align':'left',
+                'font-weight' : 'bold'
+            },
+            selectable : true,
+            themeName:  options[0],
+            themePath: '/static/jquerybubblepopup-theme',
+            dropShadow: false,
+            afterShown: function(){
+                refreshStatus();
+            },
+            tail: {
+                align:'left'
+            },
+            innerHtmlStyle: {color: options[1]}
+        });
+    }
+
+    function refreshStatus(){
+        /* Get data for the consolidated status and set the icon */
+        $.getJSON("/cstatus/datastorestatus" + "?" + window.location.search.substring(1), setConsolidatedStatus
+        );
+    }
+
+    function setStatusIcon(cs_data){
+        var iconpath = getStatusIconPath(cs_data['consolidated_status']);
+        $("#consolidated_status_icon").attr('src', iconpath);
+    }
+
+	function getStatusDataAndSetIcon(){
+        $.getJSON("/cstatus/datastorestatus" + "?" + window.location.search.substring(1), setStatusIcon
+        );
+	}
+
+    function setConsolidatedStatus(cs_data) {
+        /* Setup the consolidated status */
+        cs_data.appname = 'datastorestatus';
+        var html = $("#consolidated_status_template").jqote(cs_data);
+        $("#cs_icon_container").SetBubblePopupInnerHtml(html);
+        setStatusIcon(cs_data);
+    }
+
+    function createSettingsPopup(html, options){
+        $("#settings_icon").RemoveBubblePopup();
+        $("#settings_icon").CreateBubblePopup({
+            position : 'bottom',
+            align    : 'center',
+            width : '190px',
+            innerHtml: html,
+            innerHtmlStyle: {
+                color:'#FFFFFF',
+                'text-align':'left',
+                'font-weight' : 'bold'
+            },
+            selectable : true,
+            themeName:  options[0],
+            themePath: '/static/jquerybubblepopup-theme',
+            dropShadow: false,
+            afterShown: refreshSettings,
+            tail: {
+                align:'center'
+            },
+            innerHtmlStyle: {color: options[1]}
+        });
+    }
+
+    function refreshSettings(){
+        /* Get data for the consolidated status and set the icon */
+        $.getJSON("/config/pages/datastore_overview/settings" + "?" + window.location.search.substring(1), setSettingsPopupContent
+        );
+    }
+
+    function setSettingsPopupContent(menu_data){
+        var html = $("#settings_menu_template").jqote({arr: menu_data});
+        $("#settings_icon").SetBubblePopupInnerHtml(html);
+    }
+
+    var theme_number = 0;
+    var jquery_ui_themes = [
+                            "/static/css/hp-light/jquery-ui-1.8.16.custom.css",
+                            "/static/css/hp-dark/jquery-ui-1.8.16.custom.css"
+                            ]
+
+    var main_themes = [
+                        "/static/css/hp-light/main.css",
+                        "/static/css/hp-dark/main.css"
+                        ]
+
+    var bubble_themes = [   ['grey', '#000'],
+                            ['all-grey', '#FFF']
+                            ];
+
+    var main_layout;
+    var header_layout;
+    var userInfo = null;
+
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+            if (!uniqueId) {
+                uniqueId = "Don't call this twice without a uniqueId";
+            }
+            if (timers[uniqueId]) {
+                clearTimeout (timers[uniqueId]);
+            }
+            timers[uniqueId] = setTimeout(callback, ms);
+        };
+    })();
+    
+    $(window).resize(function () {
+        waitForFinalEvent(function(){            
+            if( $('#header-right').is(':hidden') )
+            {
+                $('#header-right').show();
+            }    
+            if( $('#header-left').is(':hidden') )
+            {
+                $('#header-left').show();
+            } 
+            if( $('#header-center').is(':hidden') )
+            {
+                $('#header-center').show();
+            } 
+        }, 500, "force header display on small screens");
+    });
+    
+    function get_current_theme(){
+        var themeCookie = readCookie('hpicsm-theme');
+        if (typeof themeCookie == 'undefined') {
+            //Create the theme cookie
+            createCookie('hpicsm-theme', $("#jquery-ui-theme-link").attr("href"), 90);
+        }else{
+            for (i in jquery_ui_themes){
+                if(themeCookie == jquery_ui_themes[i]){
+                    theme_number = i;
+                    break;
+                }
+            }
+            eraseCookie('hpicsm-theme');
+            createCookie('hpicsm-theme', jquery_ui_themes[theme_number], 90);
+            $("#jquery-ui-theme-link").attr("href",jquery_ui_themes[theme_number]);
+            $("#main-theme-link").attr("href",main_themes[theme_number]);
+        }
+    }
+
+    $(document).ready(function() {
+        get_current_theme();
+        // Grab the user info first before we load the rest of the page.
+        try{
+            $.getJSON('/userinfo/'+location.search, function(result){
+                userInfo = result;
+                $("#username").html(result['userName']);
+                loadPage();
+            }).error(function() { alert("Error loading user information"); });
+            $("#fatalError").hide();
+        } catch (e){}
+        
+    });
+
+    function renderLeftHeader(data) {
+        $.tmpl('header_left_template', data).appendTo( "#datastore_identification" );
+        header_layout.resizeAll();
+    }
+
+    function loadPage(){
+    	var templates = [
+            {url: '/static/templates/tasks_template', id:'tasks_template'},
+            {url: '/static/templates/consolidated_status_template', id:'consolidated_status_template'},
+            {url: '/static/templates/settings_menu_template', id: 'settings_menu_template'}
+        ];
+        load_templates(templates);
+
+    	/* Layout Manager setup */
+        main_layout = $('#container').layout({
+            defaults: {
+              closable:            false,
+              resizable:           false
+            },
+            north : {
+                size:               70
+            },
+            south : {
+                size:               50
+            }
+        });
+
+        header_layout = $('#header').layout({
+            defaults: {
+                closable:          false,
+                resizable:         false,
+                size:               "auto"
+            },
+            west: {
+                minSize :           250
+            },
+            east: {
+                minSize :           400
+            }
+        });
+
+        /* IE caches AJAX request */
+        $.ajaxSetup({ cache: false });
+
+        /* Compile the left header template */
+        $("#header_left_template").template('header_left_template');
+
+        /* Get data for this datastore and render the header */
+        $.getJSON("/orservices/swd/datastoresummary" + "?" + window.location.search.substring(1), renderLeftHeader
+        ).error(renderLeftHeader);
+
+        /* Get config for more_menu */
+        $.getJSON("/config/pages/datastore_overview/more_menu_items",
+            function(more_menu_items) {
+                for(menu in more_menu_items)
+                {
+                    $("#more_menu").append('<option value="' + more_menu_items[menu].appId + '">' + more_menu_items[menu].display_name + '</option>');
+                }
+            }
+        ).error(function() { alert("Error loading more menu configuration."); });
+
+        /* Get data from the launch tools and render footer */
+        $.getJSON("/agservices/launchtools" + "?" + window.location.search.substring(1),
+            function(data) {
+                $("#launch_links_template" ).tmpl(data.launch_tools).appendTo( "#footer-left" );
+                for(i in data.launch_tools)
+                {
+                    /* If more than one launch link then attach a popup menu */
+                    if(data.launch_tools[i].launch_links
+                            && data.launch_tools[i].launch_links.length > 1
+                            || (typeof data.launch_tools[i].force_menu != 'undefined'
+                                && data.launch_tools[i].force_menu == 'TRUE'))
+                    {
+                        $('#'+data.launch_tools[i].id).CreateBubblePopup({
+					position : 'top',
+					align	 : 'left',
+                                selectable : true,
+					innerHtml: $('#'+data.launch_tools[i].id+'_menu').html(),
+					innerHtmlStyle: {
+										color:'#FFFFFF',
+										'text-align':'left'
+									},
+                                tail: {align:'left'},
+                                dropShadow: false,
+					themeName: 	bubble_themes[theme_number][0],
+					themePath: 	'/static/jquerybubblepopup-theme',
+                    innerHtmlStyle: {color: bubble_themes[theme_number][1] }
+				});
+
+                    }
+                }
+            }
+        ).error(function() { alert("Error loading launch tools"); });
+
+        /* Setup the actions menu */
+
+        $.getJSON("/config/pages/datastore_overview/action_menu_items",
+            function(action_menu_items) {
+                for(menu in action_menu_items)
+                {
+                    if(is_menu_authorized(userInfo.role, action_menu_items[menu]))
+                    {
+                        if (action_menu_items[menu].type == "LINK") {
+                            var url = action_menu_items[menu].url;
+                            $("#action_menu").append('<option value="LINK:' + url + '">' + action_menu_items[menu].display_name + '</option>');
+                        } else {
+
+                            $("#action_menu").append('<option value="' + action_menu_items[menu].appId + '">' + action_menu_items[menu].display_name + '</option>');
+                        }
+                    }
+                }
+                $("#action_container").show();
+            }
+        ).error(function() { alert("Error loading actions menu configuration"); });
+
+        createTasksPopup('Loading Tasks ...', bubble_themes[theme_number]);
+        createStatusPopup('Loading Status...', bubble_themes[theme_number]);
+        createSettingsPopup('Loading Settings...', bubble_themes[theme_number]);
+        getStatusDataAndSetIcon();
+
+        AppManager.addAppListener(more_menu_onloadapp);
+        AppManager.start('datastoreoverview');
+        
+        if( $('#header-right').is(':hidden') )
+        {
+            $('#header-right').show();
+        }    
+        if( $('#header-left').is(':hidden') )
+        {
+            $('#header-left').show();
+        } 
+        if( $('#header-center').is(':hidden') )
+        {
+            $('#header-center').show();
+        }
+    }
+</script>
+
+</head>
+<body>
+    <div id="container" >
+        <div id="header" class="ui-layout-north">
+            <div id="header-left" class="ui-layout-west" style="visibility: hidden">
+                <table>
+	                <tr>
+		                <td>
+		                    </br>
+			                <div id="cs_icon_container" style="height:25px;">
+			                    <a href="#" onclick="AppManager.loadApp('datastorestatus');$('#cs_icon_container').HideBubblePopup();">
+				                        <img id="consolidated_status_icon" alt="" src="/static/img/icons/unknown.png" />
+				                </a>
+			                </div>
+		                </td>
+		                <td>
+			                <div id="datastore_identification" class="ui-layout-east" style="float:left; padding-left:5px;"></div>
+		                </td>
+	                </tr>
+                </table>
+            </div>
+            <div id="header-center" class="ui-layout-center" style="visibility: hidden">
+                <div id="tasks_container">
+                    <div class="tasks_icon"></div>
+                    <div style="float:left; padding-left:5px;"><script>document.write(get_str('datastoreOverview.header.Tasks'));</script></div>
+                    <br style="clear: left;" />
+                </div>
+            </div>
+            <div id="header-right" class="ui-layout-east" style="visibility: hidden">
+                <div style="float:left;">
+                    <table>
+                        <tr>
+                            <td>
+                                <select id="more_menu" style="margin-right: 20px;" onchange="more_menu_onchange(this)">
+                                </select>
+                            </td>
+                            <td>
+                                <div id="action_container" style="display:none;">
+                                    <select id="action_menu" style="margin-right: 20px;" onchange="action_menu_onchange(this);">
+                                        <option value="-">Actions</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div id="reload_icon" class="reload_icon" onclick="window.location.reload()">&nbsp;</div>
+                <div id="settings_icon" class="settings_icon">&nbsp;</div>
+                <div class="divider_icon">&nbsp;</div>
+                 <a id="managing_datastores" onClick="launch_help(this)"><div class="help_icon">&nbsp;</div></a>
+                <div class="hp_logo">&nbsp;</div>
+                <br style="float:left;" />
+            </div>
+        </div>
+        <div id="main_contents" class="ui-layout-center">
+            <div id="fatalError" style="margin-top: 100px">
+                An error has occurred on the page. Please ensure that scripting is enabled and that the Insight Control for vCenter site is trusted in the client's Internet Explorer settings.
+                The vSphere client may need to be restarted if the site was recently added to Internet Explorer's trusted sites.
+            </div>
+        </div>
+        <div id="footer" class="ui-layout-south ui-widget-header">
+            <div id="footer-contents" >
+                <div id="footer-left">
+				</div>
+                <div id="footer-right">
+                    User:
+                    <span id="username" class="ui-state-highlight-color"></span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>

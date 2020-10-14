@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>HP SIM auto-login fails from Insight Control for vCenter</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:52:04+00:00--><meta name="keywords" content="IC4VC, troubleshooting, Insight Control for VMware vCenter Server"/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v15697589.html" title="Troubleshooting the Server Module for vCenter"/><link rel="prev" href="v14395324.html" title="Virtual Connect Manager launch link from Insight Control for vCenter prompts for login credentials"/><link rel="next" href="m112979.html" title="Clicking HP Insight power management launch link does not go to expected HP SIM page"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v15697589','icon4v15697589','link4m112980','IC4VC_troubleshooting_chapter')" onunload="clearbgcolortoc('link4m112980','IC4VC_troubleshooting_chapter')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v15697589.html">Troubleshooting the Server Module for vCenter</a> &gt; HP SIM auto-login fails from Insight Control for vCenter</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="m112979.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="m112980"/><h1 class="sectiontitle">HP SIM auto-login fails from Insight Control for vCenter</h1></div></div></div><a id="v14395327" class="indexterm"/><p><a id="v14395328"/><span class="bold"><b>Possible cause</b></span>: HP SIM uses
+cookies for auto-login. If the browser is configured to block all
+cookies, the HP SIM auto-login feature for Insight Control for vCenter does
+not work.</p>
+	
+	<p><a id="v14395329"/><span class="bold"><b>Action</b></span>: Configure
+the Microsoft Internet Explorer browser to accept cookies.</p>
+	
+	<div class="procedure"><a id="v15534838"/><ol type="1"><li><p><a id="v15534839"/><a id="v15534840"/>Select <span><strong class="guimenu">Tools</strong></span> → <span><strong class="guimenuitem">Internet Options</strong></span>.</p>
+	
+	</li><li><p><a id="v15534841"/><a id="v15534842"/>Click the <span><strong class="guilabel">Privacy</strong></span> tab
+and change the setting to <span><strong class="guimenuitem">Medium</strong></span>.</p>
+	
+	</li><li><p><a id="v20765177"/><a id="v20765178"/>Remain in the Privacy tab,
+and click <span><strong class="guibutton">Sites</strong></span>.</p>
+	
+	</li><li><p><a id="v20765179"/><a id="v20765180"/>In the Address of website
+box, enter the HPSIM IP address, click <span><strong class="guibutton">Allow</strong></span>,
+and then click <span><strong class="guibutton">OK</strong></span>.</p>
+	
+	</li><li><p><a id="v15534845"/><a id="v15534846"/>Click the <span><strong class="guilabel">Security</strong></span> tab.</p>
+	
+	</li><li><p><a id="v15534847"/><a id="v15534848"/>Set the Internet and Local
+intranet zones security level to <span><strong class="guilabel">Medium</strong></span>.</p>
+	
+	</li><li><p><a id="v20765181"/><a id="v20765182"/>Click OK.</p>
+	
+	</li></ol></div><p><a id="v14395342"/>Microsoft Windows 2008 Internet Explorer Enhanced
+Security can also block cookies. Be sure to change the security settings
+to enable cookies in Server Manager in the Internet Explorer Enhanced
+Security Configuration (ESC) menu.</p>
+	
+	</div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="v14395324.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v15697589.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="m112979.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Virtual Connect Manager launch link from Insight Control for vCenter prompts
+for login credentials </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Clicking HP Insight power management launch link does not go
+to expected HP SIM page</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

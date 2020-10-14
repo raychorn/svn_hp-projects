@@ -1,0 +1,80 @@
+<script type="text/javascript">
+    var ServerConfig = {
+        startApp: function () {
+            ServerConfig.loadGrid();
+            $("#cfgnavigator_center").remove();
+        },
+        
+        onClickSubmitHandler: function (params, postdata) {
+            var id = $("#srvcfgparms").jqGrid('getGridParam','selrow'); 
+            if (id) {
+                var ret = $("#srvcfgparms").jqGrid('getRowData',id); 
+                postdata['param_name'] = ret.param_name;
+            } 
+        },
+
+        fieldValidate: function(value, colname) {
+            if((value.length < 1) || (isNaN(value))) 
+                return [false, colname + " Must be a valid number"];
+            else {
+                return [true,""];
+            }
+        },
+            
+        loadGrid : function () {
+            var query = window.location.search;
+            //alert('in loadconfig');
+            var serverconfigurl = '/settings/config'+query;
+            $("#srvcfgparms").jqGrid( {
+            	url: serverconfigurl,
+            	datatype: 'json',
+            	jsonReader: {
+            	  root : 'srvcfg',
+            	  repeatitems: false
+            	},
+            	mtype: 'GET',
+            	colNames: ['Name', 'Value'],
+    		    colModel :[ 
+    		      {name:'param_name', width:300}, 
+    		      {name:'param_value', editable:true, width:300, editrules:{custom:true, custom_func:ServerConfig.fieldValidate}} 
+    		    ],
+            	rowNum:20,
+            	caption: 'Server Module Configuration Data',
+            	loadError: function(xhr, status, error){alert(xhr); alert(status);alert(error);},
+            	pager: '#cfgnavigator'        	
+            }).navGrid(
+                '#cfgnavigator', 
+                {
+                    edit:true, add:false, del:false, search:false,
+                    edittitle:"Edit the selected Insight Control for vCenter Server Module configuration",
+                    refreshtitle:"Refresh Insight Control for vCenter Server Module configuration"
+                }, 
+                {    
+                    url: '/settings/config'+query, mtype: 'POST', closeAfterEdit:true, 
+                    closeAfterAdd:true, onclickSubmit: ServerConfig.onClickSubmitHandler
+                }, 
+                {}, 
+                {}, 
+                {}, 
+                {} 
+            );       
+        }
+    }
+    
+    ServerConfig.startApp();
+    
+</script>
+
+<div id="serverconfig" style="display:none;">
+    <div style="font-size:12px;"><b>
+    
+        Notes:<br/>
+        * This page is for configuration of Insight Control for vCenter Server Module.<br/>  
+        * Device Poll Interval and Event Poll Interval are in seconds.<br/>  
+    </b></div>
+    <br/>
+
+    <table class="box_contents" id="srvcfgparms" width="100%"><tr><td/></tr></table>
+    <div id="cfgnavigator"></div>
+    <br/>
+</div>

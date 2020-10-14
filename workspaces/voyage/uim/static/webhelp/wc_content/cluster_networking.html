@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Cluster networking information</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:51:50+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="Managing_Clusters.html" title="Managing clusters"/><link rel="prev" href="s_Viewing_Cluster_Information.html" title="Cluster information"/><link rel="next" href="setting_cluster_reference_host.html" title="Setting a cluster reference host"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('Managing_Clusters','icon4Managing_Clusters','link4cluster_networking','v15744267')" onunload="clearbgcolortoc('link4cluster_networking','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="Managing_Clusters.html">Managing clusters</a> &gt; Cluster networking information</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="setting_cluster_reference_host.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section"><div class="added" lang="en"><div class="titlepage"><div><div><a id="cluster_networking"/><h1 class="sectiontitle">Cluster networking information</h1></div></div></div><a id="d0e3479" class="indexterm"/><p>The cluster networking page displays status for the selected
+cluster and each host in the cluster. It also provides the capability
+for setting a reference host and resolving network mismatches. The
+page includes the following:</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p><span class="bold"><b>Overall Cluster Status</b></span>—
+indicates the overall cluster status. The status values are:</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p><span class="bold"><b>OK (<span class="inlinemediaobject"><img src="images/ok_icon.png"/></span>)</b></span> —indicates that all
+hosts in the cluster have a status of OK.</p>
+	
+	</li><li class=""><p><span class="bold"><b>Mismatch (<span class="inlinemediaobject"><img src="images/red_status_icon.png"/></span>)</b></span> —indicates that a host
+or hosts in the cluster have a Host Profile Network mismatch status
+or a Host Configuration status mismatch.</p>
+	
+	</li><li class=""><p><span class="bold"><b>? (<span class="inlinemediaobject"><img src="images/help_icon.png"/></span>) </b></span> — indicates that a
+reference host has not been set for the cluster.</p>
+	
+	</li><li class=""><p><span class="bold"><b>NA (<span class="inlinemediaobject"><img src="images/na_icon.png"/></span>) </b></span> —indicates that the
+cluster does not include any hosts that support host configuration.</p>
+	
+	</li></ul></div></li><li class=""><p><span class="bold"><b>Host status information</b></span>—the
+following host status conditions are displayed:</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p><span class="bold"><b>Host Profile Network status</b></span>—
+reflects the result of comparing the Virtual Connect profile of a
+host to the profile of the reference host. If no reference host is
+set for the cluster, the Host Profile Network status for all hosts
+will be UNKNOWN. If a reference host is set, the  Host Profile Network
+status of the reference host is set to OK. The Virtual Connect profile
+of each remaining host is compared to the profile of the reference
+host. If the profiles match, the Host Profile Network status of the
+host is set to OK. If the profiles do not match, the status is set
+to MISMATCH.</p>
+	
+	</li><li class=""><p><span class="bold"><b>Host Configuration status</b></span>—reflects
+the result of comparing the networks available in the host with the
+networks available in the Virtual Connect profile of the host. To
+display the Host Configuration status of each host, the Host Profile
+Network  status of the host must be OK. If the Host Profile Network
+status is MISMATCH or UNKNOWN, the Host Configuration status will
+also be UNKNOWN.</p>
+	
+	</li></ul></div></li><li class=""><p><span class="bold"><b>Profile details</b></span>—displays
+profile details for the selected host.</p>
+	
+	</li><li class=""><p><span class="bold"><b>Set Reference Host</b></span>—this
+button sets the selected host as the reference host for the cluster.
+For more information, see <a href="setting_cluster_reference_host.html" title="Setting a cluster reference host">Setting a cluster reference host</a>.</p>
+	
+	</li><li class=""><p><span class="bold"><b>Apply Recommended Actions</b></span>—this
+button resolves a network MISMATCH status. For more information, see <a href="resolving_network_mismatch.html" title="Resolving a network mismatch">Resolving a network mismatch</a>.</p>
+	
+	</li></ul></div></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="s_Viewing_Cluster_Information.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="Managing_Clusters.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="setting_cluster_reference_host.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Cluster information </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Setting a cluster reference host</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

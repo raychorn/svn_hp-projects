@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Error Communicating with iLO at VM host</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:35+00:00--><meta name="keywords" content="IC4VC, troubleshooting, Insight Control for VMware vCenter Server"/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v15697002.html" title="Troubleshooting Insight Control for vCenter"/><link rel="prev" href="s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504.html" title="Stale or corrupt cache or cookies results in GUI anomalies"/><link rel="next" href="v15697589.html" title="Troubleshooting the Server Module for vCenter"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v15697002','icon4v15697002','link4s_disableproxy','IC4VC_troubleshooting_chapter')" onunload="clearbgcolortoc('link4s_disableproxy','IC4VC_troubleshooting_chapter')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v15697002.html">Troubleshooting Insight Control for vCenter</a> &gt; Error Communicating with iLO at VM host</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v15697589.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="s_disableproxy"/><h1 class="sectiontitle">Error Communicating with iLO at VM host</h1></div></div></div><p><a id="v17443725"/>The following error appears if the Windows Proxy
+Server is enabled and the host is using iLO 3:</p>
+	
+	<p><a id="v17443726"/><code class="computeroutput">Error Communicating with iLO
+at "</code><span class="italic"><code class="computeroutput">VM
+hostname</code></span><code class="computeroutput">" Text object
+has no attribute 'ribcl'</code> .</p>
+	
+	<p><a id="v17443727"/><span class="bold"><b>Possible cause</b></span>:
+Windows proxy server settings are not configured to allow LAN communication
+from the Insight Control for vCenter Server to iLO 3 on the target vSphere 5.x/ESXi 5.x host
+system.</p>
+	
+	<p><a id="v17443728"/><span class="bold"><b>Action</b></span>: Disable
+or bypass Windows Proxy Server for the connection between the Insight
+Control for vCenter/vSphere Client and iLO 3 on the ProLiant server
+running as an vSphere 5.x/ESXi 5.x host system. To disable the Windows
+Operating System default proxy setting on the Insight Control for
+vCenter server: </p>
+	
+	<div class="procedure"><a id="v17443729"/><ol type="1"><li><p><a id="v18637377"/><a id="v18637378"/>Start the windows registry
+editor program <span><strong class="userinput">regedit</strong></span>.</p>
+	
+	</li><li><p><a id="v17443730"/><a id="v17443731"/>Navigate to <code class="filename"><em class="replaceable"><code>Computer</code></em>\HKEY_USERS\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Internet
+Settings</code>.</p>
+	
+	</li><li><p><a id="v17443732"/><a id="v17443733"/>Manually change the ProxyEnable
+value from <code class="computeroutput">1</code> (enabled) to <code class="computeroutput">0</code> (disabled).</p>
+	
+	</li><li><p><a id="v18637379"/><a id="v18637380"/>Click <span><strong class="guibutton">OK</strong></span>.</p>
+	
+	</li></ol></div><p><a id="v17443735"/>To bypass Windows Proxy Server using Microsoft
+Internet Explorer or to verify if the TCP IP address is configured
+for a proxy server that does not exist or does not match the existing
+proxy server, use the Windows Internet Explorer LAN settings using
+the Microsoft Internet Explorer Tools menu (<span><strong class="guimenuitem">Tools</strong></span> → <span><strong class="guisubmenu">Internet Options</strong></span> → <span><strong class="guisubmenu">Connections</strong></span> → <span><strong class="guisubmenu">Local Area Network (LAN) settings</strong></span>).</p>
+	
+	<p><a id="v17443736"/>For more information about configuring a proxy
+server, see to the Microsoft KB article 819961 at <a href="http://support.microsoft.com/kb/819961" target="newlphelpwindow">http://support.microsoft.com/kb/819961</a>.</p>
+	
+	</div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="s_Stale_or_corrupt_cache_or_cookies_results_in_GUI_anomalies_201004221504.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v15697002.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v15697589.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Stale or corrupt cache or cookies results in GUI anomalies </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Troubleshooting the Server Module for vCenter</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

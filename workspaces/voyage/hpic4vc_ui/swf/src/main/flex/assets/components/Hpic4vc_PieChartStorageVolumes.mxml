@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="300" height="40" creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			
+			import mx.charts.HitData;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			public var _percentUsed:Number;
+			[Bindable]
+			public var _percentFree:Number;
+			
+			[Bindable]
+			public var pieChartData:ArrayCollection;
+			
+			[Bindable]
+			private var loading:String;
+			
+			/** default is 125 */
+			[Bindable]
+			public var diameter:int = 125;
+			
+			public function init():void {
+				this.currentState  = "PieChartDataUnavailable";
+			}
+			
+			public function get percentUsed():Number {
+				return _percentUsed;
+			}
+			
+			public function set percentUsed(value:Number):void {
+				_percentUsed = value;
+				changeState();
+			}
+			
+			public function get percentFree():Number {
+				return _percentFree;
+			}
+			
+			public function set percentFree(value:Number):void {
+				_percentFree = value;
+				changeState();
+			}
+			
+			private function changeState():void {
+				if (!isNaN(_percentFree) && !isNaN(_percentUsed)) {
+					this.currentState = "PieChartDataAvailable";
+					pieChartData = new ArrayCollection([
+						{Percentage:"PercentUsed", Value:_percentUsed},
+						{Percentage:"PercentFree", Value:_percentFree}
+					]);
+				}
+			}
+		]]>
+
+	</fx:Script>
+	
+	<s:states>
+		<mx:State name="PieChartDataAvailable"/>
+		<mx:State name="PieChartDataUnavailable"/>
+	</s:states>
+	
+	<s:VGroup x="0" y="0" height="100%" styleName="portletVBox" includeIn="PieChartDataAvailable">
+		<mx:PieChart id="pieChart"
+					 dataProvider="{pieChartData}"
+					 showDataTips="false"
+					 height="{diameter}"
+					 width="{diameter}"
+					 visible="true">
+			
+			<mx:series>
+				<mx:PieSeries field="Value"
+							  nameField="Percentage"
+							  >
+					<mx:fills>
+						<mx:SolidColor color="#0060BF" alpha="1.0" />
+						<mx:SolidColor color="#A7C3DF" alpha="1.0" />
+					</mx:fills>
+				</mx:PieSeries>
+			</mx:series>
+		</mx:PieChart>
+	</s:VGroup>
+</s:Group>

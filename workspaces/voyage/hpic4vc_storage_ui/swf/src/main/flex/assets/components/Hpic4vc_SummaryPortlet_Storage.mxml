@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:component="assets.components.*"
+		 implements="assets.components.Hpic4vc_BaseComponent"
+		 creationComplete="init()">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_SummaryPortlet_StorageMediator")]
+	</fx:Metadata>
+	
+	<fx:Script><![CDATA[
+		import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+		import com.hp.asi.hpic4vc.ui.model.PieChartModel;
+		import com.hp.asi.hpic4vc.ui.utils.Helper;
+		import com.vmware.core.model.IResourceReference;
+		
+		import mx.binding.utils.ChangeWatcher;
+		import mx.collections.ArrayCollection;
+		
+		[Bindable]
+		public var pieChartDataWatcher:ChangeWatcher;
+		
+		[Bindable]
+		public var lvList:ArrayCollection;
+		
+		[Bindable]
+		public var pieChartData:PieChartModel;
+		
+		[Bindable]
+		public var noInfoFoundLabel:String;
+	
+		[Bindable]
+		public var errorFoundLabel:String;
+		
+		[Bindable]
+		public var _contextObject:IResourceReference;
+		
+		[Bindable]
+		private var dataWatcher:ChangeWatcher;
+		
+		[Bindable]
+		private var errorWatcher:ChangeWatcher;
+		
+		[Bindable]
+		private var noInfoFoundWatcher:ChangeWatcher;
+		
+		[Bindable]
+		private var loading:String;
+		
+		private function init():void {
+			dataWatcher  = ChangeWatcher.watch(this, ["lvList"], dataAvailable);
+			noInfoFoundWatcher   = ChangeWatcher.watch(this, ["noRecordsFoundLabel"], noInfoAvailable);
+			errorWatcher  		 = ChangeWatcher.watch(this, ["errorFoundLabel"], errorOccurred);
+			currentState = "DataLoading";
+			loading = Helper.getString("loading");
+		}
+		
+		private function dataAvailable(event:Event):void {
+			currentState = "DataAvailable";
+			pieChartId.visible = true;
+			vRuleId.visible = true;
+			invalidateDisplayList();
+			dataWatcher.unwatch();
+			errorWatcher.unwatch();
+		}	   
+		
+		private function noInfoAvailable(event:Event):void {
+			this.currentState = "NoInfoAvailable";
+			invalidateDisplayList();
+		}
+		
+		private function errorOccurred(event:Event):void {
+			currentState = "DataError";
+			invalidateDisplayList();
+		}
+		
+		public function show (contextObject:IResourceReference) : void {
+			this.visible = true;
+			this._contextObject = contextObject;
+		}
+		
+	]]>
+		
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="DataAvailable"/>
+		<s:State name="DataLoading"/>
+		<s:State name="DataError"/>
+		<s:State name="NoInfoAvailable"/>
+	</s:states>
+	
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="DataLoading">
+		<s:Label text="{loading}" verticalCenter="0" />
+	</s:VGroup>
+
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="NoInfoAvailable">
+		<s:Label text="{noInfoFoundLabel}" verticalCenter="0" paddingTop="5"/>
+	</s:VGroup>
+	
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="DataError">
+		<mx:Text width="100%" text="{errorFoundLabel}" styleName="errorMessage" />
+	</s:VGroup>
+	
+	<mx:HBox styleName="portletVBoxValue" horizontalGap="-2">
+	
+	<s:VGroup x="0" y="0" includeIn="DataAvailable">				
+			<mx:VBox width="50%" verticalGap="0">
+			    <mx:Repeater id="lvRepeater" dataProvider="{lvList}" >	
+					<mx:VBox verticalGap="0" styleName="portletVBoxKey">
+						<mx:HBox horizontalGap="0">
+							<s:Label width="150" 
+									 text="{(lvRepeater.currentItem as LabelValueModel).label as String}" 
+									 styleName="portletLabel"/>
+							<s:Label width="120"
+									 text="{(lvRepeater.currentItem as LabelValueModel).value as String}" 
+									 styleName="portletText"/>
+						</mx:HBox>
+						<mx:HRule width="100%"/>
+					</mx:VBox>
+			    </mx:Repeater>
+			</mx:VBox>			
+	</s:VGroup>	
+	<mx:VRule id="vRuleId" height="100%" visible="false"/>	
+	<component:Hpic4vc_PieChartStorageVolumes id="pieChartId" width="50%" height="50%" percentUsed = "{Number(pieChartData.percentUsed)}" percentFree = "{Number(pieChartData.percentFree)}" visible="false"/>
+		
+	</mx:HBox>
+</s:Group>

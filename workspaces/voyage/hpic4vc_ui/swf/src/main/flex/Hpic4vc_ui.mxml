@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<!--
+   The main plugin module class.
+   This class is instantiated by the Extension framework when a module is loaded.
+-->
+
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml"
+		   creationComplete="init()">
+   <!-- Resource file(s) must be declared here or your resources won't be loaded! -->
+   <mx:Metadata>
+      [ResourceBundle("Hpic4vc_uiResources")]
+   </mx:Metadata>
+
+   <!-- Import the .css stylesheet -->
+   <mx:Style source="/assets/css/hpic4vc_ui.css"/>
+
+   <mx:Script><![CDATA[
+	   import mx.logging.Log;
+	   import mx.messaging.FlexClient;
+	   
+      /**
+       * The module web context path.
+       */
+      public static var contextPath:String;
+
+      /**
+       * Reference the classes created dynamically, because they are
+       * otherwise not included by the compiler.
+       */
+      private var _classes:ModuleClasses;
+
+      /**
+       * Injected by the extension framework when the module is loaded.
+       */
+      public function set contextPath(value:String):void {
+		 //Added this to address the duplicate Flex Sessions caused by BlazeDS. Fix for QXCR1001266919.
+		 FlexClient.getInstance().id = null;
+         contextPath = value;
+      }
+	   
+	  private function init():void {
+		  Log.addTarget(logTarget);
+	  }
+   ]]></mx:Script>
+	
+	<mx:TraceTarget id="logTarget" 
+					includeDate="true" 
+					includeTime="true" 
+					includeCategory="true" 
+					includeLevel="true"
+					>
+		<mx:level>0</mx:level>  <!-- 0=all, 2=debug, 4=info, 6 = warn.. -->
+	</mx:TraceTarget>
+
+</mx:Module>

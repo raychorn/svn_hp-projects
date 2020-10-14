@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hpic4vc_storage_provider
+Bundle-SymbolicName: com.hp.asi.hpic4vc.storage.provider
+Bundle-Version: 1.0.0
+Bundle-Vendor: HP
+Import-Package: org.apache.commons.logging
+Export-Package: com.hp.asi.hpic4vc.storage.provider.api,
+ com.hp.asi.hpic4vc.storage.provider.impl

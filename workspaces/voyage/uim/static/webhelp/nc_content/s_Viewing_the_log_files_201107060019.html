@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Viewing the log files</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:35+00:00--><meta name="keywords" content="IC4VC, troubleshooting, Insight Control for VMware vCenter Server"/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="IC4VC_troubleshooting_chapter.html" title="Troubleshooting"/><link rel="prev" href="IC4VC_troubleshooting_chapter.html" title="Troubleshooting"/><link rel="next" href="v15697002.html" title="Troubleshooting Insight Control for vCenter"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('IC4VC_troubleshooting_chapter','icon4IC4VC_troubleshooting_chapter','link4s_Viewing_the_log_files_201107060019','IC4VC_troubleshooting_chapter')" onunload="clearbgcolortoc('link4s_Viewing_the_log_files_201107060019','IC4VC_troubleshooting_chapter')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="IC4VC_troubleshooting_chapter.html">Troubleshooting</a> &gt; Viewing the log files</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v15697002.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="s_Viewing_the_log_files_201107060019"/><h1 class="sectiontitle">Viewing the log files</h1></div></div></div><p><a id="v20765146"/>Server module logs are located in the following
+directories:</p>
+	
+	<div class="informaltable"><a id="v20765147"/><table cellspacing="1" cellpadding="4" border="1"><colgroup><col width="50%"/><col width="50%"/></colgroup><thead> 
+
+<tr bgcolor="#ffffff" valign="bottom">
+	
+	
+	<th align="left" valign="bottom">File</th>
+	
+	
+	<th align="left" valign="bottom">Directory</th></tr></thead><tbody> 
+
+<tr bgcolor="#ffffff">
+	
+	
+	<td valign="middle"> Insight Control for vCenter <code class="filename">hpserver.log</code></td>
+	
+	
+	<td valign="middle"><em class="replaceable"><code>install folder</code></em>\server</td></tr><tr>
+	
+	
+	<td valign="middle"><code class="filename">hpuim.log</code></td>
+	
+	
+	<td valign="middle"><em class="replaceable"><code>install
+folder</code></em>\uim</td></tr> 
+
+<tr bgcolor="#ffffff">
+	
+	
+	<td valign="middle"><code class="filename">hpcs.log</code></td>
+	
+	
+	<td valign="middle"><em class="replaceable"><code>install
+folder</code></em>\hpcs</td></tr></tbody></table></div><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>This document assumes that the software is installed
+in <code class="filename">C:\Program Files (x86)\HP</code>. For 32-bit systems,
+replace <code class="filename">C:\Program Files (x86)\</code> with <code class="filename">C:\Program
+Files\</code>.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><p><a id="v20765149"/>The following vSphere Web Client logs are available:</p>
+	
+	<div class="itemizedlist"><a id="v20765150"/><ul type="disc"><li><p><a id="v20765151"/><a id="v20765152"/><code class="filename">C:\ProgramData\VMware\vSphere
+Web Client\serviceability\logs\vsphere_client_virgo.log</code></p>
+	
+	</li><li><p><a id="v20765153"/><a id="v20765154"/><code class="filename">C:\ProgramData\VMware\vSphere
+Web Client\serviceability\logs\com.hp.asi.hpic4vc.ui-1.0.0\log.log</code></p>
+	
+	</li></ul></div><p><a id="v16115934"/>Storage Module for vCenter logs are available
+in the directory <code class="filename">C:\Program Files\HP\HP Insight Control
+Storage Module for vCenter\Storage\Jboss\standalone\log</code>.
+For example:</p>
+	
+	<p><a id="v16115937"/><code class="filename">hpstoragemodule_February_2012_Log_1.log</code> is
+the Storage Module for vCenter log from February 2012.</p>
+	
+	<p><a id="v16115940"/>Array-specific Storage Module for vCenter logs
+are available in the following directory: <code class="filename">C:\Program Files\HP\HP
+Insight Control Storage Module for vCenter\Storage\Jboss\standalone\log</code>.</p>
+	
+	<div class="itemizedlist"><a id="v16115941"/><ul type="disc"><li><p><a id="v16115942"/><a id="v16115943"/>For HP EVAs: <code class="filename">array_evaemdo_wrapper.log</code></p>
+	
+	</li><li><p><a id="v16115944"/><a id="v16115945"/>For P9000/XP arrays: <code class="filename">array_xpdo_wrapper.log</code></p>
+	
+	</li></ul></div><p><a id="v16115926"/>You can also view the log file in the vSphere Client:</p>
+	
+	<div class="procedure"><a id="v16115927"/><ol type="1"><li><p><a id="v16115928"/><a id="v16115929"/>Navigate to the vSphere Client Home
+page. </p>
+	
+	</li><li><p><a id="v16115930"/><a id="v16115931"/>Click the <span><strong class="guilabel">System
+Logs</strong></span> icon under Administration. </p>
+	
+	</li></ol></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="IC4VC_troubleshooting_chapter.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="IC4VC_troubleshooting_chapter.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v15697002.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Troubleshooting </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Troubleshooting Insight Control for vCenter</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

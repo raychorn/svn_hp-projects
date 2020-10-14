@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value ;
+				
+				if(value)
+				{
+					enclosureName.text = value.oa.enclosure_info.enclosureName;
+					rackName.text =  value.oa.enclosure_info.rackName;
+					lblPowerSupplies.text = value.oa.enclosure_info.powerSuppliesPresent + " " + "of" + " " + value.oa.enclosure_info.powerSupplyBays;
+					lblFans.text = value.oa.enclosure_info.fansPresent + " " + "of" + " " + value.oa.enclosure_info.fanBays;
+					lblPowerConsumed.text = value.oa.power.powerConsumed + " " + "W";
+				}
+				
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+		]]>
+	</fx:Script>
+<s:VGroup gap="0">
+	
+
+	
+	<mx:VBox width="100%" height="100%" verticalGap="0" styleName="portletVBoxValue">
+			<mx:HBox horizontalGap="0" >
+				<s:Label text="Enclosure" width="150" styleName="portletLabel" />
+				<s:Label id="enclosureName" width="198" styleName="portletText" />
+			</mx:HBox>
+			<mx:HRule width="100%" />
+	</mx:VBox>
+	
+	<mx:VBox width="100%" height="100%" verticalGap="-2" styleName="portletVBoxValue">
+		<mx:HBox horizontalGap="0" >
+			<s:Label text="Rack" width="150" styleName="portletLabel" />
+			<s:Label id="rackName" width="198" styleName="portletText" />
+		</mx:HBox>
+		<mx:HRule width="100%" />
+	</mx:VBox>
+	
+	<mx:VBox width="100%" verticalGap="0" styleName="portletVBoxValue">
+		<mx:HBox horizontalGap="0" >
+			<s:Label text="Power Supplies" width="150" styleName="portletLabel" />
+			<s:Label id="lblPowerSupplies" width="198" styleName="portletText" />
+		</mx:HBox>
+		<mx:HRule width="100%" />
+	</mx:VBox>
+	
+	<mx:VBox width="100%"  verticalGap="0" styleName="portletVBoxValue">
+		<mx:HBox horizontalGap="0">
+			<s:Label text="Fans" width="150" styleName="portletLabel" />
+			<s:Label id="lblFans" width="198" styleName="portletText" />
+		</mx:HBox>
+		<mx:HRule width="100%" />
+	</mx:VBox>
+	
+	<mx:VBox width="100%"  verticalGap="0" styleName="portletVBoxValue">
+		<mx:HBox horizontalGap="0">
+			<s:Label text="Power Consumed" width="150" styleName="portletLabel" />
+			<s:Label id="lblPowerConsumed" width="198" styleName="portletText" />
+		</mx:HBox>
+		<mx:HRule width="100%" />
+	</mx:VBox>
+		
+	<mx:VBox width="100%" verticalGap="0">
+		<mx:HRule width="100%" height="1" strokeColor="gray" />
+			<!--<s:Line width="100%">
+				<s:stroke>
+					<s:SolidColorStroke color="gray" weight="4" joints="miter" />
+				</s:stroke>
+			</s:Line>	-->
+	</mx:VBox>
+	
+</s:VGroup>	
+</s:ItemRenderer>

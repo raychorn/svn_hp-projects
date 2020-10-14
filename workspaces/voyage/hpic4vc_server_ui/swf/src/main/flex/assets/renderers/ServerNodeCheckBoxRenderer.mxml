@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MXAdvancedDataGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.vo.ServerNodesData;
+			
+			[Bindable]
+			private var serverNodesData:ServerNodesData ;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if (value && value is ServerNodesData)
+				{
+					serverNodesData = ServerNodesData(value);
+					
+				}
+			}
+			
+			protected function serverCheckBox_changeHandler(event:Event):void
+			{
+				if (serverCheckBox.selected)
+				{
+					serverNodesData.deploy = true;
+				}
+				else
+				{
+					serverNodesData.deploy = false;
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:CheckBox id="serverCheckBox" selected="{serverNodesData.deploy}"  change="serverCheckBox_changeHandler(event)" x="4" y="2"/>
+	
+</s:MXAdvancedDataGridItemRenderer>

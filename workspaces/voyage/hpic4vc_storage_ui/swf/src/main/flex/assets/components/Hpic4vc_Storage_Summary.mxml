@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:component="assets.components.*"
+		 xmlns:controls="com.hp.asi.hpic4vc.ui.controls.*"
+		 creationComplete="init()"
+		 implements="assets.components.Hpic4vc_BaseComponent">
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Storage_SummaryMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_storage_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.BarChartGroupModel;
+			import com.hp.asi.hpic4vc.ui.model.BarChartModel;
+			import com.hp.asi.hpic4vc.ui.model.FullSummaryModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.model.PieChartModel;
+			import com.hp.asi.hpic4vc.ui.model.SummaryPortletModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.ToolTip;
+			import mx.events.FlexEvent;
+			import mx.events.ToolTipEvent;
+			import mx.managers.PopUpManager;
+			import mx.managers.ToolTipManager;
+			
+			[Bindable]
+			public var fullSummary:FullSummaryModel;
+			[Bindable]
+			public var noInfoFoundLabel:String;
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			[Bindable]
+			private var dataWatcher:ChangeWatcher;
+			[Bindable]
+			private var errorWatcher:ChangeWatcher;
+			[Bindable]
+			private var hpToVobjectTitle:String;
+			[Bindable]
+			private var hpToVobjectData:ArrayCollection;
+			[Bindable]
+			private var volumeInfo:String;
+			[Bindable]
+			private var overProInfo:String;
+			[Bindable]
+			private var hpToVobjectPieData:PieChartModel;
+			[Bindable]
+			private var arrayTitle:String;
+			[Bindable]
+			private var backupSystemTitle:String;
+			[Bindable]
+			private var vObjectToHpTitle:String;
+			[Bindable]
+			private var vObjectToHpData:ArrayCollection;
+			[Bindable]
+			private var numDs:String;
+			[Bindable]
+			private var dsOverPro:String;
+			[Bindable]
+			private var vObjectToHpPieData:PieChartModel;
+			[Bindable]
+			private var dsTitle:String;
+			[Bindable]
+			private var loading:String;
+			
+			[Bindable]
+			private var vGroupHeight:Number;
+			[Bindable]
+			private var vGroupWidth:Number = 450;
+			
+			[Bindable]
+			private var noInfoFoundWatcher:ChangeWatcher;
+			
+			private function init():void {
+				dataWatcher  = ChangeWatcher.watch(this, ["fullSummary"], dataAvailable);
+				noInfoFoundWatcher   = ChangeWatcher.watch(this, ["noInfoFoundLabel"], noInfoAvailable);
+				errorWatcher  		 = ChangeWatcher.watch(this, ["errorFoundLabel"], errorOccurred);
+				currentState = "DataLoading";
+				loading      = Helper.getString("loading");
+			}
+			
+			private function dataAvailable(event:Event):void {
+				currentState     = "DataAvailable";
+				createSummaryData();
+				invalidateDisplayList();
+				dataWatcher.unwatch();
+				errorWatcher.unwatch();
+			}
+			
+			private function noInfoAvailable(event:Event):void {
+				this.currentState = "NoInfoAvailable";
+				invalidateDisplayList();
+			}
+			
+			private function createSummaryData():void {
+				hpToVobjectTitle          		= fullSummary.hpToVobjectTitle as String;
+				arrayTitle                		= fullSummary.arrayTitle as String;
+				arrayCharts.dataProvider  		= fullSummary.arraySummaries as ArrayCollection;
+				backupSystemTitle		  		= fullSummary.backupSystemSummariesTitle as String;
+				backupSystemCharts.dataProvider	= fullSummary.backupSystemSummaries as ArrayCollection;
+				vObjectToHpTitle          		= fullSummary.vObjectToHpTitle as String;
+				dsTitle                   		= fullSummary.dsTitle as String;
+				dsCharts.dataProvider     		= fullSummary.dsSummaries as ArrayCollection;
+				
+				if (null != fullSummary.hpToVobject) {
+					var hpToVobject:SummaryPortletModel = fullSummary.hpToVobject as SummaryPortletModel;
+					createTopLeftData(hpToVobject);
+				}
+				
+				if (null != fullSummary.vObjectToHp) {
+					var vobjectToHp:SummaryPortletModel = fullSummary.vObjectToHp as SummaryPortletModel;
+					createTopRightData(vobjectToHp);
+				}
+			}
+			
+			private function createTopLeftData(data:SummaryPortletModel):void {
+				var hpToVobject:SummaryPortletModel = fullSummary.hpToVobject as SummaryPortletModel;
+				
+				if (null != hpToVobject.fieldData) {
+					var fieldData:LabelValueListModel = hpToVobject.fieldData as LabelValueListModel;
+					this.hpToVobjectData = fieldData.lvList as ArrayCollection;
+					var numItems:Number  = this.hpToVobjectData.length;
+					this.overProInfo     = (this.hpToVobjectData.removeItemAt(numItems - 1) as LabelValueModel).value as String;
+					this.volumeInfo      = (this.hpToVobjectData.removeItemAt(0) as LabelValueModel).value as String;
+				}
+				
+				if (null != hpToVobject.pieChartData) {
+					this.hpToVobjectPieData = hpToVobject.pieChartData as PieChartModel;
+				}
+			}
+			
+			private function createTopRightData(data:SummaryPortletModel):void {
+				var vObjectToHp:SummaryPortletModel = fullSummary.vObjectToHp as SummaryPortletModel;
+				
+				if (null != vObjectToHp.fieldData) {
+					var fieldData:LabelValueListModel = vObjectToHp.fieldData as LabelValueListModel;
+					this.vObjectToHpData = fieldData.lvList as ArrayCollection;
+					var numItems:Number  = this.vObjectToHpData.length;
+					this.numDs           = (this.vObjectToHpData.removeItemAt(numItems - 1) as LabelValueModel).value as String;
+					this.dsOverPro       = (this.vObjectToHpData.removeItemAt(0) as LabelValueModel).value as String;
+				}
+				
+				if (null != vObjectToHp.pieChartData) {
+					this.vObjectToHpPieData = vObjectToHp.pieChartData as PieChartModel;
+				}
+			}
+			
+			private function errorOccurred(event:Event):void {
+				currentState = "DataError";
+				invalidateDisplayList();
+			}
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="DataAvailable"/>
+		<s:State name="DataLoading"/>
+		<s:State name="DataError"/>
+		<s:State name="NoInfoAvailable"/>
+	</s:states>
+	
+	<s:VGroup x="0" y="0" height="30" includeIn="DataLoading">
+		<s:Label text="{loading}" verticalCenter="0" paddingTop="5"/>
+	</s:VGroup>
+	
+	<s:VGroup height="30" paddingTop="10" paddingLeft="10" includeIn="NoInfoAvailable">
+		<s:Label text="{noInfoFoundLabel}" verticalCenter="0" paddingTop="5"/>
+	</s:VGroup>
+	
+	<s:VGroup x="0" y="0" height="30" includeIn="DataError">
+		<s:Label text="{errorFoundLabel}" styleName="errorMessage" paddingTop="5"/>
+	</s:VGroup>
+	
+	<s:VGroup x="0" y="20" height="100%" includeIn="DataAvailable">
+		<!-- Top Half of the Page -->
+		<s:HGroup>
+			<!-- Storage To VObject (Top Left) -->
+			<s:VGroup>				
+				<s:Label width="450" paddingTop="10" text="{hpToVobjectTitle}" styleName="labelText"/>
+				<s:HGroup>
+					<component:Hpic4vc_PieChartStorageVolumes width="50%" height="50%" 
+					                      percentUsed = "{Number(hpToVobjectPieData.percentUsed)}"
+										  percentFree = "{Number(hpToVobjectPieData.percentFree)}"
+					/>
+					
+					<mx:VBox width="100%">
+						<s:Label width="250" paddingTop="5" text="{volumeInfo}"/>
+						<mx:Repeater id="lvRepeater1" dataProvider="{hpToVobjectData}" >
+							<mx:HBox>
+								<s:Label width="150" paddingTop="5" 
+										 text="{(lvRepeater1.currentItem as LabelValueModel).label as String}" />
+								<s:Label width="100" paddingTop="5" 
+										 text="{(lvRepeater1.currentItem as LabelValueModel).value as String}" />
+							</mx:HBox>
+						</mx:Repeater>
+						<s:Label width="250" paddingTop="5" text="{overProInfo}"/>
+					</mx:VBox>
+				</s:HGroup>
+			</s:VGroup>
+			
+			<!-- VObject to Storage (Top Right) -->
+			<s:VGroup>
+				<s:Label paddingTop="10" text="{vObjectToHpTitle}" styleName="labelText"/>
+				<s:HGroup>
+					<component:Hpic4vc_PieChartStorageVolumes width="50%" height="50%" 
+						                  percentUsed = "{Number(vObjectToHpPieData.percentUsed)}"
+										  percentFree = "{Number(vObjectToHpPieData.percentFree)}"
+					/>
+					
+					<mx:VBox>
+						<s:Label width="250" paddingTop="5" text="{numDs}"/>
+						<mx:Repeater id="lvRepeater2" dataProvider="{vObjectToHpData}" >
+							<mx:HBox>
+								<s:Label width="150" paddingTop="5" 
+										 text="{(lvRepeater2.currentItem as LabelValueModel).label as String}" />
+								<s:Label width="100" paddingTop="5" 
+										 text="{(lvRepeater2.currentItem as LabelValueModel).value as String}" />
+							</mx:HBox>
+						</mx:Repeater>
+						<s:Label width="250" paddingTop="5" text="{dsOverPro}"/>
+					</mx:VBox>	
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>	
+		
+		<!-- Bottom Half of the Page -->
+		<s:HGroup width="100%">
+			<!-- Arrays (Middle Left) -->
+			<mx:VBox>
+				<s:Label width="450" paddingTop="20" paddingBottom="8" text="{arrayTitle}" styleName="subLabelText" />
+				<controls:ChartRepeater id="arrayCharts" isTree="true" width="350" />
+			
+			<!-- Backup Systems (Bottom Left)  -->
+				<s:Label width="450" paddingTop="20" paddingBottom="8" text="{backupSystemTitle}" styleName="subLabelText" />
+				<controls:ChartRepeater id="backupSystemCharts" isTree="true" width="350" />
+			</mx:VBox>
+			
+			<!-- Datastores (Bottom Right) -->
+			<mx:VBox>
+				<s:Label paddingTop="20" paddingBottom="8" text="{dsTitle}" styleName="subLabelText" />
+				<controls:ChartRepeater id="dsCharts" isTree="false" width="350" />
+			</mx:VBox>
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+</s:Group>

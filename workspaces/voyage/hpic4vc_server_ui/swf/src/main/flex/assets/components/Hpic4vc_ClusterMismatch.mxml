@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"  width="100%" 
+			   implements="assets.components.Hpic4vc_BaseComponent">
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_ClusterMisMatchMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.HostConfigClusterMismatchModel;
+			import com.hp.asi.hpic4vc.ui.model.HostConfigMismatchModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.controls.Alert;
+			import mx.events.ListEvent;
+			import mx.managers.CursorManager;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			private var loading:String;
+			[Bindable]			
+			public var clusterMismatch:HostConfigClusterMismatchModel = new HostConfigClusterMismatchModel();	
+			[Bindable]
+			public var networkMismatch:HostConfigMismatchModel = new HostConfigMismatchModel();	
+			[Bindable]
+			public var serviceGuid:String;
+			private var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			public var _proxyServer:Hpic4vc_server_providerProxy=new Hpic4vc_server_providerProxy();
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_manage_uiView = hpic4vc_manage_uiView;				
+			}	
+			
+			private function setreferenceHost(e:Event):void{
+				//setbtn.enabled=true;
+				var selected:int=clusterChk.selectedIndex;				
+				var refHostMoid:String=clusterMismatch.mismatch[selected].hostMoid;
+				var clusterUuid:String=clusterMismatch.clusterUuid;
+				
+				var dataValue:String=_contextObject.uid;
+				var data_array:Array=dataValue.split(":");				
+				//var data:String = '{"clusterMoid":"'+data_array[2]+'","vmmUuid":"'+data_array[0]+'"}';
+				var data:String = '{"type":"'+"ClustersDto"+'","clusterMoid":"'+data_array[2]+'","refHostMoid":"'+refHostMoid+'","vmmUuid":"'+data_array[0]+'"}';
+				var host:String = refHostMoid;
+				if (_contextObject != null) {
+					_proxyServer.setPreferenceHost(serviceGuid, data,clusterUuid, onGettingHostConfiguration);				
+					CursorManager.setBusyCursor();
+				}
+			}
+			private function onGettingHostConfiguration(e:MethodReturnEvent):void 
+			{
+				if (e.result){		
+					CursorManager.removeBusyCursor();
+					Alert.show("Successfully set Host preference");					
+				}				
+				else if (e && e.error){
+					CursorManager.removeBusyCursor();
+				}
+			}
+			private function onGettingHostmismatch(event:MethodReturnEvent):void 
+			{				
+				if (event != null && event.result)
+				{			
+					if (event.result && ( event.result is HostConfigMismatchModel))
+					{					
+						CursorManager.removeBusyCursor();
+						networkMismatch = event.result as HostConfigMismatchModel;
+						/*if(networkMismatch.hostStatus == "NA"){							
+							Alert.show("The Virtual Connect profile for this host is not available");							
+						}	
+						else{*/
+						setbtn.enabled=true;
+						networkMismatchContainer.visible = true;
+						networkMismatchContainer.includeInLayout = true;
+						hostnameContainer.visible =  true;
+						hostnameContainer.includeInLayout = true;
+						//}
+					}
+				}
+				else if (event && event.error)
+				{
+					CursorManager.removeBusyCursor();
+				}
+			}
+			
+			protected function onItemClick(event:ListEvent):void
+			{				
+				var selected:int=clusterChk.selectedIndex;				
+				var refHostMoid:String=clusterMismatch.mismatch[selected].hostMoid;
+				var hostName:String=clusterMismatch.mismatch[selected].hostName;				
+				var host:String = refHostMoid;
+				setbtn.enabled=false;
+				networkMismatchContainer.visible = false;
+				networkMismatchContainer.includeInLayout = false;
+				hostnameContainer.visible =  false;
+				hostnameContainer.includeInLayout = false;
+				if(clusterMismatch.mismatch[selected].hostConfigConsistencyStatus == "NA"){
+					Alert.show("The Virtual Connect profile for this host is not available. Please select other host for setting preference.");	
+				}
+				else{
+				if (_contextObject != null) {					
+					_proxyServer.getNetworkMismatchHost(serviceGuid, host,onGettingHostmismatch);	
+					CursorManager.setBusyCursor();
+				}
+				hostid.text=hostName;
+				}
+			}
+			
+		]]>
+		
+	</fx:Script>			
+	<mx:states>
+		<mx:State name="loadingData"/>
+		<mx:State name="errorFound"/>
+		<mx:State name="ClusterConfMismatch"/>
+		<mx:State name="dataNotFound"/>
+	</mx:states>
+	
+	<s:HGroup height="30" includeIn="loadingData">
+		<s:Label text="{Helper.getString('loading')}" verticalAlign="middle"/>					
+	</s:HGroup>
+		
+	<s:VGroup x="0" y="45" height="100%" width="100%">
+		<mx:HBox includeIn="ClusterConfMismatch">			
+			<s:Button name="setreference" label="Set Reference Host" click="setreferenceHost(event)" buttonMode="true" id="setbtn" enabled="false"/>			
+		</mx:HBox>
+		<mx:HBox includeIn="ClusterConfMismatch">
+			<mx:Label name="mismatchData" text="Configuration"/>
+			<mx:Image id="loader1"/> 
+		</mx:HBox>
+		<s:HGroup width="100%" includeIn="ClusterConfMismatch">					
+			<mx:AdvancedDataGrid id="clusterChk" dataProvider="{clusterMismatch.mismatch}" width="100%" itemClick="onItemClick(event)" sortableColumns="false">				
+				<mx:columns>				
+					<mx:AdvancedDataGridColumn headerText="Select" dataField="hostMoid" itemRenderer="assets.renderers.ClusterMismatchChkRenderer"/>
+					<mx:AdvancedDataGridColumn headerText="Host" dataField="hostName" itemRenderer="assets.renderers.ClusterSetHostStatusRenderer"/>
+					<mx:AdvancedDataGridColumn headerText="Virtual Connect Profile Status" dataField="serverProfileConsistencyStatus" itemRenderer="assets.renderers.VirtualConsistencyStatusRenderer"/>
+					<mx:AdvancedDataGridColumn headerText="Host Configuration Status" dataField="hostConfigConsistencyStatus" itemRenderer="assets.renderers.HostConfigConsistencyStatusRenderer"/>
+				</mx:columns>			
+			</mx:AdvancedDataGrid>		
+		</s:HGroup>	
+		<mx:HBox includeIn="ClusterConfMismatch" visible="false" includeInLayout="false" id="hostnameContainer">
+			<mx:Label name="hostdetails" id="hostid" fontWeight="bold"/>
+			<mx:Label name="profilename" text="- Details" fontWeight="bold"/>			
+		</mx:HBox>
+		<s:HGroup width="100%" id="networkMismatchContainer" includeIn="ClusterConfMismatch" visible="false" includeInLayout="false" >				
+			<mx:AdvancedDataGrid id="hostChk" dataProvider="{networkMismatch.connprofile}" width="100%" sortableColumns="false">				
+				<mx:columns>				
+					<mx:AdvancedDataGridColumn headerText="NICs" dataField="uplink"/>			
+					<mx:AdvancedDataGridColumn headerText="Networks - current" dataField="name" itemRenderer="assets.renderers.HostNetworkRenderer"/>
+					<mx:AdvancedDataGridColumn headerText="Networks - Recommended" dataField="action" itemRenderer="assets.renderers.HostNetworkActionRenderer"/>
+				</mx:columns>			
+			</mx:AdvancedDataGrid>		
+		</s:HGroup>	
+	</s:VGroup>
+	
+</mx:Canvas>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
+		 width="99%">
+
+   <mx:Metadata>
+      [DefaultMediator("com.hp.asi.hpic4vc.ui.views.converged.views.HPSummaryViewMediator")]
+	   [Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+   </mx:Metadata>
+
+   <mx:Script><![CDATA[
+	 
+	   import com.hp.asi.hpic4vc.ui.utils.Helper;
+	   import com.hp.asi.hpic4vc.ui.views.converged.model.HPSummaryDetails;
+	   import com.vmware.ui.events.NavigationRequest;
+	   
+	   import mx.resources.ResourceManager;
+
+      // Add actionscript code here. Most logic should be in the mediator class, but
+      // any UI formatting related code can be written here.
+
+	   [Bindable]
+	   public var hpDetails:HPSummaryDetails;
+	   [Bindable]
+	   public var storageAdministratorPortalURL:String;
+	   
+	   [Bindable]
+	   public var helpUrl:String;
+	   	   
+	   protected function configureClicked(event:MouseEvent):void {
+		   var e:NavigationRequest = new NavigationRequest();
+		   e.targetViewUid = "com.hp.asi.hpic4vc.ui.insightManagement.gettingStarted";
+		   dispatchEvent(e);                        
+	   }
+	   
+	   protected function storageAdminPortalClicked(event:MouseEvent):void {
+		   if(storageAdministratorPortalURL != null) {
+			   navigateToURL(new URLRequest(storageAdministratorPortalURL));
+		   }
+	   }
+	   
+	   protected function onlineHelpClicked(event:MouseEvent):void {
+		   if(helpUrl != null) {
+			   navigateToURL(new URLRequest(helpUrl));
+		   }
+	   }
+   ]]>
+   </mx:Script>
+
+   <!-- Add your Flex components here -->
+	<mx:VBox width="98%" height="100%">
+		<mx:HBox width="100%">
+			<mx:Image id="logo" source="@Embed(source='/assets/images/hp-logo-40px.png')" width="40" height="40"/>
+			<mx:Label text="{Helper.getString('Hpic4vc_gettingStarted.mainTitle')}" fontSize="25" fontWeight="bold"/>
+		</mx:HBox>
+		<mx:HBox width="98%" horizontalGap="0">
+			<mx:Text text="{Helper.getString('mainTextDAM.label')}" fontSize="12"/>
+			<mx:LinkButton label="{Helper.getString('mainTextDAMOnlineHelp.label')}" fontSize="12" click="onlineHelpClicked(event)"/>
+		</mx:HBox>
+		<mx:HBox width="100%" height="100%">
+			
+			<mx:VBox width="100%" height="100%" minWidth="400">
+				<mx:Text text="{Helper.getString('navigationTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('navigationTextDAM.label')}" fontSize="12" width="99%"/>
+				<mx:Text text="{Helper.getString('infrastructureLinkHP.label')}" fontSize="15" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('infrastructureTextHPDAM.label')}" fontSize="12" width="99%"/>
+				<mx:Text text="{Helper.getString('DAMText1.label')}" fontSize="12" width="99%"/>
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:Text text="{Helper.getString('DAMText2.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText3.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText4.label')}" fontSize="12" width="99%"/>
+				</mx:VBox>
+				<mx:Text text="{Helper.getString('DAMText5.label')}" fontSize="12" width="99%"/>
+				<mx:Text text="{Helper.getString('DAMText6.label')}" fontSize="12" width="99%"/>
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:HBox horizontalGap="0">
+						<mx:Text text="{Helper.getString('DAMText7.label')}" fontSize="12"/>
+						<mx:LinkButton label="{Helper.getString('DAMText71.label')}" click="storageAdminPortalClicked(event)"/>
+					</mx:HBox>
+					<mx:Text text="{Helper.getString('DAMText8.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText9.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText10.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText11.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText12.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMText13.label')}" fontSize="12" width="99%"/>
+				</mx:VBox>
+				
+				<mx:Text text="{Helper.getString('DAMHPTitle.label')}" fontSize="15" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('DAMText14.label')}" fontSize="12" width="99%"/>
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:Text text="{Helper.getString('summaryLink.label')}" fontSize="15" fontWeight="bold" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMSummaryText.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('monitorTitle.label')}" fontSize="15" fontWeight="bold" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMMonitorText.label')}" fontSize="12" width="99%"/>
+					<mx:Text text="{Helper.getString('manageTitle.label')}" fontSize="15" fontWeight="bold" width="99%"/>
+					<mx:Text text="{Helper.getString('DAMManageText.label')}" fontSize="12" width="99%"/>
+				</mx:VBox>
+			</mx:VBox>
+			
+			<mx:VBox width="100%" height="100%">
+				<mx:Text text="{Helper.getString('configureTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('configureText.label')}" fontSize="12" width="99%"/>
+				<mx:LinkButton label="{Helper.getString('configureLink.label')}" fontSize="12" click="configureClicked(event)"/> 
+				
+				<mx:Text text="{Helper.getString('actionsTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('actionsForObjectsText.label')}" fontSize="12" width="99%"/>
+				
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:Text text="{Helper.getString('tableText.label')}" fontSize="12" width="99%"/>
+					<mx:DataGrid id="adg" height="240" selectable="false" sortableColumns="false">
+						<mx:columns>
+							<mx:DataGridColumn dataField="label" headerText="{Helper.getString('tableActionText.label')}" width="190"/>
+							<mx:DataGridColumn dataField="data" headerText ="{Helper.getString('tableIntegrationPointsText.label')}" width="240"/>
+						</mx:columns>
+						<mx:dataProvider>
+							<mx:ArrayCollection>
+								<mx:Object label="{Helper.getString('createDSLink.label')}" data="{Helper.getString('tableText1.label')}" />
+								<mx:Object label="{Helper.getString('deleteDatastoreLink.label')}" data="{Helper.getString('tableText2.label')}"/>
+								<mx:Object label="{Helper.getString('expandDatastoreLink.label')}" data="{Helper.getString('tableText2.label')}"/>
+								<mx:Object label="{Helper.getString('createVMFromTempLink.label')}" data="{Helper.getString('tableText3.label')}"/>
+								<mx:Object label="{Helper.getString('cloneVMLink.label')}" data="{Helper.getString('tableText4.label')}"/>
+								<mx:Object label="{Helper.getString('deleteVolumeText.label')}" data="{Helper.getString('tableText5.label')}"/>
+								<mx:Object label="{Helper.getString('toggleUIDLink.label')}" data="{Helper.getString('hostLink.label')}"/>
+								<mx:Object label="{Helper.getString('updateFirmwareLink.label')}" data="{Helper.getString('tableText1.label')}"/>
+							</mx:ArrayCollection>
+						</mx:dataProvider>
+					</mx:DataGrid>
+					<mx:Text text="{Helper.getString('tableTextNote.Text')}" fontStyle="italic" fontSize="12" width="99%"/>
+				</mx:VBox>
+				<mx:Label text=""/>
+				<mx:Text fontSize="16" fontWeight="bold"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.aboutvCenterTitle')}" width="99%"/>
+				
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterdocsLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter/docs'), '_blank')"
+							   styleName="gettingStartedTextFont"/>                
+				
+				<mx:Label text=""/>
+				<mx:Text fontSize="16" fontWeight="bold" text="{Helper.getString('Hpic4vc_gettingStarted.aboutHPTitle')}" width="99%"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareStorageLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware/storage'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareHPLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.vmware.com/hp'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>
+
+</mx:VBox>

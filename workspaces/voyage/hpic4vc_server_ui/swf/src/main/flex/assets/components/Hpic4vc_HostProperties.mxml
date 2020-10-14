@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				creationComplete="init()"  showCloseButton="true" paddingLeft="3" paddingRight="3"
+				width="800" height="500" horizontalScrollPolicy="off"  verticalScrollPolicy="off" close="closeWindow()" >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.ApplicationDataModel;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.model.UserInfoModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.controls.dataGridClasses.DataGridColumn;
+			import mx.core.FlexGlobals;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.ListEvent;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			private var _proxy:Hpic4vc_providerProxy;
+			[Bindable]
+			public var objReferenceId:String;
+			[Bindable]
+			public var hostPropertiesDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var hostProperties:DataGridWrapper;
+			public var selectedHost:ArrayCollection;
+			public var editHostWindow:IFlexDisplayObject; 
+			public var hostEditorPopUp:HostGridEditPopUp;
+			[Bindable]
+			public var isAuthorized:Boolean;
+			
+			[Bindable]
+			public var errorFound:String;
+			
+			[Bindable]
+			private var isAuthorizedWatcher:ChangeWatcher;
+			private static var _logger:ILogger = Log.getLogger("Hpic4vc_HostProperties");
+			
+			[Bindable]
+			private var appModel:ApplicationDataModel = ApplicationDataModel.getInstance();
+			
+			private function dataAvailable(event:Event):void {
+				if (appModel.isAuthorized == true) {
+					currentState = "Authorized";
+				} else if (appModel.isAuthorized == false) {
+					currentState = "NotAuthorized";
+				}
+			}
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+			}
+			
+			private function onGettingHostProperties(event:MethodReturnEvent):void {
+				if (event != null && event.result) {
+					var detail:TableModel = event.result as TableModel;
+					if (detail)
+						hostProperties =  Helper.createDataGrid( detail );
+					currentState = "Authorized";
+				}
+			}
+			
+			private function getData():void{
+				_proxyServer.getHostProperties(objReferenceId, onGettingHostProperties);
+				if(ApplicationDataModel.isUserValidated())
+				{
+					this.isAuthorized = ApplicationDataModel.isUserAuthorized();
+					
+				}
+				else
+				{
+				_proxy.getUserInfo(objReferenceId, onGettingUserInfo);
+				}
+			}
+			
+			private function init():void{
+				_proxyServer = new Hpic4vc_server_providerProxy();
+				_proxy = new Hpic4vc_providerProxy();
+       			FlexGlobals.topLevelApplication.addEventListener(HostPropertiesUpdatedEvent.UPDATE_HOSTPROPERTIES,onHostPropertiesUpdated);
+				hostPropertiesDataWatcher = ChangeWatcher.watch(this, ["hostProperties"], resizeDataGridColumns);
+				if (objReferenceId){
+					getData();
+				}
+				else {
+					hostPropertiesDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+				}
+				currentState = "Loading";
+				isAuthorizedWatcher = ChangeWatcher.watch(appModel, ["isAuthorized"], dataAvailable);	
+			}
+			
+			/**
+			 * VMware Administrator role has a role id -1.  Only if the user 
+			 has this Administrator role then he is authorized to perform
+			 the operation. 
+			 * @param event MethodReturnEvent
+			 * @return A Boolean value to indicate if the user is authorized.
+			 * 
+			 */
+			private function onGettingUserInfo(event:MethodReturnEvent):void {
+				Helper.updateUserAuthorization(event);
+			}
+			
+			private function onHostPropertiesUpdated(event:HostPropertiesUpdatedEvent):void{
+				 getData();
+			}
+			
+			private function setColumnWidth():void{
+				var i:int;
+				for (i=0; i< hostPropertiesDataGrid.columns.length; i++){
+					if (AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).headerText == 'User Name'){
+						AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).width = 150;
+					}
+					if (AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).headerText == 'Host'){
+						AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).width = 400;
+					}
+					if (AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).headerText == 'Type'){
+						AdvancedDataGridColumn(hostPropertiesDataGrid.columns[i]).width = 150;
+					}
+				}
+			}
+			
+			private function resizeDataGridColumns(evt:Event):void {
+				hostPropertiesDataGrid.rowCount = hostProperties.list.length;
+				setColumnWidth();
+			}
+			
+			private function selectedItem(e:ListEvent):void{
+				selectedHost = e.itemRenderer.data as ArrayCollection;;
+			}
+			
+			private function updatePassword(e:Event):void{
+				if(selectedHost!=null){
+					editHostWindow=PopUpManager.createPopUp(this,HostGridEditPopUp,true) as IFlexDisplayObject; 
+					hostEditorPopUp = HostGridEditPopUp(editHostWindow);  
+					hostEditorPopUp.HostGrid = selectedHost;
+					hostEditorPopUp.HostGridAC = hostPropertiesDataGrid.dataProvider as ArrayCollection ;
+					hostEditorPopUp._proxyServer = _proxyServer;
+					hostEditorPopUp.objReferenceId = objReferenceId;
+				}else {
+					Alert.show(Helper.getString('ALERT_HOST_PROPERTIES_SELECTROW'));
+				}
+				
+			}
+			
+			private function closeWindow():void {
+				// Call the refresh service to cancel. 
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mx:states>
+		<mx:State name="Loading"/>
+		<mx:State name="Authorized"/>
+		<mx:State name="NotAuthorized"/>
+		<s:State  name="errorOcurred"/>
+			
+	</mx:states>	
+
+	<mx:VBox width="100%" height="100%">
+		
+		<mx:VBox width="100%" paddingRight="3">
+			 <mx:Text id="note1" color="#333333" paddingTop="5" width="100%"  text="{Helper.getString('Hpic4vc_hostProperties.note1')}"/>	
+	         <mx:Text id="note2" color="#333333" paddingTop="5" width="100%"  text="{Helper.getString('Hpic4vc_hostProperties.note2')}"/>
+			 <mx:HRule width="100%"/>
+		</mx:VBox>
+		
+		<s:VGroup height="100%" width="100%" includeIn="Loading">
+			<s:Label text="{Helper.getString('loading')}" verticalCenter="0" />
+		</s:VGroup>
+		
+		<s:VGroup height="100%" width="100%" includeIn="errorOcurred">
+			<s:Label text="{errorFound}" verticalCenter="0" />
+		</s:VGroup>
+		
+		
+		<s:VGroup x="0" y="45" height="100%" width="100%" includeIn="Authorized">
+			<mx:VBox width="100%" paddingTop="6" paddingBottom="4" horizontalGap="9">
+				<mx:HBox>
+					<mx:Image source="@Embed(source='/assets/images/pencil_medium.png')" click="updatePassword(event)" toolTip="{Helper.getString('editRecord.label')}" buttonMode="true" />
+					<mx:Image source="@Embed(source='/assets/images/refresh.png')" click="getData()" buttonMode="true" />	
+				</mx:HBox>
+			</mx:VBox>
+			<s:Group width="100%" height="100%" >
+				<mx:AdvancedDataGrid id="hostPropertiesDataGrid" width="100%" height="100%"
+							 columns="{hostProperties.columns}"
+							 dataProvider="{hostProperties.list}" borderVisible="true"
+							 contentBackgroundColor="#d6d7d6" 
+							 itemClick="selectedItem(event)">
+				</mx:AdvancedDataGrid>			
+			</s:Group>
+		</s:VGroup>
+		
+		<s:VGroup height="100%" width="100%" includeIn="NotAuthorized">
+			<mx:Text text="{Helper.getString('noPermission')}" width="99%"/>
+		</s:VGroup>
+	</mx:VBox>
+</mx:TitleWindow>

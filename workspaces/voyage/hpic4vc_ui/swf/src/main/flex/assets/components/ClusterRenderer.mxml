@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<!-- dpcontrols/adg/myComponents/ChartRenderer.mxml -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:components="assets.components.*" xmlns:s="library://ns.adobe.com/flex/spark" creationComplete="init()" >
+
+<mx:VBox height="400" width="100%"  backgroundColor="white" backgroundAlpha="2">
+	<mx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.ClusterDetailRendererViewModel;
+			import com.hp.asi.hpic4vc.ui.model.ClusterHostDetail;
+			import com.hp.asi.hpic4vc.ui.model.HostDetailModel;
+			import com.hp.asi.hpic4vc.ui.model.HostDetailViewModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.containers.Panel;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.events.CollectionEvent;
+			import mx.events.PropertyChangeEvent;
+            
+			
+			[Bindable]
+			public var dataNotFound:String;
+			
+			[Bindable]
+			public var errorFound:String;
+			
+			[Bindable]
+			public var hostDetailDataWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var errorFoundWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var dataNotFoundWatcher:ChangeWatcher;
+			
+			[Bindable]
+			private var loading:String;
+			
+			[Bindable]
+			public  var clusterHosDetailViewModel:ClusterDetailRendererViewModel;
+			
+			[Bindable]
+			public var clusterDetailDataWatcher:ChangeWatcher;
+            
+			
+			public function init():void{
+				clusterDetailDataWatcher = ChangeWatcher.watch(this, ["clusterHosDetailViewModel"], showDetailHandler);
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+			    var clusterHostDetail:ClusterHostDetail;
+				 if(value && value is ClusterHostDetail){
+					 clusterHostDetail = ClusterHostDetail(value);
+					 clusterHosDetailViewModel =  ClusterDetailRendererViewModel.makeClusterDetailRendererModel(clusterHostDetail);	
+					 if(clusterHosDetailViewModel!=null){
+						 
+					 if(clusterHosDetailViewModel.serverPower.lvList.length==0){
+						 serverPowerLabelValue.visible = false;
+						 serverPowerStatusText.includeInLayout = true;
+						 serverPowerStatusText.visible= true;
+					 }else {
+						 serverPowerLabelValue.visible = true;
+						 serverPowerStatusText.includeInLayout = false;
+						 serverPowerStatusText.visible= false;
+					 }
+					 
+					 memInfoDataGrid.rowCount = clusterHosDetailViewModel.memoryInfo.list.length + 1;
+					 cpuInfoDataGrid.rowCount = clusterHosDetailViewModel.cpuInfo.list.length + 1;              
+					 firmwareInfoDataGrid.rowCount = clusterHosDetailViewModel.firmwareInfo.list.length + 1;
+					 softwareInfoDataGrid.rowCount = clusterHosDetailViewModel.softwareInfo.list.length + 1;
+					 iloLogDataGrid.rowCount =  (clusterHosDetailViewModel.iloLog.list.length > 10) ? 10: clusterHosDetailViewModel.iloLog.list.length  + 1;
+					 imlLogDataGrid.rowCount = (clusterHosDetailViewModel.imlLog.list.length> 10)? 10 : clusterHosDetailViewModel.imlLog.list.length + 1;
+					 
+				 }
+			   }
+				
+			}
+			
+			private function showDetailHandler(event:Event):void{
+			   	resizeDataGridHeight();
+			}
+			
+			
+			
+			private function resizeDataGridHeight():void {
+				if(clusterHosDetailViewModel != null){
+					if(clusterHosDetailViewModel.serverPower.lvList.length==0){
+						serverPowerLabelValue.visible = false;
+						serverPowerStatusText.includeInLayout = true;
+						serverPowerStatusText.visible= true;
+					}else {
+						serverPowerLabelValue.visible = true;
+						serverPowerStatusText.includeInLayout = false;
+						serverPowerStatusText.visible= false;
+					}
+					memInfoDataGrid.rowCount = clusterHosDetailViewModel.memoryInfo.list.length + 1;
+					cpuInfoDataGrid.rowCount = clusterHosDetailViewModel.cpuInfo.list.length + 1;              
+					firmwareInfoDataGrid.rowCount = clusterHosDetailViewModel.firmwareInfo.list.length + 1;
+					softwareInfoDataGrid.rowCount = clusterHosDetailViewModel.softwareInfo.list.length + 1;
+					iloLogDataGrid.rowCount =  (clusterHosDetailViewModel.iloLog.list.length > 10) ? 10: clusterHosDetailViewModel.iloLog.list.length  + 1;
+					imlLogDataGrid.rowCount = (clusterHosDetailViewModel.imlLog.list.length> 10)? 10 : clusterHosDetailViewModel.imlLog.list.length + 1;
+				}
+			}
+			
+		   private function resetPanelHeight(panel:CollapsiblePanel):void {
+				var hh:Number = getStyle("headerHeight");
+				if (hh <= 0 || isNaN(hh)){
+					panel.height = 31;
+					panel.validateDisplayList();
+				}else {
+					panel.height = panel.measuredHeight;
+					panel.validateDisplayList();
+				}
+			}
+			
+			
+		]]>
+	</mx:Script>
+	
+	<mx:Panel width="100%"  title="Host Information" styleName="CPStyle" >
+		<s:VGroup x="0" y="0" height="100%" width="100%" >
+			<mx:HBox width="100%"   horizontalGap="-2" >
+				<mx:VBox width="100%" verticalGap="0">
+					<mx:Repeater id="clusterinfoLabel" dataProvider="{clusterHosDetailViewModel.hostInfo.lvList}" width="100%" >
+						<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+							<mx:HBox horizontalGap="0" width="100%">
+								<s:Label width="150" 
+										 text="{(clusterinfoLabel.currentItem as LabelValueModel).label}" 
+										 styleName="portletLabel"/>
+								<s:Label width="280"
+										 text="{(clusterinfoLabel.currentItem as LabelValueModel).value}" 
+										 styleName="portletText"/>
+							</mx:HBox>
+						</mx:VBox>
+						<mx:HRule width="100%"/>
+					</mx:Repeater>
+				</mx:VBox>
+			</mx:HBox>
+		</s:VGroup>
+	</mx:Panel>
+		
+	<mx:Panel width="100%"  title="Server Status Information" styleName="CPStyle">
+		
+		<s:VGroup x="0" y="0" height="100%" width="100%">
+			<mx:HBox width="100%"   horizontalGap="-2" >
+				<mx:VBox width="100%" verticalGap="0">
+					<mx:Repeater id="clusterServerStatus" dataProvider="{clusterHosDetailViewModel.serverStatus.lvList}" width="100%" >
+						<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+							<mx:HBox horizontalGap="0" width="100%">
+								<s:Label width="150" 
+										 text="{(clusterServerStatus.currentItem as LabelValueModel).label}" 
+										 styleName="portletLabel"/>
+								<s:Label width="198"
+										 text="{(clusterServerStatus.currentItem as LabelValueModel).value}" 
+										 styleName="portletText"/>
+							</mx:HBox>
+						</mx:VBox>
+						<mx:HRule width="100%"/>
+					</mx:Repeater>
+				</mx:VBox>
+			</mx:HBox>
+		</s:VGroup>
+		
+	</mx:Panel>
+		
+	<mx:Panel width="100%" id="serverPowerStatusPanel" title="Server Power" styleName="CPStyle" >
+		
+		<s:VGroup id="serverPowerLabelValue" x="0" y="0" height="100%" width="100%" visible="true">
+			<mx:HBox width="100%"   horizontalGap="-2" >
+				<mx:VBox width="100%" verticalGap="0">
+					<mx:Repeater id="serverPowerStatus" dataProvider="{clusterHosDetailViewModel.serverPower.lvList}" width="100%" >
+						<mx:VBox verticalGap="0" width="100%" styleName="portletVBoxValue">
+							<mx:HBox horizontalGap="0" width="100%">
+								<s:Label width="150" 
+										 text="{(serverPowerStatus.currentItem as LabelValueModel).label}" 
+										 styleName="portletLabel"/>
+								<s:Label width="198"
+										 text="{(serverPowerStatus.currentItem as LabelValueModel).value}" 
+										 styleName="portletText"/>
+							</mx:HBox>
+						</mx:VBox>
+						<mx:HRule width="100%"/>
+					</mx:Repeater>
+				</mx:VBox>
+			</mx:HBox>
+		</s:VGroup>
+		
+		<mx:Text id="serverPowerStatusText" text="Power Readings are not Available"/>
+		
+	</mx:Panel>
+		
+		<mx:Panel id="memPanel" width="100%"  title="Memory Info" styleName="CPStyle" >
+			<mx:AdvancedDataGrid id="memInfoDataGrid" columns="{clusterHosDetailViewModel.memoryInfo.columns}" width="100%" 
+								 dataProvider="{clusterHosDetailViewModel.memoryInfo.list}">
+				
+			</mx:AdvancedDataGrid>
+		</mx:Panel>
+		
+		
+	    <mx:Panel width="100%"   title="CPU Information" styleName="CPStyle">
+			<mx:AdvancedDataGrid id="cpuInfoDataGrid" columns="{clusterHosDetailViewModel.cpuInfo.columns}"  width="100%" 
+								 dataProvider="{clusterHosDetailViewModel.cpuInfo.list}" >
+			</mx:AdvancedDataGrid>
+		</mx:Panel>
+		
+	<mx:Panel width="100%"   title="Firmware Information" styleName="CPStyle">
+			<mx:AdvancedDataGrid id="firmwareInfoDataGrid" columns="{clusterHosDetailViewModel.firmwareInfo.columns}" width="100%" 
+								 dataProvider="{clusterHosDetailViewModel.firmwareInfo.list}">
+				
+			</mx:AdvancedDataGrid>
+	</mx:Panel>
+		
+	<mx:Panel width="100%"  height="100%" title="Software Information" styleName="CPStyle" >
+			<mx:AdvancedDataGrid id="softwareInfoDataGrid" columns="{clusterHosDetailViewModel.softwareInfo.columns}" width="100%"
+								 dataProvider="{clusterHosDetailViewModel.softwareInfo.list}">
+				
+			</mx:AdvancedDataGrid>
+	</mx:Panel>
+		
+	<mx:Panel id="iloLogDataPanel"  width="100%" height="100%"   title="iLO Log" styleName="CPStyle">
+			<mx:AdvancedDataGrid  id="iloLogDataGrid" columns="{clusterHosDetailViewModel.iloLog.columns}" wordWrap="true"  width="100%" 
+								  dataProvider="{clusterHosDetailViewModel.iloLog.list}">
+				
+			</mx:AdvancedDataGrid>
+	</mx:Panel>
+		
+	<mx:Panel id="imlLogDataPanel" width="100%"  height="100%"  title="IML Log" styleName="CPStyle" >
+			<mx:AdvancedDataGrid id="imlLogDataGrid" columns="{clusterHosDetailViewModel.imlLog.columns}" wordWrap="true" width="100%"
+								 dataProvider="{clusterHosDetailViewModel.imlLog.list}">
+			</mx:AdvancedDataGrid>
+	</mx:Panel>
+   <mx:Spacer height="5" />
+	
+</mx:VBox>
+	
+</mx:Canvas>

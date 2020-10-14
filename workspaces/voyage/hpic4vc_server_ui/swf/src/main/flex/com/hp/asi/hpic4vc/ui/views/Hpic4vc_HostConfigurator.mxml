@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="init()" height="100%" width="100%">
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.HostConfigModel;
+			import com.hp.asi.hpic4vc.ui.model.SwitchTypeModel;
+			import com.hp.asi.hpic4vc.ui.model.VDSMigrateManagementModel;
+			import com.hp.asi.hpic4vc.ui.model.VDSVersionsModel;
+			import com.hp.asi.hpic4vc.ui.model.events.UpdateNetworkEvent;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.vo.SwitchTypeData;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.managers.CursorManager;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			
+			import spark.collections.Sort;
+			import spark.collections.SortField;			
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]			
+			public var hostConfiguration:DataGridWrapper;
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;			
+			[Bindable]
+			public var hostConfigData:HostConfigModel = new HostConfigModel();			
+			[Bindable]
+			public var vdsversions:VDSVersionsModel = new VDSVersionsModel();	
+			[Bindable]
+			public var vdsMigrateManagement:VDSMigrateManagementModel = new VDSMigrateManagementModel();	
+			public var orginalHostConfigData:HostConfigModel;	
+			public var orginalSwithtypeData:SwitchTypeModel;
+			public var switchSelectedValue:String;
+			[Bindable]
+			public var switchTypeData:SwitchTypeModel = new SwitchTypeModel();			
+			[Bindable]
+			public var serviceGuid:String;			
+			[Bindable]
+			public var isSwitchDataAvailable:Boolean;			
+			[Bindable]			
+			public var _proxyServer:Hpic4vc_server_providerProxy=new Hpic4vc_server_providerProxy();	
+			public var selectedValuepurpose:String;
+			public var uuidpurpose:String;			
+			[Bindable]
+			private var isAuthorizedWatcher:ChangeWatcher;
+			[Bindable]
+			public var isAuthorized:Boolean;
+			public var selectedValueVDS:String;
+			public var selectedValueVDSMM:String;
+			private var _proxy:Hpic4vc_providerProxy;
+			[Bindable]
+			public var helpUrl : String ;
+			private var count:int = 0;
+			
+			private function init():void {
+				this.currentState = "loadingData";	
+				_proxy = new Hpic4vc_providerProxy();
+				//_proxyServer.getRefreshedNetwork(serviceGuid, onGettingHostConfiguration, null);	
+				getHelpUrl();
+				isAuthorizedWatcher = ChangeWatcher.watch(this, ["isAuthorized"], dataAvailable);	
+				
+			}
+			private function dataAvailable(event:Event):void {
+				if (isAuthorized) 
+				{
+					currentState = "Authorized";
+				} else 
+				{
+					currentState = "NotAuthorized";
+				}				
+				invalidateDisplayList();
+				isAuthorizedWatcher.unwatch();
+			}
+			private function getHelpUrl():void
+			{
+				_proxy.getNetworkPreferenceHelp(serviceGuid,onGettingHelpUrl);
+			}
+			
+			private function onGettingHelpUrl(event:MethodReturnEvent):void
+			{
+				if (event && event.result)
+				{
+					helpUrl = event.result as String;
+					
+				}
+			}			
+			
+			public function addEvents():void
+			{
+				dataGroup.addEventListener(UpdateNetworkEvent.VSWTICHEVENT, vSwtichEventHandler);				
+			}
+			public function addMgmtEvents():void
+			{
+				mgmtChk.addEventListener(UpdateNetworkEvent.MGMTEVENT,mgmtEventEventHandler);	
+				mgmtChk.addEventListener(UpdateNetworkEvent.FTEVENT,ftEventEventHandler);
+				mgmtChk.addEventListener(UpdateNetworkEvent.VMOTIONEVENT,vmotionEventEventHandler);
+			}
+			
+			private function vSwtichEventHandler(event:UpdateNetworkEvent):void
+			{				
+				switchSelectedValue=event.vSwtichType;
+				
+				switchTypeData.switchdata.selectedValue=switchSelectedValue;
+				var networkMatchFlag:Boolean = compareNetworks(hostConfigData.networks,orginalHostConfigData.networks)
+				if(switchSelectedValue=="VMWARE_VDS"){
+						grpVdsversion.visible=true;
+					}
+				else{
+						grpVdsversion.visible=false;
+					}
+				if((orginalSwithtypeData.switchdata.selectedValue!= switchTypeData.switchdata.selectedValue) ||(!networkMatchFlag)){
+					btnNetSave.enabled=true;
+					btnNetClear.enabled=true;
+				}
+				else{
+					btnNetSave.enabled=false;
+					btnNetClear.enabled=false;
+				}
+			}
+			private function mgmtEventEventHandler(event:UpdateNetworkEvent):void{				
+				selectedValuepurpose=event.mgmtPurposeValue;
+				uuidpurpose=event.uuidSelectedValue;
+				var flag:Boolean=updateNetworkModel(selectedValuepurpose,uuidpurpose);
+				event.mgmtselectedValue=flag;
+								
+			}			
+			private function ftEventEventHandler(event:UpdateNetworkEvent):void{				
+				selectedValuepurpose=event.ftPurposeValue;
+				uuidpurpose=event.uuidSelectedValue;						
+				var flag:Boolean=updateNetworkModel(selectedValuepurpose,uuidpurpose);
+				event.mgmtselectedValue=flag;
+				
+			}	
+			private function vmotionEventEventHandler(event:UpdateNetworkEvent):void{				
+				selectedValuepurpose=event.vmotionPurposeValue;
+				uuidpurpose=event.uuidSelectedValue;
+				var flag:Boolean=updateNetworkModel(selectedValuepurpose,uuidpurpose);
+				event.mgmtselectedValue=flag;			
+			}	
+			private function updateSwitchType():void {
+				/*if(switchSelectedValue==null){
+					switchSelectedValue=switchTypeData.switchdata.selectedValue;
+				}*/
+				var data:String = '{"type":"'+switchTypeData.switchdata.type+'","settingName":"'+switchTypeData.switchdata.settingName+'","selectedValue":"'+switchTypeData.switchdata.selectedValue+'"}';//"oper=" + oper + ":host=" + host.text + ":username=" + userName.text + ":type=" + pwTypeValue + ":password=" + password.text;
+				_proxyServer.updateSwitchType(serviceGuid, data, onSwitchTypeUpdate);	
+				var networkData:String=networkJson();
+				_proxyServer.updateNetwork(serviceGuid, networkData, onNetworkUpdate);	
+				var vdsdata:String = '{"type":"'+vdsversions.type+'","settingName":"'+vdsversions.settingName+'","selectedValue":"'+selectedValueVDS+'"}';
+				var vdsdataMM:String = '{"type":"'+vdsMigrateManagement.type+'","settingName":"'+vdsMigrateManagement.settingName+'","selectedValue":"'+selectedValueVDSMM+'"}';
+				if(switchTypeData.switchdata.selectedValue =="VMWARE_VDS"){
+				_proxyServer.updateVDSversions(serviceGuid, vdsdata, onNetworkVDSupdate);
+				//_proxyServer.updateVDSMigrateManagement(serviceGuid, vdsdataMM, onNetworkMigrateManagementUpdate);
+				}
+				Alert.show(Helper.getString('ALERT_NETWORK_UPDATE_HC'),Helper.getString('ALERT_MESSAGE_TYPE_SUCCESS'));	
+			}
+			private function refreshNetwork():void{
+				CursorManager.setBusyCursor();
+				_proxyServer.getRefreshedNetwork(serviceGuid, onGettingHostConfiguration, null);	
+				_proxyServer.getSwitchTypeHostConfiguration(serviceGuid, onGettingSwitchTypeHostConfiguration, null);	
+				_proxyServer.getVDSVersion(serviceGuid,onGettingVDSversion,null);
+				btnNetSave.enabled=false;
+				btnNetClear.enabled=false;
+				
+			}
+			private function cancelHostConfiguration():void {				
+				hostConfigData = ObjectUtil.clone(orginalHostConfigData) as HostConfigModel;			
+				getNetworkSort(hostConfigData.networks);
+				switchTypeData = ObjectUtil.clone(orginalSwithtypeData) as SwitchTypeModel;
+				var i:int;
+				vdsversions = vdsversions as VDSVersionsModel;
+				for (i = 0; i < vdsversions.supportedValues.length; i++){
+					if(vdsversions.supportedValues.getItemAt(i) == vdsversions.selectedValue)
+					{listVds.selectedIndex=i;}					
+				}
+				btnNetSave.enabled=false;
+				btnNetClear.enabled=false;
+				if(switchTypeData.switchdata.selectedValue=="VMWARE_VDS"){
+					grpVdsversion.visible=true;						
+				}
+				else
+				{
+					grpVdsversion.visible=false;	
+				}
+			}
+			private function onGettingHostConfiguration(event:MethodReturnEvent):void 
+			{				
+				if (event != null && event.result)
+				{					
+					if (event.result && ( event.result is HostConfigModel))
+					{	
+						hostConfigData = event.result as HostConfigModel;	
+						//hostConfigData.networks=null;
+						if(hostConfigData.networks!=null){
+						getNetworkSort(hostConfigData.networks)
+						orginalHostConfigData = ObjectUtil.clone(hostConfigData) as HostConfigModel;
+						getNetworkSort(orginalHostConfigData.networks)			
+						}
+						addMgmtEvents();
+						if(hostConfigData.networks == null){
+							errorID.visible=true;
+						}
+						else if(hostConfigData.networks.length == 0){
+							errorID.visible=true;
+						}
+							
+						else{
+							errorID.visible=false;
+						}
+						CursorManager.removeBusyCursor();
+					}
+				}
+				else if (event && event.error)
+				{
+					if (event.error.toString().match("DeliveryInDoubt")) {
+						if (count < 2) {
+							count ++;
+							//_proxyServer.getRefreshedNetwork(serviceGuid, onGettingHostConfiguration, null);
+							_proxyServer.getHostConfiguration(serviceGuid, onGettingHostConfiguration, null);
+							return;
+						}
+					}
+				}
+				else if (event && event.error)
+				{
+					currentState = "errorFound";
+					lodingID.visible=false;	
+					CursorManager.removeBusyCursor();
+				}
+			}
+			
+			private function onGettingSwitchTypeHostConfiguration(event:MethodReturnEvent):void 
+			{
+			
+				if (event != null && event.result)
+				{
+					if (event.result && ( event.result is SwitchTypeModel))
+					{
+						switchTypeData = event.result as SwitchTypeModel;
+						orginalSwithtypeData = ObjectUtil.clone(switchTypeData) as SwitchTypeModel;
+						isSwitchDataAvailable =true;		
+						if(switchTypeData.switchdata.selectedValue=="VMWARE_VDS"){
+							grpVdsversion.visible=true;						
+						}
+						else
+						{
+							grpVdsversion.visible=false;	
+						}
+						addEvents();
+					}
+					
+				}
+				else if (event && event.error)
+				{
+					currentState = "errorFound";
+				}
+			}
+			
+			private function onNetworkUpdate(e:MethodReturnEvent):void{
+				if (e.result && e.result.errorMessage)
+				{
+					//Alert.show(e.result.errorMessage);
+				}
+				else
+				{
+				_proxyServer.getHostConfiguration(serviceGuid, onGettingHostConfiguration, null);	
+				btnNetSave.enabled=false;
+				btnNetClear.enabled=false;
+				}
+				
+			}
+			private function onNetworkVDSupdate(e:MethodReturnEvent):void{
+				if (e.result && e.result.errorMessage)
+				{
+					//Alert.show(e.result.errorMessage);
+				}
+				else
+				{
+					_proxyServer.getVDSVersion(serviceGuid,onGettingVDSversion,null);
+					btnNetSave.enabled=false;
+					btnNetClear.enabled=false;
+				}
+				
+			}
+			/*private function onNetworkMigrateManagementUpdate(e:MethodReturnEvent):void{
+				if (e.result && e.result.errorMessage)
+				{
+					//Alert.show(e.result.errorMessage);
+				}
+				else
+				{
+					_proxyServer.getMigrateManagement(serviceGuid,onGettingVDSMigrateManagement,null);
+					btnNetSave.enabled=false;
+					btnNetClear.enabled=false;
+				}
+				
+			}*/
+			/*private function onGettingVDSMigrateManagement(event:MethodReturnEvent):void 
+			{				
+				var i:int;
+				if (event != null && event.result)
+				{				
+					if (event.result && ( event.result is VDSMigrateManagementModel))	{					
+						vdsMigrateManagement = event.result as VDSMigrateManagementModel;
+					}
+					for (i = 0; i < vdsMigrateManagement.supportedValues.length; i++) 
+					{					
+						if(vdsMigrateManagement.supportedValues.getItemAt(i) == vdsMigrateManagement.selectedValue)
+						{
+							listVdsMM.selectedIndex=i;
+						}
+						
+					}
+				}
+				else if (event && event.error)
+				{
+					currentState = "errorFound";
+				}
+			}*/
+			private function onGettingVDSversion(event:MethodReturnEvent):void 
+			{				
+				var i:int;
+				if (event != null && event.result)
+				{				
+					if (event.result && ( event.result is VDSVersionsModel))	{					
+						vdsversions = event.result as VDSVersionsModel;
+					}
+					for (i = 0; i < vdsversions.supportedValues.length; i++) 
+					{					
+						if(vdsversions.supportedValues.getItemAt(i) == vdsversions.selectedValue)
+						{
+							listVds.selectedIndex=i;
+						}
+						
+					}
+				}
+				else if (event && event.error)
+				{
+					currentState = "errorFound";
+				}
+			}
+			private function onSwitchTypeUpdate(e:MethodReturnEvent):void{
+				if (e.result && e.result.errorMessage){
+					//Alert.show(e.result.errorMessage);
+				}
+					else{
+				_proxyServer.getSwitchTypeHostConfiguration(serviceGuid, onGettingSwitchTypeHostConfiguration, null);					
+					}
+				
+			}
+			private function getNetworkSort(network:ArrayCollection):void
+			{
+				var dataSortField:SortField = new SortField();
+				dataSortField.name = "networkName";
+				dataSortField.numeric = false;
+				
+				var dataSort:Sort = new Sort();
+				dataSort.fields = [dataSortField];
+				
+				network.sort = dataSort;
+				network.refresh();
+			}
+			private function updateNetworkModel(valPurpose:String, valuuid:String):Boolean{
+				var i:int;
+				var uuid:String;
+				var purposeDefault:String;
+				var networkName:String;
+				for (i = 0; i < hostConfigData.networks.list.length; i++) 
+				{
+					uuid=hostConfigData.networks.getItemAt(i).uuid;
+					purposeDefault=hostConfigData.networks.getItemAt(i).purpose;
+					networkName=hostConfigData.networks.getItemAt(i).networkName;
+					var flag:Boolean = StringUtil.trim(purposeDefault) == "null";
+					var flag0:Boolean = purposeDefault == null;
+					var flag1:Boolean = (valPurpose!="null");
+					var flag2:Boolean = (purposeDefault!="null");
+					
+					if(valuuid==uuid){
+						if((valPurpose != StringUtil.trim(purposeDefault)) && (valPurpose!="null") && (purposeDefault!="null")&& (purposeDefault != null)){
+							if(purposeDefault == "FT_LOGGING"){
+								Alert.show(Helper.getString('ALERT_NETWORK_WARNING_HC_FT')+networkName,Helper.getString('ALERT_MESSAGE_TYPE_WARNING'));
+							}
+							else if(purposeDefault == "MGMT_NETWORK"){
+								Alert.show(Helper.getString('ALERT_NETWORK_WARNING_HC_MN')+networkName,Helper.getString('ALERT_MESSAGE_TYPE_WARNING'));
+							}
+							else if(purposeDefault == "VMOTION"){
+								Alert.show(Helper.getString('ALERT_NETWORK_WARNING_HC_vMOTION')+networkName,Helper.getString('ALERT_MESSAGE_TYPE_WARNING'));
+							}
+							else{
+						Alert.show(Helper.getString('ALERT_NETWORK_WARNING_HC_UNSELECT')+purposeDefault+Helper.getString('ALERT_NETWORK_WARNING_HC_UNSELECT_FROM')+networkName,Helper.getString('ALERT_MESSAGE_TYPE_WARNING'));	
+							}
+						return false;
+						}						
+							hostConfigData.networks.getItemAt(i).purpose=valPurpose;							
+							var networkMatchFlag:Boolean = compareNetworks(hostConfigData.networks,orginalHostConfigData.networks);
+							if((orginalSwithtypeData.switchdata.selectedValue!= switchTypeData.switchdata.selectedValue)){
+							btnNetSave.enabled=true;
+							btnNetClear.enabled=true;
+							}
+							else if(!networkMatchFlag){
+								btnNetSave.enabled=true;
+								btnNetClear.enabled=true;
+							}
+							else{
+								btnNetSave.enabled=false;
+								btnNetClear.enabled=false;
+							}
+					}
+				}
+				return true;
+			}
+				
+			private function compareNetworks(array1:ArrayCollection,array2:ArrayCollection):Boolean{
+				var k:int;
+				var i:int;
+				var flagValue:Boolean=false;				
+				for (k = 0; k < array2.length; k++) {
+					if(array1.getItemAt(k).purpose == "null"){
+						array1.getItemAt(k).purpose =null;
+					}
+					if((array2.getItemAt(k).purpose == array1.getItemAt(k).purpose) && (array2.getItemAt(k).uuid == array1.getItemAt(k).uuid )){
+						flagValue = true;
+					}
+					else{
+						return false;
+					}
+						
+				  }				
+				return flagValue;
+			}
+			private function getSelectedValue():void{				
+				var selectedValueInt:int=listVds.selectedIndex;	
+				selectedValueVDS=vdsversions.supportedValues.getItemAt(selectedValueInt).toString();				
+				btnNetSave.enabled=true;
+				btnNetClear.enabled=true;
+			}
+			/*private function getSelectedMMValue():void{				
+				var selectedValueInt:int=listVdsMM.selectedIndex;	
+				selectedValueVDSMM=vdsMigrateManagement.supportedValues.getItemAt(selectedValueInt).toString();				
+				btnNetSave.enabled=true;
+				btnNetClear.enabled=true;
+			}*/
+			private function networkJson():String{
+			
+				var i:int;				
+				var objList:Object;
+				var returnValue:String;
+				var type:String;
+				var uuid:String;
+				var otherInfo:String;
+				var vlanID:String;
+				var purpose:String;
+				var networkId:String;
+				var networkName:String;
+				var version:String;
+				var uri:String;
+				var eTag:String;
+				
+				returnValue="[";
+				for (i = 0; i < hostConfigData.networks.list.length; i++) 
+				{ 
+					if(i>0){returnValue= returnValue+",";}
+					
+					returnValue= returnValue+'{"type":"';
+					type=hostConfigData.networks.getItemAt(i).type;					
+					returnValue=returnValue+type+'","uuid":"';
+					uuid=hostConfigData.networks.getItemAt(i).uuid;
+					returnValue=returnValue+uuid+'","otherInfo":"';
+					otherInfo=hostConfigData.networks.getItemAt(i).otherInfo;
+					returnValue=returnValue+otherInfo+'"';
+					vlanID=hostConfigData.networks.getItemAt(i).vlanID;					
+					if(vlanID){
+						returnValue=returnValue+',"vlanID":"';
+						returnValue=returnValue+vlanID+'"';
+					}
+					else{						
+						
+						returnValue=returnValue+',"vlanID":';
+						returnValue=returnValue+vlanID;
+					}					
+					purpose=hostConfigData.networks.getItemAt(i).purpose;
+					var flag1:Boolean = (purpose!="null" && purpose!=null);
+					var flag2:Boolean = (purpose==null);
+					if (flag1)
+					{
+						
+						returnValue=returnValue+',"purpose":"';
+						returnValue=returnValue+purpose+'"';
+					}
+					else
+					{
+						returnValue=returnValue+',"purpose":';
+						returnValue=returnValue+purpose;
+					}					
+					returnValue=returnValue+',"networkId":"';
+					networkId=hostConfigData.networks.getItemAt(i).networkId;
+					returnValue=returnValue+networkId+'","networkName":"';
+					networkName=hostConfigData.networks.getItemAt(i).networkName;
+					returnValue=returnValue+networkName+'","version":"';
+					version=hostConfigData.networks.getItemAt(i).version;
+					returnValue=returnValue+version+'","uri":"';
+					uri=hostConfigData.networks.getItemAt(i).uri;
+					returnValue=returnValue+uri+'","eTag":"';
+					eTag=hostConfigData.networks.getItemAt(i).eTag;
+					returnValue=returnValue+eTag+'"}';
+					
+				}
+
+				returnValue=returnValue+"]";		
+				return returnValue;
+			}
+			protected function helpButton_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(helpUrl), "_blank");
+				
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="radioGroup"/>
+	</fx:Declarations>
+	<fx:Metadata>		
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_HostConfiguratorMediator")]
+	</fx:Metadata>
+	<s:layout>
+		<s:VerticalLayout paddingBottom="15" paddingLeft="15" paddingRight="15" paddingTop="15"/>
+	</s:layout>
+	<s:states>
+		<s:State name="loadingData"/>
+		<s:State name="errorFound"/>		
+		<s:State name="dataNotFound"/>		
+		<s:State name="Authorized"/>
+		<s:State name="NotAuthorized"/>		
+	</s:states>
+		
+	<s:HGroup horizontalAlign="right" width="100%" verticalAlign="middle" includeIn="Authorized">
+		<mx:Image id="helpButton" 
+				  source="@Embed(source='/assets/images/help_black.png')" 
+				  click="helpButton_clickHandler(event)"
+				  buttonMode="true"
+				  toolTip="{Helper.getString('help')}"
+				  />	
+		
+	</s:HGroup>		
+	<s:HGroup includeIn="dataNotFound" height="30">
+		<s:Label text="no dataFound"/>					
+	</s:HGroup>
+	
+	<s:HGroup includeIn="errorFound" height="30">
+		<s:Label text="{Helper.getString('errorOccurred')}" verticalAlign="middle"/>			
+	</s:HGroup>	
+	<mx:VBox width="100%" height="100%" minWidth="0" minHeight="0">
+		<s:HGroup height="30">
+			<s:Label text="{Helper.getString('loading')}" verticalAlign="middle" visible="true" id="lodingID"/>				
+		</s:HGroup>
+		
+		<mx:VBox includeIn="Authorized" width="100%">
+			<mx:Text width="99%" fontSize="15" fontStyle="italic"
+					 text="{Helper.getString('Hpic4vc_HostConfigurator.text')}"/>            
+			<s:Label text=""/>
+		</mx:VBox>	
+		
+		<s:HGroup includeIn="NotAuthorized" width="100%">
+			<mx:Text width="99%" text="{Helper.getString('noPermission')}"/>
+		</s:HGroup>		
+		
+		<mx:VBox includeIn="Authorized" width="100%" visible="false" id="errorID">
+			<mx:Text width="99%" fontSize="15" fontStyle="italic"
+					 text="{Helper.getString('Hpic4vc_HostConfigurator.noNetwork')}"/>            
+			<s:Label text=""/>
+		</mx:VBox>	
+	<mx:HRule width="100%"/>		
+		<s:Spacer width="15"/>	
+	<s:VGroup x="0" y="45" width="100%" height="100%">
+		<mx:HBox includeIn="Authorized">
+			<!--<s:Label name="labHost" text="Host Networking Configuration" fontSize="15"/>-->
+			<s:Button label="{Helper.getString('LABEL_REFRESH')}" buttonMode="true" click="refreshNetwork()" name="Refresh"/>			
+		</mx:HBox>
+	<s:HGroup includeIn="Authorized" width="100%" height="100%">	
+		<mx:AdvancedDataGrid id="mgmtChk" width="100%"  height="100%" dataProvider="{hostConfigData.networks}" variableRowHeight="true">				
+			<mx:columns>				
+				<mx:AdvancedDataGridColumn dataField="networkName" headerText="{Helper.getString('LABEL_NETWORK')}" width="140"/>				
+				<mx:AdvancedDataGridColumn dataField="purpose"
+										   headerText="{Helper.getString('LABEL_MGN_NETWORK')}"
+										   itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfMgmtRenderer"
+										   textAlign="center" sortable="false" minWidth="90" width="130"/>
+				<mx:AdvancedDataGridColumn dataField="purpose"
+										   headerText="{Helper.getString('LABEL_VM_NETWORK')}"
+										   itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfVmotionRenderer"
+										   textAlign="center" sortable="false" minWidth="90" width="130"/>
+				<mx:AdvancedDataGridColumn dataField="purpose"
+										   headerText="{Helper.getString('LABEL_FT_NETWORK')}"
+										   itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfFTRenderer"
+										   textAlign="center" sortable="false" minWidth="90" width="130"/>				
+				<mx:AdvancedDataGridColumn dataField="otherInfo" headerText="{Helper.getString('LABEL_VC_DOMAIN')}" wordWrap="true"/>
+			</mx:columns>			
+		</mx:AdvancedDataGrid>		
+	</s:HGroup>
+		<s:Spacer width="15"/>
+	<s:HGroup id="grpSwitchType" includeIn="Authorized" visible="{isSwitchDataAvailable}"
+			  includeInLayout="{isSwitchDataAvailable}" verticalAlign="middle">
+		<s:Label text="{Helper.getString('LABEL_DEFAULT_SWITCH_TYPE')}"/>
+		<s:Spacer width="20"/>		
+		<s:DataGroup id="dataGroup"
+					 dataProvider="{switchTypeData.switchdata.switchSupportedValueData}"
+					 itemRenderer="com.hp.asi.hpic4vc.ui.renderers.SwitchTypeRenderer">
+			<s:layout>
+				<s:HorizontalLayout/>
+			</s:layout>
+		</s:DataGroup>
+		<s:HGroup id="grpVdsversion" includeIn="Authorized" visible="false" verticalAlign="middle">
+			<mx:ComboBox id="listVds" width="100" change="getSelectedValue()" dataProvider="{vdsversions.supportedValues}"/>	
+			<s:Label text="{Helper.getString('LABEL_DEFAULT_VDS_VER')}"/>
+		</s:HGroup>
+	</s:HGroup>
+		<s:Spacer width="15"/>		
+		<!--<s:HGroup id="grpVdsversion" includeIn="Authorized" visible="false" verticalAlign="middle">
+			<s:Label text="VDS Spec Version"/>		
+			<mx:ComboBox id="listVds" width="100" change="getSelectedValue()"
+						 dataProvider="{vdsversions.supportedValues}"/>		
+			<s:Label id="vdsmmID" text="Migrate Management "/>
+			<mx:ComboBox id="listVdsMM" width="100" change="getSelectedMMValue()"
+						 dataProvider="{vdsMigrateManagement.supportedValues}"/>			
+		</s:HGroup>-->	
+		<!--<s:HGroup id="grpMigrateManagement" includeIn="Authorized" visible="true">			
+			<mx:ComboBox dataProvider="{vdsMigrateManagement.supportedValues}" width="100" id="listVdsMM" change="getSelectedMMValue()"/>
+			<s:Label text="Migrate Management "/>
+		</s:HGroup>	-->
+		
+		<s:Spacer width="15"/>
+		<mx:HBox includeIn="Authorized">
+			<s:Button id="btnNetSave" label="{Helper.getString('LABEL_SAVE')}" buttonMode="true" click="updateSwitchType()"
+					  enabled="false" name="Save"/>
+			<s:Button id="btnNetClear" label="{Helper.getString('LABEL_CLEAR')}" buttonMode="true"
+					  click="cancelHostConfiguration()" enabled="false" name="Clear"/>			
+		</mx:HBox>
+	</s:VGroup>	
+	</mx:VBox>
+</s:Group>

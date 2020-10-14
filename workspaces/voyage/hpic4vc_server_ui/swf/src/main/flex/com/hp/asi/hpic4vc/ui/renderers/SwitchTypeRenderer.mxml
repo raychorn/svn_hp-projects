@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+								  xmlns:s="library://ns.adobe.com/flex/spark" 
+								  xmlns:mx="library://ns.adobe.com/flex/mx" 
+								  width="100%"
+								  autoDrawBackground="true">
+	<fx:Declarations>		
+		
+	</fx:Declarations>	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.events.UpdateNetworkEvent;
+			
+			import spark.components.RadioButtonGroup;			
+			[Bindable]
+			private var standardCheck:Boolean = false;
+						
+			private const STANDARD:String = "STANDARD";
+			private const VMWARE_VDS:String = "VMWARE_VDS";		
+			
+			private const StandardvSwitch:String = "Standard vSwitch";
+			private const DistributedvSwitch:String = "Distributed vSwitch";
+			
+			
+			[Bindable]
+			private var rdoLbl:String;
+			[Bindable]
+			private var selectedValue:Boolean=false;
+			[Bindable]
+			private var rdSelectedLbl:String;
+			[Bindable]
+			public var selectedValueString:String;
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				//selectedValueRadBtn.selected=false;
+				//selectedValueRadBtn.group.selectedValue=false;
+				(parentDocument.radioGroup as RadioButtonGroup).selectedValue = null;
+				selectedValue=false;
+				
+				if (value){
+					
+				if(value && value.switchName == STANDARD)
+				{					
+					rdoLbl = StandardvSwitch as String;
+					selectedValue=value.selectedSwitch;					
+				}
+				if(value && value.switchName == VMWARE_VDS)
+				{
+					rdoLbl = DistributedvSwitch as String;
+					selectedValue=value.selectedSwitch;					
+				}
+				}
+			}
+			private function rb_change(evt:Event):void {
+				var rb:RadioButton = evt.currentTarget as RadioButton;
+				rdSelectedLbl = rb.label;
+				if(rdSelectedLbl == StandardvSwitch){
+					selectedValueString=STANDARD;
+				}
+				if(rdSelectedLbl == DistributedvSwitch){
+					selectedValueString=VMWARE_VDS;
+				}
+				
+				updateSwitchType(selectedValueString);
+			}
+			
+			
+			private function updateSwitchType(val:String):void
+			{
+				var vSwtichEvent:UpdateNetworkEvent = new UpdateNetworkEvent(UpdateNetworkEvent.VSWTICHEVENT,true)
+					vSwtichEvent.vSwtichType = val;
+					dispatchEvent(vSwtichEvent);
+			}
+
+			/*protected function radiogroupChanged(event:Event):void
+			{
+				var rb:RadioButtonGroup = event.currentTarget as RadioButtonGroup;
+				rdSelectedLbl = rb.selectedValue;
+				if(rdSelectedLbl == StandardvSwitch){
+					selectedValueString=STANDARD;
+				}
+				if(rdSelectedLbl == DistributedvSwitch){
+					selectedValueString=VMWARE_VDS;
+				}
+				updateSwitchType(selectedValueString);
+			}*/
+			
+		]]>
+	</fx:Script>
+	
+		
+	<s:RadioButton group="{parentDocument.radioGroup}" label="{rdoLbl}" id="selectedValueRadBtn" selected="{selectedValue}" click="rb_change(event)" />		
+	
+</s:ItemRenderer>
+

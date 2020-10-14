@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" title="{Helper.getString('APPLY_RECOMMENTEDACTION_TITLE')}" close="closeWindow()" creationComplete="centerWindow()" width="100%">
+	<fx:Script>
+		<![CDATA[
+			import assets.components.Hpic4vc_BaseMediator;
+			
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;	
+			[Bindable]
+			public var serviceGuid:String;	
+			[Bindable]
+			public var _contextObject:IResourceReference;	
+			[Bindable]
+			public var networkMismatchActions:ArrayCollection;
+			public var _proxyServer:Hpic4vc_server_providerProxy=new Hpic4vc_server_providerProxy();
+			
+			private function centerWindow():void 
+			{
+				PopUpManager.centerPopUp(this);
+			}
+			private function closeWindow():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			private function closeWindowPopUp(e:Event):void
+			{
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function lfRowNum(oItem:Object,iCol:int):String
+			{
+				var iIndex:int = networkMismatchActions.getItemIndex(oItem) + 1;
+				return String(iIndex);
+			}
+			private function applyActions(e:Event):void{
+				var dataValue:String=_contextObject.uid;
+				var data_array:Array=dataValue.split(":");
+								
+				var data:String = '{"hostMoid":"'+data_array[2]+'","hypervisorMgrUuid":"'+data_array[0]+'"}';
+				if (_contextObject != null) {
+				_proxyServer.applyHostMismatchActions(serviceGuid, data, onGettingHostConfiguration);			
+				PopUpManager.removePopUp(this);
+				CursorManager.setBusyCursor();
+				}
+			}
+			protected function moreClicked(event:MouseEvent):void
+			{
+				var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+				baseMediator.setTabClickedInfo("networkingTab");
+				var manage_uiView:Hpic4vc_manage_uiView = baseMediator.getManageView();
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getManageMoreLinkURLs(_contextObject);;
+				dispatchEvent(e);
+				if(manage_uiView != null)
+					manage_uiView.component_moreOnNetworkingClicked(event);
+				//	hpic4vc_uiView.component_moreOnNetworkingClicked(event);
+			}
+			private function onGettingHostConfiguration(e:MethodReturnEvent):void 
+			{
+				if ((e.result) && (!e.error)){	
+					CursorManager.removeBusyCursor();
+					Alert.show(Helper.getString('ALERT_APPLY_RECOMMENTEDACTION_WARNING'),Helper.getString('ALERT_MESSAGE_TYPE_WARNING'));	
+					var event:MouseEvent = new MouseEvent(MouseEvent.CLICK);
+					moreClicked(event);
+				}				
+				else if (e && e.error){
+					CursorManager.removeBusyCursor();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup width="100%" paddingRight="20" paddingLeft="20" paddingBottom="20" >				
+		<s:Spacer width="30"/>
+		<mx:HBox width="100%" height="100%" borderStyle="solid" borderVisible="true" >
+			<mx:AdvancedDataGrid dataProvider="{networkMismatchActions}" width="100%" sortItemRenderer="{null}" sortableColumns="false">				
+				<mx:columns>				
+					<mx:AdvancedDataGridColumn headerText="No" labelFunction="lfRowNum" width="30" />
+					<mx:AdvancedDataGridColumn headerText="Actions" dataField="networkMismatchActions"/>
+				</mx:columns>				
+			</mx:AdvancedDataGrid>		
+		</mx:HBox>
+		<s:Spacer width="30"/>
+		<mx:HBox>
+			<s:Button name="Apply" label="{Helper.getString('LABEL_APPLY')}" click="applyActions(event)"/>
+			<s:Button name="Cancel" label="{Helper.getString('LABEL_CANCEL')}" click="closeWindowPopUp(event)"/>	
+		</mx:HBox>
+	</s:VGroup>	
+</mx:TitleWindow>

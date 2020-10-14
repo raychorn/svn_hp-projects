@@ -1,0 +1,70 @@
+<project name="hpic4vc_provider" default="build-jar">
+   <description>
+       Ant build script example for the Java service 'hpic4vc_provider'.
+       The output is a bundle in target/hpic4vc_provider.jar that can be
+       copied in the "plugins" folder of the plugin's package.
+       -----------------------------------------------------------------------
+       NOTE: you don't need to use this build script during development with
+       Eclipse or STS.  See the SDK documentation on plugin deployment and
+       packaging for more information.
+       -----------------------------------------------------------------------
+   </description>
+
+   <!-- SDK folders should be set in environment variables -->
+   <property environment="env"/>
+   <property name="CASL_VENDORLIB"    value="${env.CASL_VENDORLIB}"/>
+   <property name="VIRGO_HOME"        value="${env.VIRGO_HOME}"/>
+
+   
+   <!-- name of the jar output file -->
+   <property name="JAR_FILE"          value="hpic4vc_provider.jar"/>
+   <property name="BUILD_DIR"         value="${basedir}/target"/>
+   <property name="CLASSES"           value="${BUILD_DIR}/classes"/>
+   <property name="RES_DIR"           value="${basedir}/src/main/resources"/>
+
+
+   <!-- clean the generated build files -->
+   <target name="clean">
+      <delete dir="${BUILD_DIR}" />
+      <mkdir dir="${BUILD_DIR}/classes" />        
+   </target>
+
+   <target name="compile-java" depends="clean">      
+      
+      <javac debug="true" debuglevel="lines,vars,source" destdir="${CLASSES}" includeantruntime="false">
+         <src path="${basedir}/src/main/java"/>
+         <!-- <src path="${basedir}/src/test/java"/> for future test files -->
+         <classpath>
+            <pathelement path="${CASL_VENDORLIB}/lib/vsphere-client-sdk/libs/vsphere-client-lib.jar"/>
+            <pathelement path="${CASL_VENDORLIB}/lib/vsphere-client-sdk/samples/vsphereviews/vsphere-wssdk-provider/lib/vim25.jar"/>
+            <pathelement path="${CASL_VENDORLIB}/lib/Jackson/jackson-core-asl/main/jackson-core-asl-1.9.2.jar"/>
+            <pathelement path="${CASL_VENDORLIB}/lib/Jackson/jackson-mapper-asl/main/jackson-mapper-asl-1.9.2.jar"/>
+            <pathelement path="${VIRGO_HOME}/repository/usr/commons-logging-1.0.2.jar"/>
+            <pathelement path="${VIRGO_HOME}/repository/usr/httpclient-4.0.1.jar"/>
+            <pathelement path="${VIRGO_HOME}/repository/usr/httpcore-4.1.jar"/>
+
+         	
+         </classpath>
+      </javac>
+   </target>
+
+   <!-- Build the jar bundle -->
+   <target name="build-jar" depends="compile-java">
+      <!-- Add resources -->
+      <copy todir="${CLASSES}">
+         <fileset dir="${RES_DIR}"/>
+      </copy>
+      <copy todir="${CLASSES}">
+         <fileset dir="${basedir}/src/main/java">
+             <exclude name="**/*.java"/>
+         </fileset>
+      </copy>
+
+      <!-- Create the jar bundle -->
+      <jar  destfile="${BUILD_DIR}/${JAR_FILE}"
+            manifest="${RES_DIR}/META-INF/MANIFEST.MF"
+            basedir="${CLASSES}"/>
+
+   </target>
+</project>
+

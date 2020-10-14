@@ -1,0 +1,18 @@
+<![CDATA[
+    <% if (this['arr'].length > 0){ %>
+        <% for (var i=0 ; i<this['arr'].length ; i++){ %>
+            <div class="box_line">
+                <%=get_str(this['arr'][i].taskName, this['arr'][i].taskNameArguments)%><br />
+                
+                <% if (this['arr'][i].formattedCompletedTime.length){ %>
+                    Completed: <%=this['arr'][i].formattedCompletedTime%><br />
+                <% } else { %>
+                    Started: <%=this['arr'][i].formattedStartTime%><br />
+                <% } %>
+            </div>
+        <% } %>
+        <div class="box_footer"><a href="#" onclick="$('#tasks_container').HideBubblePopup();AppManager.loadApp('hosttasks');">More...</a></div>
+    <% } else { %>
+        <div class="box_line">There are no tasks to display.</div> 
+    <% } %>
+]]>

@@ -1,0 +1,1209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Cache-Control" content="no-cache"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/> 
+<title>Deployment Wizard</title>
+
+<link id="jquery-ui-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/jquery-ui-1.8.16.custom.css"/>
+<link id="main-theme-link" rel="stylesheet" type="text/css" href="/static/css/hp-light/main.css"/>
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/jquery.bubblepopup.v2.3.1.css" /> 
+<link rel="stylesheet" type="text/css" href="/static/css/jquery/ui.multiselect.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/jscrollpane.css" />
+
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/oss/json2.js"></script>
+<script type="text/javascript" src="/static/js/oss/jquery.jqote2.min.js"></script>
+<script type="text/javascript" src="/static/js/helpers.js"></script>
+<script type="text/javascript" src="/static/js/oss/jqote_dynamic.js"></script>
+<script type="text/javascript" src="/static/js/oss/jquery-ui-1.8.16.custom.min.js"></script>
+
+<script type="text/javascript" src="/static/js/cookiehelper.js" ></script>
+
+<script type="text/html" id="target_job_folder_template">
+<![CDATA[
+    <% if (this['jobs'].length > 0){ %>
+        <% for (var i=0 ; i<this['jobs'].length ; i++){ %>
+            <div class="job_folder">
+                <img src="/static/img/icons/vm-folder.png" />&nbsp;<%=this['jobs'][i]%>&nbsp;(<a href="javascript:removeJob('<%=this['id']%>', '<%=this['jobs'][i]%>')">remove</a>)
+            </div>
+        <% } %>
+    <% } else { %>
+        No job has been added. Drag a job from the Available Job Folders to this server.
+    <% } %>
+]]>
+</script>
+
+<script type="text/html" id="step_1_template">
+<![CDATA[
+
+    <% if (this['ManagedNodes'] && this['ManagedNodes'].length > 0){ %>
+    <div style="margin-bottom: 10px; text-align:right;">
+        <a href="javascript:refreshDeployment();"><img style="border: 0px none;" src="/static/img/icons/refresh.png" />&nbsp;Refresh List</a>
+    </div>
+    <table class="logs" width="100%">
+        <thead>
+            <tr>
+              <th><input type="checkbox" onclick="$(':input[target]').attr('checked', this.checked);" /></th>
+              <th style="white-space:nowrap;">&nbsp;Name</th>
+              <th style="white-space:nowrap;">&nbsp;First NIC MAC Address</th>
+              <th style="white-space:nowrap;">&nbsp;UUID</th>
+              <th style="white-space:nowrap;">&nbsp;Deployment Server ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (i=0 ; i<this['ManagedNodes'].length ; i++) { %>
+                <% var j=-1; %>
+                <% if (this['ManagedNodes'][i]['details']) { %>
+                <% var interfaces = this['ManagedNodes'][i]['details']['networkInterfaces']; %>
+                <% for (j=0 ; j<interfaces.length ; j++) { %>
+                    <% if (interfaces[j]['id'] == '0') { break; } %>
+                <% } %>
+                <% } %>
+            <tr class="<%=(i%2==0) ? "odd" : ""%>">
+                <td><input type="checkbox" id="host_select_<%=this['ManagedNodes'][i]['uuid']%>" target="<%=this['ManagedNodes'][i]['id']%>" name="<%=this['ManagedNodes'][i]['name']%>" uuid="<%=this['ManagedNodes'][i]['uuid']%>"/></td>
+                <td style="font-weight:bold;"><img src="/static/img/icons/host-new.png" />&nbsp;<%=this['ManagedNodes'][i]['name']%></td>
+                <td><%=(j==-1) ? "" : interfaces[j]['macAddress']%></td>
+                <td><%=this['ManagedNodes'][i]['uuid']%></td>
+                <td><%=this['ManagedNodes'][i]['id']%></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <br />
+    <% } else { %>
+    There are no target nodes managed by the deployment server.  Deployment cannot continue.<br />
+    <ul>
+      <li><a href="javascript:refreshDeployment();">Click here</a> to refresh the deployment service.</li>
+    </ul>
+    <% } %>
+
+]]>
+</script>
+
+<script type="text/html" id="step_2_template">
+<![CDATA[
+    <table class="logs" width="100%">
+        <thead>
+            <tr>
+              <th style="white-space:nowrap;">&nbsp;Name</th>
+              <th style="white-space:nowrap;">&nbsp;MAC Address</th>
+              <th style="white-space:nowrap;">&nbsp;Configuration</th>
+              <th style="white-space:nowrap;">&nbsp;IP Address</th>
+              <th style="white-space:nowrap;">&nbsp;Netmask</th>
+              <th style="white-space:nowrap;">&nbsp;Gateway</th>
+              <th style="white-space:nowrap;">&nbsp;DNS Servers</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (i=0 ; i<this['deployment_data']['ManagedNodes'].length ; i++) { %>
+              <% if (this['servers'][this['deployment_data']['ManagedNodes'][i]['id']]){ %>
+                <%
+                    var id = this['deployment_data']['ManagedNodes'][i]['id'];
+                    var hostname = this['servers'][id]['personalization']['hostname'];
+                    if (typeof(hostname) == 'undefined'){
+                        hostname = '';
+                    }
+                    var dnsdomain = this['servers'][id]['personalization']['dnsdomain'];
+                    if (typeof(dnsdomain) == 'undefined'){
+                        dnsdomain = '';
+                    }
+                %>
+                <tr>
+                    <td style="font-weight: bold;"><img src="/static/img/icons/host-new.png" />&nbsp;<%=this['deployment_data']['ManagedNodes'][i]['name']%></td>
+                    <td colspan="1">Hostname:</td>
+                    <td colspan="1"><input type="text" ftype="hostname" sid="<%=id%>" width="50" class="VSphereTextBox" value="<%=hostname%>" /></td>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="1">Domain:</td>
+                    <td colspan="1"><input type="text" ftype="dnsdomain" sid="<%=id%>" width="50" class="VSphereTextBox" value="<%=dnsdomain%>" /></td>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+
+                <% var interfaces = this['deployment_data']['ManagedNodes'][i]['details']['networkInterfaces']; %>
+                <% for (j=0 ; j<interfaces.length ; j++) { %>
+                    <% 
+                        if (interfaces[j]['id'] != '0')
+                            continue;
+                        try{
+                            var nic = this['servers'][id]['personalization']['nics'][interfaces[j]['id']];
+                            var dhcp = nic['useDhcp'];
+                            var ip = nic['ipAddress'];
+                            var nm = nic['netmask'];
+                            var gw = nic['gateway'];
+                            var dns1 = nic['dns'][0];
+                            var dns2 = nic['dns'][1];
+                            if (typeof(dns1) == 'undefined')
+                                dns1 = '';
+                            if (typeof(dns2) == 'undefined')
+                                dns2 = '';
+                        } catch (ex){
+                            var dhcp = interfaces[j]['dhcp'];
+                            var ip = (interfaces[j]['ipAddress']) ? interfaces[j]['ipAddress'] : '';
+                            var nm = (interfaces[j]['ipMask']) ? interfaces[j]['ipMask'] : '';
+                            var gw = interfaces[j]['gateways'];
+                            var dns1 = '';
+                            var dns2 = '';
+                            try{
+                                dns1 = interfaces[j]['dns'][0];
+                                dns2 = interfaces[j]['dns'][1];
+                            } catch (e){}
+                        }
+                        var checked_attr = (dhcp) ? 'checked="true"' : '';
+                        var disabled_attr = (dhcp) ? 'disabled="true"' : '';
+                        var tb_class = (dhcp) ? 'VSphereTextBoxDisabled' : 'VSphereTextBox';
+                        var chk_id = 'mode_chk_' + interfaces[j]['id'] + '_' + id;
+                    %>
+                    <tr class="<%=(j%2==0) ? "odd" : ""%>">
+                        <td>&nbsp;</td>
+                        <td style="vertical-align:top"><%=interfaces[j]['macAddress']%></td>
+                        <td style="vertical-align:top"><input type="checkbox" id="<%=chk_id%>" ftype="mode" sid="<%=id%>" nic_id="<%=interfaces[j]['id']%>" <%=checked_attr%> onclick="toggleNicEnabled(this.checked, '<%=id%>', '<%=interfaces[j]['id']%>');" />&nbsp;<label for="<%=chk_id%>">Use DHCP</label></td>
+                        <td style="vertical-align:top"><input type="text" nic_id="<%=interfaces[j]['id']%>" ftype="ip" sid="<%=id%>" width="50" class="<%=tb_class%>" <%=disabled_attr%> value="<%=ip%>" /></td>
+                        <td style="vertical-align:top"><input type="text" nic_id="<%=interfaces[j]['id']%>" ftype="nm" sid="<%=id%>" width="50" class="<%=tb_class%>" <%=disabled_attr%> value="<%=nm%>"/></td>
+                        <td style="vertical-align:top"><input type="text" nic_id="<%=interfaces[j]['id']%>" ftype="gw" sid="<%=id%>" width="50" class="<%=tb_class%>" <%=disabled_attr%> value="<%=gw%>" /></td>
+                        <td style="vertical-align:top">
+                            <input type="text" nic_id="<%=interfaces[j]['id']%>" ftype="dns1" sid="<%=id%>" width="50" class="<%=tb_class%>" <%=disabled_attr%> value="<%=dns1%>" /><br />
+                            <input type="text" nic_id="<%=interfaces[j]['id']%>" ftype="dns2" sid="<%=id%>" width="50" class="<%=tb_class%>" <%=disabled_attr%> value="<%=dns2%>" />
+                        </td>
+                    </tr>
+                <% } /* for interfaces */ %>
+              <% } /* if node exists in servers */ %>
+            <% } %>
+        </tbody>
+    </table>
+]]>
+</script>
+
+<script type="text/html" id="step_3_template">
+<![CDATA[
+    The <em>Available Job Folders</em> list below shows the available jobs from the RDP deployment server. To deploy an OS onto one of the selected targets, drag the job folder
+    from the <em>Available Job Folders</em> to the desired target.
+    <br />
+    <br />
+
+    Please choose the type of OS that is being deployed before dragging the job to the target servers.
+    <br />
+    <br />
+    <table cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td style="vertical-align:top; width:250px;">
+                <div style="margin-bottom: 5px;font-weight:bold;">Available Job Folders:</div>
+                <% if (this['deployment_data']['JobFolders'].length){ %>
+                    <br />
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td nowrap="true" style="width:100px;">Job Folder Name</td>
+                            <td style="font-size: 10px;">OS Type</td>
+                        </tr>
+                    </table>
+                    <% for (job in this['deployment_data']['JobFolders']) { %>
+                        <div folderName="<%=this['deployment_data']['JobFolders'][job]['name']%>" class="draggable_folder">
+                        <%
+                            var esxiChecked = (this['deployment_data']['JobFolders'][job]['type'] == 'ESXi') ? 'checked="true"' : '';
+                            var esxChecked = (this['deployment_data']['JobFolders'][job]['type'] == 'ESX') ? 'checked="true"' : '';
+                        %>
+                            <table cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                    <td nowrap="true" style="width:100px;cursor:pointer;"><img src="/static/img/icons/vm-folder.png" />&nbsp;<%=this['deployment_data']['JobFolders'][job]['name']%></td>
+                                    <td style="font-size: 10px;cursor:pointer;">
+                                        <input type="radio" value="ESX" name="os_type_<%=this['deployment_data']['JobFolders'][job]['name']%>" <%=esxChecked%> /> ESX <input type="radio" value="ESXi" name="os_type_<%=this['deployment_data']['JobFolders'][job]['name']%>" <%=esxiChecked%> /> ESXi
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <br />
+                    <table cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td style="vertical-align:top;"><img src="/static/img/icons/orange_triangle_large.png" /></td>
+                            <td style="padding-left:5px;">No top-level job folders were found. <a href="javascript:open_jobfolders_help();">Click here</a> for more information.</td>
+                        </tr>
+                    </table>
+                    
+                <% } %>
+            </td>
+
+            <td style="padding-left: 40px; vertical-align:top">
+                <div style="margin-bottom: 5px;font-weight:bold;">Selected Targets:</div>
+
+                <div class="server_target" id="target_all">
+                    <div style="border-bottom: 1px solid #000; width: 300px;"><img src="/static/img/icons/new-cluster.png" />&nbsp;<b>Add to all</b></div>
+                    <div id="all_jobs" class="job_list_container">Drag jobs from the Available Job Folders here to add to all targets.</div>
+                </div>
+
+                <% for (server in this['servers']) { %>
+                    <div class="server_target" id="<%=server%>">
+                        <div style="border-bottom: 1px solid #000; width: 300px;"><img src="/static/img/icons/host-new.png" />&nbsp;<b><%=this['servers'][server]['name']%></b></div>
+                        <div id="<%=server%>_jobs" class="job_list_container">No jobs have been added. Drag jobs from the Available Job Folders to this server.</div>
+                    </div>
+                <% } %>
+            </td>
+        </tr>
+    </table>
+]]>
+</script>
+
+<script type="text/html" id="step_4_template">
+<![CDATA[
+    <table class="logs" width="100%">
+        <thead>
+            <tr>
+              <th><input type="checkbox" onclick="$(':input[addtovc]').attr('checked', this.checked);" checked="true" id="addtovc_chkall" /></th>
+              <th style="white-space:nowrap;">&nbsp;Name</th>
+              <th style="white-space:nowrap;">&nbsp;Management Network Interface</th>
+              <th style="white-space:nowrap;">&nbsp;Credentials</th>
+              <th style="white-space:nowrap;">&nbsp;Add to vCenter Folder</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% var first = true; %>
+          <% for (i=0 ; i<this['deployment_data']['ManagedNodes'].length ; i++) { %>
+            <% if (this['servers'][this['deployment_data']['ManagedNodes'][i]['id']]){ %>
+            <% var id = this['deployment_data']['ManagedNodes'][i]['id']; %>
+            <tr class="<%=(i%2==0) ? "odd" : ""%>">
+                <td style="vertical-align:top;"><input type="checkbox" id="addtovc_check_<%=id%>" addtovc="<%=id%>" checked="true" onclick="toggle_all(this.checked);" /></td>
+                <td style="font-weight:bold; vertical-align:top;"><img src="/static/img/icons/host-new.png" />&nbsp;<%=this['deployment_data']['ManagedNodes'][i]['name']%></td>
+                <td style="vertical-align:top;">
+                    <select id="addtovc_if_<%=id%>" style="width: 300px;">
+
+                        <% var hostname = this['servers'][id]['personalization']['hostname']; %>
+                        <% var dnsdomain = this['servers'][id]['personalization']['dnsdomain']; %>
+                        <% if (hostname != "") { %>
+                            <% hostname = (dnsdomain != '') ? (hostname + '.' + this['servers'][id]['personalization']['dnsdomain']) : hostname; %>
+                            <option value="<%=hostname%>;<%=hostname%>"><%=hostname%></option>
+                        <% } %>
+
+                        <% var interfaces = this['deployment_data']['ManagedNodes'][i]['details']['networkInterfaces']; %>
+                        <% for (j=0 ; j<interfaces.length ; j++) { %>
+                          <% if (interfaces[j]['id'] != '0') continue; %>
+                            <%
+                              var server = this['servers'][this['deployment_data']['ManagedNodes'][i]['id']];
+                              var ip = server['personalization']['nics'][interfaces[j]['id']]['ipAddress'];
+                              if (ip == '') ip = 'DHCP';
+                            %>
+                            <option value="<%=ip%>;<%=interfaces[j]['macAddress']%>"><%='NIC ' + interfaces[j]['id']%> - <%=ip%> (<%=interfaces[j]['macAddress']%>)</option>
+                        <% } %>
+                    </select>
+                </td>
+                <td style="vertical-align:top;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td>Username:</td>
+                            <td style="width:10px;">&nbsp;</td>
+                            <td style="width: 150px;"><input type="text" class="VSphereTextBox" id="username-<%=id%>" style="width:120px;" />
+                            <% if (first) { %>
+                                <img src="/static/img/icons/green_arrow_down.png" alt="Fill username and password for all hosts" style="border: 0px none; cursor:pointer;" onclick="fill_passwords();" />
+                                <% first = false; %>
+                            <% } %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Password:</td>
+                            <td style="width:10px;">&nbsp;</td>
+                            <td style="width:150px;"><input type="password" class="VSphereTextBox" id="password-<%=id%>" style="width:120px;" /></td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align:top;">
+                    <select id="cluster_name_<%=id%>" style="width: 300px;">
+                        <% for (var j=0 ; j<this['deployment_data']['Clusters'].length ; j++) { %>
+                        <option value="<%=this['deployment_data']['Clusters'][j]%>">Cluster: <%=this['deployment_data']['Clusters'][j]%></option>
+                        <% } %>
+                        <% for (var j=0 ; j<this['deployment_data']['Datacenters'].length ; j++) { %>
+                        <option value="<%=this['deployment_data']['Datacenters'][j]%>">Datacenter: <%=this['deployment_data']['Datacenters'][j]%></option>
+                        <% } %>
+                    </select>
+                </td>
+            </tr>
+            <% } /* if server in selected servers */ %>
+          <% } /* for */ %>
+        </tbody>
+    </table>
+]]>
+</script>
+
+<script type="text/html" id="step_5_template">
+<![CDATA[
+    <% for (i=0 ; i<this['deployment_data']['ManagedNodes'].length ; i++) { %>
+    <% var id = this['deployment_data']['ManagedNodes'][i]['id']; %>
+    <% if (this['servers'][id]){ %>
+    <div>
+        <div style="border-bottom: 1px solid #000; width: 430px;"><img src="/static/img/icons/host-new.png" />&nbsp;<b><%=this['deployment_data']['ManagedNodes'][i]['name']%></b></div>
+        <table cellspacing="0" cellpadding="0" border="0" style="width:420px; margin-left: 10px;">
+            <tr>
+                <td style="vertical-align:top;width:150px;">Job Folders to Run:</td>
+                <td style="width: 20px;">&nbsp;</td>
+                <td>
+                <% for (job in this['servers'][id]['jobs']){ %>
+                    <%=this['servers'][id]['jobs'][job]%><br />
+                <% } %>
+                </td>
+            </tr>
+            <tr class="odd">
+                <td style="vertical-align:top;width:150px;">Add to vCenter:</td>
+                <td style="width: 20px;">&nbsp;</td>
+                <td>
+                    <% if (this['servers'][id]['addToVCenter']){ %>
+                        <% if (this['servers'][id]['addToVCenter']['interface'] == this['servers'][id]['addToVCenter']['mac']) { %>
+                            Hostname: <%=this['servers'][id]['addToVCenter']['interface']%><br />
+                        <% } else { %>
+                            <%=this['servers'][id]['addToVCenter']['interface']%> (<%=this['servers'][id]['addToVCenter']['mac']%>)<br />
+                        <% } %>
+                        vCenter Folder: <%=this['servers'][id]['addToVCenter']['cluster_name']%>
+                    <% } else { %>
+                        Not adding to vCenter
+                    <% } %>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <br />
+    <% } %>
+    <% } /* for */ %>
+]]>
+</script>
+
+<script type="text/html" id="step_6_template">
+<![CDATA[
+
+    <% for (i=0 ; i<this['deployment_data']['ManagedNodes'].length ; i++) { %>
+        <% if (this['deployment_data']['ManagedNodes'][i]['jobs'].length > 0) { %>
+          <% for (j=0 ; j<this['deployment_data']['ManagedNodes'][i]['jobs'].length ; j++) { %>
+            <% if (this['deployment_data']['ManagedNodes'][i]['jobs'][j]['status']) { %>
+               <div style="border-bottom: 1px solid #000; width: 400px; margin-bottom: 5px;"><img src="/static/img/icons/host-new.png" />&nbsp;<b><%=this['deployment_data']['ManagedNodes'][i]['name']%></b></div>
+                <table cellspacing="0" cellpadding="0" border="0" style="width:390px; margin-left: 10px;">
+                    <tr class="odd">
+                        <td style="vertical-align:top; width: 100px;">Job Name:</td>
+                        <td style="width: 20px;">&nbsp;</td>
+                        <td><img src="/static/img/icons/vm-folder.png" />&nbsp;<%=this['deployment_data']['ManagedNodes'][i]['jobs'][j]['folder_name']%></td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align:top;">Status:</td>
+                        <td style="width: 20px;">&nbsp;</td>
+                        <td class="<%=(this['deployment_data']['ManagedNodes'][i]['jobs'][j]['status']['status'] == 1) ? "error" : ""%>"><%=this['deployment_data']['ManagedNodes'][i]['jobs'][j]['status']['status_message']%></td>
+                    </tr>
+                </table>
+                <br />
+
+                <table cellspacing="0" cellpadding="0" border="0" style="width:390px; margin-left: 10px;">
+                    <tr>
+                        <td style="vertical-align:top; width: 100px;">Add to vCenter:</td>
+                        <td style="width: 20px;">&nbsp;</td>
+                        <td><%=this['deployment_data']['ManagedNodes'][i]['add_to_vcenter']%></td>
+                    </tr>
+                </table>
+                <br />
+            <% } else if (this['deployment_data']['ManagedNodes'][i]['jobs'][j]['error']) { %>
+            <div style="border-bottom: 1px solid #000; width: 400px; margin-bottom: 5px;"><img src="/static/img/icons/host-new.png" />&nbsp;<b><%=this['deployment_data']['ManagedNodes'][i]['name']%></b></div>
+            <%=this['deployment_data']['ManagedNodes'][i]['jobs'][j]['error']['message']%> (folder: <%=this['deployment_data']['ManagedNodes'][i]['jobs'][j]['folder_name']%>, error: <%=this['deployment_data']['ManagedNodes'][i]['jobs'][j]['error']['errno']%>)
+            <br />
+            <br />
+            <% } else { /* if status */ %>
+            <div style="border-bottom: 1px solid #000; width: 400px; margin-bottom: 5px;"><img src="/static/img/icons/host-new.png" />&nbsp;<b><%=this['deployment_data']['ManagedNodes'][i]['name']%></b></div>
+            Waiting for deployment to begin ...
+            <br />
+            <br />
+            <% } /* if status */ %>
+
+          <% } /* for jobs */ %>
+        <% } %>
+    <% } /* for managed nodes */ %>
+]]>
+</script>
+
+<script type="text/javascript" language="JavaScript">
+    <!--
+    var theme_number = 0;
+    var jquery_ui_themes = [
+                            "/static/css/hp-light/jquery-ui-1.8.16.custom.css",                                
+                            "/static/css/hp-dark/jquery-ui-1.8.16.custom.css"                            
+                            ]
+    
+    var main_themes = [     
+                        "/static/css/hp-light/main.css",
+                        "/static/css/hp-dark/main.css"                        
+                        ]
+    
+    var bubble_themes = [   ['grey', '#000'],
+                            ['all-grey', '#FFF']                            
+                            ];
+    
+    var userInfo;
+    
+    function get_current_theme(){
+        var themeCookie = readCookie('hpicsm-theme');
+        //alert(themeCookie);
+        if(!themeCookie){
+            //Create the theme cookie
+            createCookie('hpicsm-theme', $("#jquery-ui-theme-link").attr("href"), 90);
+        }else{
+            for (i in jquery_ui_themes){
+                if(themeCookie == jquery_ui_themes[i]){
+                    theme_number = i;
+                    break;
+                }
+            } 
+            eraseCookie('hpicsm-theme');
+            createCookie('hpicsm-theme', jquery_ui_themes[theme_number], 90);
+            $("#jquery-ui-theme-link").attr("href",jquery_ui_themes[theme_number]);
+            $("#main-theme-link").attr("href",main_themes[theme_number]);
+        }
+    }
+    
+    $(document).ready(function(){
+        $.ajaxSetup({ cache: false });
+        $("#fatalError").hide();
+        $("#authError").hide();
+        $(".stepContainer").hide();
+        $("#loadingBox").show();
+    
+        $.getJSON('/userinfo/'+location.search, function(result){
+                userInfo = result;
+                $("#username").html(result['userName']);
+                
+                if(userInfo.role == -1)
+                {
+                    $.getJSON("/services/host/deployment/"+query, function(result){
+                        setupWizard(result);
+                    });
+                }
+                else
+                {
+                    $("#loadingBox").hide();
+                    $("#authError").show();
+                }
+            });
+    
+        
+    
+        params = getQueryParameters();
+        vcUuid = params['serverGuid'];
+    
+        get_current_theme();
+    
+    });
+    
+    var servers = new Object();
+    var deployment_data = null;
+    var query = window.location.search;
+    var vcUuid = '';
+    
+    function toggle_all(enabled){
+        if ($("input[addtovc]").length == $("input[addtovc][checked='true']").length){
+            $("#addtovc_chkall").attr('checked', true);
+        } else {
+            $("#addtovc_chkall").attr('checked', false);
+        }
+    }
+    
+    function toggleNicEnabled(enabled, serverId, interfaceId){
+        $('input[ftype="ip"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('disabled', enabled);
+        $('input[ftype="ip"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('class', (enabled) ? "VSphereTextBoxDisabled" : "VSphereTextBox");
+    
+        $('input[ftype="nm"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('disabled', enabled);
+        $('input[ftype="nm"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('class', (enabled) ? "VSphereTextBoxDisabled" : "VSphereTextBox");
+    
+        $('input[ftype="gw"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('disabled', enabled);
+        $('input[ftype="gw"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('class', (enabled) ? "VSphereTextBoxDisabled" : "VSphereTextBox");
+    
+        $('input[ftype="dns1"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('disabled', enabled);
+        $('input[ftype="dns1"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('class', (enabled) ? "VSphereTextBoxDisabled" : "VSphereTextBox");
+    
+        $('input[ftype="dns2"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('disabled', enabled);
+        $('input[ftype="dns2"][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').attr('class', (enabled) ? "VSphereTextBoxDisabled" : "VSphereTextBox");
+        if (!enabled){
+            $('input[ftype][sid="'+serverId+'"][nic_id="'+interfaceId+'"]').blur();
+        }
+    }
+    
+    function fill_passwords(){
+        var un_inputs = $("input[id*='username-']");
+        var pw_inputs = $("input[id*='password-']");
+        var username = $(un_inputs[0]).val();
+        var password = $(pw_inputs[0]).val();
+    
+        for (var i=0 ; i<un_inputs.length ; i++){
+            $(un_inputs[i]).val(username);
+        }
+        for (var i=0 ; i<pw_inputs.length ; i++){
+            $(pw_inputs[i]).val(password);
+        }
+    }
+    
+    function updateFolders(jobFolders){
+        $.postJSON("/services/host/deployment/"+query+"&action=updateFolders", jobFolders, function(result){});
+    }
+    
+    function refreshDeployment(){
+        $(".stepContainer").hide();
+        $("#loadingBox").show();
+        $.postJSON("/services/host/deployment/"+query+"&action=refresh", null, function(result){
+            setupWizard(result);
+        });
+    }
+    
+    function clearDeployment(){
+        var confirmString = 'Are you sure?';
+        if (!confirm(confirmString)){
+            return;
+        }
+        if (pollTimer != null){
+            clearTimeout(pollTimer);
+        }
+        $.postJSON("/services/host/deployment/"+query+"&action=clear", null, function(result){
+            $("#deployment_complete").hide();
+            $("#deployment_failed").hide();
+            servers = new Object();
+            setupWizard(result);
+        });
+    }
+    
+    function setupWizard(result){
+        $("#loadingBox").hide();
+        if (result){
+            deployment_data = result;
+            if (result['Status']['errno'] == null){
+                gotoStep(1);
+            } else {
+                var msg = result['Status']['message'];
+                var errno = result['Status']['errno'];
+                $("#errorMessage").html(msg);
+                switch (parseInt(errno)){
+                    case 2:
+                        $("#dcDownload").show();
+                        $("#ErrorContainer").show();
+                        break;
+                    case 6:
+                        $("#dsRefresh").show();
+                        $("#ErrorContainer").show();
+                        break;
+                    case 8: /* deployment in progress or recently finished */
+                        if (hasActiveJobs()){
+                            $(".stepContainer").hide();
+                            var html = $('#step_6_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+                            $("#step_6_content").html(html);
+                            $("#Step_6_Container").show();
+                            startMonitoring();
+                        } else {
+                            gotoStep(1);
+                        }
+                        break;
+                    case 9:
+                        var html = $('#step_6_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+                        $("#step_6_content").html(html);
+                        $("#Step_6_Container").show();
+                        $("#deployment_complete").show();
+                        $("#deployment_failed").hide();
+                        if (pollTimer != null){
+                            clearTimeout(pollTimer);
+                        }
+                        break;
+                    case 10:
+                        $("#ErrorContainer").show();
+                        $("#dsClear").show();
+                    case -2: /* Permission denied */
+                        $("#ErrorContainer").show();
+                        $("#pageRefresh").hide();
+                        break;
+                    default:
+                        $("#ErrorContainer").show();
+                        break;
+                }
+            }
+        } else {
+            var msg = "An unknown error has occurred while initializing the deployment service."
+            $("#errorMessage").html(msg);
+            $("#ErrorContainer").show();
+        }
+    }
+    
+    function initDragDrop(){
+        $(".draggable_folder").draggable({
+            opacity: 0.4,
+            containment: 'document',
+            revert: true,
+            revertDuration: 0
+        });
+    
+        $(".server_target").droppable({
+            drop: function(event, ui){
+                
+                var folderName = $(ui['draggable']).attr('folderName');
+                var server_id = $(this).attr('id');
+    
+                if (server_id == 'target_all'){
+                    for (server in servers){
+                        if ($.inArray(folderName, servers[server]['jobs']) == -1 &&
+                            servers[server]['jobs'].length == 0){
+                            servers[server]['jobs'].push(folderName);
+                            var html = $('#target_job_folder_template').jqote(servers[server]);
+                            $("#"+server+"_jobs").html(html);
+                        }
+                    }
+                } else {
+                    if ($.inArray(folderName, servers[server_id]['jobs']) == -1 &&
+                        servers[server_id]['jobs'].length == 0){
+                        servers[server_id]['jobs'].push(folderName);
+                        var html = $('#target_job_folder_template').jqote(servers[server_id]);
+                        $("#"+server_id+"_jobs").html(html);
+                    }
+                }
+            }
+        });
+    }
+    
+    function gotoStep(stepNumber){
+        $(".stepContainer").hide();
+    
+        switch (stepNumber){
+        case 1:
+            initChooseTargets();
+            break;
+        case 2:
+            initNetworking();
+            break;
+        case 3:
+            initDeploy();
+            break;
+        case 4:
+            initAddToVCenter();
+            break;
+        case 5:
+            initSummary();
+            break;
+        case 6:
+            initStatus();
+            break;
+        }
+    
+        $("#Step_"+stepNumber+"_Container").show();
+    }
+
+    /* Check each server to see if it has any jobs running. */
+    function hasActiveJobs(){
+        if (deployment_data['ManagedNodes']){
+            for (var i=0 ; i<deployment_data['ManagedNodes'].length ; i++){
+                var node = deployment_data['ManagedNodes'][i];
+                if (node['jobs'] && node['jobs'].length > 0){
+                    for (var j=0 ; j<node['jobs'].length ; j++){
+                        var job = node['jobs'][j];
+                        if (job && job['finished'] == false){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    function initStatus(){
+        $("#step_6_content").html('Starting deployment ...');
+        // Give things time to start.
+        setTimeout('startMonitoring();', 30000);
+    }
+
+    var pollTimer = null;
+
+    function startMonitoring(){
+        $.ajax({
+            url: "/services/host/deployment/"+query,
+            dataType: "json",
+            error: function(){
+                pollTimer = setTimeout('startMonitoring();', 10000);
+            },
+            success: function(result){
+                deployment_data = result;
+                try{
+                    var html = $('#step_6_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+                    $("#step_6_content").html(html);
+                    if (deployment_data['Status']['errno'] == 9){
+                        $("#deployment_complete").show();
+                    }
+                    if (deployment_data['Status']['errno'] == 10){
+                        $("#deployment_failed").show();
+                    }
+                    if (hasActiveJobs() || deployment_data['Status']['errno']==8){
+                        pollTimer = setTimeout('startMonitoring();', 30000);
+                    }
+                } catch (e){
+                    // If we get an error here, wait for 10 seconds and then try again.
+                    pollTimer = setTimeout('startMonitoring();', 10000);
+                }
+            } 
+        });
+    }
+
+    function initChooseTargets(){
+        var html = $('#step_1_template').jqote(deployment_data);
+        $("#step_1_content").html(html);
+        for (server in servers){
+            $(':input[target="'+server+'"]').attr('checked', true);
+        }
+    }
+
+    function initNetworking(){
+        var html = $('#step_2_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+        $("#step_2_content").html(html);
+        $("input[ftype][ftype!='hostname'][ftype!='dnsdomain'][type='text']").blur(function(input){
+            var ip = $(this).val();
+            var sid = $(this).attr('sid');
+            var nic_id = $(this).attr('nic_id');
+
+            if (ip != "" && !isValidIPAddress(ip)){
+                $(this).attr('class', 'VSphereTextBoxError');
+            } else {
+                var enabled = $('input[ftype="mode"][sid="'+sid+'"][nic_id="'+nic_id+'"]').attr('checked');
+                var cls = (!enabled) ? 'VSphereTextBox' : 'VSphereTextBoxDisabled';
+                $(this).attr('class', cls);
+            }
+        });
+        $('input[ftype][ftype!="hostname"][ftype!="dnsdomain"]').blur();
+    }
+
+    function finish(){
+        // Put everything into a list since that's what the backend is expecting.
+        var dep_list = new Array();
+        for (server in servers){
+            dep_list.push(servers[server]);
+        }
+        var obj = new Object();
+        obj['vcUuid'] = vcUuid;
+        obj['deploymentList'] = dep_list;
+        $.postJSON('/services/host/deployment/'+query, obj, function(result){
+            //TODO: error checking?
+            gotoStep(6);
+        });
+    }
+
+    function removeJob(server_id, folderName){
+        var server = servers[server_id];
+        if (!server)
+            return;
+        for (var i=0 ; i<server['jobs'].length ; i++){
+            if (server['jobs'][i] == folderName){
+                server['jobs'].splice(i, 1);
+                break;
+            }
+        }
+        var html = $('#target_job_folder_template').jqote(server);
+        $("#"+server_id+"_jobs").html(html);
+    }
+
+    function chooseTargets(){
+        var targetCheckboxes = $("input[target]");
+        for (i=0 ; i<targetCheckboxes.length ; i++){
+            var id = $(targetCheckboxes[i]).attr('target');
+            if (targetCheckboxes[i].checked){
+                if (!servers[id]){
+                    servers[id] = new Object();
+                    servers[id]['id'] = id;
+                    servers[id]['name'] = $(targetCheckboxes[i]).attr('name');
+                    servers[id]['serverUuid'] = $(targetCheckboxes[i]).attr('uuid');
+                    servers[id]['jobs'] = new Array();
+                    servers[id]['personalization'] = new Object();
+                }
+            } else {
+                if (servers[id]){
+                    delete servers[id];
+                }
+            }
+        }
+        var count = 0;
+        for (server in servers){
+            count++;
+        }
+
+        if (!count){
+            alert('Please choose at least one target before continuing.');
+            return;
+        }
+
+        gotoStep(2);
+    }
+
+    function chooseFolders(){
+        var hasJobs = true;
+        for (server in servers){
+            if (servers[server]['jobs'].length == 0){
+                hasJobs = false;
+                break;
+            }
+        }
+
+        if (!hasJobs){
+            alert('Please choose at least one job for each server.');
+            return;
+        }
+
+        var folderDivs = $("div[folderName]");
+        for (var i=0 ; i<folderDivs.length ; i++){
+            var folderName = $(folderDivs[i]).attr('folderName');
+            var type = $(':radio:checked[name="os_type_'+folderName+'"]').val();
+
+            for (var j=0 ; j<this['deployment_data']['JobFolders'].length ; j++){
+                if (this['deployment_data']['JobFolders'][j]['name'] == folderName){
+                    this['deployment_data']['JobFolders'][j]['type'] = type;
+                }
+            }
+
+        }
+        updateFolders(this['deployment_data']['JobFolders']);
+
+        gotoStep(4);
+    }
+
+    function chooseAddToVCenter(){
+        var usingNames = false;
+        var addCheckboxes = $("input[addtovc]");
+        for (var i=0 ; i<addCheckboxes.length ; i++){
+            var id = $(addCheckboxes[i]).attr('addtovc');
+
+            if (!$(addCheckboxes[i]).attr('checked')){
+                if (servers[id]['addToVCenter']){
+                    delete servers[id]['addToVCenter'];
+                }
+                continue;
+            }
+
+            var interface_info = $('#addtovc_if_'+id).val();
+            servers[id]['addToVCenter'] = new Object();
+            servers[id]['addToVCenter']['interface'] = interface_info.split(';')[0]
+            servers[id]['addToVCenter']['mac'] = interface_info.split(';')[1]
+            servers[id]['addToVCenter']['username'] = $("#username-"+id).val();
+            servers[id]['addToVCenter']['password'] = $("#password-"+id).val();
+
+            if (!isValidIPAddress(servers[id]['addToVCenter']['interface']) && servers[id]['addToVCenter']['interface'] != 'DHCP'){
+                usingNames = true;
+            }
+
+            var cluster_name = $('#cluster_name_'+id).val();
+            servers[id]['addToVCenter']['cluster_name'] = cluster_name;
+
+        }
+        var warningString = 'One or more targets have been selected to use hostnames. Please make sure that you have properly set up these hostnames in DNS prior to deployment.';
+        if (usingNames){
+            alert(warningString);
+        }
+        gotoStep(5);
+    }
+
+    function initDeploy(){
+        var html = $('#step_3_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+        $("#step_3_content").html(html);
+        initDragDrop();
+
+        for (server in servers){
+            for (job in servers[server]['jobs']){
+                var html = $('#target_job_folder_template').jqote(servers[server]);
+                $("#"+server+"_jobs").html(html);
+            }
+        }
+
+    }
+
+    function initAddToVCenter(){
+        var html = $('#step_4_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+        $("#step_4_content").html(html);
+        for (server in servers){
+            var id = servers[server]['id'];
+            if (servers[server]['addToVCenter']){
+                $('#cluster_name_'+id).val(servers[server]['addToVCenter']['cluster_name']);
+                $('#addtovc_check_'+id).attr('checked', true);
+
+                var nic_val = servers[server]['addToVCenter']['interface'] + ';' + servers[server]['addToVCenter']['mac'];
+                $('#addtovc_if_'+id).val(nic_val);
+
+                $("#username-"+id).val(servers[server]['addToVCenter']['username']);
+                $("#password-"+id).val(servers[server]['addToVCenter']['password']);
+
+            } else {
+                //$('#addtovc_check_'+id).attr('checked', false);
+            }
+        }
+    }
+
+    function initSummary(){
+        var html = $('#step_5_template').jqote({'deployment_data':deployment_data, 'servers':servers});
+        $("#step_5_content").html(html);
+    }
+
+    function configureNetworking(){
+
+        var warnAboutDhcp = false;
+        for (server in servers){
+
+            var id = servers[server]['id'];
+            var hostname = $.trim($('input[ftype="hostname"][sid="'+id+'"]').val());
+            var dnsdomain = $.trim($('input[ftype="dnsdomain"][sid="'+id+'"]').val());
+            servers[server]['personalization']['hostname'] = hostname;
+            servers[server]['personalization']['dnsdomain'] = dnsdomain;
+
+            var dhcpCount = 0;
+
+            var chk = $("input[ftype='mode'][sid='"+id+"']");
+            for (var i=0 ; i<chk.length ; i++){
+                var nic_id = $(chk[i]).attr('nic_id');
+                if (typeof(servers[server]['personalization']['nics']) == 'undefined'){
+                    servers[server]['personalization']['nics'] = new Object();
+                }
+
+                if ($(chk[i]).attr('checked')){
+                    servers[server]['personalization']['nics'][nic_id] = new Object();
+                    servers[server]['personalization']['nics'][nic_id]['id'] = nic_id;
+                    servers[server]['personalization']['nics'][nic_id]['useDhcp'] = true;
+                    servers[server]['personalization']['nics'][nic_id]['ipAddress'] = '';
+                    servers[server]['personalization']['nics'][nic_id]['netmask'] = '';
+                    servers[server]['personalization']['nics'][nic_id]['gateway'] = '';
+                    servers[server]['personalization']['nics'][nic_id]['dns'] = ['', ''];
+                    dhcpCount++;
+                } else {
+                    var ip = $.trim($('input[ftype="ip"][sid="'+id+'"][nic_id="'+nic_id+'"]').val());
+                    var nm = $.trim($('input[ftype="nm"][sid="'+id+'"][nic_id="'+nic_id+'"]').val());
+                    if (ip == "" || nm == ""){
+                        alert('IP address and netmask are required when not in DHCP mode.');
+                        return;
+                    }
+
+                    var invalidInputs = $('input[class="VSphereTextBoxError"][sid="'+id+'"][nic_id="'+nic_id+'"]');
+                    if (invalidInputs.length > 0){
+                        alert('One or more IP or netmask values are incorrect.');
+                        return;
+                    }
+
+                    if (typeof(servers[server]['personalization']['nics']) == 'undefined'){
+                        servers[server]['personalization']['nics'] = new Object();
+                    }
+
+                    servers[server]['personalization']['nics'][nic_id] = new Object();
+                    servers[server]['personalization']['nics'][nic_id]['id'] = nic_id;
+                    servers[server]['personalization']['nics'][nic_id]['useDhcp'] = false;
+                    servers[server]['personalization']['nics'][nic_id]['ipAddress'] = ip;
+                    servers[server]['personalization']['nics'][nic_id]['netmask'] = nm;
+                    servers[server]['personalization']['nics'][nic_id]['gateway'] = $.trim($('input[ftype="gw"][sid="'+id+'"][nic_id="'+nic_id+'"]').val());
+
+                    var dns = []
+                    var dns1 = $.trim($('input[ftype="dns1"][sid="'+id+'"][nic_id="'+nic_id+'"]').val());
+                    var dns2 = $.trim($('input[ftype="dns2"][sid="'+id+'"][nic_id="'+nic_id+'"]').val());
+
+                    if (dns1 != '')
+                        dns.push(dns1)
+                    if (dns2 != '')
+                        dns.push(dns2)
+
+                    servers[server]['personalization']['nics'][nic_id]['dns'] = dns;
+
+                }
+            }
+            if (dhcpCount == chk.length){
+                if (hostname == ''){
+                    warnAboutDhcp = true;
+                }
+            }
+        }
+
+        var confirmString = 'One or more configurations use DHCP with no DNS settings. Add to vCenter may fail on these targets. Are you sure you wish to continue?';
+        if (warnAboutDhcp){
+            if (confirm(confirmString)){
+                gotoStep(3);
+            }
+        } else {
+            gotoStep(3);
+        }
+    }
+
+    function open_jobfolders_help(){
+        window.open("/static/jobfolder_help.html", "jobfolder_help", "status=0,toolbar=0,location=0,resizable=1,width=500,height=400");
+    }
+
+    //-->
+    </script>
+</head>
+<body>
+
+<table cellspacing="0" cellpadding="0" border="0">
+    <tr>&nbsp;</tr>
+    <tr>
+        <td><div class="hp_logo">&nbsp;</div></td>
+        <td style="padding-left: 10px;"><p class="dotted_left"><span style="font-size:14px;font-weight: bold;">HP Insight Control Deployment Wizard</span></p></td>
+        <td><div style="float:left;width:20px;">&nbsp;</div></td>
+        <td><div title="Click to reload the page" class="reload_icon" style="float:left;" onClick="window.location.reload()">&nbsp;</div></td>
+    </tr>
+</table>
+<br />
+<br />
+
+ <div id="loadingBox" style="display:none;">
+    <table class="Menu" id="gradientHead" width="100%"><tr style="height:20px"><th>&nbsp;&nbsp;&nbsp;Deployment Service</th></tr><tr><td style="padding:10px;">
+    Loading Deployment Service Information (this may take several minutes) ...
+    </td></tr></table>
+ </div>
+
+ <div id="ErrorContainer" class="stepContainer" style="display:none;">
+    <table class="Menu" id="gradientHead" width="100%"><tr style="height:20px"><th>&nbsp;&nbsp;&nbsp;Deployment Prerequisites</th></tr><tr><td style="padding:10px;">
+    HP Insight Control for vCenter was unable to initialize the deployment service.<br /><br />
+    <b>Reason: </b><span id="errorMessage"></span><br /><br />
+
+    <div id="dcDownload" style="display:none;">
+    <ul>
+    <li><a href="/static/bin/hpalc.exe">Click here</a> to download the deployment connector. Once downloaded, the deployment connector must be installed
+    on the server where HP SIM is installed.  Installation of deployment connector requires HP SIM service to be stopped.  Re-start both the HP SIM service
+    and Insight Control for vCenter Server service after installing the deployment connector.</li>
+    </ul>
+    </div>
+
+    <div id="dsRefresh" style="display:none;">
+    <ul>
+    <li><a href="javascript:refreshDeployment();">Click here</a> to refresh the deployment service.</li>
+    </ul>
+    </div>
+
+    <div id="pageRefresh" style="display:none;">
+    <ul>
+    <li><a href="javascript:location.reload();">Click here</a> to refresh the page.</li>
+    </ul>
+    </div>
+
+    <div id="dsClear" style="display:none;">
+    <ul>
+    <li><a href="javascript:clearDeployment();">Click here</a> to restart deployment.</li>
+    </ul>
+    </div>
+
+    </td></tr></table>
+ </div>
+
+ <div id="Step_1_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+
+        <div class="box_header ui-widget-header">Step 1 - Choose Target Servers for Deployment</div>
+
+        <div id="step_1_content" class="box_contents" style="padding:5px;"></div>
+
+        <div style="text-align:right"> 
+            <input type="button" id="" onclick="chooseTargets();" value="Next" style="margin-bottom: 10px; margin-right: 10px;"/>
+        </div>
+
+    </div>
+ </div>
+
+ <div id="Step_2_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+        <div class="box_header ui-widget-header">Step 2 - Configure VMware Host Management Interfaces</div>
+
+        Use the form below to configure the management interface for each deployment target. The management interface will be used to add the host to the vCenter environment.
+        <br />
+        <br />
+
+        Note: NIC 0 is the only network interface available for network configuration. Any additional configuration can be done after the host has been added to vCenter.
+        <br />
+        <br />
+        
+        <div id="step_2_content" class="box_contents" style="padding:5px;"></div>
+        <br />
+        <br />
+
+        <div style="text-align:right">
+            <input type="button" class="VSphereButton" id="" onclick="gotoStep(1);" value="Previous" style="margin-bottom: 10px; margin-right: 10px;"/>
+            <input type="button" class="VSphereButton" id="" onclick="configureNetworking();" value="Next" style="margin-bottom: 10px; margin-right: 10px;"/>
+        </div>
+    </div>
+ </div>
+
+ <div id="Step_3_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+        <div class="box_header ui-widget-header">Step 3 - Deploy</div>
+        <div id="step_3_content" class="box_contents" style="padding:5px;"></div>
+        <br />
+        <br />
+
+        <div style="text-align:right">
+            <input type="button" class="VSphereButton" id="" onclick="gotoStep(2);" value="Previous" style="margin-bottom: 10px; margin-right: 10px;"/>
+            <input type="button" class="VSphereButton" id="" onclick="chooseFolders();" value="Next" style="margin-bottom: 10px; margin-right: 10px;"/>
+        </div>
+    </div>
+ </div>
+
+ <div id="Step_4_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+        <div class="box_header ui-widget-header">Step 4 - Add to vCenter</div>
+        Specify the username and password that you have configured in RDP for the ESX/ESXi image you are installing. These credentials will be used to add the host to the selected vCenter cluster. </br>
+        </br>
+        <div id="step_4_content" class="box_contents" style="padding:5px;"></div>
+
+        <br />
+
+        <div style="text-align:right">
+            <input type="button" class="VSphereButton" id="" onclick="gotoStep(3);" value="Previous" style="margin-bottom: 10px; margin-right: 10px;"/>
+            <input type="button" class="VSphereButton" id="" onclick="chooseAddToVCenter();" value="Next" style="margin-bottom: 10px; margin-right: 10px;"/>
+        </div>
+    </div>
+ </div>
+
+ <div id="Step_5_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+        <div class="box_header ui-widget-header">Step 5 - Summary</div>
+    
+        Deployment will not begin until the Finish button is clicked.<br />
+        <br />
+
+        <div id="step_5_content" class="box_contents" style="padding:5px;"></div>
+
+        <div style="text-align:right">
+            <input type="button" class="VSphereButton" id="" onclick="gotoStep(4);" value="Previous" style="margin-bottom: 10px; margin-right: 10px;"/>
+            <input type="button" class="VSphereButton" id="" onclick="finish();" value="Finish" style="margin-bottom: 10px; margin-right: 10px;"/>
+        </div>
+    </div>
+ </div>
+
+ <div id="Step_6_Container" class="stepContainer" style="display:none;">
+    <div class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="width:98%;">
+        <div class="box_header ui-widget-header">Deployment Execution Status</div>
+
+        The status of each deployment job is listed below.  The status is refreshed automatically.
+        <br />
+        <br />
+
+        <div id="step_6_content" class="box_contents" style="padding:5px;"></div>
+
+        <div id="deployment_complete" style="display:none;">
+            <br />
+            Deployment is complete.  <a href="javascript:clearDeployment();">Click here</a> to clear all job status and restart the wizard.
+        </div>
+
+        <div id="deployment_failed" style="display:none;">
+            <br />
+            The deployment process has failed. Insight Control for vCenter was unable to contact the deployment server.  <a href="javascript:clearDeployment();">Click here</a> to clear all job status and restart the wizard.
+        </div>
+
+    </div>
+ </div>
+
+ <div id="fatalError" style="display: none;">
+   An error has occurred on the page. Please ensure that scripting is enabled and that the Insight Control for vCenter site is trusted in the client's Internet Explorer settings.
+   The vSphere client may need to be restarted if the site was recently added to Internet Explorer's trusted sites. 
+ </div>
+ <div id="authError" class="stepContainer" style="display: none; margin:20px;">
+   You do not have permission to access deployment.
+ </div>
+ <div id="footer" class="ui-layout-south ui-widget-header">
+    <div id="footer-contents" >
+        <div id="footer-left">
+        </div>
+        <div id="footer-right">
+            User:
+             <span id="username" class="ui-state-highlight-color"></span>
+        </div>
+    </div>
+ </div>
+
+ </body>
+</html>

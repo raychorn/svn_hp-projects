@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  width="650" height="360"
+		  xmlns:components="assets.components.*"
+		  creationComplete="init()">
+	
+	<fx:Metadata>
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiMediator")]
+		[Event(name="moreOnStorageClicked", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import assets.components.Hpic4vc_BaseMediator;
+			import assets.components.ModelLocator;
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_storage_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.FooterModel;
+			import com.hp.asi.hpic4vc.ui.model.FullSummaryModel;
+			import com.hp.asi.hpic4vc.ui.model.TabModel;
+			import com.hp.asi.hpic4vc.ui.model.TaskModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			import mx.managers.PopUpManager;
+			
+			// Tab variables
+			[Bindable]
+			public var tabs:ArrayCollection;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var tabInfo:String;
+			
+			// Header variables
+			[Bindable]
+			public var objReferenceId:String;
+			
+			[Bindable]
+			public var _proxyStorage:Hpic4vc_storage_providerProxy;
+			
+			[Bindable]
+			public var objReferenceName:String;
+			
+			[Bindable]
+			public var productInfo:String;
+			
+			[Bindable]
+			public var enclosureInfo:String;
+			
+			[Bindable]
+			public var healthConsolidatedStatus:String;
+			
+			[Bindable]
+			public var warningCount:String;
+			
+			[Bindable]
+			public var errorCount:String;
+			
+			[Bindable]
+			public var okCount:String;
+			
+			[Bindable]
+			public var informationCount:String;
+			
+			[Bindable]
+			public var tasksHoverValue:ArrayCollection;
+			
+			[Bindable]
+			public var actionsCollection:ArrayCollection;
+			
+			[Bindable]
+			public var configurations:ArrayCollection;
+			
+			[Bindable]
+			public var helpUrl:String;
+			
+			[Bindable]
+			public var tempHelpUrl:String;
+			
+			[Bindable]
+			public var refreshList:ArrayCollection;
+			
+			[Bindable]
+			public var isPopulating:Boolean;
+			
+			[Bindable]
+			public var showRefreshHover:Boolean;
+			
+			// Footer
+//			[Bindable]
+//			public var storageLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var iLOLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var vcLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var oaLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var vcemLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var ipmLink:ArrayCollection;
+//			
+//			[Bindable]
+//			public var simLink:ArrayCollection;
+			
+			[Bindable]
+			public var footerData:FooterModel;
+			
+			// Error message labels			
+			[Bindable]
+			public var noTabsFound:String;
+			[Bindable]
+			public var noHeaderInfoFound:String;
+			[Bindable]
+			public var noFooterInfoFound:String;
+			[Bindable]
+			public var tabsErrorMessage:String;
+			[Bindable]
+			public var headerErrorMessage:String;
+			[Bindable]
+			public var footerErrorMessage:String;
+			
+			[Bindable]
+			public var gettingStartTabModel:TabModel;
+			
+			// Full Summary
+			[Bindable]
+			public var fullSummaryData:FullSummaryModel;
+			
+			// Tab Model for More Clicked, etc
+			[Bindable]
+			public var overviewTabModel:TabModel;
+			
+			private var _tasksTabModel:TabModel;
+			[Bindable]
+			public function get tasksTabModel():TabModel {
+				return _tasksTabModel;
+			}
+			
+			public function set tasksTabModel(value:TabModel):void {
+				this._tasksTabModel = value;
+				gettingStarted_clickHandler(new Event(""));
+			}
+			
+			[Bindable]
+			public var healthTabModel:TabModel;
+			[Bindable]
+			public var swfwTabModel:TabModel;
+			[Bindable]
+			public var newsfeedTabModel:TabModel;
+			[Bindable]
+			public var storageTabModel:TabModel;
+			[Bindable]
+			public var hostTabModel:TabModel;
+			[Bindable]
+			public var infrastructureTabModel:TabModel;
+			[Bindable]
+			public var networkingTabModel:TabModel;
+			[Bindable]
+			public var clusterTabModel:TabModel;
+			
+			private var so: SharedObject;
+			
+			private function init():void {
+				so = SharedObject.getLocal("mydata");
+				var __so__:SharedObject = SharedObject.getLocal("mydata2");
+				__so__.clear();
+				__so__.flush();
+				this.currentState = "DataUnavailable";
+			}
+			
+			public function component_taskLabelClicked(event:Event):void {
+				var tasksClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (tasksTabModel != null) {
+					tasksClicked.item = tasksTabModel;
+					tabBar_itemClickHandler(tasksClicked);
+					tabBar.selectedIndex = parseInt(tasksTabModel.order);
+				}
+			}
+			
+			public function component_healthLabelClicked(event:Event):void {
+				var healthClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (healthTabModel != null) {
+					healthClicked.item = healthTabModel;
+					tabBar_itemClickHandler(healthClicked);
+					tabBar.selectedIndex = parseInt(healthTabModel.order);
+				}
+			}
+			
+			public function component_moreOnNewsFeedClicked(event:Event):void {
+				var newsfeedClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (newsfeedTabModel != null) {
+					newsfeedClicked.item = newsfeedTabModel;
+					tabBar_itemClickHandler(newsfeedClicked);
+					tabBar.selectedIndex = parseInt(newsfeedTabModel.order);
+				}
+			}
+			
+			public function gettingStarted_clickHandler(event:Event):void
+			{
+				if(so.data.hasOwnProperty("setTab") && so.data.hasOwnProperty("setContextObject")){
+					var prevTab:String = so.data.setTab;
+					var prevContextObj:String = so.data.setContextObject;
+					if (prevContextObj == _contextObject.type){		//for same VObject type only
+						var i:int = prevTab.lastIndexOf("_");
+						var stringToCompare:String = prevTab.substring(i+1, prevTab.length);
+						if (stringToCompare == "Health")
+							tabInfo = "healthTab";
+						else if (stringToCompare == "Newsfeed")
+							tabInfo = "newsFeedTab";
+						else if (stringToCompare == "Tasks")
+							tabInfo = "tasksTab";
+					}
+				}
+				
+				if(tabInfo == "healthTab") {
+					component_healthLabelClicked(event);
+				} else if(tabInfo == "newsFeedTab") {
+					component_moreOnNewsFeedClicked(event);
+				} else if(tabInfo == "tasksTab") {
+					component_taskLabelClicked(event);
+				} else {
+					// Open the 1st tab by default. "Overview" in this case.
+					var gettingStartClicked:ItemClickEvent = new ItemClickEvent(event.type);
+					if (gettingStartTabModel != null) {
+						gettingStartClicked.item = gettingStartTabModel;
+						tabBar_itemClickHandler(gettingStartClicked);
+						tabBar.selectedIndex = parseInt(gettingStartTabModel.order);
+					}
+				}
+				tabInfo = null;
+			}		
+			
+			public function component_moreOnClusterInfrastructureClicked(event:Event):void {
+				var infraClicked:ItemClickEvent = new ItemClickEvent(event.type);
+				if (infrastructureTabModel != null ) {
+					infraClicked.item = infrastructureTabModel;
+					tabBar_itemClickHandler(infraClicked);
+					tabBar.selectedIndex = parseInt(infrastructureTabModel.order);
+				}
+			}
+			
+
+			protected function tabBar_itemClickHandler(event:ItemClickEvent):void
+			{
+				var tabComponentName:String = (event.item as TabModel).component;
+				var tab:* = instantiateUsingClassName(tabComponentName);
+				
+				// Get the new Help URL from the Tab object
+				helpUrl = (event.item as TabModel).helpUrl;
+				
+				// Set shared object here
+ 				so.data.setTab = tabComponentName;
+				so.data.setContextObject = _contextObject.type; //this is prev context object
+				so.flush();
+				
+				// Display the tab
+				if ((event.item as TabModel).displayNameKey == "Getting_Started") {
+					// Pass Hpic4vc_uiView only if it is the Overview  or Storage Tab.  
+					// Overview tab uses for the More links to get a reference back to this page.
+					// Storage tab uses to update the Help links on the header.
+					tab.show(_contextObject, this);
+				} else {
+					tab.show(_contextObject);
+				}
+				canvas.removeAllChildren();
+				canvas.addChild(tab);
+			}
+			
+			public function instantiateUsingClassName(className:String):* {
+				var classToInstantiate : Class = getDefinitionByName(className) as Class;
+				var myClassFactory : ClassFactory = new ClassFactory(classToInstantiate);
+				var myObjectInstance : * = myClassFactory.newInstance();
+				return myObjectInstance;
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:states>
+		<s:State name="DataAvailable"/>
+		<s:State name="DataUnavailable"/>
+		<s:State name="ErrorFound"/>
+	</s:states>
+	
+	<mx:Label includeIn="DataUnavailable" width="700" text="{Helper.getString('loading')}"
+			  textAlign="center"/>
+	
+	<components:Hpic4vc_Header id="header" width="100%" includeIn="DataAvailable"
+							   healthConsolidatedStatus="{healthConsolidatedStatus}"
+							   warningCount="{warningCount}" errorCount="{errorCount}"
+							   okCount="{okCount}" informationCount="{informationCount}"
+							   objReferenceName="{objReferenceName}" 
+							   productInfo="{productInfo}"
+							   enclosureInfo="{enclosureInfo}"
+							   tasksHoverValue="{tasksHoverValue}"
+							   actionsList="{actionsCollection}"
+							   configList="{configurations}"
+							   helpUrl="{helpUrl}"
+							   refreshList="{refreshList}"
+							   isPopulating="{isPopulating}"
+							   noInfoFoundLabel="{noHeaderInfoFound}"
+							   taskLabelClicked="component_taskLabelClicked(event)"
+							   healthLabelClicked="component_healthLabelClicked(event)"
+							   objReferenceId="{objReferenceId}"
+							   _proxyStorage="{_proxyStorage}"
+							   hpic4vc_uiView="{this}"
+							   showRefreshCache="{showRefreshHover}"
+							   errorMessage="{headerErrorMessage}"
+							   _contextObject="{_contextObject}"
+							   />
+	
+	<mx:Label text="{noTabsFound}" includeIn="ErrorFound"/>
+	<mx:Text width="99%" text="{tabsErrorMessage}" styleName="errorMessage" includeIn="ErrorFound"/>
+	
+	<mx:Canvas height="100%" width="100%">
+		<mx:ToggleButtonBar id="tabBar" includeIn="DataAvailable"
+					  dataProvider="{tabs}" 
+					  labelField="displayNameValue"
+					  itemClick="tabBar_itemClickHandler(event)"
+					  height="25" 
+					  styleName="buttonBar"
+					  buttonMode="true"/> 
+		
+		<mx:Canvas id="canvas"
+				   x="0" y="35"
+				   width="100%" height="100%"
+				   borderVisible="false">
+			
+		</mx:Canvas>
+		
+	</mx:Canvas>
+
+	<components:Hpic4vc_Footer id="footer" footerData="{footerData}" includeIn="DataAvailable"
+							   noFooterInfoFoundLabel="{noFooterInfoFound}"
+							   errorMessage="{footerErrorMessage}"
+							   />
+</s:VGroup>

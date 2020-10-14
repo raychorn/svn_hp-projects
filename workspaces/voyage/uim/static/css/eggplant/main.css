@@ -1,0 +1,217 @@
+/* IC4VC Dark Theme                                             */
+/*                                                              */
+/* Font Color                   #FFFFFF                         */
+/* Page Background              #101010                         */
+/* Box Header Background        #1D1D1D                         */
+/* Box Background               #282828                         */
+/* Box Top Border               #323232                         */
+/* Box Bottom Border            #1C1C1C                         */
+/* Footer Background            #1D1D1D                         */
+/* Link Color                   #0AB9EF                         */
+/* Table Header Text            #9CF39F                         */
+/*                                                              */
+
+
+
+body, html
+{
+    color: #FFFFFF;
+    background-color:#101010;
+    font-family: arial;   
+    font-size: 14px;
+}
+
+#container
+{
+
+}
+
+#header
+{     
+    /*border: 1px solid red;*/
+}
+
+#header-left
+{
+}
+
+.title
+{    
+    color: #FFFFFF;
+    font-size: 20px;   
+    font-weight: bold;
+}
+
+#header-right
+{
+
+}
+
+#logo
+{        
+}
+
+#search
+{
+    background: #FFFFFF;
+}
+
+#contents
+{    
+    
+}
+
+.box
+{    
+    /*color: #FFFFFF;
+    background: #282828;         */
+}
+
+.box_header
+{    
+    cursor: move;
+    /*background: #1D1D1D;    */
+    /*color: #FFFFFF;*/
+    /*font-weight: bold;    */
+    
+}
+
+.box_line
+{
+    border-top: 1px solid #323232;
+    border-bottom: 1px solid #1C1C1C;
+    padding: 10px;    
+}
+
+.bigbox
+{    
+    /*color: #FFFFFF;
+    background: #282828;         */
+}
+
+.bigbox_header
+{    
+    /*background: #1D1D1D;    
+    color: #FFFFFF;
+    font-weight: bold;    */
+        
+}
+
+.bigbox_line
+{
+    border-top: 1px solid #323232;
+    border-bottom: 1px solid #1C1C1C;
+    padding: 10px;    
+}
+
+
+
+
+#footer
+{
+    /*background: #1D1D1D;*/
+}
+
+#footer-contents
+{
+
+}
+
+#footer-right
+{
+
+}
+
+.footer-text
+{
+    /*color: #FFFFFF;*/
+}
+
+.username
+{
+    /*color: #9CF39F;*/
+}
+
+th
+{
+    text-align: left;
+    color: #9CF39F;
+}
+
+ul
+{
+    margin: 0px;
+    list-style-type: none;
+}
+
+ul.arrow {
+    list-style-image: url("../images/bullet.png");
+    /*margin: 10px 5px 10px 0;
+    padding: 0 0 0 10px;*/
+}
+
+a 
+{
+    color: #0AB9EF;
+    font-weight: normal;
+    text-decoration: none;
+}
+
+a:hover 
+{    
+    text-decoration: underline;
+}
+
+#drawing
+{
+    background: #FFFFFF;
+    padding: 20px;
+}
+
+div.tasks_icon
+{
+    background-image: url('/static/img/icons/tasks.png');
+    float:left;
+    width:15px;
+    height:16px;
+    background-repeat: no-repeat;
+}
+
+div.settings_icon
+{
+    margin-top:5px;
+    float:left;
+    background-image: url('/static/img/icons/gear_large.png');
+    width:15px;
+    height:15px;
+}
+
+div.divider_icon
+{
+    float:left;
+    background-image: url('/static/img/icons/divider.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 16px;
+    height:32px;
+    margin-top: -5px;
+}
+
+div.help_icon
+{
+    margin-top:5px;
+    float:left;
+    background-image: url('/static/img/icons/help.png');
+    width:10px;
+    height:14px;
+}
+
+div.hp_logo
+{
+    margin-top:2px;
+    margin-left: 20px;
+    float:left;
+    background-image: url('/static/img/logo_24_white.png');
+    width:24px;
+    height:24px;
+}

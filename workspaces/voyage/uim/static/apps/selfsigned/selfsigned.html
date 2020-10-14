@@ -1,0 +1,182 @@
+<script>
+    var SelfSigned = {
+        startApp: function() {
+            $('#csrdiv').hide();    
+            $('#certdiv').hide();
+            $('#typecsr').attr('checked', 'checked');
+            SelfSigned.chkboxClick($('#typecsr'));    
+        },
+        
+        getCert: function () {
+            var typecsr = $('#typecsr').attr('checked') == 'checked';
+            var url = "/certificate/json"+window.location.search;  
+            if (typecsr) {
+                url = url+ '&type=csr';
+            }
+            else
+                url = url + '&type=cert';
+             
+            $.getJSON(url, SelfSigned.processCert);
+        },
+    
+        processCert: function (resp) {
+            if (!resp.selfsigned)
+                resp.cert = null;
+            autobind(resp);
+        },
+    
+        setCert: function (obj) {
+            $.postJSON("/certificate/json"+window.location.search, obj, SelfSigned.processCert);
+        },
+    
+        chkboxClick: function (cb) {
+            var csrtext="&nbsp;&nbsp;Certificate Signing Request";
+            var certtext="&nbsp;&nbsp;Current Certificate";
+            var selftext="&nbsp;&nbsp;Self Signed Certificate";
+            if (cb.id == 'typeself') {
+                $('#csrdiv').hide();
+                $('#certdiv').show();
+                $('#certtitle').html(selftext);
+            } else {
+                $('#csrdiv').show();
+                $('#certdiv').hide();
+                $('#certtitle').html(csrtext);
+            }
+        },
+    
+        onSave: function () {
+            certinfo = jobject('certinfo',
+                ['C', 'ST', 'L', 'O', 'CN', 'OU', 'Email', 'SN', 'GN' ]);
+            c = {
+                'certinfo': certinfo,
+                'selfsigned': $("#typeself").get(0).checked,
+                'method': 'generate'
+            };
+            SelfSigned.setCert(c);
+            return false;
+        },
+    
+        copyCertificate: function (){
+            var id = ($('#typeself').attr('checked')) ? 'cert' : 'csr';
+            doCopy(id);
+        },
+    
+        onCancel: function () { 
+            $("input[id='certinfo.C']").val('');
+            $("input[id='certinfo.ST']").val('');
+            $("input[id='certinfo.L']").val('');
+            $("input[id='certinfo.O']").val('');
+            $("input[id='certinfo.CN']").val('');
+            $("input[id='certinfo.OU']").val('');
+            $("input[id='certinfo.Email']").val('');
+            $("input[id='certinfo.SN']").val('');
+            $("input[id='certinfo.GN']").val('');
+            $("#cert").get(0).value = '';
+            $("#csr").get(0).value = '';
+            return false; 
+        }
+    }
+    
+    SelfSigned.startApp();
+	
+</script>
+
+<div id="selfsigned" style="display:none;">
+    <form id="form1">
+    <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Certificate Administration</p></td>
+     </tr>
+    </table>
+
+    <table class="data" border="0" width="100%">
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Generate a Self-Signed Certificate</td>
+       <td>&nbsp;&nbsp;&nbsp;
+         <input type="radio" name="group1" value="self" id="typeself" onClick="SelfSigned.chkboxClick(this)">
+       </td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Generate a Certificate Signing Request</td>
+       <td>&nbsp;&nbsp;&nbsp;
+         <input type="radio" name="group1" value="csr" id="typecsr" onClick="SelfSigned.chkboxClick(this)">
+       </td>
+     </tr>
+    </table>
+
+
+    <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Certificate Info</p></td>
+     </tr>
+    </table>
+    <table class="data" border="0" width="100%">
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Country</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.C" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;State</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.ST" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Locality</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.L" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Organization</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.O" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Common Name</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.CN" type=text width=50 value=""></td>
+     </tr>
+    </table>
+    
+    <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Optional Certificate Info</p></td>
+     </tr>
+    </table>
+    <table class="data" border="0" width="100%">
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Organizational Unit</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.OU" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Email</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.Email" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Surname</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.SN" type=text width=50 value=""></td>
+     </tr>
+     <tr>
+       <td width="200px">&nbsp;&nbsp;&nbsp;Given Name</td>
+       <td>&nbsp;&nbsp;&nbsp;<input id="certinfo.GN" type=text width=50 value=""></td>
+     </tr>
+    </table>
+    
+
+    <table class="title" border="0" width="100%">
+     <tr>
+      <td><p id="certtitle" class="dotted_left"></p></td>
+     </tr>
+    </table>
+    <div id="certdiv"><textarea id="cert" rows=12 cols=65></textarea></div>
+    <div id="csrdiv"><textarea id="csr" rows=12 cols=65></textarea></div>
+
+
+    <table class="data" border="0" width="100%">
+     <tr style="height:15px">       
+       <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;
+         <input id="save" type=button value="Generate" onClick="return SelfSigned.onSave()">
+       &nbsp;&nbsp;&nbsp;
+         <input id="cancel" type=button value="Clear" onClick="return SelfSigned.onCancel()">
+       &nbsp;&nbsp;&nbsp;
+         <input id="copy" type=button value="Copy to Clipboard" onClick="return SelfSigned.copyCertificate()">
+       </td>
+     </tr>
+    </table>
+    </form>
+</div> 

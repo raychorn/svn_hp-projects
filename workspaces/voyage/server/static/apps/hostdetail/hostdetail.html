@@ -1,0 +1,250 @@
+<script id="host_software_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="host_firmware_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="host_memory_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td class="numerical-value">${size}</td><td class="numerical-value">${speed}</td></tr>    
+</script>
+
+<script id="host_cpu_template" type="text/x-jquery-tmpl" >
+    {{if speed != '0 MHz'}}
+        <tr><td>${name}</td><td>${description}</td><td>${cores}</td><td>${threads}</td><td class="numerical-value">${speed}</td></tr>    
+    {{else}}
+        <tr><td>${name}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>    
+    {{/if}}
+</script>
+
+<script id="host_log_template" type="text/x-jquery-tmpl" >
+    <tr><td>${severity}</td><td>${cls}</td><td>${last_update}</td><td>${initial_update}</td><td>${count}</td><td>${description}</td></tr>    
+</script>
+
+
+
+<script id="hostdetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+        <div class="bigbox_header ui-widget-header">Host Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <table>
+                    <tr><td>Server Name</td><td>${ilo_server_name}</td></tr>
+                    <tr><td>VMWare Host Name</td><td>${vmware_name}</td></tr>
+                    <tr><td>Product Name</td><td>${product_name}</td></tr>		
+                    <tr><td>UUID</td><td>${uuid}</td></tr>  
+                    <tr><td>iLO Address</td><td>${ilo_address}</td></tr>
+                    <tr><td>iLO License Type</td><td>${ilo_license_type}</td></tr>
+                    <tr><td>iLO Firmware Version</td><td>${ilo_firmware_version} ${ilo_firmware_date}</td></tr>                
+                    <tr><td>UID Status</td><td>${uid_status}</td></tr>                
+                    <tr><td>Host Power Status</td><td>${power_status}</td></tr>                
+                    <tr><td>Total CPU</td><td>${total_cpu}</td></tr>                
+                    <tr><td>Total Memory</td><td>${total_memory}</td></tr>                
+                    <tr><td>Total NICs</td><td>${total_nics}</td></tr>                
+                    <tr><td>Total Smart Array</td><td>${total_storage}</td></tr>                
+                    <tr><td>System ROM</td><td>${rom}</td></tr>                
+                    <tr><td>Backup ROM</td><td>${backup_rom}</td></tr>    
+                    <tr><td>HP Insight Provider Bundle</td><td>{{if hp_bundle_status == true}}Installed{{else}}{{if hp_bundle_status == false}}Not Installed{{else}}{{/if}}{{/if}}</td></tr>                
+                </table>    
+            </div>
+        </div>
+        <div class="bigbox_header ui-widget-header">Server Status Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <table>                    
+                    <tr><td>Overall</td><td>${status.overall}</td></tr>
+                    <tr><td>CPU</td><td>${status.cpu}</td></tr>                    
+                    <tr><td>Memory</td><td>${status.memory}</td></tr>
+                    <tr><td>Temperature</td><td>${status.temp_sensor}</td></tr>
+                    <tr><td>Fan</td><td>${status.fan}</td></tr>
+                    <tr><td>Network</td><td>${status.network}</td></tr>
+                    <tr><td>Storage</td><td>${status.storage}</td></tr>
+                    <tr><td>iLO</td><td>${status.ilo}</td></tr>
+                    <tr><td>IML</td><td>${status.iml}</td></tr>
+                    <tr><td>ASR</td><td>${status.asr}</td></tr>
+                    <tr><td>PS</td><td>${status.ps}</td></tr>                    
+                </table>    
+            </div>
+        </div>
+        
+        <div class="bigbox_header ui-widget-header">Server Power</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if ilo_power}}
+                    <table>                    
+                        {{if ilo_power.present_power_reading}}
+                            <tr><td>Present Power Reading</td><td>${ilo_power.present_power_reading.value} ${ilo_power.present_power_reading.unit}</td></tr>
+                        {{/if}}
+                        {{if ilo_power.average_power_reading}}
+                            <tr><td>Average Power Reading</td><td>${ilo_power.average_power_reading.value} ${ilo_power.average_power_reading.unit}</td></tr>                    
+                        {{/if}}
+                        {{if ilo_power.minimum_power_reading}}
+                            <tr><td>Minimum Power Reading</td><td>${ilo_power.minimum_power_reading.value} ${ilo_power.minimum_power_reading.unit}</td></tr>
+                        {{/if}}
+                        {{if ilo_power.maximum_power_reading}}
+                            <tr><td>Maximum Power Reading</td><td>${ilo_power.maximum_power_reading.value} ${ilo_power.maximum_power_reading.unit}</td></tr>                    
+                        {{/if}}
+                    </table>    
+                {{else}}
+                    Power readings are not available
+                {{/if}}
+            </div>
+            {{if power_cost_advantage}}
+                <div class="bigbox_line">
+                    <table>
+                        <tr><td>Power Cost Advantage *</td><td>${power_cost_advantage}</td></tr>
+                    </table>
+                    <span style="font-size: xx-small">* The Power Cost Advantage is the configured cost per kWh * average power * duration of the last server standby event</span>
+                </div>
+            {{/if}}
+        </div>
+        
+        <div class="bigbox_header ui-widget-header">Memory Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof memory_modules != 'undefined' && memory_modules != null && memory_modules.length}}                
+                    <table>
+                        <tr><th>Location</th><th>Size</th><th>Speed</th></tr>
+                        {{tmpl(memory_modules) "#host_memory_template"}}              
+                    </table>    
+                {{else}}
+                    Memory Information is not available
+                {{/if}}
+            </div>
+        </div>        
+
+        
+        <div class="bigbox_header ui-widget-header">CPU Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                <table>          
+                    {{if typeof cpus != undefined && cpus != null && cpus.length}}                    
+                        <tr><th>Name</th><th>Description</th><th>Cores</th><th>Threads</th><th>Speed</th></tr>
+                        {{tmpl(cpus) "#host_cpu_template"}}              
+                    {{else}}
+                        CPU Information is not available
+                    {{/if}}
+                </table>    
+            </div>
+        </div>        
+        
+        <div class="bigbox_header ui-widget-header">Firmware Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof firmware != undefined && firmware != null && firmware.length}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(firmware) "#host_firmware_template"}}              
+                    </table>    
+                {{else}}
+                    Firmware Inventory is not available
+                {{/if}}
+            </div>
+        </div>
+        
+
+        
+        <div class="bigbox_header ui-widget-header">Software Information</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof software != 'undefined' && software != null && software.length}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(software) "#host_software_template"}}              
+                    </table>    
+                {{else}}
+                    Software Inventory is not available
+                {{/if}}
+            </div>
+        </div>
+        
+
+        {{if ilolog }}
+        <div class="bigbox_header ui-widget-header">iLO Log</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if ilolog.event.length > 0}}
+                    <div style="height: 200px;overflow-y: scroll;">
+                    <table>
+                        <tr><th>Severity</th><th>Class</th><th>Last Update</th><th>Initial Update</th><th>Count</th><th>Description</th></tr>
+                        {{tmpl(ilolog.event) "#host_log_template"}}              
+                    </table>    
+                    </div>
+                {{else}}
+                    Log is empty or unavailable
+                {{/if}}
+            </div>
+        </div>
+        {{/if}}
+        
+        {{if iml }}
+        <div class="bigbox_header ui-widget-header">IML Log</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if iml.event.length > 0}}
+                    <div style="height: 200px;overflow-y: scroll;">
+                    <table>
+                        <tr><th>Severity</th><th>Class</th><th>Last Update</th><th>Initial Update</th><th>Count</th><th>Description</th></tr>
+                        {{tmpl(iml.event) "#host_log_template"}}              
+                    </table>    
+                    </div>
+                {{else}}
+                    Log is empty or unavailable
+                {{/if}}
+            </div>
+        </div>
+        {{/if}}
+        
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var HostDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (HostDetail.isActive())
+            {                                
+                $.getJSON("/services/host/hostdetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#hostdetail').empty();
+                        $.tmpl('hostdetail_template', data).appendTo( "#hostdetail" );                        
+                        HostDetail.refreshTimeoutId = setTimeout("HostDetail.refresh_data()", 120000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#hostdetail_template").template('hostdetail_template');
+            HostDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            HostDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(HostDetail.activeOverride == true)
+            {
+                HostDetail.activeOverride = false;
+                return true;
+            }
+            return $("#hostdetail").is(":visible");
+        }
+    };
+    
+    HostDetail.startApp();
+    AppManager.addAppListener(HostDetail.refresh_data);
+</script>
+
+
+<div id="hostdetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

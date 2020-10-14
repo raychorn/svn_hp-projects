@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Setting host network configuration preferences</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:51:49+00:00--><meta name="description" content="This is the host network configuration preferences content for&#xA;the IC4VC OLH and User Guide."/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v15744296.html" title="Using the Server Module for vCenter"/><link rel="prev" href="running_server_provisioning_wizard.html" title="Running the Server Provisioning wizard"/><link rel="next" href="Managing_Clusters.html" title="Managing clusters"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v15744296','icon4v15744296','link4setting_network_preferences','v15744267')" onunload="clearbgcolortoc('link4setting_network_preferences','v15744267')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v15744296.html">Using the Server Module for vCenter</a> &gt; Setting host network configuration preferences</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Managing_Clusters.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section"><div class="changed" lang="en"><div class="titlepage"><div><div><a id="setting_network_preferences"/><h1 class="sectiontitle">Setting host network configuration preferences</h1></div></div></div><a id="d0e3225" class="indexterm"/><a id="d0e3230" class="indexterm"/><a id="d0e3233" class="indexterm"/><p/>
+	
+	<p><a id="v14394807"/>These settings are used to evaluate the network
+configuration of a host with respect to its Virtual Connect profile
+and HP OneView profile. This page is accessed by selecting <span><strong class="guilabel">Host
+Network Configuration Preferences</strong></span> in the left pane of the
+HP Insight Management Administration page. After setting the preferences,
+click <span><strong class="guibutton">Save</strong></span> or <span><strong class="guibutton">Clear</strong></span> to
+reset all the selections to the default values.</p>
+	
+	<p>The host network configuration preferences are organized into
+the following categories.</p>
+	
+	<h4><a id="d0e3254"/>vSwitch Preferences</h4><p>The vSwitch Preference determines how Insight Control for VMware
+vCenter will configure virtual networking to match the networking
+configured in HP Virtual Connect.</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p><span><strong class="guilabel">Default vSwitch type used for Host</strong></span>:
+Select the type of vSwitch that will be used to configure the virtual
+networking to match the networking configured in HP Virtual Connect.</p>
+	
+	</li><li class=""><p><span><strong class="guilabel">VDS Spec Version: </strong></span> If the default
+switch type selected is the vSphere Distributed Switch, select the
+version used when creating Distributed vSwitches.</p>
+	
+	</li></ul></div><div class="note"><table border="0" cellspacing="1" cellpadding="2" summary="NOTE"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[NOTE: ]" height="25px" src="images/note.gif"/></div></td><td><p><b>NOTE: </b>If your environment has different vSphere 5.x/ESXi 5.x versions
+and you intend to use the vSphere Distributed Switch for host network
+configuration, ensure that the correct vSphere Distributed Switch
+version is configured so that host network configuration uses this
+switch version across all hosts in your environment.</p><p>It is recommended that the lowest vSphere Distributed Switch
+version (corresponding to the lowest vSphere 5.x/ESXi 5.x version in your
+environment) is configured so that host network configuration can
+use this switch version across all hosts in your environment.</p>
+	
+	</td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><h4><a id="d0e3276"/>Virtual Connect Networks</h4><p>The Virtual Connect Networks available are listed. If all the
+networks are not displayed, click <span><strong class="guibutton">Refresh</strong></span> to
+update the information.</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p> Select the Virtual Connect networks to be used for
+the Management Network, VMotion Network, and Fault Tolerence. All
+the other networks are considered to be VM networks.</p>
+	
+	</li></ul></div><h4><a id="d0e3287"/>HP OneView Networks</h4><p>All available HP OneView Networks are displayed. The network
+name, purpose, and HP OneView Domain are listed.</p>
+	
+	<h4><a id="d0e3291"/>Network Aliases</h4><p>Displays the alias names defined for the networks. By default,
+the name of the network in Virtual Connect or HP OneView is used as
+the port group name. If you require a different name to be used for
+the port group, specify an alias for those networks.</p>
+	
+	<div class="itemizedlist"><ul type="disc"><li class=""><p><span><strong class="guilabel">Alias</strong></span>: Enter an alias name for
+the network if necessary.</p>
+	
+	</li></ul></div></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="running_server_provisioning_wizard.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v15744296.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Managing_Clusters.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Running the Server Provisioning wizard </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Managing clusters</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

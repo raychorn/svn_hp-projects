@@ -1,0 +1,916 @@
+{
+    "private_config" : {     
+        "web_roots" : 
+        {
+            "uim_root" : "http://localhost:8080",
+            "server_root" : "http://localhost:50025",
+            "storage_root" : "http://localhost:3500",
+            "db_root": "http://localhost:50030",
+            "net_root": "http://localhost:8090"
+        },
+        "vcenters" : [
+        ],
+	   "web_host_name" : "localhost",
+        "web_host_port" : "3550",
+        "webserver": {
+            "timeout" : "60",
+            "req_queue": "50",
+            "num_threads": "50"
+        },
+        "rm_nodo_entries" : "60",
+        "ssl_key_file" : "server.key", 
+        "ssl_cert_file" : "server.pem",        
+        "extensions" :
+        [
+            {
+                "parent" : "InventoryView.HostSystem",
+                "titles" : 
+                [
+                    {
+                        "title" : "HP Insight Management",
+                        "locale" : "en"
+                    }
+                ],
+                "url" : 
+                {
+                    "web_root": "uim_root",
+                    "path": "/static/host_overview.html"                   
+                }
+            },
+            {
+                "parent" : "InventoryView.Cluster",
+                "titles" : 
+                [
+                    {
+                        "title" : "HP Insight Management",
+                        "locale" : "en"
+                    }
+                ],
+                "url" : 
+                {
+                    "web_root": "uim_root",
+                    "path": "/static/cluster_overview.html"                    
+                }
+            },
+            {
+                "parent" : "HomeView.Admin",
+                "titles" : 
+                [
+                    {
+                        "title" : "HP Insight Management Administration",
+                        "locale" : "en"
+                    }
+                ],
+                "icon": 
+                {
+                    "web_root": "uim_root",
+                    "path" : "/static/img/hplogo.gif"
+                },
+                "url": 
+                {
+                    "web_root": "uim_root",
+                    "path" : "/static/administration.html"
+                }
+            },
+            {
+                "parent" : "HomeView.Management",
+                "titles" : 
+                [
+                    {
+                        "title" : "HP Insight Management Deployment Wizard",
+                        "locale" : "en"
+                    }
+                ],
+                "url" : 
+                {
+                    "web_root": "uim_root",
+                    "path": "/static/deployment_wizard.html"
+                },
+                "icon" : 
+                {
+                    "web_root": "uim_root",
+                    "path": "/static/img/hplogo.gif"
+                }
+            }
+        ],
+        "resources" : 
+        [
+            {
+                "module" : "event",
+                "locale" : "en",
+                "events" :
+                [
+                    {
+                        "event_id" : "com.hp.wbem.info",
+                        "description" : "HP Information Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "info",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.wbem.warning",
+                        "description" : "HP Warning Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "warning",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.wbem.error",
+                        "description" : "HP Error Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "error",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.snmp.info",
+                        "description" : "HP Information Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "info",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.snmp.warning",
+                        "description" : "HP Warning Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "warning",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.snmp.error",
+                        "description" : "HP Error Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "error",
+                            "description" : "HP Server Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.status.info",
+                        "description" : "HP Information Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "entity",
+                                "type" : "string"
+                            },
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "info",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.status.warning",
+                        "description" : "HP Warning Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "entity",
+                                "type" : "string"
+                            },
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "warning",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.status.error",
+                        "description" : "HP Error Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "entity",
+                                "type" : "string"
+                            },
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "error",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.hardware.info",
+                        "description" : "HP Information Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "info",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.hardware.warning",
+                        "description" : "HP Warning Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "warning",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    },
+                    {
+                        "event_id" : "com.hp.cseries.hardware.error",
+                        "description" : "HP Error Event",
+                        "arguments" :
+                        [
+                            {
+                                "name" : "evDescription",
+                                "type" : "string"
+                            }
+                        ],
+                        "key_values" :
+                        {
+                            "category" : "error",
+                            "description" : "HP Infrastructure Event",
+                            "fullFormat" : "{evDescription}",
+                            "formatOnHost" : "",
+                            "formatOnVm" : "",
+                            "formatOnDatacenter" : "",
+                            "formatOnComputeResource" : ""
+                        }
+                    }
+                ]
+            },
+            {
+                "module" : "task",
+                "locale" : "en",
+                "tasks" :
+                [                
+                    {
+                        "task_id" : "com.hp.insight.storage.CloneVMTask",
+                        "key_values" :
+                        {
+                            "label" : "Clone Virtual Machine (HP)",
+                            "summary" : "Create one or more copies (clones) of existing VM by performing array-based clones."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.storage.CreateDSTask",
+                        "key_values" :
+                        {
+                            "label" : "Create Datastore (HP)",
+                            "summary" : "Creates a new Datastore and the associated volume within a specified storage pool."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.storage.CreateVMTask",
+                        "key_values" :
+                        {
+                            "label" : "Create VM (HP)",
+                            "summary" : "Creates a new Virtual Machines and the associated datastores within a specified storage pool."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.storage.ExpandDSTask",
+                        "key_values" :
+                        {
+                            "label" : "Expand Datastore (HP)",
+                            "summary" : "Expands an existing Datastore by growing both the Datastore and the underlying volume."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.storage.DeleteDSTask",
+                        "key_values" :
+                        {
+                            "label" : "Delete Datastore (HP)",
+                            "summary" : "Deletes an existing Datastore by removing the Datastore and the associated storage volume."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.storage.DeleteVolumeTask",
+                        "key_values" :
+                        {
+                            "label" : "Delete Volume (HP)",
+                            "summary" : "Deletes the underlying volume when the volume is not in use."
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.server.Deploy",
+                        "key_values" :
+                        {
+                            "label" : "Deploy Server (HP)",
+                            "summary" : "Deploy an ESXi image on a HP ProLiant server"
+                        }
+                    },
+                    {
+                        "task_id" : "com.hp.insight.server.FirmwareUpdateTask",
+                        "key_values" :
+                        {
+                            "label" : "Update Firmware Baseline (HP)",
+                            "summary" : "Update firmware for an HP ProLiant server"
+                        }
+                    }
+                ]
+            },
+            {
+                "module" : "fault",
+                "locale" : "en",
+                "faults" :
+                [
+                    {
+                        "fault_id" : "com.hp.insight.storage.CloneVMTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while cloning the Virtual Machine."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.storage.CreateVMTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while creating the Virtual Machine using vCenter VM Template."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.storage.CreateDSTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while creating the Datastore."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.storage.ExpandDSTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while expanding the Datastore."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.storage.DeleteDSTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while deleting the Datastore."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.storage.DeleteVolumeTaskFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while deleting the Volume."
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.server.DeployFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while deploying ESX/ESXi image on a HP ProLiant server"
+                        }
+                    },
+                    {
+                        "fault_id" : "com.hp.insight.server.FirmwareUpdateFault",
+                        "key_values" :
+                        {
+                            "summary" : "Error occurred while updating firmware of an HP server"
+                        }
+                    }
+                ]
+            },
+            {
+                "module" : "auth",
+                "locale" : "en",
+                "privs" :
+                [
+                    {
+                        "priv_id" : "HPStorage.com.hp.insight.storage.FullAccess",
+                        "priv_group_name" : "HPStorage",
+                        "key_values" :
+                        {
+                            "privilege.HPStorage.com.hp.insight.storage.FullAccess.label" : "HP Storage Full Access",
+                            "privilege.HPStorage.com.hp.insight.storage.FullAccess.summary" : "Privilege to allow provisioning access for HP Storage Module."
+                        }
+                    }
+                ],
+                "privilege_groups" :
+                [
+                    {
+                        "priv_group_id" : "HPStorage",
+                        "key_values" :
+                        {
+                            "privilege.HPStorage.label" : "HP Storage",
+                            "privilege.HPStorage.summary" : "HP Storage contains Privileges for HP Storage Module."
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+        
+    "public_config" : {
+        "apps" : {             
+            "hoststatus": {
+                "display_name" : "Consolidated Status",
+                "url" : "/static/apps/hoststatus/hoststatus.html"
+            },
+            "clusterstatus": {
+                "url": "/static/apps/clusterstatus/clusterstatus.html", 
+                "display_name": "Cluster Consolidated Status"
+            }, 
+            "hostnewsfeed": {
+                "display_name" : "News Feed",
+                "url" : "/static/apps/hostnewsfeed/hostnewsfeed.html"
+            },
+            "hosttasks": {
+                "display_name" : "Tasks",
+                "url" : "/static/apps/hosttasks/hosttasks.html"
+            },
+            "hostswfwdetail": {          
+                "display_name": "Software/Firmware",
+                "url" : "/static/apps/hostswfwdetail/hostswfwdetail.html"
+            },            
+            "hostoverview" : {"url" :"/static/apps/hostoverview/hostOverview.html",
+                "display_name" : "Overview",
+                "boxes" : [
+                    {   
+                        "id": "newsfeed",
+                        "template": "/static/apps/hostoverview/templates/newsfeedcontenttemplate.html",
+                        "title": "News Feed",
+                        "data_url": "/newsfeed/?top=10",
+                        "column": 1
+                    },
+                    {   
+                        "id": "firmware",
+                        "template": "/static/apps/hostoverview/templates/firmwarecontenttemplate.html",
+                        "title": "Software/Firmware",
+                        "data_url": "/agservices/hostswfwsummary",                
+                        "column": 3
+                    }
+                ]
+            },            
+            "clusteroverview" : {"url" :"/static/apps/clusteroverview/clusterOverview.html",
+                "display_name" : "Overview",
+                "boxes" : [
+                    {   
+                        "id": "newsfeed",
+                        "template": "/static/apps/clusteroverview/templates/newsfeedcontenttemplate.html",
+                        "title": "News Feed",
+                        "data_url": "/newsfeed/?top=10",
+                        "column": 1
+                    },
+                    {   
+                        "id": "clusterswfwsummary",
+                        "template": "/static/apps/clusteroverview/templates/swfwContentTemplate.html",
+                        "title": "Software/Firmware",
+                        "data_url": "/agservices/clusterswfwsummary",                
+                        "column": 3
+                    }     
+                ]
+            },
+            "clusternewsfeed": {
+                "display_name" : "News Feed",
+                "url" : "/static/apps/clusternewsfeed/clusternewsfeed.html"
+            },
+            "clustertasks": {
+                "display_name" : "Tasks",
+                "url" : "/static/apps/clustertasks/clustertasks.html"
+            },
+            "clusterswfwdetail": {     
+                "display_name" : "Software/Firmware",
+                "url" : "/static/apps/clusterswfwdetail/clusterswfwdetail.html"
+            },
+            "themeselect": {
+                "display_name" : "GUI Theme Selection",
+                "url" : "/static/apps/themeselect/themeselect.html"
+            },
+            "vcpassword": {
+                "display_name" : "vCenter Password Mnagement",
+                "url" : "/static/apps/vcpassword/vcpassword.html"
+            },
+            "certupload": {
+                "display_name" : "Certificate Management",
+                "url" : "/static/apps/certupload/certupload.html"
+            },
+            "selfsigned": {
+                "display_name" : "Generate Self-Signed Certificated",
+                "url" : "/static/apps/selfsigned/selfsigned.html"
+            }
+        },
+        "pages" : 
+        {        
+            "host_overview" : 
+            {
+                "settings" : 
+                [
+                    {
+                        "type" : "url",
+                        "display_name" : "Version Information",          
+                        "web_root" : "uim_root",
+                        "path" : "/static/ProductVersion.html"
+                    }
+                ],
+                "more_menu_items" : 
+                [
+                    {
+                        "display_name" : "Overview",
+                        "appId": "hostoverview"
+                    },                    
+                    {
+                        "display_name" : "Status",
+                        "appId" : "hoststatus"
+                    },
+                    {
+                        "display_name" : "News Feed",
+                        "appId": "hostnewsfeed"
+                    },
+                    {
+                        "display_name" : "Tasks",
+                        "appId": "hosttasks"
+                    },
+                    {
+                        "display_name" : "Software/Firmware",
+                        "appId": "hostswfwdetail"
+                    }
+                ]
+            },
+            "cluster_overview" :
+            {
+                "settings" : 
+                [
+                    {
+                        "type" : "url",
+                        "display_name" : "Version Information",          
+                        "web_root" : "uim_root",
+                        "path" : "/static/ProductVersion.html"
+                    }
+                ],
+                "more_menu_items" : 
+                [
+                    {
+                        "display_name" : "Overview",
+                        "appId": "clusteroverview"
+                    },
+                    {
+                        "display_name" : "Status",
+                        "appId" : "clusterstatus"
+                    },
+                    {
+                        "display_name" : "News Feed",
+                        "appId": "clusternewsfeed"
+                    },
+                    {
+                        "display_name" : "Tasks",
+                        "appId": "clustertasks"
+                    },
+                    {
+                        "display_name" : "Software/Firmware",
+                        "appId": "clusterswfwdetail"
+                    }
+                ]
+            },
+            "storage_system_overview" : 
+            {
+                "settings" : 
+                [
+                    {
+                        "type" : "url",
+                        "display_name" : "Version Information",          
+                        "web_root" : "uim_root",
+                        "path" : "/static/ProductVersion.html"
+                    }
+                ]
+            },
+            "home_settings" : 
+            {
+                "menu_items" : 
+                [
+                    {
+                        "display_name" : "GUI Theme Selection",
+                        "appId": "themeselect"
+                    },
+                    {
+                        "display_name" : "vCenter Credential Management",
+                        "appId": "vcpassword",
+                        "role": -1
+                    },
+                    {
+                        "display_name" : "Certificate Upload",
+                        "appId": "certupload",
+                        "role": -1
+                    },
+                    {
+                        "display_name" : "Generate Self-signed Certificate",
+                        "appId": "selfsigned",
+                        "role": -1
+                    }             
+                ]
+            }
+        },        
+        "providers": {
+	   },
+        "about" : {
+        "version" : "07.01.00",
+        "build" : "29"
+        },
+            
+        "flex" : 
+		{
+			"monitor": 
+			{
+				"host" : 
+				{
+					"pages" : 
+					[                   			
+						{
+                            "display_name_key" : "Getting_Started",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_manage_GettingStarted",
+                            "help_topic" : "s_Insight_Management_pages.html",
+                            "sub_pages" : []
+                        },
+						{
+							"display_name_key" : "Newsfeed",
+							"order" : "2",
+							"component" : "assets.components.Hpic4vc_Newsfeed",
+							"help_topic" : "s_Host_News_Feed.html"
+						},
+						{
+							"display_name_key" : "Health",
+							"order" : "3",
+							"component" : "assets.components.Hpic4vc_Health",
+							"help_topic" : "s_server_health_status_details.html"
+						},
+						{
+							"display_name_key" : "Tasks",
+							"order" : "4",
+							"component" : "assets.components.Hpic4vc_Tasks",
+							"help_topic" : "s_host_monitoring_tasks.html"
+						}
+					]
+				},
+				"cluster" : 
+				{
+					"pages" : 
+					[                               
+						{
+                            "display_name_key" : "Getting_Started",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Cluster_GettingStarted",
+                            "help_topic" : "s_Insight_Management_pages.html",
+                            "sub_pages" : []
+                        },
+						{
+							"display_name_key" : "Newsfeed",
+							"order" : "2",
+							"help_topic" : "s_Host_News_Feed.html",
+							"component" : "assets.components.Hpic4vc_Newsfeed"
+						},
+						{
+							"display_name_key" : "Health",
+							"order" : "3",
+							"help_topic" : "s_server_health_status_details.html",
+							"component" : "assets.components.Hpic4vc_Health"
+						},
+						{
+							"display_name_key" : "Tasks",
+							"order" : "4",
+							"help_topic" : "s_host_monitoring_tasks.html",
+							"component" : "assets.components.Hpic4vc_Tasks"
+						}
+					]
+				}
+			},
+			"manage" : 
+			{
+				"host" : 
+				{
+					"pages" : 
+					[                   			
+						{
+                            "display_name_key" : "Getting_Started",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_manage_GettingStarted",
+                            "help_topic" : "s_Insight_Management_pages.html",
+                            "sub_pages" : []
+                        },
+                        {
+                            "display_name_key" : "Overview",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview",
+                            "help_topic" : "s_Host_Overview_page.html",
+                            "sub_pages" : []
+                        },
+                        {
+                            "display_name_key" : "Software_Firmware",
+                            "order" : "7",
+                            "component" : "assets.components.Hpic4vc_SoftwareFirmware",
+                            "help_topic" : "s_Viewing_host_software_and_firmware.html"
+                        }
+                    ],
+                    "boxes" : 
+                    [   
+                        {
+                            "display_name_key" : "Software_Firmware",
+                            "column" : "3",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview_SoftwareFirmware"
+                        },
+                        {
+                            "display_name_key" : "Newsfeed",
+                            "column" : "1",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Overview_Newsfeed"
+                        }
+                    ]
+				},
+				"cluster" : 
+				{
+					"pages" : 
+					[                               
+						{
+                            "display_name_key" : "Getting_Started",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Cluster_GettingStarted",
+                            "help_topic" : "s_Insight_Management_pages.html",
+                            "sub_pages" : []
+                        },
+                        {
+                            "display_name_key" : "Overview",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview",
+                            "help_topic" : "s_clusteroverview.html",
+                            "sub_pages" : []
+                        },
+                        {
+                            "display_name_key" : "Software_Firmware",
+                            "order" : "7",
+                            "component" : "assets.components.Hpic4vc_SoftwareFirmware",
+                            "help_topic" : "Cluster_Firmware.html"
+                        }
+                    ],
+                    "boxes" : 
+                    [   
+                        {
+                            "display_name_key" : "Software_Firmware",
+                            "column" : "3",
+                            "order" : "2",
+                            "component" : "assets.components.Hpic4vc_Overview_SoftwareFirmware"
+                        },
+                        {
+                            "display_name_key" : "Newsfeed",
+                            "column" : "1",
+                            "order" : "1",
+                            "component" : "assets.components.Hpic4vc_Overview_Newsfeed"
+                        }
+                    ]
+				}
+			}
+		},
+		"productPages" : [
+			{
+				"title" : "Navigate",
+				"url"   : "s_Insight_Management_pages.html",
+				"order" : "1"
+			}
+		
+		],
+	
+		"configurationPages" : [
+			{
+				"title"  : "Configure_vCenter",
+				"url"    : "com.hp.asi.hpic4vc.ui.insightManagement.vCenterCredentials",
+				"helpUrl": "s_vCenter_Credential_Management.html",
+				"order"  : "1"
+			},
+			{
+				"title"  : "Install_Certificate",
+				"url"    : "com.hp.asi.hpic4vc.ui.insightManagement.certManagement",
+				"helpUrl": "s_Generate_Self-signed_Certificate.html",
+				"order"  : "2"
+			}		
+		]
+	}
+}

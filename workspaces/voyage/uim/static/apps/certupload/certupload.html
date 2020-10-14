@@ -1,0 +1,71 @@
+<script>
+    var CertUpload = {
+        startApp: function(){
+        },
+        
+        getCert: function () {
+            $.getJSON("/certificate/json"+window.location.search, CertUpload.processCert);
+        },
+    
+        processCert: function (resp) {
+            var csrtext="You must create a certificate signing request before you can upload a certificate.";
+            if (resp.error) {
+                alert(resp.error);
+            } else if (resp.csr == null) {
+                alert(csrtext)
+            }
+        },
+    
+        setCert: function (obj) {
+            $.postJSON("/certificate/json"+window.location.search, obj, CertUpload.processCert);
+        },
+    
+        onSave: function () {
+            c = {
+                'cert': $("#certuploadtextarea").get(0).value,
+                'method': 'upload'
+            };
+            CertUpload.setCert(c);
+            return false;
+        },
+    
+        onCancel: function () { 
+            $("#certuploadtextarea").get(0).value = ''; 
+            return false; 
+        }
+    }
+    CertUpload.startApp();
+</script>
+
+<div id="certupload" style="display:none;">
+    <form id="form1">
+    <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Certificate Upload</p></td>
+     </tr>
+    </table>
+
+    <table class="data" border="0" width="100%" style="font-size:12px;font-weight:bold;">
+     <tr>
+       <td width="400px">&nbsp;&nbsp;&nbsp;Paste a signed Certificate into the text area below<br />&nbsp;&nbsp;&nbsp;(Note: If right-click or Ctrl-V actions are disabled, <a href="javascript:doPaste('certuploadtextarea');">click here</a> to paste)
+     </tr>
+
+     <tr>
+       <td>
+         <textarea id="certuploadtextarea" rows=12 cols=65></textarea>
+       </td>
+     </tr>
+    </table>
+    <br/>
+
+    <table class="data" border="0" width="100%">
+     <tr style="height:15px">       
+       <td colspan="2" align="left">&nbsp;&nbsp;&nbsp;
+         <input id="save" type=button value="Upload" onClick="return CertUpload.onSave()">
+       &nbsp;&nbsp;&nbsp;
+         <input id="cancel" type=button value="Clear" onClick="return CertUpload.onCancel()">
+       </td>
+     </tr>
+    </table>
+    </form>
+</div> 

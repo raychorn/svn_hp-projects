@@ -1,0 +1,271 @@
+<script id="clusterinfradetail_oasyslog_template" type="text/x-jquery-tmpl" >
+    <tr>
+        <td>
+            ${$item.data}
+        </td>
+    </tr>
+</script>
+
+
+<script id="clusterinfradetail_oa_module_template" type="text/x-jquery-tmpl" >   
+    
+    {{if oa_status.oaRole != 'OA_ABSENT'}}
+        <tr><td>${oa_info.bayNumber}</td><td>${oa_info.name}</td><td>${oa_status.oaRole}</td><td>${oa_network.ipAddress}</td><td>${oa_info.fwVersion}</td><td>${oa_info.serialNumber}</td><td>${oa_info.partNumber}</td><td>${oa_info.sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${oa_info.bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+    
+</script>
+
+
+<script id="clusterinfradetail_interconnect_template" type="text/x-jquery-tmpl" >    
+    {{if name != "[Unknown]"}}
+        <tr><td>${bayNumber}</td><td>${name}</td><td>${serialNumber}</td><td>${partNumber}</td><td>${sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+</script>
+
+
+<script id="clusterinfradetail_ps_template" type="text/x-jquery-tmpl" >    
+    {{if serialNumber}}
+        <tr><td>${bayNumber}</td><td>${ClusterInfraDetail.getExtraDataValue( $data, "productName") }</td><td style="text-align:right">${capacity}</td><td style="text-align:right">${actualOutput}</td><td>${serialNumber}</td><td>${modelNumber}</td><td>${sparePartNumber}</td></tr>    
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>    
+    {{/if}}
+</script>
+
+
+<script id="clusterinfradetail_fan_template" type="text/x-jquery-tmpl" >    
+    {{if presence != "ABSENT"}}
+        <tr><td>${bayNumber}</td><td>${name}</td><td class="numerical-value">${fanSpeed}</td><td class="numerical-value">${maxFanSpeed}</td><td class="numerical-value">${powerConsumed}</td><td>${partNumber}</td><td>${sparePartNumber}</td></tr>        
+    {{else}}
+        <tr><td>${bayNumber}</td><td>Absent</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>        
+    {{/if}}
+</script>
+
+
+<script id="clusterinfradetail_thermal_template" type="text/x-jquery-tmpl" >
+    <table>
+    <tr><td>Redundancy</td><td>${redundancy}</td></tr>                
+    <tr><td>Good Fans</td><td class="numerical-value">${goodFans}</td></tr>    
+    <tr><td>Wanted Fans</td><td class="numerical-value">${wantedFans}</td></tr>    
+    <tr><td>Needed Fans</td><td class="numerical-value">${neededFans}</td></tr>        
+    </table>
+</script>
+
+
+<script id="clusterinfradetail_power_template" type="text/x-jquery-tmpl" >
+    <table>
+    <tr><td>Redundancy</td><td>${redundancy}</td></tr>        
+    <tr><td>Capacity</td><td class="numerical-value">${capacity} W</td></tr>    
+    <tr><td>Redundant Capacity</td><td class="numerical-value">${redundantCapacity} W</td></tr>    
+    <tr><td>Output Power</td><td class="numerical-value">${outputPower} W</td></tr>    
+    <tr><td>Power Consumed</td><td class="numerical-value">${powerConsumed} W</td></tr>    
+    <tr><td>Good Power Supplies</td><td class="numerical-value">${goodPowerSupplies}</td></tr>    
+    <tr><td>Wanted Power Supplies</td><td class="numerical-value">${wantedPowerSupplies}</td></tr>    
+    <tr><td>Needed Power Supplies</td><td class="numerical-value">${neededPowerSupplies}</td></tr>        
+    </table>
+</script>
+
+
+<script id="cluster_infradetail_enclosure_template" type="text/x-jquery-tmpl" >
+    <table>    
+    <tr><td>Enclosure</td><td>${enclosureName}</td></tr>    
+    <tr><td>Product Name</td><td>${name}</td></tr>    
+    <tr><td>Rack</td><td>${rackName}</td></tr>    
+    <tr><td>Blade Bays</td><td>${bladeBays}</td></tr>    
+    <tr><td>Fan Bays</td><td>${fanBays}</td></tr>    
+    <tr><td>Power Supply Bays</td><td>${powerSupplyBays}</td></tr>    
+    <tr><td>Interconnect Tray Bays</td><td>${interconnectTrayBays}</td></tr>    
+    <tr><td>Serial Number</td><td>${serialNumber}</td></tr>    
+    <tr><td>UUID</td><td>${uuid}</td></tr>    
+    <tr><td>Part Number</td><td>${partNumber}</td></tr>    
+    <tr><td>Midplane Spare Part Number</td><td>${chassisSparePartNumber}</td></tr>    
+    </table>
+</script>
+
+
+<script id="clusterinfradetail_oa_template" type="text/x-jquery-tmpl" >    
+    <tr>
+        <td><a id="${enclosure_info.uuid}" class="clusterinfradetail_expand_toggle" href="#">${enclosure_info.enclosureName}</a></td>
+        <td>${enclosure_info.rackName}</td>
+        <td>${enclosure_info.powerSuppliesPresent} of ${enclosure_info.powerSupplyBays}</td>
+        <td>${enclosure_info.fansPresent} of ${enclosure_info.fanBays}</td>
+        <td class="numerical-value">${power.powerConsumed}</td>
+        <td>${power.redundancy}</td>
+        <td>${thermal.redundancy}</td>
+    </tr>        
+    <tr ><td colspan="7">
+        <div id="${enclosure_info.uuid + '_detail'}" style="display:none;">        
+            <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">                
+                <div class="bigbox_header ui-widget-header">Enclosure</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">                
+                        {{tmpl(enclosure_info) "#cluster_infradetail_enclosure_template"}}                              
+                    </div>
+                </div>                
+                
+                <div class="bigbox_header ui-widget-header">Power</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">                
+                        {{tmpl(power) "#clusterinfradetail_power_template"}}                              
+                    </div>
+                </div>    
+                
+                <div class="bigbox_header ui-widget-header">Thermal</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">                
+                        {{tmpl(thermal) "#clusterinfradetail_thermal_template"}}                              
+                    </div>
+                </div>     
+                
+                <div class="bigbox_header ui-widget-header">Fans</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">           
+                        <table>
+                        <tr><th>Bay</th><th>Product Name</th><th>Fan Speed (rpm)</th><th>Max Fan Speed (rpm)</th><th>Power Consumed (W)</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                        {{tmpl(fan_info.fanInfo) "#clusterinfradetail_fan_template"}}                              
+                        </table>
+                    </div>
+                </div>       
+                
+                <div class="bigbox_header ui-widget-header">Power Supplies</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">           
+                        <table>
+                        <tr><th>Bay</th><th>Product Name</th><th>Capacity (W)</th><th>Output (W)</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                        {{tmpl(ps_info.powerSupplyInfo) "#clusterinfradetail_ps_template"}}                              
+                        </table>
+                    </div>
+                </div>    
+                
+                <div class="bigbox_header ui-widget-header">Interconnects</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">           
+                        <table>
+                        <tr><th>Bay</th><th>Product Name</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                        {{tmpl(tray_info.interconnectTrayInfo) "#clusterinfradetail_interconnect_template"}}                              
+                        </table>
+                    </div>
+                </div>    
+                
+                <div class="bigbox_header ui-widget-header">Onboard Administrator Modules</div>
+                <div class="bigbox_contents">
+                    <div class="bigbox_line">           
+                        <table>
+                        <tr><th>Bay</th><th>Product Name</th><th>Role</th><th>IP</th><th>Firmware Version</th><th>Serial Number</th><th>Part Number</th><th>Spare Part Number</th></tr>
+                        {{tmpl(oa_info_status) "#clusterinfradetail_oa_module_template"}}                              
+                        </table>
+                    </div>
+                </div>
+                
+                {{if syslog }}
+                <div class="bigbox_header ui-widget-header">Onboard Administrator Syslog</div>
+                <div class="bigbox_contents">
+                    {{if syslog.length > 0}}
+                        <div class="bigbox_line">
+                            <div style="height: 200px;overflow-y: scroll;">
+                            <table>                    
+                                {{tmpl(syslog) "#clusterinfradetail_oasyslog_template"}}              
+                            </table>    
+                            </div>
+                        </div>
+                    {{else}}
+                        Log is empty or unavailable.
+                    {{/if}}
+                </div>
+                {{/if}}
+                
+            </div>
+        </td>
+    </tr>
+</script>
+
+<script id="clusterinfradetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">                
+        <div class="bigbox_header ui-widget-header">Cluster Infrasturcture Detail</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">                
+                <table>
+                <tr><th>Enclosure</th><th>Rack</th><th>Power Supplies</th><th>Fans</th><th>Power Consumed (W)</th><th>Power Redundancy</th><th>Thermal Redundancy</th></tr>
+                {{if oas}}
+                    {{tmpl(oas) "#clusterinfradetail_oa_template"}}                              
+                {{else}}
+                <tr>
+                    <td colspan="5">Infrastructure information not found</td>
+                </tr>
+                {{/if}}
+                </table>
+            </div>
+        </div>                
+        
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('clusteroverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var ClusterInfraDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+                
+        toggle_detail : function(event)
+        {            
+            $('#' + event.target.id + '_detail').slideToggle("slow");
+        },
+        
+        getExtraDataValue : function(data, name)
+        {
+            for(i in data.extraData)
+            {
+                if(data.extraData[i]._name == name)
+                {
+                    return data.extraData[i].value;
+                }
+            }
+            return "";
+        },
+        
+        refresh_data : function()
+        {                            
+            if (ClusterInfraDetail.isActive())
+            {                                
+                $.getJSON("/services/host/clusterinfradetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#clusterinfradetail').empty();
+                        $.tmpl('clusterinfradetail_template', data).appendTo( "#clusterinfradetail" );                                                
+                        $(".clusterinfradetail_expand_toggle").click(ClusterInfraDetail.toggle_detail);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                               
+            $("#clusterinfradetail_template").template('clusterinfradetail_template');
+            ClusterInfraDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            ClusterInfraDetail.refresh_data();                        
+            AppManager.addAppListener(ClusterInfraDetail.refresh_data);
+        },
+        
+        isActive: function(){
+            if(ClusterInfraDetail.activeOverride == true)
+            {
+                ClusterInfraDetail.activeOverride = false;
+                return true;
+            }
+            return $("#clusterinfradetail").is(":visible");
+        }
+    };
+    
+    ClusterInfraDetail.startApp();    
+</script>
+
+
+<div id="clusterinfradetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

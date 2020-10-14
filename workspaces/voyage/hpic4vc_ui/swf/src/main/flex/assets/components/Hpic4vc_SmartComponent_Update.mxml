@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%" creationComplete="onCreationComplete()" implements="assets.components.Hpic4vc_Manage_BaseComponent" maxHeight="500" xmlns:components="assets.components.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.FirmwareListOfJobsForClusterModel;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.managers.CursorManager;
+			
+			[Bindable]
+			private var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView ;
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			private var _objReferenceId:String;
+			[Bindable]
+			public var smartComponentUpdateHostDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var uploadedComponents:DataGridWrapper;
+			[Bindable]
+			public var checkBoxes:Array = new Array();
+			[Bindable]
+			public var checkBoxesArrayCollection:ArrayCollection;
+			[Bindable]
+			public var _baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+			public var  url:String = "";
+			
+			public function get objReferenceId():String
+			{
+				return _objReferenceId;
+			}
+			
+			public function set objReferenceId(value:String):void
+			{
+				_objReferenceId = value;
+			}
+			
+			public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_uiView = hpic4vc_uiView;
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+			}
+			
+			private function onCreationComplete():void
+			{
+				_proxyServer = new Hpic4vc_server_providerProxy();
+				if (objReferenceId){
+					getData();
+				}
+				else {
+					smartComponentUpdateHostDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+					
+				}
+			}	
+			
+			public function getData():void{
+				mx.managers.CursorManager.setBusyCursor();
+				_proxyServer.getUploadedSoftwareComponents(objReferenceId, onGettingUploadedSoftwareComponents);
+			}
+			
+			private function onGettingUploadedSoftwareComponents(event:MethodReturnEvent):void{
+				if (event != null && event.result) {
+					var detail:TableModel = event.result as TableModel;
+					if (detail)
+						uploadedComponents =  Helper.createDataGrid( detail );
+					_proxyServer.getFirmwareJobsForCluster(objReferenceId, onGettingFirmwareJobsForCluster);
+				}
+			}
+			private function onGettingFirmwareJobsForCluster(event:MethodReturnEvent):void{
+				mx.managers.CursorManager.removeBusyCursor();
+				checkBoxesArrayCollection = new ArrayCollection();
+				 var firmwareListOfJobsModel:FirmwareListOfJobsForClusterModel; 
+				if (event != null && event.result) {
+					firmwareListOfJobsModel= event.result as FirmwareListOfJobsForClusterModel;
+					if(firmwareListOfJobsModel.hosts != null){
+						for(var i:int=0;i<firmwareListOfJobsModel.hosts.length;i++)
+						{
+							var obj:Object = new Object();
+							obj.label = firmwareListOfJobsModel.hosts[i];
+							obj.data = firmwareListOfJobsModel.hosts[i];
+							checkBoxesArrayCollection.addItem(obj);
+						}
+						checkBoxesGroup.invalidateDisplayList();
+					}
+				} 
+			}
+			public function getChecked(data:int):Boolean {
+				
+				var isChecked:Boolean = false ;
+				var pos:int =checkBoxes.indexOf(data) ;
+				if ( pos >= 0 ) {
+					//the data value is in the array
+					//so the check box associated with
+					//this data value should be checked
+					isChecked = true ;
+					
+				}//end if
+				
+				return isChecked;
+			}
+			
+			public function updateCheckBoxes(genObj:Object):void {
+				var pos:int = checkBoxes.indexOf(genObj.data);
+				
+				if ( pos >= 0 ) {
+					checkBoxes.splice(pos,1);
+				} else {
+					checkBoxes.push( genObj.data);
+				}
+			}
+			
+			private function clickUpdateFromURL(event:MouseEvent):void{
+				updateFromUrl.selected = true;
+				updateFromManagedSmart.selected = false;
+				managedSmartComponent.selectedIndex = -1;
+			}
+			
+			private function updateFromManagedSmartComponent(event:MouseEvent):void{
+				updateFromUrl.selected = false;
+				updateFromManagedSmart.selected = true;
+				urlInput.text ="";
+			}
+			
+			private function managedSmartComponent_changeHandler(event:Event):void
+			{
+				if(updateFromManagedSmart.selected){
+					var selectedItemObject:Object = managedSmartComponent.selectedItem;
+					if(checkForAtleastOneCheckedHost()){
+						Alert.show("Please select at least one host.");
+					} else if(selectedItemObject!=null){
+						box1.enabled = false;
+						//htmlLinkRedirect.enabled = false;
+						var obj:Object = managedSmartComponent.selectedItem;
+						var packageUrl:String = obj[2].toString();
+						var options:ArrayCollection = new ArrayCollection();
+						options.addItem("4");
+						options.addItem("11");
+						
+						if(forceComponentUpdate.selected){
+							options.addItem("3");
+						}
+						var hostsArrayCollection:ArrayCollection = new ArrayCollection();
+						
+						for(var i:int=0;i<checkBoxes.length;i++)
+						{
+							hostsArrayCollection.addItem(checkBoxes[i]);    	
+						}
+						
+						_proxyServer.updateClusterFirmwareComponents(objReferenceId,packageUrl,options.toArray(),hostsArrayCollection.toArray(),onGettingCurrentUpdateOnMessage);
+					}else {
+						
+						Alert.show("Please Select a Smart Component from list.");
+					}
+					
+				}else {
+					url = urlInput.text;
+					if (url.indexOf("http://") != 0 || (url.length<15)){
+						Alert.show("Please enter a valid HTTP URL.");
+					}else if(checkForAtleastOneCheckedHost()){
+						Alert.show("Please select at least one host.");
+					}else{
+						box1.enabled = false;
+						//htmlLinkRedirect.enabled = false;
+						var packageUrlInput:String = url;
+						var optionsUrlInput:ArrayCollection = new ArrayCollection();
+						optionsUrlInput.addItem("4");
+						optionsUrlInput.addItem("11");
+						
+						if(forceComponentUpdate.selected){
+							optionsUrlInput.addItem("3");
+						}
+						
+						var hostsArrayCollectionNotSelected:ArrayCollection = new ArrayCollection();
+						
+						for(var j:int=0;j<checkBoxes.length;j++)
+						{
+							hostsArrayCollectionNotSelected.addItem(checkBoxes[j]);    	
+						}
+						
+						_proxyServer.updateClusterFirmwareComponents(objReferenceId,packageUrlInput,optionsUrlInput.toArray(),hostsArrayCollectionNotSelected.toArray(),onGettingCurrentUpdateOnMessage);
+					}
+					
+				}
+				
+				
+			}
+			
+			private function onGettingCurrentUpdateOnMessage(event:MethodReturnEvent):void{
+				var temp:FirmwareListOfJobsForClusterModel =  new FirmwareListOfJobsForClusterModel();
+				box1.enabled = true;
+				//htmlLinkRedirect.enabled = true;
+				if (event != null && event.result) {
+					temp= event.result as FirmwareListOfJobsForClusterModel;
+					if(temp.updateFirmwareComponentMessageModel != null){
+						Alert.show(temp.updateFirmwareComponentMessageModel.message);
+						
+					}
+				}   
+				
+			}
+			
+			private function clickRedirectToSoftwareFirmware(event:Event):void {
+				_hpic4vc_manage_uiView = _baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnSoftwareFirmwareClusterStatusUpdateClicked(event);
+			}
+			
+			private function deSelectAllCheckBoxes(event:Event):void
+			{
+			   if(selectAllCheckBoxes.selected){
+				   for(var i:int=0;i<checkBoxesArrayCollection.length;i++)
+				   {
+					   if(!hostsCheck[i].selected){
+						   var evt:MouseEvent=new MouseEvent(MouseEvent.CLICK);
+						   hostsCheck[i].dispatchEvent(evt);   
+					   }
+				   }
+			   }else{
+				   for(var j:int=0;j<checkBoxesArrayCollection.length;j++)
+				   {
+					   if(hostsCheck[j].selected){
+						   var evtNotSelected:MouseEvent=new MouseEvent(MouseEvent.CLICK);
+						   hostsCheck[j].dispatchEvent(evtNotSelected);   
+					   }
+				   }
+			   }
+				
+			}
+			
+			private function checkForAtleastOneCheckedHost():Boolean{
+			
+				for(var i:int=0;i<rp.dataProvider.length;i++)
+				{
+					var checkBox:CheckBox = hostsCheck[i];
+					  if(checkBox.selected)
+						   return false;
+				}
+				
+				return true;
+			}
+			
+			private function comboBox_labelFunc(item:Object):String {
+				var arrayCollection:ArrayCollection;
+				var selectionString:String;
+				if(item){
+					arrayCollection = item as ArrayCollection;
+					selectionString = arrayCollection[1]+" - "+arrayCollection[0]+"("+arrayCollection[2]+")";
+				}
+				return selectionString;					
+			}
+			
+			private function clearUpdateFromURL(event:Event):void{
+				updateFromManagedSmart.selected = false;
+				managedSmartComponent.selectedIndex = -1;
+			}
+			
+		    private function clearUpdateFromManageSmartComponentRadio(event:Event):void{
+				updateFromUrl.selected = false;
+				urlInput.text ="";
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Text id="manageSmartComponentsText" text="Host firmware can be updated using HP Smart Components. Smart Components must be made available to the host using an HTTP server. Use the form below to specify Smart Component URLs (for example, http://myserver/CPXXXXXX.SCEXE). If additional URLs are specified while an update is in progress, they will be added to the Pending Jobs list." paddingTop="20" width="100%" height="100%" />
+	
+	<s:VGroup left="10" right="10" top="10" bottom="10" paddingTop="90" horizontalAlign="center">
+		
+		<mx:Box direction="vertical" borderStyle="solid" id="box1"
+				paddingTop="10" paddingBottom="10" paddingLeft="10" >
+			<mx:VBox paddingLeft="6" paddingRight="5">
+				<mx:RadioButton label="Update from URL" fontWeight="bold" width="100%"  groupName="firmWareUpdateGroup" id="updateFromUrl" selected="true" click="clearUpdateFromURL(event)"/> 
+				<mx:HBox paddingLeft="6" horizontalGap="30" width="100%" >
+					<mx:Label text = "Smart Component URL:" />
+					<mx:TextInput id="urlInput" width="350" click="clickUpdateFromURL(event)"/>
+				</mx:HBox>
+			</mx:VBox>
+			
+			<mx:VBox paddingLeft="6" paddingRight="5">
+				<mx:RadioButton  label="Update from Managed Smart Component" fontWeight="bold" width="100%" groupName="firmWareUpdateGroup" id="updateFromManagedSmart" click="clearUpdateFromManageSmartComponentRadio(event)"/> 
+				<mx:HBox horizontalGap="5" paddingLeft="5" >
+					<mx:Label text = "Managed Smart Component:" />
+					<components:VariableDropDownWidthCombo id="managedSmartComponent" width="350" paddingLeft="5" dataProvider="{uploadedComponents.list}" click="updateFromManagedSmartComponent(event)" labelFunction="comboBox_labelFunc" prompt="Select ..." dropdownWidth="500"  height="26"  />
+				</mx:HBox>
+			</mx:VBox>
+			<mx:CheckBox  label="Force Component Update" fontWeight="bold" width="100%" paddingTop="40" id="forceComponentUpdate"/>
+			<mx:VBox id="serverList" width="100%">
+					<mx:VBox id= "checkBoxesGroup">
+						<mx:CheckBox click="deSelectAllCheckBoxes(event)" label="Select All" id="selectAllCheckBoxes"/>
+							<mx:VBox paddingLeft="15">
+								<mx:Repeater id="rp" dataProvider="{checkBoxesArrayCollection}">
+									<mx:CheckBox id="hostsCheck" label="{rp.currentItem.label}" selected="{getChecked(rp.currentItem.data)}" 
+												 click="updateCheckBoxes(event.currentTarget.getRepeaterItem())">
+									</mx:CheckBox>
+								</mx:Repeater>
+							</mx:VBox>
+					</mx:VBox>
+			</mx:VBox>
+			
+			<mx:VBox horizontalAlign="right" width="100%" paddingRight="7">
+				<mx:Button id="updateSmartComponentButton" label="Update" click="managedSmartComponent_changeHandler(event)"/>
+			</mx:VBox>
+		</mx:Box>
+		<mx:HBox id="htmlLinkRedirect" horizontalAlign="center">
+			<mx:Label id = "redirect" text="Please click on the Status Update  link to redirect to Queued Job status" />
+			<mx:LinkButton id="statusMessageLink" label="Status Update" click="clickRedirectToSoftwareFirmware(event)" styleName="htmlLink" />	
+		</mx:HBox>	
+	</s:VGroup>
+	
+</s:Group>

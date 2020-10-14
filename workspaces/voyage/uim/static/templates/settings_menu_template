@@ -1,0 +1,26 @@
+<![CDATA[    
+    <% if (this['arr'].length > 0){ %>
+        <% for (var i=0 ; i<this['arr'].length ; i++){ %>
+            <% if(is_menu_authorized(userInfo.role, this['arr'][i])) { %>
+                <div class="box_line">
+                    <% var loadedOne = true; %>
+                    <% if (this['arr'][i].type === 'app') { %>
+                        <a href="#" onclick="AppManager.loadApp( '<%=this['arr'][i].appId %>' );">
+                        <%= this['arr'][i].display_name %><br />
+                        </a>
+                    <% } else {%>
+                        <a href="<%=this['arr'][i].url + "?" + window.location.search.substring(1) %>" target="_blank">
+                        <%= this['arr'][i].display_name %><br />
+                        </a>
+                    <% } %>
+                </div>
+            <% } %>
+        <% } %>
+        <% if(!loadedOne) { %>
+            <div class="box_line">No Settings available for the current user.</div> 
+        <% } %>
+        <div class="box_footer"></div>
+    <% } else { %>
+        <div class="box_line">No Settings available for the current user.</div> 
+    <% } %>
+]]>

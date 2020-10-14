@@ -1,0 +1,12 @@
+<![CDATA[
+   <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Authorization Required</p></td>
+     </tr>
+   </table>
+   <table class="data" border="0" width="100%">
+     <tr>
+       <td>&nbsp;&nbsp;&nbsp;You must be a member of the vCenter Administrator role to access this page.</td>
+     </tr>
+   </table>
+]]>

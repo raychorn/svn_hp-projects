@@ -1,0 +1,18 @@
+<![CDATA[
+    <% var component_list = this['components']; %>
+    <% if (component_list.length) { %>
+        <% for (var i=0 ; i<component_list.length ; i++) { %>
+        <% var row_cls = (i%2) == 0 ? "odd" : ""; %>
+            <tr class="<%=row_cls%>">
+                <td><%=component_list[i]['name']%></td>
+                <td><%=component_list[i]['version']%></td>
+                <td><%=component_list[i]['filename']%></td>
+                <td><a href="javascript:HostFirmwareUpdate.delete_component('<%=component_list[i]['filename']%>')">delete</a></td>
+            </tr>
+        <% } %>
+    <% } else { %>
+        <tr>
+            <td colspan="4" style="text-align:center;">There are no managed components.</td>
+        </tr>
+    <% } %>
+]]>

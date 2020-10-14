@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pluginPackage id="com.hp.ic4vc.ngc" version="7.1.0" name="HP Insight Management" vendor="HP">
+   <dependencies>
+      <!-- dependency on the current vSphere Client version is required -->
+      <pluginPackage id="com.vmware.vsphere.client" version="5.1.0" />
+   </dependencies>
+
+   <bundlesOrder>
+      <!-- Normally you only need to list the bundles from the /plugins directory when
+         the loading order matters (i.e. loading a service bundle before a UI bundle).
+         Bundle IDs here must match the Bundle-SymbolicName in each plugin's MANIFEST.MF
+      -->
+      <bundle id="com.vmware.wsvim25" />      
+      <bundle id="jackson-core-asl" />
+      <bundle id="jackson-mapper-asl" />
+      <bundle id="com.hp.asi.ui.hpicsm.rmi" />
+      <bundle id="com.hp.asi.ui.hpicsm.ws" />
+      <bundle id="com.hp.asi.hpic4vc.provider" />
+      <bundle id="com.hp.asi.hpic4vc.storage.provider" />
+      <bundle id="com.hp.asi.hpic4vc.server.provider" />
+      <bundle id="com.hp.asi.hpic4vc.ui" />
+   </bundlesOrder>
+</pluginPackage>

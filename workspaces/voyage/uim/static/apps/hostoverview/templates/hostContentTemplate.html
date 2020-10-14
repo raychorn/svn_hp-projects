@@ -1,0 +1,23 @@
+<div class="box_line">
+    <table width="100%">
+        {{if ilo_server_name }}
+        <tr><td>Server Name</td><td>${ilo_server_name}</td></tr>
+        {{/if}}
+        <tr><td>VMWare Host Name</td><td>${vmware_name}</td></tr>
+		<tr><td>Product Name</td><td>${product_name}</td></tr>		
+		<tr><td>iLO Address</td><td>${ilo_address}</td></tr>
+		<tr><td>iLO License Type</td><td>${ilo_license_type}</td></tr>
+		<tr><td>iLO Firmware Version</td><td>${ilo_firmware_version}  ${ilo_firmware_date}</td></tr>                
+		<tr><td>UID Status</td><td>${uid_status}</td></tr>                
+		<tr><td>Host Power Status</td><td>${power_status}</td></tr>                
+		<tr><td>Total CPU</td><td>${total_cpu}</td></tr>                
+		<tr><td>Total Memory</td><td>${total_memory}</td></tr>                
+		<tr><td>Total NICs</td><td>${total_nics}</td></tr>                
+		<tr><td>Total Smart Array</td><td>${total_storage}</td></tr>                
+		<tr><td>System ROM</td><td>${rom}</td></tr>                
+		<tr><td>Backup ROM</td><td>${backup_rom}</td></tr>                
+        <tr><td>HP Insight Provider Bundle</td>
+            <td>{{if typeof hp_bundle_status != 'undefined' && hp_bundle_status == true}}Installed{{else}}{{if typeof hp_bundle_status != 'undefined' && hp_bundle_status == false}}Not Installed{{else}}&nbsp;{{/if}}{{/if}}</td></tr>                
+    </table>    
+</div>
+<div class="box_footer"><a href="#" onclick="AppManager.loadApp('hostdetail');">More...</a></div>

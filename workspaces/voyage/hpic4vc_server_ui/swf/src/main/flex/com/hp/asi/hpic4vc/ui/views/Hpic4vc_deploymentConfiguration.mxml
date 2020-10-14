@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:components="assets.components.*"
+		 creationComplete="init()"
+		 >
+	
+	<fx:Metadata>
+		
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_deploymentConfigurationMediator")]
+		
+	</fx:Metadata>
+	<fx:Declarations>
+		
+			<mx:StringValidator id="host_stringValidator" source="{txtHostName}" property="text" requiredFieldError="{Helper.getString('hostReqField.text')}" />
+			<mx:StringValidator id="username_stringValidator" source="{txtUserName}" property="text" requiredFieldError="{Helper.getString('userReqField.text')}"/>
+			<mx:StringValidator id="password_stringValidator" source="{txtPassword}" property="text" requiredFieldError="{Helper.getString('pwdReqField.text')}"/>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DeploymentConfigurationModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.Validator;
+			
+			[Bindable]
+			private var validatorArr:Array;
+
+			[Bindable]
+			public var _proxy:Hpic4vc_server_providerProxy;
+			
+			[Bindable]
+			public var serviceGuid:String;
+			
+			[Bindable]
+			public var isAuthorized:Boolean;
+			
+			[Bindable]
+			public var isDeploymentConfigurationSetup:Boolean = true;
+			
+			[Bindable]
+			public var isEditMode:Boolean;
+			
+			[Bindable]
+			public var  username:String;
+			
+			[Bindable]
+			public  var host:String;
+			
+			[Bindable]
+			public var  password:String;
+			
+			[Bindable]
+			public var deploymentConfigId:String;
+			
+			[Bindable]
+			public var  type:String;
+			
+			
+			
+			
+			[Bindable]
+			public var  errorFoundLabel:String;
+			
+			private const  ADD:String = "add";
+			private const  EDIT:String = "edit" ;
+			private const DELETE:String = "del";
+			private const  TYPE:String = "icsp";
+			
+			protected function addCredentials():void
+			{
+				// TODO Auto-generated method stub
+				var data:String = "oper=" + ADD + ":host=" + txtHostName.text + ":username=" + txtUserName.text + ":type=" + TYPE + ":password=" + txtPassword.text;
+				_proxy.updateDeploymentConfiguration(serviceGuid, data, onCredentialsUpdate);
+				
+			}
+			
+			protected function editCredentials():void
+			{
+				isEditMode = true;
+				isDeploymentConfigurationSetup = false;
+				txtHostName.text = host;
+				txtUserName.text = username;
+				//txtPassword.text = password;
+				
+				
+			}
+			
+			protected function deleteCredentials():void
+			{
+				// TODO Auto-generated method stub
+				Alert.show(Helper.getString('ALERT_DEPLOYMENT_CONFIGURATION_WARNING'),Helper.getString('ALERT_DEPLOYMENT_CONFIGURATION_WARNING_TXT'),Alert.OK | Alert.CANCEL,null,deleteHandler);
+							}
+			
+			private function deleteHandler(e:CloseEvent):void
+			{
+				if (e.detail == Alert.OK)
+				{
+					var data:String = "oper=" + DELETE + ":host=" + txtHostName.text + ":username=" + txtUserName.text + ":id=" + deploymentConfigId;
+					_proxy.updateDeploymentConfiguration(serviceGuid, data, onDeleteDeploymentConfiguration);
+	
+				}
+				else
+				{
+					
+				}
+			}
+			
+			private function onCredentialsUpdate(e:MethodReturnEvent):void{
+				 if (e.result && e.result.errorMessage)
+				 {
+					 Alert.show(e.result.errorMessage); 
+				 }
+					
+				else
+				{
+					Alert.show(Helper.getString('ALERT_DEPLOYMENT_CONFIGURATION_ADD_SUCCESS'));
+					onRefresh();
+					isDeploymentConfigurationSetup = true;
+				}
+					 
+				 
+				
+				
+			}
+			
+			private function onDeleteDeploymentConfiguration(e:MethodReturnEvent):void
+			{
+				if (e.result && e.result.errorMessage)
+				{
+					Alert.show(e.result.errorMessage);
+				}
+				else
+				{
+					Alert.show(Helper.getString('ALERT_DEPLOYMENT_CONFIGURATION_DELETE_SUCCESS'));
+					onRefresh();
+					host_stringValidator.enabled = false;
+					username_stringValidator.enabled = false;
+					password_stringValidator.enabled = false;
+					txtHostName.text = "";
+					txtUserName.text = "";
+					txtPassword.text = "" ;
+					
+					isDeploymentConfigurationSetup = false;
+					
+
+				}
+			}
+			
+			private function onEditDeploymentConfiguration(e:MethodReturnEvent):void
+			{
+				if (e.result && e.result.errorMessage)
+				{
+					
+					Alert.show(e.result.errorMessage);
+				}
+				else
+				{
+					
+					Alert.show(Helper.getString('ALERT_DEPLOYMENT_CONFIGURATION_UPDATE_SUCCESS'));
+					onRefresh();
+					
+				isDeploymentConfigurationSetup = true;
+				isEditMode = false;
+				}
+				
+			}
+			
+			protected function onRefresh():void
+			{
+				_proxy.getDeploymentConfiguration(serviceGuid, onGettingCredentialsPage);
+				
+			}
+			
+			
+			private function onGettingCredentialsPage(event:MethodReturnEvent):void
+			{
+				if (event && event.result)
+				{
+					
+					this.currentState = "showDeploymentConfiguration";
+					
+					if (event.result is DeploymentConfigurationModel)
+					{
+						var model:DeploymentConfigurationModel = new DeploymentConfigurationModel();
+						model = event.result as DeploymentConfigurationModel;
+						if(model.deploymentConfigData && model.deploymentConfigData.length > 0)
+						{
+							
+							isDeploymentConfigurationSetup = true;
+							host = model.deploymentConfigData.getItemAt(0).host;
+							username = model.deploymentConfigData.getItemAt(0).username;
+							deploymentConfigId = model.deploymentConfigData.getItemAt(0).id;
+						}
+						else
+						{
+							isDeploymentConfigurationSetup = false;
+							host = null;
+							username = null;
+							deploymentConfigId = null;
+						}
+					}
+				}
+				else if(event && event.error)
+				{
+					isDeploymentConfigurationSetup = false;
+					
+							this.currentState = "errorFound";
+							
+							return;
+				}
+			}
+				
+			
+			
+			protected function btnSave_clickHandler():void
+			{
+				var data:String = "oper=" + EDIT + ":host=" + txtHostName.text + ":username=" + txtUserName.text + ":type=" + TYPE + ":password=" + txtPassword.text;
+				_proxy.updateDeploymentConfiguration(serviceGuid, data, onEditDeploymentConfiguration);
+				
+			}
+			
+			protected function init():void
+			{
+				validatorArr = new Array();
+				validatorArr.push(host_stringValidator);
+				validatorArr.push(username_stringValidator);
+				validatorArr.push(password_stringValidator);
+				this.currentState = "loadingData";
+				
+			}
+			
+			private function validateAndSubmit(event:MouseEvent):void
+			{
+				host_stringValidator.enabled = true;
+				username_stringValidator.enabled = true;
+				password_stringValidator.enabled = true;
+				
+				var errorArray:Array = Validator.validateAll(validatorArr);
+				var isValid:Boolean = errorArray.length == 0;
+				if(!isValid)
+				{
+					
+					var resultEvt:ValidationResultEvent;
+					var errorMessages:Array = new Array();
+					
+					for each (resultEvt in errorArray)
+					{
+						errorMessages.push(resultEvt.message);
+					}
+					
+					
+				}
+				else
+				{
+					
+					if(event.currentTarget.id == 'btnAdd')
+					{
+						addCredentials();
+					}
+					else if(event.currentTarget.id == 'btnSave')
+					{
+						btnSave_clickHandler();
+					}
+						
+				}
+				
+			}
+			
+			protected function btnCancel_clickHandler(event:MouseEvent):void
+			{
+				
+				isEditMode = false;
+				onRefresh();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="loadingData"/>
+		<s:State name="errorFound"/>
+		<s:State name="showDeploymentConfiguration"/>
+		<s:State name="dataNotFound"/>
+		<s:State name="NotAuthorized"/>
+	</s:states>
+	
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="15"
+						  paddingRight="15"
+						  paddingTop="15"
+						  paddingBottom="15"
+						  gap="20"
+						  />
+	</s:layout>
+	<s:HGroup height="100%" width="100%" includeIn="NotAuthorized">
+		<mx:Text text="{Helper.getString('noPermission')}" width="99%"/>
+	</s:HGroup>
+	
+	<s:HGroup height="30" includeIn="loadingData">
+		<s:Label text="{Helper.getString('loading')}" verticalAlign="middle"/>					
+	</s:HGroup>
+	<s:HGroup width="100%">
+		
+		<s:VGroup width="100%">
+			<s:Label text="{Helper.getString('CONFIGURE_DEPLOYMENT_NOTE_1')}" fontSize="15" fontStyle="italic" width="100%"/>
+			<s:Label text="{Helper.getString('CONFIGURE_DEPLOYMENT_NOTE_2')}" fontSize="15" fontStyle="italic" width="100%"/>
+			<s:Label text="{Helper.getString('CONFIGURE_DEPLOYMENT_NOTE_3')}" fontSize="15" fontStyle="italic" width="100%"/>
+		</s:VGroup>
+		
+	</s:HGroup>
+	<s:HGroup gap="15" includeIn="showDeploymentConfiguration">
+		<!--<mx:Image id="imgAdd" 
+				  buttonMode="true"
+				  toolTip="Add"
+				  visible="{!isDeploymentConfigurationSetup &amp;&amp; !isEditMode}" 
+				  includeInLayout="{!isDeploymentConfigurationSetup &amp;&amp; !isEditMode}"
+				  source="@Embed(source='/assets/images/edit_add.png')" 
+				  click="validateAndSubmit(event)" /> -->
+		<mx:Image id="imgEdit"
+				  buttonMode="true"
+				  toolTip="Edit"
+				  visible="{isDeploymentConfigurationSetup}" 
+				  includeInLayout="{isDeploymentConfigurationSetup}"
+				  source="@Embed(source='/assets/images/pencil_medium.png')"
+				  click="editCredentials()" 
+				  />
+		<mx:Image id="imgDelete" 
+				  buttonMode="true"
+				  toolTip="Delete"
+				  visible="{isDeploymentConfigurationSetup}"
+				  includeInLayout="{isDeploymentConfigurationSetup}"
+				  source="@Embed(source='/assets/images/delete.png')" 
+				  click="deleteCredentials()" 
+				  />
+		<!--<mx:Image id="imgRefresh" 
+				  source="@Embed(source='/assets/images/refresh.png')" 
+				  click="onRefresh()"
+				  buttonMode="true"
+				  />-->
+	</s:HGroup> 
+	
+	<s:HGroup includeIn="showDeploymentConfiguration">
+		<s:VGroup  visible="{!isDeploymentConfigurationSetup }" 
+				   includeInLayout="{!isDeploymentConfigurationSetup}">
+			<s:HGroup>
+				<s:Label text="{Helper.getString('LABEL_DEPLOYMENT_HOSTNAME')}" width="130"/>
+				<s:TextInput id="txtHostName" enabled="{!isEditMode}"/>
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label text="{Helper.getString('LABEL_DEPLOYMENT_USERNAME')}" width="130" />
+				<s:TextInput id="txtUserName" enabled="{!isEditMode}"  />
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label text="{Helper.getString('LABEL_DEPLOYMENT_PASSWORD')}" width="130" />
+				<s:TextInput id="txtPassword" displayAsPassword="true" />
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup visible="{isDeploymentConfigurationSetup}" includeInLayout="{isDeploymentConfigurationSetup}">
+			<s:HGroup>
+				<s:Label text="{Helper.getString('LABEL_DEPLOYMENT_HOSTNAME')}" width="130" />
+				<s:Label text="{host}"  />
+				
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label text="{Helper.getString('LABEL_DEPLOYMENT_USERNAME')}" width="130"/>
+				<s:Label text="{username}" />
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	<s:HGroup>
+		<s:Button id="btnAdd"
+				  label="{Helper.getString('LABEL_SAVE')}" 
+				  visible="{!isDeploymentConfigurationSetup &amp;&amp; !isEditMode}" 
+				  includeInLayout="{!isDeploymentConfigurationSetup &amp;&amp; !isEditMode}"
+				  click="validateAndSubmit(event)"
+				  toolTip="{Helper.getString('LABEL_SAVE')}"
+				  />
+	</s:HGroup>
+	<s:HGroup visible="{isEditMode}" includeInLayout="{isEditMode}" includeIn="showDeploymentConfiguration">
+		<s:Button id="btnSave"
+				  label="{Helper.getString('LABEL_SUBMIT')}" 
+				  visible="{isEditMode}" 
+				  includeInLayout="{isEditMode}"
+				  click="validateAndSubmit(event)"
+				  toolTip="{Helper.getString('LABEL_SAVE')}"
+				  />
+		<s:Button id="btnCancel"
+				  label="{Helper.getString('LABEL_CANCEL')}" 
+				  visible="{isEditMode}" 
+				  includeInLayout="{isEditMode}"
+				  click="btnCancel_clickHandler(event)"
+				  toolTip="{Helper.getString('LABEL_CANCEL')}"
+				  />
+	</s:HGroup>
+
+			
+		
+		
+	
+</s:Group>

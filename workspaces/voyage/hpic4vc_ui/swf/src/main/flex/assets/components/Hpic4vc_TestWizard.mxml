@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   creationComplete="handleCreationComplete();"
+			   close="removePopUp();">
+			 
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.linkButtonStyles {
+			skin: ClassReference("assets.components.CustomLinkButtonSkin");
+		}
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.containers.Box;
+			import mx.controls.ProgressBar;
+			import mx.controls.ProgressBarMode;
+			import mx.controls.ToolTip;
+			import mx.core.FlexGlobals;
+			import mx.core.IUIComponent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ItemClickEvent;
+			import mx.managers.PopUpManager;
+			import mx.managers.ToolTipManager;
+			
+			import spark.effects.Fade;
+			
+			[Embed(source="/assets/images/hp-logo.png")]
+			[Bindable]
+			public var iconSymbol:Class;
+			private var titleWindow:TitleWindow;
+			private var bx:Box;
+			private var _progBar:ProgressBar;	
+			private var timer:Timer;
+			private var tip:ToolTip;
+			private var myError:String;
+			private var currentIndex:int;
+			private var selectedIndexWatcher:ChangeWatcher;
+			
+			private function handleCreationComplete():void {
+			//	viewStack.addChild(new Hpic4vc_TestCreateDatastore);
+			//	if (viewStack.selectedIndex == 0) {
+				linkBar.enabled =  false;
+				backBtn.enabled = false;
+			//	selectedIndexWatcher		= ChangeWatcher.watch(this, ["viewStack.selectedIndex"], enableButtons);
+			//	}
+			//	else 
+			//		backBtn.enabled = true;
+				
+			//	viewStack.addChild();
+				// Center the TitleWindow container 
+				// over the control that created it.
+				PopUpManager.centerPopUp(this);
+			}
+			
+			public function enableButtons(event:Event):void {
+				if (viewStack.selectedIndex != 0)
+					backBtn.enabled = true;
+				
+				if (viewStack.selectedIndex != 2)
+					nextBtn.enabled = true;
+			}
+			
+			private function backClicked(e:Event):void{
+			//	if (quanInput.text == null)
+			//		viewStack.toolTip = "Please enter some value");
+				
+				nextBtn.enabled =  true;
+				currentIndex = viewStack.selectedIndex;
+				if (currentIndex == 1) {
+					viewStack.selectedIndex = currentIndex - 1;
+					backBtn.enabled = false;
+				}
+				else
+					viewStack.selectedIndex = currentIndex - 1;
+			}
+			
+			private function nxtClicked(e:Event):void{
+				if (ds.errorString != "") {
+					txtBox.visible = true;
+			//		img.setStyle("source", "@Embed(source='/assets/images/red_stop_large.png')");
+			//		img.source = "@Embed(source='/assets/images/red_stop_large.png')";
+					txt.text = "There are few errors on this page. Please address those to press 'Next'.";
+					txt.visible = true;
+					img.visible = true;
+				}
+			//	progress.enabled = true;
+				timer = new Timer(1000);
+				timer.addEventListener(TimerEvent.TIMER, stopTimer);
+				timer.start();
+				showLoading(e);
+			
+				img1.visible = true;
+				backBtn.enabled = true;
+				currentIndex = viewStack.selectedIndex;
+				if (currentIndex == 1) {
+					viewStack.selectedIndex = currentIndex + 1;
+					nextBtn.enabled = false;
+				}
+				else
+					viewStack.selectedIndex = currentIndex + 1;
+			}
+			
+			private function stopTimer(event:TimerEvent):void{
+			//	PopUpManager.removePopUp(_progBar);
+				PopUpManager.removePopUp(bx);
+			}
+			
+			private function showTip(event:Object):void {
+				var s:String = "My ToolTip";
+				
+				// Position the ToolTip to the right of the current target.
+			/*	tip = ToolTipManager.createToolTip(s, 
+					event.currentTarget.x, 
+					event.currentTarget.y + 20, null) 
+					as ToolTip;*/
+				event.currentTarget.toolTip = tip;
+			}
+			
+			private function validateEntry(type:String, event:Object):void {
+				
+				// NOTE: Validation logic would go here.
+				switch(type) {
+					case "ds":
+						myError="Enter value greater than 10";
+						break;
+				}
+				
+				var a:int = event.currentTarget.width;
+				var b:int = event.currentTarget.x;
+				// Use the target's x and y positions to set position of error tip.
+				trace("event.currentTarget.width" + event.currentTarget.width);
+				trace("event.currentTarget.x" + event.currentTarget.x);
+				if (parseInt(ds.text) < 10)
+					event.currentTarget.errorString = myError;
+				else {
+					event.currentTarget.errorString = "";
+					img.visible = false;
+					txt.visible = false;
+					txtBox.visible = false;
+				}
+			//	tip = ToolTipManager.createToolTip(
+			//		myError, event.currentTarget.x + event.currentTarget.width, event.currentTarget.y, null, IUIComponent(event.currentTarget)) as ToolTip;
+				
+				// Apply the errorTip class selector.
+			//	tip.setStyle("styleName", "errorTip");
+			}
+			
+			private function showLoading(e:Event = null):void
+			{
+				
+				var label:spark.components.Label;
+				var label1:spark.components.Label;
+				if(_progBar == null)
+				{
+					bx = new Box();
+					bx.width = 200;
+					bx.height = 80;
+					bx.setStyle("borderStyle", "solid");
+					label = new spark.components.Label();
+					label.text = "Validating...";
+					label1 = new spark.components.Label();
+					label1.text = "";
+					titleWindow = new TitleWindow();
+			//		titleWindow.title = "Custom title";
+			//		titleWindow.showCloseButton = true;
+				//	titleWindow.width = 240;
+				//	titleWindow.height = 110;
+				//	titleWindow.setStyle("headerHeight", 0);
+			//		titleWindow.addEventListener(CloseEvent.CLOSE, titleWindow_close);
+			//		titleWindow.addChild(label);
+
+				    
+					_progBar = new ProgressBar();
+					_progBar.width = 150;
+					_progBar.height = 25;
+					_progBar.indeterminate = true;
+					_progBar.labelPlacement = 'bottom';
+					_progBar.setStyle("removedEffect", Fade);
+					_progBar.setStyle("addedEffect", Fade);
+					_progBar.setStyle("color", 0xFFFFFF);
+					_progBar.setStyle("borderColor", 0x000000);
+					_progBar.setStyle("barColor", 0x0fd6f4);
+					_progBar.label = "Validating...";
+					_progBar.mode = ProgressBarMode.MANUAL;
+				/*	titleWindow.addElementAt(label1, 0);
+					titleWindow.addElementAt(_progBar, 1);
+					titleWindow.addElementAt(label1, 2);
+					titleWindow.addElementAt(label, 3);*/
+					bx.addElement(label1);
+					bx.addElement(_progBar);
+				//	bx.addElement(label1);
+					bx.addElement(label);
+				}
+				
+				PopUpManager.addPopUp(bx,this,false);
+				PopUpManager.centerPopUp(bx);
+				_progBar.setProgress(0, 0);
+			}
+			
+			private function removePopUp():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function indexChangeHandler(event:IndexChangedEvent):void
+			{
+				// TODO Auto-generated method stub
+				if (viewStack.selectedIndex != 2)
+					nextBtn.enabled = true;
+				else
+					nextBtn.enabled = false;
+				if (viewStack.selectedIndex != 0)
+					backBtn.enabled = true;
+				else
+					backBtn.enabled = false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<!--s:Label x="0" y="-21" fontSize="15" fontWeight="bold" text="Test Wizard"/-->
+	<mx:Image x="5" y="-26" width="22" height="22"
+			  source="@Embed(source='/assets/images/hp-logo.png')"/>
+	<s:Label x="33" y="-21" text="Test Wizard" fontWeight="bold" fontFamily="Arial" fontSize="12"/>
+	<mx:Image x="981" y="-29" height="29" buttonMode="true"
+			  source="@Embed(source='/assets/images/help_circle.png')"/>
+	
+	<!--mx:TitleWindow id="titleWindow" x="217" y="-2" width="544" height="0" close="hideTitleWindow()"
+					showCloseButton="true" title="Invalid username and/or password."/-->
+	<mx:HBox horizontalGap="0" width="1000" height="400">
+		<mx:VBox width="25" height="100%" backgroundColor="#E7E7E7" borderVisible="false" verticalGap="8">
+			<mx:Image id="img1" source="@Embed(source='/assets/images/green_check_large.png')" visible="false"/>
+			<mx:Image id="img2" source="@Embed(source='/assets/images/green_check_large.png')" visible="false"/>
+			<mx:Image id="img3" source="@Embed(source='/assets/images/green_check_large.png')" visible="false"/>
+		</mx:VBox>
+		<mx:LinkBar id="linkBar" width="180" height="100%" backgroundColor="#E7E7E7"
+					buttonMode="true" contentBackgroundColor="#E7E7E7" dataProvider="{viewStack}"
+					direction="vertical" fontFamily="Arial" fontWeight="bold" textDecoration="none"
+					separatorWidth="0" symbolColor="#000000" linkButtonStyleName="linkButtonStyles"
+					textSelectedColor="#000000" focusColor="#000000" focusEnabled="true" focusRect="true" rollOverColor="#194f81" selectionColor="#194f81"/>
+		
+		<mx:ViewStack id="viewStack"
+					  width="100%"
+					  height="100%"
+					  backgroundColor="white" selectedIndex="0" paddingTop="15" paddingLeft="15"
+					  paddingRight="15" paddingBottom="15" change="indexChangeHandler(event)">
+			
+			<mx:Canvas id="search" borderVisible="false" label="1 Select a creation type">
+				<mx:VBox>
+					<mx:Label text="Create Datastore on 10.10.8.70"/>
+					<mx:HBox>	
+						<mx:Label id="quan" text="Quantity:"/>
+						<s:Spacer width="15"/>
+						<mx:TextInput id="quanInput"/>
+						<mx:Label text="Datastores"/>
+					</mx:HBox>
+					<mx:HBox>	
+						<mx:Label text="Datastore Capacity:"/>
+						<s:Spacer width="15"/>
+						<mx:TextInput id="ds" change="validateEntry('ds',event)" focusOut="validateEntry('ds',event)"/>
+						<mx:Label text="GB"/>
+					</mx:HBox>
+					<mx:HBox>	
+						<mx:Label text="Storage Pools:"/>
+						<s:Spacer width="15"/>
+						<mx:Label text="Sort by:"/>
+						<s:RadioButton groupName="sortBy" label="Name"/>
+						<s:RadioButton groupName="sortBy" label="Available Capacity"/>
+					</mx:HBox>
+					<!--mx:ProgressBar id="progress" width="200" source="@Embed(source='/assets/images/progressBar.png')" visible="false"/-->
+				</mx:VBox>
+				<mx:HBox id="txtBox" visible="false" x="3" y="300" width="100%" height="40"
+						backgroundColor="#FFFFCC" paddingTop="10">
+					<mx:Image id="img" source="@Embed(source='/assets/images/red_stop_large.png')" visible="false"/>
+					<mx:Text id="txt" visible="false"/>
+				</mx:HBox>
+			</mx:Canvas>
+			
+			<mx:Canvas id="custInfo" label="2 Specify new names">
+				<mx:VBox>
+					<mx:Label text="Create Datastore on 10.10.8.70"/>
+					<mx:HBox>	
+						<mx:Label text="New Datastore Names:"/>
+						<s:Spacer width="15"/>
+						<mx:TextInput/>
+					</mx:HBox>
+					<mx:HBox>	
+						<mx:Label text="Generated Names:"/>
+						<s:Spacer width="15"/>
+						<mx:TextInput/>
+					</mx:HBox>
+				</mx:VBox>
+			</mx:Canvas>
+			
+			<mx:Canvas id="accountInfo" label="3 Ready to complete">
+				<mx:Label text="Validation Successful. Click 'Finish' to complete."/>
+			</mx:Canvas>
+		</mx:ViewStack>
+	</mx:HBox>
+	<s:controlBarContent>
+		<s:Spacer y="6" width="662"/> 
+		<s:Button id="backBtn" label="Back"
+				   enabled="true" click="backClicked(event);"/>
+		<s:Button id="nextBtn" label="Next"
+				   enabled="true" click="nxtClicked(event);"/>
+		<s:Button id="finishBtn" label="Finish"
+				   enabled="false"/>
+		<s:Button id="cancelBtn" label="Cancel" click="removePopUp();"/>
+	</s:controlBarContent>
+		
+
+</s:TitleWindow>

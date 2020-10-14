@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 implements="assets.components.Hpic4vc_Manage_BaseComponent"
+		 xmlns:components="assets.components.*"         
+		 creationComplete="init()" width="99%">
+	<fx:Metadata>
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}", type="com.vmware.ui.events.NavigationRequest")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			import com.hp.asi.hpic4vc.ui.model.PageModel;
+			import com.hp.asi.hpic4vc.ui.model.TabModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.XMLListCollection;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var newList:XMLListCollection;
+			
+			private var _hpic4vc_manage_uiView:Hpic4vc_manage_uiView;
+			
+			private var _hpic4vc_uiView:Hpic4vc_uiView;
+			
+			private var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+			
+			private var tabs:ArrayCollection = new ArrayCollection();
+			
+			private var link1:LinkButton = new LinkButton();
+			
+			private var url:String;
+			
+			private static var _logger:ILogger = Log.getLogger("Hpic4vc_manage_GettingStarted");
+			
+			private static const CONVERGED_INFRASTRUCTURE_URL:String = 
+				'#extensionId=com.hp.converged.main.summary;context=com.' +
+				'vmware.core.model%3A%3AURI~hpmodel%3AHPModel%3Bhp%3Ahpm' +
+				'odel%3AHPModel%3Ahpinfrastructure%2Fmain~core';
+			
+			private var _proxy:Hpic4vc_providerProxy = new Hpic4vc_providerProxy();
+			private var countTabs:int = 0;
+			
+			private function init():void {
+				
+				storageLink.visible = false;
+				storageText.visible = false;
+				storageLink.includeInLayout = false;
+				storageText.includeInLayout = false;
+				
+				swfwLink.visible = false;
+				swfwText.visible = false;
+				swfwLink.includeInLayout = false;
+				swfwText.includeInLayout = false;
+				
+				
+				cloneVM.visible = false;
+				cloneVM.includeInLayout = false;
+				cloneVMText.visible = false;
+				cloneVMText.includeInLayout = false;
+				
+				createVMs.visible = false;
+				createVMs.includeInLayout = false;
+				createVMsText.visible = false;
+				createVMsText.includeInLayout = false;
+						
+				var actionsMenu:ArrayCollection = baseMediator.getActionsMenu();
+				var lm:LinkModel = actionsMenu.getItemAt(0) as LinkModel;
+				url = lm.url;
+				if (lm.displayName == "Clone VM") {
+					cloneVM.visible = true;
+					cloneVM.includeInLayout = true;
+					cloneVMText.visible = true;
+					cloneVMText.includeInLayout = true;
+				}
+				else {
+					createVMs.visible = true;
+					createVMs.includeInLayout = true;
+					createVMsText.visible = true;
+					createVMsText.includeInLayout = true;
+				}
+					
+				if(_hpic4vc_manage_uiView != null) {
+					displayLinksInManage(_hpic4vc_manage_uiView);
+				}
+				else
+					displayLinksInMonitor(_hpic4vc_uiView);
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_manage_uiView = hpic4vc_manage_uiView;
+			}
+			
+			public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this._hpic4vc_uiView = hpic4vc_uiView;
+			}
+			
+			protected function configureClicked(event:MouseEvent):void {
+				var e:NavigationRequest = new NavigationRequest();
+				e.targetViewUid = "com.hp.asi.hpic4vc.ui.insightManagement.gettingStarted";
+				dispatchEvent(e);                        
+			}
+			
+			protected function summaryClicked(event:MouseEvent):void {
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = "vsphere.core.vm.summary";
+				dispatchEvent(e);                        
+			}
+			
+			protected function HPInfrastructureClicked(event:MouseEvent):void {
+				navigateToURL(new URLRequest(CONVERGED_INFRASTRUCTURE_URL),'_self');
+			}
+			
+			protected function linkClicked(event:MouseEvent):void {
+				if (url != null)
+					navigateToURL(new URLRequest(url), "_blank");
+			}
+			
+			protected function hostClicked(event:MouseEvent):void {
+				navigateToTabInManage("hostTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnHostInformationClicked(event);
+			}
+			
+			protected function storageClicked(event:MouseEvent):void {
+				navigateToTabInManage("storageTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnStorageClicked(event);
+			}
+			
+			protected function clusterClicked(event:MouseEvent):void {
+				navigateToTabInManage("clusterTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnClusterSummaryClicked(event);
+			}
+			
+			protected function infrastructureClicked(event:MouseEvent):void {
+				navigateToTabInManage("infrastructureTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnInfrastructureClicked(event);
+			}
+			
+			protected function networkingClicked(event:MouseEvent):void {
+				//_hpic4vc_manage_uiView.networkSubTabSelectedValue = "networkDiagram";
+				navigateToTabInManage("networkingTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnNetworkingClicked(event);
+			}
+			
+			//by Munib
+			/* protected function networkDiagramClicked(event:MouseEvent):void{
+			navigateToTabInManage("networkingTab");
+			_hpic4vc_manage_uiView = baseMediator.getManageView();
+			if(_hpic4vc_manage_uiView != null)
+			_hpic4vc_manage_uiView.networkDiagramHandler(event);
+			} */
+			
+			protected function swfwClicked(event:MouseEvent):void {
+				navigateToTabInManage("swfwTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.component_moreOnSoftwareFirmwareClicked(event);
+			}
+			
+			protected function overviewClicked(event:MouseEvent):void {
+				navigateToTabInManage("overviewTab");
+				_hpic4vc_manage_uiView = baseMediator.getManageView();
+				if(_hpic4vc_manage_uiView != null)
+					_hpic4vc_manage_uiView.overview_Clicked(event);
+			}
+			
+			protected function newsfeedClicked(event:MouseEvent):void {
+				navigateToTabInMonitor("newsFeedTab");
+				_hpic4vc_uiView = baseMediator.getView();
+				if(_hpic4vc_uiView != null)
+					_hpic4vc_uiView.component_moreOnNewsFeedClicked(event);
+			}
+			
+			protected function healthClicked(event:MouseEvent):void {
+				navigateToTabInMonitor("healthTab");
+				_hpic4vc_uiView = baseMediator.getView();
+				if(_hpic4vc_uiView != null)
+					_hpic4vc_uiView.component_healthLabelClicked(event);
+			}
+			
+			protected function tasksClicked(event:MouseEvent):void {
+				navigateToTabInMonitor("tasksTab");
+				_hpic4vc_uiView = baseMediator.getView();
+				if(_hpic4vc_uiView != null)
+					_hpic4vc_uiView.component_taskLabelClicked(event);
+			}
+			
+			protected function navigateToTabInMonitor(tab:String):void {
+				baseMediator.setTabClickedInfo(tab);
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getMonitorMoreLinkURLs(_contextObject);
+				dispatchEvent(e);
+			}
+			
+			protected function navigateToTabInManage(tab:String):void {
+				baseMediator.setTabClickedInfo(tab);
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getManageMoreLinkURLs(_contextObject);
+				dispatchEvent(e);
+			}
+			protected function displayLinksInManage(_view:Object):void {
+				if (_view.storageTabModel != null)
+				{
+					storageLink.visible = true;
+					storageLink.includeInLayout = true;
+					storageText.visible = true;
+					storageText.includeInLayout = true;
+				}
+				
+				if (_view.swfwTabModel != null)
+				{
+					swfwLink.visible = true;
+					swfwLink.includeInLayout = true;
+					swfwText.visible = true;
+					swfwText.includeInLayout = true;
+				}
+				
+			}
+			
+			protected function displayLinksInMonitor(_view:Object):void {        
+				_proxy.getManageTabPages(_contextObject.uid, onGettingTabs, _contextObject);
+			}
+			
+			private function onGettingTabs(event:MethodReturnEvent):void {                                         
+				if (_hpic4vc_uiView != null && _contextObject != null) {
+					_logger.debug("Received HPIC4VC data in onGettingTabs()");
+					if (event == null) {
+						_logger.warn("No records found");
+						return;
+					} else if (event.error != null) {
+						if (event.error.toString().match("DeliveryInDoubt")) {
+							_logger.warn("DeliveryInDoubt exception occurred.  Count: " + countTabs);
+							// Re try to request data for not more than 2 times
+							if (countTabs < 2) {
+								countTabs ++;
+								_proxy.getManageTabPages(_contextObject.uid, onGettingTabs, _contextObject);
+								return;
+							} else {
+								_logger.warn("Error message found");
+								return;
+							}
+						} else {
+							_logger.warn("Error message found");
+							return;
+						}
+					} else if (event.result == null) {
+						_logger.warn("No records found");
+						return;
+					} 
+					
+					var page:PageModel = event.result as PageModel;
+					tabs = page.tabs;
+					//     baseMediator.setManageTabs(tabs);
+					showManageLinks(tabs);
+				}
+				else {
+					_logger.warn("Manage view and/or ContextObject is null.  Returning from onGettingTabs()");
+					return;
+				}
+			}
+			
+			private function showManageLinks(tabs:ArrayCollection):void {
+				for (var i:int = 0; i < tabs.length; i++) 
+				{
+					var item:TabModel = tabs.getItemAt(i) as TabModel;
+					if (item.displayNameKey == "Software_Firmware") {
+						swfwLink.visible = true;
+						swfwLink.includeInLayout = true;
+						swfwText.visible = true;
+						swfwText.includeInLayout = true;
+					} else if (item.displayNameKey == "Storage") {
+						storageLink.visible = true;
+						storageLink.includeInLayout = true;
+						storageText.visible = true;
+						storageText.includeInLayout = true;
+					} 
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout paddingLeft="15"
+						  paddingRight="15"
+						  paddingTop="15"
+						  paddingBottom="15"/>
+	</s:layout>
+	
+	<mx:VBox width="98%" height="100%">
+		<s:HGroup width="100%">
+			<!--mx:Image id="logo" source="@Embed(source='/assets/images/hp-logo-40px.png')" width="40" height="40"/-->
+			<s:Label text="{Helper.getString('Hpic4vc_gettingStarted.mainTitle')}" alignmentBaseline="ideographicBottom" fontSize="25" fontWeight="bold"/>
+		</s:HGroup>
+		<mx:Text text="{Helper.getString('mainText.label')}" fontSize="12" width="99%"/>
+		<mx:HBox width="100%" height="100%">
+			
+			<mx:VBox width="100%" height="100%" minWidth="400">
+				<mx:Text text="{Helper.getString('navigationTitle.label')}" fontSize="16" fontWeight="bold"/>
+				<mx:Text text="{Helper.getString('navigationText.label')}" fontSize="12" width="99%"/>
+				<mx:Text text="{Helper.getString('navigationTextVM.label')}" fontSize="12" width="99%"/>
+				
+				<mx:LinkButton label="{Helper.getString('summaryLink.label')}" fontSize="15" click="summaryClicked(event)"/>
+				<mx:Text text="{Helper.getString('summaryText.Label')}" fontSize="12" width="99%"/>
+				
+				<mx:Label text="{Helper.getString('monitorTitle.label')}" fontSize="15" fontWeight="bold"/>
+				<mx:Text text="{Helper.getString('monitorSectionTextVM.label')}" fontSize="12" width="99%"/> 
+				
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:LinkButton label="{Helper.getString('newsFeedLink.label')}" fontSize="12" click="newsfeedClicked(event)"/>
+					<mx:Text text="{Helper.getString('newsFeedTextVM.label')}" fontSize="12" width="99%"/>
+					<mx:LinkButton label="{Helper.getString('healthLink.label')}" fontSize="12" click="healthClicked(event)"/>
+					<mx:Text text="{Helper.getString('healthTextVM.label')}" fontSize="12" width="99%"/>
+					<mx:LinkButton label="{Helper.getString('tasksLink.label')}" fontSize="12" click="tasksClicked(event)"/>     
+					<mx:Text text="{Helper.getString('tasksTextVM.label')}" fontSize="12" width="99%"/>
+				</mx:VBox>
+				
+				<mx:Label text="{Helper.getString('manageTitle.label')}" fontSize="15" fontWeight="bold"/>
+				<mx:Text text="{Helper.getString('manageSectionTextVM.label')}" fontSize="12" width="99%"/>
+				
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:LinkButton label="{Helper.getString('overviewLink.label')}" fontSize="12" click="overviewClicked(event)"/>
+					<mx:Text text="{Helper.getString('overviewTextVM.label')}" fontSize="12" width="99%"/>
+					<mx:LinkButton id="storageLink" label="{Helper.getString('storageLink.label')}" fontSize="12" click="storageClicked(event)"/>
+					<mx:Text id="storageText" text="{Helper.getString('storageTextVM.label')}" fontSize="12" width="99%"/>
+					<mx:LinkButton id="swfwLink" label="{Helper.getString('swfwLink.label')}" fontSize="12" click="swfwClicked(event)"/>
+					<mx:Text id="swfwText" text="{Helper.getString('swfwTextVM.label')}" fontSize="12" width="99%"/>
+				</mx:VBox>
+				
+				<mx:LinkButton label="{Helper.getString('infrastructureLinkHP.label')}" fontSize="15" click="HPInfrastructureClicked(event)"/>
+				<mx:Text text="{Helper.getString('infrastructureTextHP.label')}" fontSize="12" width="99%"/>		
+				
+			</mx:VBox>
+			
+			<mx:VBox width="100%" height="100%">
+				<mx:Text text="{Helper.getString('configureTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('configureText.label')}" fontSize="12" width="99%"/>
+				<mx:LinkButton label="{Helper.getString('configureLink.label')}" fontSize="12" click="configureClicked(event)"/> 
+				
+				<mx:Text text="{Helper.getString('actionsTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('actionsTextVM.label')}" fontSize="12" width="99%"/>
+				
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:LinkButton id="cloneVM" label="{Helper.getString('cloneVMLink.label')}" fontSize="12" click="linkClicked(event)"/>
+					<mx:Text id="cloneVMText" text="{Helper.getString('cloneVMText.label')}" fontSize="12" width="99%"/>
+					<mx:LinkButton id="createVMs" label="{Helper.getString('createVMFromTempLink.label')}" fontSize="12" click="linkClicked(event)"/>
+					<mx:Text id="createVMsText" text="{Helper.getString('createVMFromTempTextVM.label')}" fontSize="12" width="99%"/>	
+				</mx:VBox>
+				
+				<mx:Text text="{Helper.getString('actionsForObjectsTitle.label')}" fontSize="16" fontWeight="bold" width="99%"/>
+				<mx:Text text="{Helper.getString('actionsForObjectsText.label')}" fontSize="12" width="99%"/>
+				
+				<mx:VBox width="100%" paddingLeft="20">
+					<mx:Text text="{Helper.getString('tableText.label')}" fontSize="12" width="99%"/>
+					<mx:DataGrid id="adg" height="240" selectable="false" sortableColumns="false">
+						<mx:columns>
+							<mx:DataGridColumn dataField="label" headerText="{Helper.getString('tableActionText.label')}" width="190"/>
+							<mx:DataGridColumn dataField="data" headerText ="{Helper.getString('tableIntegrationPointsText.label')}" width="240"/>
+						</mx:columns>
+						<mx:dataProvider>
+							<mx:ArrayCollection>
+								<fx:Object label="{Helper.getString('createDSLink.label')}" data="{Helper.getString('tableText1.label')}" />
+								<fx:Object label="{Helper.getString('deleteDatastoreLink.label')}" data="{Helper.getString('tableText2.label')}"/>
+								<fx:Object label="{Helper.getString('expandDatastoreLink.label')}" data="{Helper.getString('tableText2.label')}"/>
+								<fx:Object label="{Helper.getString('createVMFromTempLink.label')}" data="{Helper.getString('tableText3.label')}"/>
+								<fx:Object label="{Helper.getString('cloneVMLink.label')}" data="{Helper.getString('tableText4.label')}"/>
+								<fx:Object label="{Helper.getString('deleteVolumeText.label')}" data="{Helper.getString('tableText5.label')}"/>
+								<fx:Object label="{Helper.getString('toggleUIDLink.label')}" data="{Helper.getString('hostLink.label')}"/>
+								<fx:Object label="{Helper.getString('updateFirmwareLink.label')}" data="{Helper.getString('tableText1.label')}"/>
+							</mx:ArrayCollection>
+						</mx:dataProvider>
+					</mx:DataGrid>
+					<mx:Text text="{Helper.getString('tableTextNote.Text')}" fontStyle="italic" fontSize="12" width="99%"/>
+				</mx:VBox>
+				<s:Label text=""/>
+				<mx:Text fontSize="16" fontWeight="bold"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.aboutvCenterTitle')}" width="99%"/>
+				
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterdocsLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter/docs'), '_blank')"
+							   styleName="gettingStartedTextFont"/>                
+				
+				<s:Label text=""/>
+				<mx:Text fontSize="16" fontWeight="bold" text="{Helper.getString('Hpic4vc_gettingStarted.aboutHPTitle')}" width="99%"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareStorageLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware/storage'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareHPLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.vmware.com/hp'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+			</mx:VBox>
+		</mx:HBox>
+	</mx:VBox>
+	
+</s:Group>
+

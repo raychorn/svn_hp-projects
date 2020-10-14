@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>HP Insight Control for VMware vCenter Server Help System </title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta><script language="javascript">
+function topicSource()
+{
+var helptarget = location.hash;
+
+
+
+if (helptarget.length > 0)
+{
+firsttarget = helptarget.substring(1)
+
+testtargetlength = firsttarget.length
+	if (testtargetlength > 1)
+
+		{
+		nhelptarget = helptarget.substring(1)
+		}
+		else
+		{
+		nhelptarget = "book.html"
+		}
+}
+else
+{nhelptarget = "book.html"}
+
+
+//document.write(nhelptarget);
+parent.document.getElementById("lpmainpane").src= nhelptarget
+
+}
+
+
+function topicSource2()
+{
+var helptarget = location.hash;
+
+
+if (helptarget.length > 0)
+{
+firsttarget = helptarget.substring(1)
+
+testtargetlength = firsttarget.length
+	if (testtargetlength > 1)
+	
+		{
+		nhelptarget = helptarget.substring(1)
+		}
+		else
+		{
+		nhelptarget = "book.htm"
+		}
+}
+else
+{nhelptarget = "book.htm"}
+
+//document.write(nhelptarget);
+parent.document.getElementById("lpmainpane").src= nhelptarget
+
+}
+
+</script></head>
+   <frameset cols="30%,*" frameborder="yes" border="2" framespacing="0">
+      <frame id="nav-frame" src="ess_nav_frame.html" name="contentspane" scrolling="no"></frame>
+      <frame id="lpmainpane" src="javascript:parent.topicSource()" name="mainhelp_pane"></frame>
+   </frameset>
+   <noframes></noframes>
+   <body>
+      <p>Your browser does not support frames. This documentation was designed to work with a browser that supports frames.</p>
+   </body>
+</html>

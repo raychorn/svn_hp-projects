@@ -1,0 +1,13 @@
+<![CDATA[
+    <select id="msc_list" style="width:350px;">
+        <option value="-">Select ...</option>
+        <% var component_list = this['components']; %>
+        <% if (component_list.length) { %>
+            <% for (var i=0 ; i<component_list.length ; i++) { %>
+                <option value="<%=component_list[i]['filename']%>" msc="true">
+                    <%=component_list[i]['name']%> - <%=component_list[i]['version']%> (<%=component_list[i]['filename']%>)
+                </option>
+            <% } %>
+        <% } %>
+    </select>
+]]>

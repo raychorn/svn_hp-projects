@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>HP MSA P2000 G3 array information not displayed in Storage Module GUI</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:37+00:00--><meta name="keywords" content="IC4VC, troubleshooting, Insight Control for VMware vCenter Server"/><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v15696996.html" title="Troubleshooting the Storage Module for vCenter"/><link rel="prev" href="v11185524.html" title="Error Unexpected state: The setup helper has not been created occurs during array or management server configuration"/><link rel="next" href="v14918135.html" title="HP XP P9000 virtual disk information missing from Storage Overview page"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v15696996','icon4v15696996','link4v14933381','IC4VC_troubleshooting_chapter')" onunload="clearbgcolortoc('link4v14933381','IC4VC_troubleshooting_chapter')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v15696996.html">Troubleshooting the Storage Module for vCenter</a> &gt; HP MSA P2000 G3 array information not displayed in Storage Module GUI</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v14918135.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="v14933381"/><h1 class="sectiontitle">HP MSA P2000 G3 array information not displayed in Storage Module GUI</h1></div></div></div><a id="v14941966" class="indexterm"/><a id="v14941968" class="indexterm"/><p><a id="v14933382"/><span class="bold"><b>Possible cause</b></span>:
+The SMI-S service on the array might be unresponsive.</p>
+	
+	<p><a id="v14987491"/>Use the following actions to solve this issue.
+If one action does not work, proceed to the next action.</p>
+	
+	<p><a id="v14933384"/><span class="bold"><b>Action</b></span>: Restart
+the HP MSA P2000 G3 SMI-S service. This will not affect disk access.</p>
+	
+	<div class="procedure"><a id="v14933385"/><ol type="1"><li><p><a id="v14933387"/><a id="v14933388"/>Log in to the SMU interface
+of the HP MSA P2000 G3 array as a user with Manage access. Use the available
+management IP address (for example: <code class="command">http://<em class="replaceable"><code>Management_IP_address</code></em></code>).</p>
+	
+	</li><li><p><a id="v14933389"/><a id="v14933390"/>Select <span><strong class="guimenu">Configuration</strong></span> → <span><strong class="guisubmenu">Services</strong></span> → <span><strong class="guimenuitem">Management</strong></span>.</p>
+	
+	</li><li><p><a id="v14933391"/><a id="v14933392"/>Clear the <span><strong class="guilabel">Storage
+Management Initiative Specification (SMI-S)</strong></span> check box,
+and then click <span><strong class="guibutton">Apply</strong></span>.</p>
+	
+	</li><li><p><a id="v14933393"/><a id="v14933394"/>Select the <span><strong class="guilabel">Storage
+Management Initiative Specification (SMI-S)</strong></span> check box,
+and then click <span><strong class="guibutton">Apply</strong></span>.</p>
+	
+	<p><a id="v14991677"/>The
+SMI-S service is now running.</p>
+	
+	</li><li><p><a id="v14991678"/><a id="v14991679"/>Refresh the Storage Module for vCenter cache. </p>
+	
+	<p><a id="v16122175"/>For instructions, see <a href="Refreshing_Data.html" title="Refreshing Storage Module for vCenter data">Refreshing Storage Module for vCenter data</a>.</p>
+	
+	</li></ol></div><p><a id="v14933395"/><span class="bold"><b>Action 2</b></span>: Restart
+the HP MSA P2000 G3 array management controller. </p>
+	
+	<div class="procedure"><a id="v14933396"/><div class="important"><table border="0" cellspacing="1" cellpadding="2" summary="IMPORTANT"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[IMPORTANT: ]" height="25px" src="images/important.gif"/></div></td><td><p><b>IMPORTANT: </b>This procedure restarts the HP MSA P2000 G3 array
+controller. If you restart a management controller, communication
+with it is lost until it restarts successfully . This will not affect
+disk access. If the restart fails, the partner management controller
+remains active with full ownership of operations and configuration
+information. Other applications (such as Microsoft VSS and VDS) that
+rely on the management controller services might be affected.</p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div><ol type="1"><li><p><a id="v14933398"/><a id="v14933399"/>Log in to the SMU interface
+of the HP MSA P2000 G3 array as a user with Manage access. Use the available
+management IP address (for example: <code class="command">http://<em class="replaceable"><code>Management_IP_address</code></em></code>).</p>
+	
+	</li><li><p><a id="v14991683"/><a id="v14991684"/>Select <span><strong class="guimenu">Configuration</strong></span> → <span><strong class="guisubmenu">System Settings</strong></span> → <span><strong class="guimenuitem">Network Interfaces</strong></span>.</p>
+	
+	</li><li><p><a id="v14991685"/><a id="v14991686"/>Determine which controller
+has the IP address used in <a href="v14933381.html#v14933398">Step 1</a>.</p>
+	
+	</li><li><p><a id="v14933400"/><a id="v14933401"/>Select <span><strong class="guimenu">Tools</strong></span> → <span><strong class="guimenuitem">Shutdown or Restart Controller</strong></span>.</p>
+	
+	</li><li><p><a id="v14933402"/><a id="v14933403"/>Select the following:</p><div class="itemizedlist"><ul type="disc"><li><p><span class="bold"><b>Operation</b></span>: Restart</p>
+	
+	</li><li><p><span class="bold"><b>Controller type</b></span>:
+Management</p>
+	
+	</li><li><p><span class="bold"><b>Controller</b></span>: A or
+B, as determined in <a href="v14933381.html#v14991685">Step 3</a></p>
+	
+	</li></ul></div>
+	
+	</li><li><p><a id="v14933404"/><a id="v14933405"/>Click <span><strong class="guibutton">Restart
+now</strong></span>.</p>
+	
+	</li><li><p><a id="v14991688"/><a id="v14991689"/>Log in to the SMU.</p>
+	
+	</li><li><p><a id="v14991690"/><a id="v14991691"/>Refresh the Storage Module for vCenter cache. </p>
+	
+	<p><a id="v16122178"/>For instructions, see <a href="Refreshing_Data.html" title="Refreshing Storage Module for vCenter data">Refreshing Storage Module for vCenter data</a>.</p>
+	
+	</li></ol></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="v11185524.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v15696996.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="v14918135.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Error Unexpected state: The setup helper has
+not been created occurs during array or management
+server configuration </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> HP XP P9000 virtual disk information missing from Storage Overview
+page</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

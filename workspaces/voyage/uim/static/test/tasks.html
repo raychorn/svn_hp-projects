@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js" ></script>
+<script type="text/javascript" src="/static/js/helpers.js" ></script>
+<script type="text/javascript">
+
+var moref = '';
+
+function sendTask(){
+    var taskObj = new Object();
+    var obj_id = $("#obj_id").val();
+    var vc_id = $("#vc_id").val();
+
+    if (obj_id == ''){
+        alert("Query string with moref parameter missing.");
+        return;
+    }
+
+    taskObj['tasks'] = new Array();
+
+    var obj = {};
+    obj['vc_uuid'] = $("#vc_id").val();
+    obj['taskName'] = $("#name").val();
+    obj['taskNameArguments'] = $("#name_args").val().split(',');
+    obj['taskDetails'] = $("#details").val();
+    obj['taskDetailArguments'] = $("#detail_args").val().split(',');
+    obj['status'] = $("#status").val();
+    obj['userName'] = $("#username").val();
+    obj['startTime'] = new Date().getTime()/1000;
+    obj['completedTime'] = null;
+
+    var url = '/tasks/' + window.location.search;
+
+    taskObj['tasks'].push(obj);
+    $.post(url, JSON.stringify(taskObj), callback, "json");
+    ////
+    /*
+var obj = {
+    tasks : [ {
+        taskName : "jobjava.util.Random@f10853",
+        taskNameArguments : "[]",
+        startTime : "1325878576401",
+        completedTime : "",
+        status : "IN_PROGRESS",
+        userName : "Administrator",
+        taskDetails : "Task.Message",
+        taskDetailArguments : "[aaa, bbbb]"
+    }]
+}
+
+    $.post(url, JSON.stringify(obj), callback, "json");
+    */
+    ////
+}
+
+function callback(result){
+    if (result){
+        $("#rc").html(result['errorCode']);
+        $("#r_message").html(result['errorMessage']);
+        if (result['errorCode'] == 0){
+            $("input[type='text'][id!='obj_id'][id!='vc_id']").val('');
+        }
+    } else {
+        alert("A problem occurred!");
+    }
+}
+
+function updateStatus(){
+    $("#f_status").val($("#status").val());
+}
+
+function pageLoad(){
+    var moref = getQueryParameters()['moref'];
+    var vc_id = getQueryParameters()['serverGuid'];
+    if (typeof(moref) != 'undefined'){
+        $("#obj_id").val(moref);
+    }
+    if (typeof(vc_id) != 'undefined'){
+        $("#vc_id").val(vc_id);
+    }
+}
+
+</script>
+</head>
+<body style="font-family: Arial; font-size: 12px;" onload="pageLoad();">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>Object ID:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><input type="text" id="obj_id" disabled="true" /></td>
+        </tr>
+        <tr>
+            <td>vCenter ID:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><input type="text" id="vc_id" disabled="true" /></td>
+        </tr>
+        <tr>
+            <td>Task Name:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="name" /></td>
+        </tr>
+        <tr>
+            <td>Task Name Arguments:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="name_args" /></td>
+        </tr>
+        <tr>
+            <td>Task Details:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="details" /></td>
+        </tr>
+        <tr>
+            <td>Task Detail Arguments:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="detail_args" /></td>
+        </tr>
+        <tr>
+            <td>Event Source:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="source" /></td>
+        </tr>
+        <tr>
+            <td>Plug-in Source:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="p_source" /></td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td>&nbsp;</td>
+            <td>
+                <select id="status" onchange="updateStatus();">
+                    <option value="-">Select ...</option>
+                    <option value="OK">OK</option>
+                    <option value="FAILED">FAILED</option>
+                    <option value="DEGRADED">DEGRADED</option>
+                    <option value="INFORMATION">INFORMATION</option>
+                    <option value="UNKNOWN">UNKNOWN</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Formatted Status:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="f_status" /></td>
+        </tr>
+        <tr>
+            <td>Username:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="username" /></td>
+        </tr>
+    </table>
+    <br />
+    <button onclick="sendTask();">Send Task</button>
+    <br />
+    <br />
+
+    <b>Result</b><br /><br />
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>Return Code:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><span id="rc"></span></td>
+        </tr>
+        <tr>
+            <td>Message:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><span id="r_message"></span></td>
+        </tr>
+    </table>
+
+</body>
+</html>

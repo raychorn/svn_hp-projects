@@ -1,0 +1,32 @@
+.icon
+{
+    vertical-align: middle;
+    padding-right: 5px;
+}
+
+.tool_menu
+{
+    color: #FFFFFF;
+    background: #505050;  
+    position : fixed;    
+}
+
+.tool_menu ul
+{
+    list-style: none;
+    border: 0px;    
+    padding: 0px;
+    margin: 0px;    
+}
+
+.tool_menu li
+{    
+    border-top: 1px solid #323232;
+    border-bottom: 1px solid #1C1C1C;
+    padding: 5px;
+}
+
+.tool_menu li:hover
+{
+    background: #303030;
+}

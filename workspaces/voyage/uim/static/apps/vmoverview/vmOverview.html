@@ -1,0 +1,187 @@
+<script id="more_menu_template" type="text/x-jquery-tmpl" >
+    <option value="${id}">${title}</option>
+</script>
+
+<script id="boxtemplate" type="text/x-jquery-tmpl" >
+    <div id="${id}" class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" >
+        <div class="box_header ui-widget-header">${title}</div>
+        <div class="box_contents">
+          <div class="box_line">Loading...</div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">   
+
+    var VmOverview = {
+
+        boxes : [],
+        refreshTimeoutId: null,
+        lastStorageData: null,
+        reDrawStorage: false,
+
+        getVmMoref : function(){
+            try {
+                return getQueryParameters()['moref'].split(':')[1];
+            } catch (e){
+                return '';
+            }
+        },
+
+        renderBox : function(box)
+        {
+            $.tmpl('boxtemplate', box).appendTo( "#column" + box.column );           
+        },
+        
+        renderBoxContents : function(box)
+        {
+            var url = box.data_url;
+            if (url.indexOf("?") > -1){
+                url = url.substring(0, url.indexOf("?"));
+                url += "?" + window.location.search.substring(1) + '&' + box.data_url.substring(box.data_url.indexOf("?")+1);
+            } else {
+                url += "?" + window.location.search.substring(1);
+            }
+
+            $.getJSON(url, function(box_data) {
+            	// Only update the storage box upon change or when the portlet moved.
+                if (box.id == "storage") {
+                	var newData = JSON.stringify(box_data);
+                	if (VmOverview.lastStorageData != newData || VmOverview.reDrawStorage) {
+                        $( '#'+box.id + ' > .box_contents' ).empty();           
+                        $.tmpl(box.template, box_data).appendTo( '#'+box.id + ' > .box_contents' );
+                        VmOverview.lastStorageData = newData;
+                        VmOverview.reDrawStorage   = false;
+                    }                   
+                } else {
+                    $( '#'+box.id + ' > .box_contents' ).empty();           
+                    $.tmpl(box.template, box_data).appendTo( '#'+box.id + ' > .box_contents' );
+                }       
+            });  
+            
+        },
+        
+        makeBoxTemplate : function(tmpl_string, box)
+        {
+            $.template(box.template, tmpl_string);        
+        },
+        
+        loadBoxTemplate : function(box)
+        {
+            $.ajax({
+                 type: "GET",
+                 url: box.template + "?" + window.location.search.substring(1),             
+                 success: function(tmpl_string) {
+                	 VmOverview.makeBoxTemplate(tmpl_string, box);                	 
+                	 VmOverview.renderBoxContents(box);
+                 }
+            });
+        },
+        
+        refreshBoxes : function()
+        {            
+            if (VmOverview.isActive())
+            {                
+                for(b in VmOverview.boxes)
+                {
+                	VmOverview.renderBoxContents(VmOverview.boxes[b]);            
+                }
+            }
+
+            VmOverview.refreshTimeoutId = setTimeout("VmOverview.refreshBoxes()", 15000);
+        },
+
+        startApp : function()
+        {                       
+            
+            $( ".column" ).sortable({
+                connectWith: ".column", 
+                handle: '.box_header',
+                stop: function(event, ui) { 
+                        for(b in VmOverview.boxes)
+                        {
+                            if(VmOverview.boxes[b].id == ui.item.context.id)
+                            {
+                                if(VmOverview.boxes[b].reload_on_sort_stop)
+                                {
+                                	// Set a flag so that storage knows to redraw.
+                                    if (VmOverview.boxes[b].id == "storage") {
+                                        VmOverview.reDrawStorage = true;
+                                    }
+                                    VmOverview.renderBoxContents(VmOverview.boxes[b]);                                      
+                                }
+                                break;
+                            }
+                        }
+                                            
+                    },
+                update: function(event, ui) {
+                        var order =  $(this).sortable("toArray").join(',');
+                        createCookie("ic4vc.VmOverview." + $(this).attr('id'), order, 90);
+                    }
+            });
+    
+            $("#boxtemplate").template('boxtemplate');
+    
+            $.getJSON("/config/apps/vmoverview/boxes" + "?" + window.location.search.substring(1),
+                function(box_data) {
+                    VmOverview.boxes = box_data;            
+                                      
+                    $('.column').each(function(){
+                        var sort_value = 0;
+                        var column_id = $(this).attr('id');
+                        var column_num = column_id.split('column')[1];
+                        var sort_order = readCookie('ic4vc.VmOverview.' + column_id);
+                        if(sort_order)
+                        {
+                            sort_order = sort_order.split(',');
+                            for(var x in sort_order)
+                            {
+                                for(var b in VmOverview.boxes)
+                                {
+                                    if(VmOverview.boxes[b].id == sort_order[x])
+                                    {
+                                        VmOverview.boxes[b].sort_order = sort_value++;
+                                        VmOverview.boxes[b].column = column_num;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    VmOverview.boxes.sort(compareBoxes);                    
+                    for(b=0; b < VmOverview.boxes.length; b++)
+                    {
+                        VmOverview.renderBox(VmOverview.boxes[b]);      
+                    	VmOverview.loadBoxTemplate(VmOverview.boxes[b]);                
+                    }
+                    VmOverview.refreshTimeoutId = setTimeout("VmOverview.refreshBoxes()", 60000);
+                }
+            );
+        },
+        
+        isActive: function(){
+            return $("#vmoverview").is(":visible");
+        }
+    };
+    
+    VmOverview.startApp();
+</script>
+
+<div id="vmoverview" style="display:none;" >
+    <table>
+        <tr>
+            <td>
+                <div id="column1" class="column">
+                </div>
+            </td>
+            <td>
+                <div id="column2" class="column">
+                </div>
+            </td>
+            <td>
+                <div id="column3" class="column">
+                </div>
+            </td>
+        </tr>
+    </table>        
+</div>

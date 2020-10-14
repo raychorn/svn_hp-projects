@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="var" path="CASL_VENDORLIB/lib/vsphere-client-sdk/libs/vsphere-client-lib.jar"/>
+	<classpathentry kind="var" path="CASL_VENDORLIB/lib/Jackson/jackson-core-asl/main/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry kind="var" path="CASL_VENDORLIB/lib/Jackson/jackson-mapper-asl/main/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry kind="var" path="VIRGO_HOME/repository/usr/commons-logging-1.0.2.jar"/>
+	<classpathentry kind="var" path="VIRGO_HOME/repository/usr/httpclient-4.0.1.jar"/>
+	<classpathentry kind="var" path="VIRGO_HOME/repository/usr/httpcore-4.1.jar"/>
+	<classpathentry kind="var" path="CASL_VENDORLIB/lib/vsphere-client-sdk/samples/vsphereviews/vsphere-wssdk-provider/lib/vim25.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

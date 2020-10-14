@@ -1,0 +1,108 @@
+<script type="text/javascript">
+
+    var ClusterNewsfeed = {
+
+        startApp : function(){     
+            this.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            this.createGrid();            
+            $(window).resize(function() {
+                setTimeout("ClusterNewsfeed.resizeGrid();", 700);
+            });            
+            AppManager.addAppListener(ClusterNewsfeed.refreshNewsfeed);    
+        },
+
+        createGrid: function(){
+            jQuery("#NewsfeedContents").jqGrid({
+                url: '/newsfeed/'+window.location.search+'&sort=-1',
+                mtype: 'GET',
+                datatype: 'json',
+                jsonReader: {
+                    root: "result",
+                    id: "nf_item",
+                    repeatitems: false
+                },
+                colNames: [
+                    'Cluster/Host', 'Message', 'Status', 'Source', 'Date and Time'
+                ],
+                colModel: [
+                    {name: 'name', index:'name'},
+                    {name: 'message', index:'message', formatter: ClusterNewsfeed.nfMessageFormat},
+                    {name: 'status', index:'status'},
+                    {name: 'objectName', index:'eventSource'},
+                    {name: 'formattedEventDate', index:'formattedEventDate'}
+                ],
+                scroll: true,
+                autowidth: true,
+                hoverrows: false,
+                scrollOffset: 20,
+                viewsortcols:[true,'vertical', true],
+                gridview: true,
+                shrinkToFit: true,
+                loadonce: true,
+                rowNum: 999999999,
+                pager: '#nf_pager',
+                viewrecords: true,
+                altRows: true,
+                loadComplete: function(data){
+                    setTimeout("ClusterNewsfeed.resizeGrid();", 700);
+                    if (!data){
+                        return;
+                    }
+                    //setTimeout("ClusterNewsfeed.refreshNewsfeed();", 15000);
+                    $('#refresh_NewsfeedContents').click(function(){$('#NewsfeedContents').setGridParam({datatype:'json', page:1}).trigger('reloadGrid');});
+                }
+            });
+            jQuery("#NewsfeedContents").navGrid('#nf_pager',{
+                refresh: true,
+                search: false,
+                add: false,
+                edit: false,
+                del: false
+            });
+        },
+
+        resizeGrid : function(){
+            try{
+                $("#NewsfeedContents").setGridWidth($("#nf_box_contents").width()-4);
+                var height = $(window).height() - $("#header").height() - $("#footer").height() - $("#nf_pager").height() - 120;
+                $("#NewsfeedContents").setGridHeight(height);
+            } catch (e){}
+        },        
+
+        isActive: function(){
+            if(ClusterNewsfeed.activeOverride == true)
+            {
+                ClusterNewsfeed.activeOverride = false;
+                return true;
+            }
+            return $("#clusternewsfeed").is(":visible");
+        },
+        
+        refreshNewsfeed: function(){
+            
+            if (ClusterNewsfeed.isActive()){
+                $("#NewsfeedContents").jqGrid('GridUnload');
+                ClusterNewsfeed.createGrid();
+            }
+        },
+        
+        nfMessageFormat: function(message, options, rowObject){
+            return get_str(message, rowObject['messageArguments']);            
+        }
+
+    };
+
+    ClusterNewsfeed.startApp();    
+</script>
+
+
+<div id="clusternewsfeed" style="display:none">
+    <div id="newsfeed_box" class="box" style="width:98%;">
+        <div class="box_header">News Feed</div>
+        <div class="box_contents" id="nf_box_contents">
+            <table id="NewsfeedContents"><tr></tr></table>
+            <div id="nf_pager"></div>
+        </div>
+    </div>
+    <a href="#" onclick="AppManager.loadApp('clusteroverview');">Back</a>
+</div>

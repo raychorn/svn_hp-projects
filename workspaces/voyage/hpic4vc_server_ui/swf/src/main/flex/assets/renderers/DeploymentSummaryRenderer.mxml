@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				implements="mx.controls.listClasses.IDropInListItemRenderer"
+				>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.vo.DeploymentVO;
+			import com.hp.asi.hpic4vc.ui.vo.NicsVO;
+			import com.hp.asi.hpic4vc.ui.vo.PersonalityDataVO;
+			
+			import mx.controls.listClasses.BaseListData;
+			
+			import spark.components.DataGroup;
+			
+			
+			private var _listData:BaseListData;
+			
+			[Bindable]
+			private var useDHCP:Boolean = true;
+			
+			[Bindable]
+			private var deploymentVO:DeploymentVO;
+			
+			[Bindable]
+			private var nicsVO:NicsVO = new NicsVO();
+			
+			[Bindable]
+			private var serverName:String;
+			
+			[Bindable]
+			private var buildPlanName:String;
+			
+			[Bindable]
+			private var DHCPInfo:String;
+
+			[Bindable]
+			private var vCenterFolderName:String;
+			
+			
+			
+			public function get listData():BaseListData
+			{
+				return this._listData;
+			}
+			
+			public function set listData(value:BaseListData):void
+			{
+				this._listData = value;
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				if (value && value is DeploymentVO)
+				{
+					deploymentVO = DeploymentVO(value);
+					serverName = deploymentVO.personalityData.displayName;
+					buildPlanName = deploymentVO.buildPlanName;
+					vCenterFolderName = deploymentVO.vCenterFolderName;
+					if(deploymentVO.personalityData)
+					{
+						deploymentVO.hostData.jobServerUri = deploymentVO.serverUri;
+						if(deploymentVO.personalityData.nics)
+						{
+							if(deploymentVO.useNIC0)
+							{
+								if(NicsVO(deploymentVO.personalityData.nics.getItemAt(0)).dhcp)
+								{
+									DHCPInfo = "DHCP(" + NicsVO(deploymentVO.personalityData.nics.getItemAt(0)).macAddress + ")";
+									
+									deploymentVO.hostData.hostName="";
+								}
+								else
+								{
+									DHCPInfo= NicsVO(deploymentVO.personalityData.nics.getItemAt(0)).ip4Address;
+									deploymentVO.hostData.hostName = DHCPInfo;
+								}
+							}
+							else
+							{
+							
+								DHCPInfo = deploymentVO.personalityData.hostName + "." + deploymentVO.personalityData.domainName;
+								deploymentVO.hostData.hostName = DHCPInfo;
+							}
+							
+							
+						}
+					}
+					
+				}
+			}
+			
+			
+		
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Panel title="{serverName}" width="760" height="180" >
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+			<s:VGroup gap="1" width="100%">
+				<s:HGroup>
+					<s:Label text="Build Plan" width="80" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+					<s:Label text="{buildPlanName}" width="300" paddingLeft="10" paddingTop="10"/>
+				</s:HGroup>
+				<s:HGroup>
+					<s:Label text="Add To" width="80" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+					<s:Label text="{vCenterFolderName}" width="200" paddingLeft="10" paddingTop="10"/>
+				</s:HGroup>
+				<s:Label text="{DHCPInfo}" width="100%" paddingLeft="95" paddingTop="10" fontWeight="bold"/>
+			</s:VGroup>
+	</s:Panel>		
+	
+</s:ItemRenderer>
+

@@ -1,0 +1,75 @@
+<script id="hostswfwdetail_software_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="vmswfwdetail_firmware_template" type="text/x-jquery-tmpl" >
+    <tr><td>${name}</td><td>${description}</td><td>${version}</td></tr>    
+</script>
+
+<script id="vmswfwdetail_template" type="text/x-jquery-tmpl" >
+    
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">                
+       
+        <div class="bigbox_header ui-widget-header">Firmware</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line">
+                {{if typeof firmware != 'undefined' && firmware.length > 0}}
+                    <table>
+                        <tr><th>Name</th><th>Description</th><th>Version</th></tr>
+                        {{tmpl(firmware) "#vmswfwdetail_firmware_template"}}              
+                    </table>
+                {{else}}
+                    Firmware information is unavailable.
+                {{/if}}    
+            </div>
+        </div>
+        <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('vmoverview');">Back</a></div>
+    </div>
+
+</script>
+
+<script type="text/javascript">   
+
+    var VmSwFwDetail = {
+        
+        refreshTimeoutId: null,        
+        activeOverride: false,
+        
+        refresh_data : function()
+        {                            
+            if (VmSwFwDetail.isActive())
+            {                                
+                $.getJSON("/agservices/vmswfwdetail" + "?" + window.location.search.substring(1),
+                    function(data) {                
+                        $('#vmswfwdetail').empty();
+                        $.tmpl('vmswfwdetail_template', data).appendTo( "#vmswfwdetail" );                        
+                        VmSwFwDetail.refreshTimeoutId = setTimeout("VmSwFwDetail.refresh_data()", 15000);
+                    }
+                );
+            }            
+        },
+
+        startApp : function()
+        {                   
+            $("#vmswfwdetail_template").template('vmswfwdetail_template');
+            VmSwFwDetail.activeOverride=true;     /*Browser doesnt' render app fast enoungh on the inital load, skip isActive check on startApp*/
+            VmSwFwDetail.refresh_data();            
+        },
+        
+        isActive: function(){
+            if(VmSwFwDetail.activeOverride == true)
+            {
+                VmSwFwDetail.activeOverride = false;
+                return true;
+            }
+            return $("#vmswfwdetail").is(":visible");
+        }
+    };
+    
+    VmSwFwDetail.startApp();
+</script>
+
+
+<div id="vmswfwdetail" style="display:none">
+<h3>Loading...</h3>        
+</div>

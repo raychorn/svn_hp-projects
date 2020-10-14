@@ -1,0 +1,98 @@
+<script type="text/javascript">
+
+    var ClusterSwFwDetail = {
+
+        getHostMoref : function(){
+            try {
+                return getQueryParameters()['moref'];
+            } catch (e){
+                return '';
+            }
+        },
+        
+        refresh_data : function() {
+            if(ClusterSwFwDetail.isActive())
+            {                
+                $("#clusterswfwdetail_grid").setGridParam({datatype:'json', page:1}).trigger("reloadGrid");
+            }
+        },
+        
+        startApp : function(){
+            this.createGrid();
+            
+            
+            $('#clusterswfwexportlink').attr("href", '/clusterswfwexport' + "?" + window.location.search.substring(1));
+        },
+
+        createGrid: function(){
+            jQuery("#clusterswfwdetail_grid").jqGrid({
+                url: '/agservices/clusterswfwdetail'+window.location.search+'&sort=-1',
+                mtype: 'GET',
+                datatype: 'json',
+                jsonReader: {
+                    root: "rows",
+                    id: "0",                    
+                    repeatitems: false
+                },
+                colNames: [
+                    'Host', 'Type', 'Name', 'Description', 'Version'
+                ],
+                colModel: [
+                    {name: 'host', index:'host', search: true},
+                    {name: 'type', index:'type', search: true, width: 50},
+                    {name: 'name', index:'name', search: true, width: 200},
+                    {name: 'description', index:'description', search: true, width: 250},
+                    {name: 'version', index:'version', search: true, width: 175}
+                ],
+                scroll: true,                
+                hoverrows: false,                
+                viewsortcols:[true,'vertical', true],
+                gridview: true,                
+                loadonce: true,
+                rowNum: 999999,
+                                
+                altRows: true,
+                
+                height: "100%",                                
+                shrinkToFit: true,
+                autowidth: true,
+                
+                grouping:true,
+                groupingView : {
+                    groupField : ['host'],
+                    groupColumnShow : [false]
+                }
+                
+            });
+            jQuery("#clusterswfwdetail_grid").jqGrid('filterToolbar',{stringResult: true,searchOnEnter : false});
+            
+        },
+
+        
+
+        isActive: function(){
+            return $("#clusterswfwdetail").is(":visible");
+        }        
+
+    };
+
+
+    ClusterSwFwDetail.startApp();
+    AppManager.addAppListener(ClusterSwFwDetail.refresh_data);
+
+</script>
+
+
+<div id="clusterswfwdetail" style="display:none">
+    <div class="bigbox ui-widget ui-widget-content ui-helper-clearfix ui-corner-all">
+        <div class="bigbox_header ui-widget-header">Software/Firmware</div>
+        <div class="bigbox_contents">
+            <div class="bigbox_line" id="clusterswfwdetail_container" >    
+                <table id="clusterswfwdetail_grid"><tr><td></td></tr></table>
+            </div>
+            <div class="bigbox_footer">
+                <a href="#" onclick="AppManager.loadApp('clusteroverview');">Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="clusterswfwexportlink" href="#">Export (csv)</a>
+            </div>
+        </div>
+    </div>        
+</div>

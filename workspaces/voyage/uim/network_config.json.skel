@@ -1,0 +1,75 @@
+{
+    "private_config" : {
+     },
+
+    "public_config" : {
+        "providers" : {
+            "net" : {
+                "networks": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/networks"
+                },
+                "DefaultSwitchType": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/Settings/DefaultSwitchType"
+                },
+                 "updateNetworks": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/networks"
+                },
+                "updateDefaultSwitchType": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/Settings/DefaultSwitchType"
+                },
+                "refreshNetwork": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/networks"
+                },
+                "networkMismatchHost": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/vmhosts"
+                },
+                "applyMismatchHost": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/vmhosts"
+                },
+                "clusterMismatch": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/clusters"
+                },
+                "setPreferenceHost": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/clusters"
+                },
+                "networkMismatchSummaryHost": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/vmhosts"
+                },
+                "clusterMismatchSummary": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/clusters"
+                },
+                "vdsversions": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/Settings/DvsSpecVersion"
+                },
+                "vdsMigrateManagement": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/Settings/MigrateManagement"
+                },
+                "networkAlias": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/networks/alias"
+                },
+                "fusionNetworks": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/networks/fusion"
+                },
+                "applyMismatchCluster": {
+                    "web_root" : "net_root",
+                    "path" : "/rest/clusters"
+                }
+            }
+        }
+    }
+}

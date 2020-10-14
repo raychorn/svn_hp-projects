@@ -1,0 +1,688 @@
+/*
+
+Release _._: Separated style information from default topic template.
+
+
+*/
+
+
+/* ============= Document Defaults ============= */
+
+a:active  { }
+a:hover   { }
+a:link    { }
+a:visited { } 
+
+/* ============= Page elements ============= */
+
+
+body.draft { background-image: url('images/draft.png');
+    background-repeat: no-repeat;
+    background-position: top left;
+    }
+
+.masterbanner {
+   color: #FFFFFF;
+   background-color: #0096D6;
+   font-family: Arial, sans-serif;
+   font-size: 18pt;
+   font-weight: normal;
+   }
+
+.epubbanner {
+   font-family: sans-serif;
+   font-size: 36pt;
+   font-weight: bold;
+   }
+
+div.titlepage {
+   margin-bottom: 0pt;
+   }
+	
+.spacefortitle {
+   color: #0096D6;
+   }
+
+.spacerforchapter {
+   color: #cccccc;
+   }
+
+/* Change display property from 'block' to 'none' to hide header and footer */
+
+.navheader {
+   font-family: Arial, sans-serif;
+   font-size: 11pt;
+   display: block;
+   }
+	
+.navfooter {
+   font-family: Arial, sans-serif;
+   font-size: 11pt;
+   display: block;
+   }
+
+.navparastyle {
+   font-size: 8pt;
+   font-family: Arial, sans-serif;
+   margin-top: 0pt;
+   margin-bottom: 1pt;
+   }
+
+/* -- End header/footer definitions -- */
+
+/* ============= Heading and title styles ============= */
+
+h1 {
+   font-family: Arial, sans-serif;
+   font-size: 18pt;
+   font-weight: normal;
+   }
+
+h1.firsttitle {
+   font-family: Arial, sans-serif;
+   font-size: 18pt;
+   font-weight: normal;
+   color: #0096D6;
+   }
+
+h1.sectiontitle {
+   font-family: Arial, sans-serif;
+   font-size: 18pt;
+   font-weight: normal;
+   color: #0096D6;
+   margin-top: 0pt;
+   }
+  
+h1.title {
+   font-family: Arial, sans-serif;
+   font-size: 18pt;
+   font-weight: normal;
+   color: #0096D6;
+   margin-top: 0pt;
+   }
+  
+h2 {font-family: Arial, sans-serif;
+   color: #0096D6;
+   font-size: 14pt;
+   font-weight: normal;
+   }
+	
+h2.title {font-family: Arial, sans-serif;
+   color: #0096D6;
+   font-size: 14pt;
+   font-weight: normal;
+   }
+	
+h2.subtitle {font-family: Arial, sans-serif;
+   font-size: 10pt;
+   color: #000000;
+   background-color: #FFFFFF;
+   }
+
+h3 {font-family: Arial, sans-serif;
+   font-size: 10pt;
+   color: #0096D6;
+   }
+
+h3.title {font-family: Arial, sans-serif;
+   font-size: 10pt;
+   color: #0096D6;
+   }
+
+h3.title2 {
+   margin-bottom: 0pt;
+   }
+
+h4.title3 {
+   margin-bottom: 0pt;
+   }
+
+h4 {font-family: Arial, sans-serif;
+   font-size: 10pt;
+   color: #000000;
+   font-weight: bold;
+   }
+
+h5 {font-family: Arial, sans-serif;
+   font-style: italic;
+   font-size: 10pt;
+   color: #000000;
+   }
+
+h6 {font-family: Arial, sans-serif;
+   font-style: italic;
+   font-size: 10pt;
+   font-weight: normal;
+   }
+
+.heading2 {color: #0096D6;
+   height: 4pt;
+   margin-top: 0pt;
+   font-size: 2pt;
+   }
+
+.heading3 {color: #0096D6;
+   height: 2pt;
+   margin-top: 0pt;
+   font-size: 2pt;
+   }
+
+div.figure p.title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: normal;
+   }
+
+div.figure-title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.table p.title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: normal;
+   }
+	
+div.table-title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.equation p.title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+	
+div.example p.title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.example-title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.procedure-title {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.toc-title {
+   font-family: Arial, sans-serif;
+   font-size: 12pt;
+   font-weight: bold;
+   }
+
+/* ============= Front matter definitions ============= */
+
+.edition {
+  font-family: sans-serif;
+}
+
+.pubdate {
+  font-family: sans-serif;
+}
+
+.pubsnumber {
+  font-family: sans-serif;
+}
+
+.volumenum {
+  font-family: sans-serif;
+}
+
+/* ============= Body and block style definitions ============= */
+
+
+p  {font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-top: 6pt;
+   margin-bottom: 6pt;
+   }
+
+p.remark {
+   font-style: italic;
+   color: #FF0000;
+   }
+
+   dfn p {
+   margin-top: 0pt;
+   margin-bottom: 0pt;
+   }
+
+
+.small {
+   font-size: 9pt;
+   }
+
+div.mediaobject {align: center;
+   }
+
+div.figure {
+   width: 100%;
+   }
+
+div.mediaobject img{
+   float: none;
+   }
+
+span.inlinemediaobject img {
+   valign:middle; vertical-align:middle;
+}
+
+.admonup {
+   color: #555555;
+   background-color: #555555;
+   height: 3px;
+   }
+	
+.admonbottom {
+   color: #555555;
+   background-color: #555555;
+   height: 2px;
+   }
+
+.admontitle {
+   font-weight: bold;
+   }
+
+div.admonimg { 
+   margin-top: 10px;
+   }
+
+.warning {
+   margin-left: 0.0in; 
+   margin-right: 0.5in;
+   margin-bottom: 10px;
+   }
+
+.caution {
+   margin-left: 0.0in; 
+   margin-right: 0.5in;
+   margin-bottom: 10px;
+   }
+
+.note {
+   margin-left: 0.0in; 
+   margin-right: 0.5in;
+   margin-bottom: 10px;
+   }
+
+.tip {
+   margin-left: 0.0in; 
+   margin-right: 0.5in;
+   margin-bottom: 10px;
+   }
+
+.important {
+   margin-left: 0.0in; 
+   margin-right: 0.5in;
+   margin-bottom: 10px;
+   }
+
+
+/* ============= List style definitions ============= */
+
+span.simplelist {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   }
+
+div.procedure {
+   margin-left: 0pt;
+   padding: 0pt;
+   }
+   
+div.itemizedlist {
+   margin-left: 0pt;
+   padding: 0pt;
+   }
+
+div.orderedlist {
+   margin-left: 0pt;
+   padding: 0pt;
+   }
+
+div.copyright-page {
+   margin-top: 18pt;
+   }
+
+.copyright {color: #999999;
+   font-size: 8pt;
+   }
+
+ol {color: #000000;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: 20pt;
+   padding: 0pt;
+   }
+	
+ol ol {
+   color: #000000;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   padding: 0pt;
+   }
+    
+ol li p {
+   font-family: Arial, sans-serif;
+   font-weight: normal;
+   }
+    
+ul li p {
+   font-family: Arial, sans-serif;
+   font-weight: normal;
+   }    
+    
+ul {
+   color: #000000;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: 20pt;
+   padding: 0pt; 
+   }
+
+ul ul {
+   color: #000000;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: 10pt;
+   padding: 0pt; 
+   }
+
+	
+dt {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   }
+
+dd {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: 10pt;
+   padding: 0pt; 
+   }
+
+dd.tocmenu-chaplevel {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: 0pt;
+   padding: 0pt; 
+   }
+
+dd.tocmenu-partlevel {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   margin-left: -6pt;
+   padding: 0pt; 
+   }
+
+dfn.glossdef {
+font-style: normal;
+}
+/* ============= Inline style definitions ============= */
+			
+span.italic {font-style: italic
+   }
+   
+span.strong {font-weight: bold
+   }
+
+span.underline {text-decoration: underline
+   }
+
+span.accel {text-decoration: underline
+   }
+
+span.strikethrough {text-decoration: line-through
+   }
+
+span.blue {color: blue
+   }
+
+span.red {color: red
+   }
+	
+span.glossterm {
+   font-family: Arial, sans-serif;
+	font-weight: bold;
+   }
+
+	
+pre.screen {
+   background-color: #CCCCCC;
+   color: #000000;
+   }
+	
+pre.programlisting {
+   color: #000000;
+   }
+	 
+
+
+/* ============= Table style definitions ============= */
+
+th {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   }
+
+div.table thead th {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   font-weight: bold;
+   background-color: #0096D6;
+   color: #FFFFFF;
+   }
+
+div.table tfoot th {
+   font-family: Arial, sans-serif;
+   font-size: 9pt;
+   color: #000000;
+   font-weight: normal;
+   background-color: #FFFFFF;
+   }
+
+div.table {
+   margin-bottom: 20pt;
+   }
+
+div.table table {
+   border-color: #CCCCCC;
+   }
+
+table.messageset {
+   margin-bottom: 15pt;
+   border-color: #0096D6;
+   }
+
+td {
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   }
+
+
+table.simplelist { 
+   table-layout: fixed;
+   width: 100%;
+}
+
+
+
+/* ============= Navigation pane styles. ============= */
+/* MODIFYING THESE STYLES MAY NEGATIVELY IMPACT THE TOC	TREE. */ 
+
+#beforetoc {
+   }
+
+div.beforetoc {
+width: 100%;
+}
+
+a.tocmenulink:link {
+   color: #003366;
+   text-decoration: none;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: transparent;
+   }  
+	 
+a.tocmenulink:visited {
+   color: #003366;
+   text-decoration: none;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: transparent;
+   }
+	
+a.tocmenulink:hover {
+   color: #0096D6;
+   text-decoration: underline;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: transparent;
+   }
+	 
+a.tocmenulink:active {
+   color: #0096D6;
+   text-decoration: underline;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: transparent;
+   }
+
+div.toc {
+   background-color: #ffffff;
+   padding-left: 5pt;
+   padding-right: 4pt;
+   margin-bottom: 0pt;
+   }
+
+div.toc ul {
+   list-style-type: none;
+   }
+
+table.helpnav {
+   cell-padding: 10pt;
+   cell-spacing: 5pt;
+   background-color: #cccccc;
+   width: 100%;
+   }
+ 
+td.helpnav {
+   font-family: Arial, sans-serif;
+   font-weight: bold;
+   }
+	 
+div.list-of-figures {
+   background-color: #ffffff;
+   padding-left: 5pt;
+   padding-right: 4pt;
+   padding-top: 10pt;
+   }
+	
+div.list-of-tables {
+   background-color: #ffffff;
+   padding-left: 5pt;
+   padding-right: 4pt;
+   padding-top: 10pt;
+   }
+	
+dl.tocsubmenu {
+   position: static;
+   display: none;
+   background-color: #ffffff;
+   }
+
+div.indexdiv h3{
+   color: #0096D6;
+   font-family: Arial, sans-serif;
+   font-weight: bold;
+   font-size: 12pt;
+   }
+
+legend {
+   font-family: Arial, sans-serif;
+   font-weight: bold;
+   font-size: 11pt;
+      color: #0096D6;
+
+   }
+   
+   div.resultssearch {
+   font-family: Arial, sans-serif;
+   font-size: 11pt;
+   
+   }
+p.helpnav {
+   text-align: left;
+   text-transform: capitalize;
+   text-decoration: none;
+   }
+
+ p.navtext {
+   text-align: right;
+   font-size: 8pt;
+   font-famiy: Arial, sans-serif;
+   text-decoration: underline;
+   }
+/* ============== Change highlighting markup ============== */
+
+div.added { 
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: #ddddff;
+   }
+/* #99ff99 added , changed #ffff99, deleted #ff7f7f older colors that do not match pdf or arbortext */
+div.deleted { 
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   text-decoration: line-through;
+   background-color: #ffcccc; 
+   }
+
+div.changed { 
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+   background-color: #feeac0; 
+   }
+
+
+div.off	{  }
+.added {
+background-color: #ddddff; 
+}
+span.added { 
+	background-color: #ddddff; 
+	}
+
+span.deleted { 
+	text-decoration: line-through;
+	background-color: #ffcccc; 
+	}
+.deleted {
+text-decoration: line-through;
+	background-color: #ffcccc; 
+}
+span.changed { 
+	background-color: #feeac0; 
+	}
+.changed {
+background-color: #feeac0; 
+}
+span.off {  }
+
+span.searchable { 
+	display: none;
+	}
+

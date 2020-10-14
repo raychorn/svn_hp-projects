@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   close="PopUpManager.removePopUp(this);"
+			   creationComplete="handleCreationComplete();" styleName="refreshPopUp"
+			   title="{Helper.getString('versionTitle.text')}">
+			   
+			
+			 
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			import com.hp.asi.hpic4vc.ui.model.MenuModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			[Bindable]
+			public var _proxy:Hpic4vc_providerProxy;
+			
+			private function handleCreationComplete():void {
+				PopUpManager.centerPopUp(this);
+				closeButton.visible = true;
+				_proxy.getProductAbout(_contextObject.uid, onGettingProductAbout, _contextObject);
+			}
+			
+			private function onGettingProductAbout(event:MethodReturnEvent):void {
+				if (event == null) {
+					errorFoundLabel = Helper.getString("errorOccurred");
+					return;
+				} else if (event.error != null) {
+					errorFoundLabel = event.error.message;
+					return;
+				} else if (event.result == null) {
+					errorFoundLabel = Helper.getString("errorOccurred");
+					return;
+				} else {
+					var menuModel:MenuModel = event.result as MenuModel;
+					if (menuModel.errorMessage != null)
+						//Alert.show(menuModel.errorMessage);
+						errorFoundLabel = menuModel.errorMessage;
+					else {
+						var items:ArrayCollection = menuModel.menuItems;
+						var linkModel:LinkModel = items[0] as LinkModel;
+						if (linkModel.errorMessage != null)
+							errorFoundLabel = linkModel.errorMessage;
+						var version:String = linkModel.url;
+						if (version != null)
+							versionId.text = version;
+					}
+				}
+			}
+			
+			private function removePopUp():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<s:VGroup>
+		<mx:Label text="{errorFoundLabel}" 
+				  visible="{errorFoundLabel.length>0}" 
+				  includeInLayout="{errorFoundLabel.length>0}" 
+				  styleName="errorMessage"/>
+		<mx:HBox width="320" height="90" paddingTop="10" paddingLeft="5" includeInLayout="{!(errorFoundLabel.length>0)}" visible="{!(errorFoundLabel.length>0)}">
+			<s:Label text="{Helper.getString('versionText.text')}" fontSize="15"/>
+			<s:Spacer width="5"/>
+			<s:Label id="versionId" fontSize="15"/>
+		</mx:HBox>
+	
+	</s:VGroup>
+	<s:controlBarContent>
+		<s:Spacer width="99%"/> 
+		<s:Button id="closeButtonId" label="{Helper.getString('Form_closeLabel')}"
+				  click="removePopUp();"/>
+	</s:controlBarContent>
+	
+</s:TitleWindow>

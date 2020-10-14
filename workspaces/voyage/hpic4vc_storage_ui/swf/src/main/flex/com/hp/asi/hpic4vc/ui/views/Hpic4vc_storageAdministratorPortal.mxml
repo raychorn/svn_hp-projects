@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+	
+	<fx:Metadata>
+		
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_storageAdministratorPortalMediator")]
+		
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.ConfigurationModel;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			
+			[Bindable]
+			public var storageAdministratorPortalURL:String;
+			
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			protected function onClick():void
+			{
+				if(storageAdministratorPortalURL != null) {
+					navigateToURL(new URLRequest(storageAdministratorPortalURL));
+				}
+				
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="15"
+						  paddingRight="15"
+						  paddingTop="15"
+						  paddingBottom="15"/>
+	</s:layout>
+	<mx:VBox width="100%">	
+		
+		<mx:Text text="{errorFoundLabel}" styleName="errorMessage" />
+		
+		<mx:Text styleName="gettingStartedTextFont" width="99%"
+				 text="{Helper.getString('Hpic4vc_storageAdministratorPortal.text')}"/>		
+	</mx:VBox>
+	<mx:LinkButton styleName="gettingStartedTextFont" label="{Helper.getString('Hpic4vc_storageAdministratorPortal.launchLinkLabel')}" click="onClick()"/>
+	
+</s:Group>

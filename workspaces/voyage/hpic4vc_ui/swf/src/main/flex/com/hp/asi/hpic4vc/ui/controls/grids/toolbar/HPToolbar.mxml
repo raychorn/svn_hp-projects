@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalAlign="middle" horizontalGap="{horizontalGapNum}" 
+		 implements="com.flexicious.nestedtreedatagrid.pager.IExtendedPager,com.flexicious.nestedtreedatagrid.interfaces.IFixedWidth" 
+		 styleName="pagingControl" horizontalScrollPolicy="off" 
+		 creationComplete="onCreationComplete(event)" xmlns:controls="com.sample.examples.support.controls.*" 
+		 paddingTop="0" paddingBottom="0" verticalGap="0" xmlns:pager="com.flexicious.nestedtreedatagrid.pager.*" xmlns:support="com.hp.asi.hpic4vc.ui.controls.support.*" xmlns:s="library://ns.adobe.com/flex/spark">
+	<mx:Metadata> [Event(name="pageChange",type="com.flexicious.nestedtreedatagrid.events.ExtendedFilterPageSortChangeEvent")] </mx:Metadata>
+	<mx:Metadata> [Event(name="reset")] </mx:Metadata>
+	<mx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.utils.IconRepository;
+		]]>
+	</mx:Script>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import org.alivepdf.display.Display;
+			import mx.events.SandboxMouseEvent;
+			import com.hp.asi.hpic4vc.ui.controls.grids.behaviors.ModelParserBehavior;
+			import com.flexicious.controls.toaster.Toaster;
+			import com.flexicious.grids.events.PrintExportOptions;
+			import com.flexicious.export.exporters.ExcelExporter;
+			import mx.events.MenuEvent;
+			import mx.controls.Menu;
+			import com.flexicious.export.ExportOptions;
+			import com.flexicious.grids.dependencies.IExtendedDataGrid;
+			import com.flexicious.nestedtreedatagrid.FlexDataGrid;
+			import com.flexicious.nestedtreedatagrid.FlexDataGridColumnLevel;
+			import com.flexicious.nestedtreedatagrid.events.ExtendedFilterPageSortChangeEvent;
+			import com.flexicious.nestedtreedatagrid.events.FlexDataGridEvent;
+			import com.flexicious.nestedtreedatagrid.export.ExtendedExportController;
+			import com.flexicious.nestedtreedatagrid.interfaces.IExtendedFlexDataGrid;
+			import com.flexicious.nestedtreedatagrid.print.ExtendedPrintController;
+			import com.flexicious.nestedtreedatagrid.print.ExtendedPrintOptionsView;
+			import com.flexicious.nestedtreedatagrid.valueobjects.RowInfo;
+			import com.flexicious.nestedtreedatagrid.valueobjects.ToolbarAction;
+			import com.flexicious.persistence.OpenSettingsPopup;
+			import com.flexicious.persistence.SaveSettingsPopup;
+			import com.flexicious.persistence.SettingsPopup;
+			import com.flexicious.print.PrintOptions;
+			import com.flexicious.utils.Constants;
+			import com.flexicious.utils.UIUtils;
+			import com.hp.asi.hpic4vc.ui.controls.grids.HPDataGrid;
+			import com.hp.asi.hpic4vc.ui.controls.support.HPTitleWindow;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.FlexGlobals;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CollectionEvent;
+			
+			[Bindable()]
+			public var horizontalGapNum:Number= 3;
+			
+			[Bindable()]
+			private var _pages:ArrayCollection= new  ArrayCollection();
+			
+			private var _totalRecords:int=0;
+			[Bindable()]
+			private var _pageSize:int=50;
+			[Bindable()]
+			private var _pageIndex:int=0;
+			[Bindable()]
+			private var _pagerPosition:String="middle";
+			[Bindable()]
+			private var _level:FlexDataGridColumnLevel;
+			[Bindable()]
+			private var _grid:IExtendedFlexDataGrid;
+			[Bindable()]
+			private var _rowInfo:RowInfo;
+			
+			[Bindable()]
+			private var _gridAutomationName:String="";
+			[Bindable()]
+			private var _showHighLightTextInput:Boolean=false;
+			/**
+			 * Default handler for the First Page Navigation Button  
+			 */
+			/* public function onImgFirstClick():void
+			{
+				{
+					_pageIndex = 0;
+					onPageChanged();
+				}
+			} */
+			/**
+			 * Default handler for the Previous Page Navigation Button  
+			 */
+			public function onImgPreviousClick():void
+			{
+				if(_pageIndex > 0)
+				{
+					_pageIndex--;
+					onPageChanged();
+				}
+			}
+			/**
+			 * Default handler for the Next Page Navigation Button  
+			 */
+			public function onImgNextClick():void
+			{
+				if(_pageIndex < pageCount-1)
+				{
+					_pageIndex++;
+					onPageChanged();
+				}
+			}
+			/**
+			 * Default handler for the Last Page Navigation Button  
+			 */
+			/* public function onImgLastClick():void
+			{
+				if(_pageIndex < pageCount-1)
+				{
+					_pageIndex = pageCount-1;
+					onPageChanged();					
+				}
+			} */
+			/**
+			 * Default handler for the Page Change Combo Box  
+			 */
+			public function onPageCbxChange():void
+			{
+				/* _pageIndex = parseInt(cbxPage.selectedLabel)-1; */
+				onPageChanged(); 
+			}
+			/**
+			 * Default handler for the Page Change Event
+			 */
+			public function onPageChanged():void
+			{
+				/* if(cbxPage && (cbxPage.selectedIndex != (_pageIndex)))
+				{
+					cbxPage.selectedIndex=_pageIndex;
+				} */
+				if(dispatchEvents)
+					dispatchEvent(new ExtendedFilterPageSortChangeEvent(ExtendedFilterPageSortChangeEvent.PAGE_CHANGE));
+				
+			}
+			public function onCreationComplete(event:Event):void
+			{
+				//btnSettings.visible=btnSettings.includeInLayout=_grid.enablePreferencePersistence;
+				if(nestedGrid.enableToolbarActions){
+					_bindingOwner=this;
+					nestedGrid.toolbarActions.addEventListener(CollectionEvent.COLLECTION_CHANGE,onToolbarActionsChanged);
+					nestedGrid.addEventListener(FlexDataGridEvent.CHANGE,onGridSelectionChange);
+					createToolbarActions();
+				}
+				/* Constants.applyLabels("PGR",[LBL_GOTO_PAGE,BTN_CLEAR_FILTER,BTN_COLLAPSE_ALL,BTN_EXCEL,BTN_EXP_ONE_DOWN
+					,BTN_EXP_ALL,BTN_EXP_ONE_UP,BTN_FILTER,BTN_FOOTER,BTN_MCS,BTN_NEXT_PAGE
+					,BTN_PDF,BTN_PREFERENCES,BTN_PREV_PAGE,BTN_PRINT,BTN_RUN_FILTER,BTN_SAVE_PREFS,BTN_WORD,BTN_BINOCULAR,BTN_INFO_BLACK],
+					["text","label","toolTip"]); */
+				
+			}
+			/**
+			 * Sets the page index to 1(0), dispatches the reset event.  
+			 */
+			public function reset():void{
+				_pageIndex=0;
+				/* cbxPage.selectedIndex=0; */
+				dispatchEvent(new Event("reset", true));
+			}
+			
+			[Bindable("pageChange")]
+			[Bindable("reset")]
+			[Bindable("pageIndexChanged")]
+			public function get pageStart():int
+			{
+				return _totalRecords==0?0:((_pageIndex)*_pageSize)+1;
+			}
+			[Bindable("pageChange")]
+			[Bindable("reset")]
+			[Bindable("pageIndexChanged")]
+			public function get pageEnd():int
+			{
+				var val:int= (_pageIndex+1)*_pageSize;
+				return (val>_totalRecords)?_totalRecords:val;
+			}
+			[Bindable("pageChange")]
+			[Bindable("reset")]
+			[Bindable("pageIndexChanged")] //we do not always dispatch pageChange
+			public function get pageIndex():int
+			{
+				return _pageIndex;
+			}
+			public function set pageIndex(val:int):void
+			{
+				if(_pageIndex != val){
+					_pageIndex = val;
+					onPageChanged();
+					dispatchEvent(new Event("pageIndexChanged"));
+				}
+			}
+			
+			[Bindable("pageChange")]
+			[Bindable("reset")]
+			[Bindable("pageIndexChanged")] //we do not always dispatch pageChange
+			
+			public function get pageCount():int
+			{
+				return pageSize>0?Math.ceil(totalRecords/pageSize):0;
+			}
+			
+			
+			public function set totalRecords(val:int):void
+			{
+				_totalRecords = val;
+				var pages:ArrayCollection=new ArrayCollection();
+				for(var i:int=1;i<=pageCount;i++){
+					pages.addItem(i);
+				}
+				_pages=pages;
+				pageIndex=0;
+				dispatchEvent(new Event("reset"));
+			}
+			[Bindable()]
+			public function get totalRecords():int
+			{
+				return _totalRecords;
+			}
+			
+			public function set pageSize(val:int):void
+			{
+				_pageSize = val;
+			}
+			public function get pageSize():int
+			{
+				return _pageSize;
+			}
+			[Inspectable(defaultValue="bottomLeft", type="List", enumeration="bottomLeft,bottomRight,bottomMiddle" )]
+			public function set pagerPosition(val:String):void
+			{
+				_pagerPosition= val;
+			}
+			
+			public function get pagerPosition():String
+			{
+				return _pagerPosition;
+			}
+			
+			public function set level(val:FlexDataGridColumnLevel):void
+			{
+				_level = val;
+				if(val)
+					_levelDepth=val.nestDepth
+			}
+			[Bindable()]
+			public function get level():FlexDataGridColumnLevel
+			{
+				return _level;
+			}
+			
+			public function set rowInfo(val:RowInfo):void
+			{
+				_rowInfo = val;
+			}
+			
+			[Bindable()]
+			public function get rowInfo():RowInfo
+			{
+				return _rowInfo;
+			}
+			[Bindable()]
+			public function get grid():IExtendedDataGrid
+			{
+				return _grid;
+			}
+			
+			public function set grid(val:IExtendedDataGrid):void
+			{
+				_grid = val as IExtendedFlexDataGrid;
+				if(_grid)
+					_gridAutomationName= nestedGrid.automationName;
+				
+				dispatchEvent(new Event("gridChanged"))
+			}
+			[Bindable("gridChanged")]
+			public function get nestedGrid():HPDataGrid
+			{
+				return _grid as HPDataGrid;
+			}
+			
+			private var _dispatchEvents:Boolean=true;
+			
+			public function get dispatchEvents():Boolean
+			{
+				return _dispatchEvents;
+			}
+			
+			public function set dispatchEvents(value:Boolean):void
+			{
+				_dispatchEvents = value;
+			}
+			[Bindable()]
+			private var _bindingTrigger:Boolean=true;
+			[Bindable()]
+			private var _bindingOwner:HPToolbar;
+			[Bindable()]
+			private var _levelDepth:int;
+			
+			/**
+			 * Default handler for the Word Export Button. Calls
+			 * ExtendedExportController.instance().export(this.grid,ExportOptions.create(ExportOptions.DOC_EXPORT))  
+			 */
+			public function onWordExport():void{
+				nestedGrid.toolbarWordHandlerFunction();
+			}
+			/**
+			 * Default handler for the Word Export Button. Calls
+			 * ExtendedExportController.instance().export(this.grid,ExportOptions.create())  
+			 */
+			public function onExcelExport():void{
+				nestedGrid.toolbarExcelHandlerFunction();
+			}
+			/**
+			 * Default handler for the Print Button. Calls
+			 * var po:PrintOptions=PrintOptions.create();
+			 * po.printOptionsViewrenderer = new ClassFactory(ExtendedPrintOptionsView);
+			 * ExtendedPrintController.instance().print(this.grid,po)
+			 */
+			public function onPrint():void{
+				nestedGrid.toolbarPrintHandlerFunction();
+			}
+			/**
+			 * Default handler for the Print Button. Calls
+			 * var po:PrintOptions=PrintOptions.create(true);
+			 * po.printOptionsViewrenderer = new ClassFactory(ExtendedPrintOptionsView);
+			 * ExtendedPrintController.instance().print(this.grid,po)
+			 */
+			public function onPdf():void{
+				nestedGrid.toolbarPdfHandlerFunction();
+			}
+			/**
+			 * Default handler for the Clear Filter Button.
+			 * Calls grid.clearFilter()  
+			 */
+			public function onClearFilter():void{
+				this.grid.clearFilter()
+			}
+			/**
+			 * Default handler for the Process Filter Button.
+			 * Calls grid.processFilter()  
+			 */
+			public function onProcessFilter():void{
+				this.grid.processFilter();
+			}
+			/**
+			 * Default handler for the Show Hide Filter Button.
+			 * Calls this.grid.filterVisible=!this.grid.filterVisible;nestedGrid.placeSections()
+			 */
+			public function onShowHideFilter():void{
+				this.grid.filterVisible=!this.grid.filterVisible;nestedGrid.placeSections()
+			}
+			/**
+			 * Default handler for the Show Hide Filter Button.
+			 * Calls this.grid.filterVisible=!this.grid.filterVisible;nestedGrid.placeSections()
+			 */
+			public function onShowHideFooter():void{
+				this.grid.footerVisible=!this.grid.footerVisible;nestedGrid.placeSections()
+			}
+			/**
+			 * Default handler for the Settings Popup
+			 * Calls var popup:Object=nestedGrid.popupFactorySettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,true,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			 */
+			public function onShowSettingsPopup():void{
+				var popup:Object=nestedGrid.popupFactorySettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,true,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			}
+			/**
+			 * Default handler for the Save Settings Popup
+			 * Calls var popup:Object=nestedGrid.popupFactorySaveSettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			 */
+			public function onSaveSettingsPopup():void{
+				var popup:Object=nestedGrid.popupFactorySaveSettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,true,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			}
+			/**
+			 * Default handler for the Open Settings Popup
+			 * Calls var popup:Object=nestedGrid.popupFactoryOpenSettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,true,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			 */
+			public function onOpenSettingsPopup():void{
+				var popup:Object=nestedGrid.popupFactoryOpenSettingsPopup.newInstance();UIUtils.addPopUp(popup as IFlexDisplayObject,grid as DisplayObject,true,null,null,grid.useModuleFactory?grid.moduleFactory:null);popup.grid=grid;
+			}
+			
+			override public function set width(val:Number):void{
+				super.width=val;
+			}
+			
+			public override function setActualSize(w:Number, h:Number):void{
+				super.setActualSize(w,h);
+			}
+			[Bindable()]
+			protected var _toolbarActions:ArrayCollection=new ArrayCollection();
+			public function initializePager():void{
+				
+			}
+			protected function createToolbarActions():void
+			{
+				_toolbarActions=new ArrayCollection(nestedGrid.toolbarActions.source);
+				_toolbarActions.filterFunction=toolbarActionFilterFunction;
+				_toolbarActions.refresh();
+				
+			}
+			protected function onToolbarActionsChanged(event:Event):void
+			{
+				createToolbarActions();
+			}
+			protected function onGridSelectionChange(event:FlexDataGridEvent):void
+			{
+				//so that we enable/disable the buttons without a flicker.
+				_bindingTrigger=false;
+				_bindingTrigger=true;
+				setupMenuData()
+			}
+			private function toolbarActionFilterFunction(item:ToolbarAction):Boolean{
+				return item.level==this.level.nestDepth || item.level==-1;
+			}
+			import mx.events.FlexEvent;
+			protected function onToolbarButtonClick(event:MouseEvent):void
+			{
+				var action:ToolbarAction=_toolbarActions[event.currentTarget.repeaterIndex];
+				nestedGrid.runToolbarAction(action,event.currentTarget,this);
+			}
+			
+			
+			protected function onToolbarbuttonCreationComplete(event:FlexEvent):void
+			{
+				  /* var img:ImageButton=event.target as ImageButton;
+				
+				if(_toolbarActions.length>img.repeaterIndex){
+					var iconUrl:String=_toolbarActions[img.repeaterIndex].iconUrl;
+					if(!img.enabled && _toolbarActions[img.repeaterIndex].disabledIconUrl){
+						iconUrl=_toolbarActions[img.repeaterIndex].disabledIconUrl;
+					}
+					if(iconUrl==ToolbarAction.DEFAULT_ICON){
+						img.source=_toolbarActionIcon;
+					}else{
+						img.load(iconUrl);
+					}
+				}   */
+			}
+			
+			/* [Embed('/assets/images/customAction.png')]
+			private static var _toolbarActionIcon:Class; */
+			
+		
+			private var hpt:HPTitleWindow;
+			public function showPopup():void{
+				hpt  = new HPTitleWindow;
+				hpt.width=300;
+				hpt.height=200;
+				if(nestedGrid.informationMessage) {
+					hpt.title=nestedGrid.informationTitle;
+					hpt.message= nestedGrid.informationMessage;
+				}
+				else if(nestedGrid.errorMessage){
+					hpt.title=nestedGrid.errorTitle;
+					hpt.message= nestedGrid.errorMessage;
+				}
+				UIUtils.addPopUp(hpt,FlexGlobals.topLevelApplication as DisplayObject);
+				UIUtils.positionBelow(hpt,BTN_INFO_BLACK,-142,-220,false,"");
+				var sbRoot:DisplayObject = systemManager.getSandboxRoot();
+				sbRoot.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,false,0,true);
+				hpt.addEventListener(CloseEvent.CLOSE,onHptClose);
+			}
+			protected function onHptClose(event:CloseEvent):void
+			{
+				var sbRoot:DisplayObject = systemManager.getSandboxRoot();
+				sbRoot.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+			}
+			protected function onMouseDown(event:Event):void
+			{
+				if(event.target is DisplayObject){
+					if(hpt && !hpt.owns(event.target as DisplayObject)){
+						hpt.dispatchEvent(new CloseEvent(CloseEvent.CLOSE));
+					}
+				}
+			}
+			
+			private var exportMenu:Menu;
+			public var menuData:Array=[{label:'Export Selected Items Only'},{label:'Export All'},{type:'Separator'},{label:'Copy to Clipboard Selected Items Only'},
+				{label:'Copy All'}];
+			private function showMenu():void {
+				exportMenu = new Menu();
+				exportMenu.variableRowHeight=true;
+				setupMenuData();
+				exportMenu.dataProvider=menuData;
+				exportMenu.addEventListener(MenuEvent.ITEM_CLICK, onMenuItemClick,false,0,true); 
+				btnExport.popUp = exportMenu;
+			}
+			private function setupMenuData():void{
+				if(menuData.length>0){
+					menuData[0].enabled=menuData[3].enabled=nestedGrid.getSelectedObjects().length>0;
+					if(exportMenu && exportMenu.dataProvider)
+					exportMenu.dataProvider.refresh();
+				}
+			}
+			private var eo:ExportOptions ;
+			private var defaultFileName:String = "export";
+			protected function onMenuItemClick(event:MenuEvent):void
+			{
+				if(event.item.label == "Export Selected Items Only"){
+					eo= ExportOptions.create(ExportOptions.CSV_EXPORT);
+					eo.exportFileName = defaultFileName;
+					eo.showColumnPicker=false;
+					eo.printExportOption = PrintExportOptions.PRINT_EXPORT_SELECTED_RECORDS;
+					ExtendedExportController.instance().export(this.grid,eo);
+				}else if(event.item.label == "Export All"){
+					eo= ExportOptions.create(ExportOptions.CSV_EXPORT);
+					eo.exportFileName = defaultFileName;
+					eo.showColumnPicker=false;
+					eo.printExportOption = PrintExportOptions.PRINT_EXPORT_ALL_PAGES;
+					ExtendedExportController.instance().export(this.grid,eo);
+				}else if(event.item.label == "Copy to Clipboard Selected Items Only"){
+					eo= ExportOptions.create(ExportOptions.TXT_EXPORT);
+					eo.showColumnPicker=false;
+					eo.printExportOption = PrintExportOptions.PRINT_EXPORT_SELECTED_RECORDS;
+					eo.copyToClipboard=true;
+					ExtendedExportController.instance().export(this.grid,eo);
+					Toaster.showToaster("Data Copied to Clipboard",Toaster.POSITION_TOP_CENTER,null,1000,1000);
+				}else if(event.item.label == "Copy All"){
+					eo= ExportOptions.create(ExportOptions.TXT_EXPORT);
+					eo.showColumnPicker=false;
+					eo.printExportOption = PrintExportOptions.PRINT_EXPORT_ALL_PAGES;
+					eo.copyToClipboard=true;
+					ExtendedExportController.instance().export(this.grid,eo);
+					Toaster.showToaster("Data Copied to Clipboard",Toaster.POSITION_TOP_CENTER,null,1000,1000);
+				}
+			}
+			
+			private function onMouseOverText(event:MouseEvent):void {
+					
+				event.currentTarget.setStyle('textDecoration','underline');
+				
+			}
+			private function onMouseOutText(event:MouseEvent):void {
+				event.currentTarget.setStyle('textDecoration','none');
+			}
+			
+			
+			private function  saveAlltoCsv():void {
+				eo= ExportOptions.create(ExportOptions.CSV_EXPORT);
+				eo.exportFileName = defaultFileName;
+				eo.showColumnPicker=false;
+				eo.printExportOption = PrintExportOptions.PRINT_EXPORT_ALL_PAGES;
+				ExtendedExportController.instance().export(this.grid,eo);
+			}
+			
+		]]>
+	</mx:Script>
+	<mx:HBox id="boxBinocular" x="0" left="0" width="200" 
+			 verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+			 paddingLeft="0" paddingRight="0">
+		<s:Image automationName="{_gridAutomationName}_btnBino" source="@Embed('/assets/images/binocular.jpg')"
+						   id="BTN_BINOCULAR" buttonMode="true"
+						   useHandCursor="true" mouseChildren="false"						   
+						   styleName="pagerImageButton" click="_showHighLightTextInput=!_showHighLightTextInput"/>
+		<support:HighlightTextInput fontSize="12" color="#333333" watermark="Find" visible="{_showHighLightTextInput}" includeInLayout="{_showHighLightTextInput}" dataGrid="{nestedGrid}"/>
+	</mx:HBox>
+	
+	<mx:HBox id="boxInformation"  
+			 verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+			 paddingLeft="0" paddingRight="0">
+		<s:Image automationName="{_gridAutomationName}_btnInfo" source="{nestedGrid.informationMessage?IconRepository.infoBlack:IconRepository.alert}" 
+						   id="BTN_INFO_BLACK" click="showPopup()" visible="{nestedGrid.informationMessage||nestedGrid.errorMessage}" buttonMode="true"
+						   useHandCursor="true" mouseChildren="false"						   
+						   styleName="pagerImageButton"/>
+	</mx:HBox>
+	<mx:Spacer width="100%"/>
+	<mx:HBox id="boxPaging" visible="{grid.enablePaging}" includeInLayout="{grid.enablePaging}"  verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+			 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" verticalGap="0" right="0">
+		<!--<mx:Label text="{Constants.PGR_ITEMS} {pageStart} {Constants.PGR_TO} {pageEnd} {Constants.PGR_OF} {totalRecords}. {Constants.PGR_PAGE} {totalRecords==0?0:pageIndex+1} {Constants.PGR_OF} {pageCount}" height="20" baseline="-2" />
+		<mx:Label text="|" width="10"/>-->
+		<!--<pager:ImageButton id="BTN_FIRST_PAGE" automationName="{_gridAutomationName}_btnFirstPage" source="@Embed('/assets/images/firstPage.png')" click="onImgFirstClick()" 
+						   enabled="{pageIndex>0}" visible="{grid.enablePaging}"
+						   styleName="pagerImageButton"/>-->
+		<support:HPProgressBar id="progressBar"
+							   width="120"
+							   labelPlacement="center" label="" height="10"
+							   indeterminate="true"
+							   trackHeight="10" /> 
+		<!--<mx:Label text="{Constants.PGR_ITEMS} {pageStart} {Constants.PGR_TO} {pageEnd}
+				  {Constants.PGR_OF} {totalRecords}. {Constants.PGR_PAGE} {totalRecords==0?0:pageIndex+1} 
+				  {Constants.PGR_OF} {pageCount}" height="20" baseline="-2" />-->
+		<mx:Label text="{totalRecords} {Constants.PGR_ITEMS}" fontFamily="Arial" fontSize="12" 
+				  height="20" baseline="-2" color="#333333" fontWeight="bold"/>
+		<pager:ImageButton id="BTN_PREV_PAGE" automationName="{_gridAutomationName}_btnPreviousPage" source="@Embed('/assets/images/prevPage.png')" click="onImgPreviousClick()" 
+						   enabled="{pageIndex>0}" 
+						   styleName="pagerImageButton"/>
+		
+		<mx:Label text="Previous" id="prevLbl" fontFamily="Arial" fontSize="12"  
+				  enabled="{pageIndex>0}"  click="onImgPreviousClick()" 
+				  mouseOver="onMouseOverText(event);" mouseOut="onMouseOutText(event);"/>
+		
+		<mx:Label text="Next" id="nextLbl" fontFamily="Arial" fontSize="12" 
+				  enabled="{pageIndex &lt; (pageCount-1)}" click="onImgNextClick()" 
+				  mouseOver="onMouseOverText(event);" mouseOut="onMouseOutText(event);"/>	  
+		<pager:ImageButton id="BTN_NEXT_PAGE" automationName="{_gridAutomationName}_btnNextPage" source="@Embed('/assets/images/nextPage.png')" click="onImgNextClick()" 
+						   enabled="{pageIndex &lt; (pageCount-1)}" 
+						   styleName="pagerImageButton"/>
+		
+		<mx:PopUpButton icon="{IconRepository.tableExportIcon}" id="btnExport" paddingRight="4" skin="com.hp.asi.hpic4vc.ui.skins.PopupButtonSkin"
+						click="saveAlltoCsv()" open="setupMenuData()" width="45"
+						creationComplete="showMenu();"  openAlways="false" popUpStyleName="popUpStyles"/>
+		<!--<pager:ImageButton id="BTN_LAST_PAGE" automationName="{_gridAutomationName}_btnLastPage" source="@Embed('/assets/images/lastPage.png')" click="onImgLastClick()" 
+						   enabled="{pageIndex &lt; (pageCount-1)}" 
+						   styleName="pagerImageButton"/>-->
+		<!--<mx:Label text="|" width="10"/>
+		<mx:Label id="LBL_GOTO_PAGE" text=""/>
+		<mx:ComboBox id="cbxPage"  automationName="{_gridAutomationName}_{_gridAutomationName}_cbxPage" dataProvider="{_pages}" change="onPageCbxChange()" height="15" width="55"/>
+		<mx:Label text="|" width="10"/>-->
+		
+	</mx:HBox>
+	
+	
+	<!--<mx:HBox id="boxToolbarActions" visible="{nestedGrid.enableToolbarActions}" includeInLayout="{nestedGrid.enableToolbarActions}"   
+			 verticalAlign="middle" height="100%" 
+			 horizontalGap="{horizontalGapNum}"
+			 paddingLeft="0" paddingRight="0">
+		<mx:Repeater id="repeaterToolbarActions" dataProvider="{_toolbarActions}">
+			<mx:Label text="|" width="10" visible="{repeaterToolbarActions.currentItem.seperatorBefore}" includeInLayout="{repeaterToolbarActions.currentItem.seperatorBefore}"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_tlb{repeaterToolbarActions.currentItem.code}" click="onToolbarButtonClick(event)" id="imgButton"
+							   enabled="{nestedGrid.isToolbarActionValid(repeaterToolbarActions.currentItem as ToolbarAction,imgButton,_bindingOwner) &amp;&amp; _bindingTrigger}" 
+							   toolTip="{repeaterToolbarActions.currentItem.tooltip}" 
+							   creationComplete="onToolbarbuttonCreationComplete(event)"
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10" visible="{repeaterToolbarActions.currentItem.seperatorAfter}" includeInLayout="{repeaterToolbarActions.currentItem.seperatorAfter}"/>
+		</mx:Repeater>
+		
+	</mx:HBox>-->
+	
+	<!--<mx:HBox horizontalGap="0"
+			 paddingTop="0" paddingBottom="0" verticalGap="0">-->
+		
+		
+		
+		
+		
+		
+		
+		<!--<mx:HBox id="boxMultiColumnSort" visible="{nestedGrid.enableMultiColumnSort}" 
+				 includeInLayout="{nestedGrid.enableMultiColumnSort}"   
+				 verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnMCSort" source="@Embed('/assets/images/sort.png')" click="nestedGrid.multiColumnSortShowPopup()" 
+							   id="BTN_MCS" 
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>-->
+		
+		<!--<mx:HBox  id="boxDrilldown" visible="{nestedGrid.enableDrillDown}" includeInLayout="{nestedGrid.enableDrillDown}"  
+				  verticalAlign="middle" height="100%" 
+				  horizontalGap="{horizontalGapNum}"
+				  paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" verticalGap="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnDrillDownOne"  source="@Embed('/assets/images/expand.png')" click="nestedGrid.expandDown();" enabled="{nestedGrid.canExpandDown}"  
+							   id="BTN_EXP_ONE_DOWN" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton  automationName="{_gridAutomationName}_btnDrillUpOne" source="@Embed('/assets/images/collapse.png')" click="nestedGrid.expandUp()" enabled="{nestedGrid.canExpandUp}"
+								id="BTN_EXP_ONE_UP"
+								styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10" />
+			<pager:ImageButton automationName="{_gridAutomationName}_btnExpandAll" source="@Embed('/assets/images/expandall.png')" click="nestedGrid.expandAll();" enabled="{nestedGrid.canExpandDown}"  
+							   id="BTN_EXP_ALL" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnCollapseAll" source="@Embed('/assets/images/collapseall.png')" click="nestedGrid.collapseAll()" enabled="{nestedGrid.canExpandUp}"
+							   id="BTN_COLLAPSE_ALL" 
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>-->
+		<!--<mx:HBox id="boxPreferences" visible="{grid.enablePreferencePersistence}" includeInLayout="{grid.enablePreferencePersistence}"   verticalAlign="middle" height="100%" 
+				 horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" verticalGap="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnPreferences" source="@Embed('/assets/images/settings.png')" click="onShowSettingsPopup();"   
+							   id="BTN_PREFERENCES" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnSavePreferences" source="@Embed('/assets/images/saveSettings.png')" click="onSaveSettingsPopup();"  
+							   id="BTN_SAVE_PREFS" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnOpenPreferences" source="@Embed('/assets/images/openSettings.png')" click="onOpenSettingsPopup();"  
+							   id="BTN_OPEN_PREFS" visible="{grid.enableMultiplePreferences}" includeInLayout="{grid.enableMultiplePreferences}"
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>-->
+		<!--<mx:HBox id="boxFooters" visible="{grid.enableFooters}" includeInLayout="{grid.enableFooters}"   verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0" verticalGap="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnFooters" source="@Embed('/assets/images/footerShowHide.png')" click="onShowHideFooter()" 
+							   id="BTN_FOOTER" 
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>-->
+		
+		<!--<mx:HBox id="boxFilters" visible="{grid.enableFilters}" includeInLayout="{grid.enableFilters}"   verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnFilters" source="@Embed('/assets/images/filterShowHide.png')" click="onShowHideFilter()" 
+							   id="BTN_FILTER" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnRunFilter" source="@Embed('/assets/images/filter.png')" click="onProcessFilter()" 
+							   id="BTN_RUN_FILTER" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnClearFilter" source="@Embed('/assets/images/clearFilter.png')" click="onClearFilter()" 
+							   id="BTN_CLEAR_FILTER" 
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>-->
+		
+		<!--<mx:HBox id="boxPrint" visible="{grid.enablePrint}" includeInLayout="{grid.enablePrint}"   verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0">
+			<pager:ImageButton  automationName="{_gridAutomationName}_btnPrint" source="@Embed('/assets/images/print.png')" click="onPrint()" 
+								id="BTN_PRINT" 
+								styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnPrintToPDF" source="@Embed('/assets/images/pdf.png')" click="onPdf()" 
+							   id="BTN_PDF" 
+							   styleName="pagerImageButton"/>
+			<mx:Label text="|" width="10"/>
+		</mx:HBox>
+		-->
+		<!--<mx:HBox id="boxExport" visible="{grid.enableExport}" includeInLayout="{grid.enableExport}"   verticalAlign="middle" height="100%" horizontalGap="{horizontalGapNum}"
+				 paddingLeft="0" paddingRight="0">
+			<pager:ImageButton automationName="{_gridAutomationName}_btnExportWord" source="@Embed('/assets/images/word.png')" click="onWordExport()" 
+							   id="BTN_WORD" 
+							   styleName="pagerImageButton"/>
+			<pager:ImageButton automationName="{_gridAutomationName}_btnExportExcel"  source="@Embed('/assets/images/export.png')" click="onExcelExport()" 
+							   id="BTN_EXCEL" 
+							   styleName="pagerImageButton"/>
+		</mx:HBox>-->
+	<!--</mx:HBox>-->
+</mx:HBox>

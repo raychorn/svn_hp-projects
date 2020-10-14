@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.FooterModel;
+			import com.hp.asi.hpic4vc.ui.model.LaunchToolModel;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Menu;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			
+			
+			//********* Public Properties *******
+			[Bindable] public var noFooterInfoFoundLabel:String;
+			[Bindable] public var launchLinkMenu:Menu;
+			[Bindable] public var errorMessage:String;
+			
+			[Bindable] 
+			public function get footerData():FooterModel
+			{
+				return _footerData;
+			}
+			public function set footerData(value:FooterModel):void
+			{
+				_footerData = value ;
+				if(value)
+				{
+					validateAllLinks(value);
+				}
+				
+			}
+			
+			////////////////////////////////////////
+			
+			//********* Private Properties *******
+			private var _footerData:FooterModel;
+			private var launchToolModel:LaunchToolModel = new LaunchToolModel();
+			private var urlreq:URLRequest = new URLRequest();
+			private var urlData:URLVariables = new URLVariables();
+			
+			//********* Constants *******
+			
+			private const JS_FUNTION:String = "post_to_url" ;
+			private const SSO:String = "SSO";
+			
+			////////////////////////////////////////
+			
+			//********* Methods *******
+			// This method is used to update the LaunchLinkModel on setting of footer data
+			protected function validateAllLinks(footerData:FooterModel):void
+			{
+				
+				resetAllImages();
+				
+				if(footerData && footerData.launchTools)
+				{
+					var launchTool:LaunchToolModel = new LaunchToolModel();
+					
+					for (var i:int = 0; i < footerData.launchTools.length; i++) 
+					{
+						launchTool = footerData.launchTools.getItemAt(i) as LaunchToolModel;
+						
+						switch(launchTool.id)
+						{
+							case LaunchToolModel.STORAGE_LAUNCH_ID:
+								launchToolModel.storageLink = launchTool.links ;
+								updateAvailableLaunchLink(storage);
+								break;
+							case LaunchToolModel.ILO_LAUNCH_ID:	
+								launchToolModel.iLOLink = launchTool.links;
+								updateAvailableLaunchLink(iLO);
+								break;
+							case LaunchToolModel.OA_LAUNCH_ID:	
+							case LaunchToolModel.CLUSTER_OA_LAUNCH_ID:	
+								launchToolModel.oaLink = launchTool.links;
+								updateAvailableLaunchLink(oa);
+								break;
+							case LaunchToolModel.VCM_LAUNCH_ID:	
+								launchToolModel.vcLink = launchTool.links;
+								updateAvailableLaunchLink(vc);
+								break;
+							case LaunchToolModel.VCEM_LAUNCH_ID:	
+								launchToolModel.vcemLink = launchTool.links;
+								updateAvailableLaunchLink(vcem);
+								break;
+							case LaunchToolModel.SIM_LAUNCH_ID:	
+								launchToolModel.simLink = launchTool.links;
+								updateAvailableLaunchLink(sim);
+								break;
+							case LaunchToolModel.IPM_LAUNCH_ID:	
+								launchToolModel.ipmLink = launchTool.links;
+								updateAvailableLaunchLink(ipm);
+								break;
+							default:
+								break;
+							
+						}
+						
+						
+						
+					}	
+				}
+				
+			}
+			
+			
+			// cleanup of image properties on refersh of footer data
+			private function resetAllImages():void
+			{
+				storage.visible = false;
+				iLO.visible = false;
+				oa.visible = false;
+				vc.visible = false;
+				ipm.visible = false;
+				sim.visible = false;
+				vcem.visible = false;
+				
+				storage.includeInLayout = false;
+				iLO.includeInLayout = false;
+				oa.includeInLayout = false;
+				vc.includeInLayout = false;
+				ipm.includeInLayout = false;
+				sim.includeInLayout = false;
+				vcem.includeInLayout = false;
+			}
+			
+			//Update the launchLinks on UI
+			private function updateAvailableLaunchLink(img:UIComponent):void
+			{
+				img.visible = true;
+				img.includeInLayout = true;
+				img.buttonMode = true;
+			}
+			
+			//Creates and shows menu on the mouse over of launch link
+			protected function mouseOverHandler(event:MouseEvent, menuArray:ArrayCollection):void
+			{
+				if(launchLinkMenu) launchLinkMenu.hide();
+				
+				var img:Image = event.currentTarget as Image;
+				if (!menuArray || menuArray.length == 1 || menuArray.length == 0) {
+					return;
+				}
+				
+				launchLinkMenu = Menu.createMenu(null, menuArray);
+				launchLinkMenu.labelField = "displayName";
+				var pt:Rectangle 	= stage.getBounds(img);
+				var yPos:Number 	= pt.y * -1;
+				var xPos:Number	 	= pt.x * -1;
+				launchLinkMenu.show(xPos, yPos - (menuArray.length * 27));
+				launchLinkMenu.addEventListener(MenuEvent.ITEM_CLICK, menuClickHandler, false, 0 ,false);
+				
+			}
+			
+			//handles the menu click
+			private function menuClickHandler(e:MenuEvent):void
+			{
+				if(e.item is LinkModel)
+				{
+					handleLaunchLinkNavigation(LinkModel(e.item));
+				}
+				
+			}
+			
+			//handles the launchlink click
+			private function linkClickHandler(event:MouseEvent, linkArray:ArrayCollection):void
+			{
+				
+				if(linkArray.length == 1)
+				{
+					handleLaunchLinkNavigation(getLinkModel(linkArray));
+					
+				}
+				
+			}
+			
+			//handles the navigation of user menu click or launch Link click
+			private function handleLaunchLinkNavigation(linkItem:LinkModel):void
+			{
+				
+				if (linkItem)
+				{
+					if (linkItem.type == SSO)
+					{
+						var params:Object = new Object();
+						var path:String = linkItem.urlBase;
+						
+						params.un = linkItem.username;
+						params.pw = linkItem.password;
+						params.url = linkItem.url;
+						
+						
+						ExternalInterface.call(JS_FUNTION,true,path,params);
+					}
+					else
+					{
+						urlreq.data = null;
+						urlData.url = linkItem.url;
+						navigateToURL(new URLRequest(urlData.url), "_blank");
+					}
+				}
+			}
+			
+			// retrieves the strongly typed object
+			private function getLinkModel(linkArray:ArrayCollection):LinkModel
+			{
+				var linkModel:LinkModel = new LinkModel();
+				if(linkArray && linkArray.length > 0)
+				{
+					linkModel = linkArray.getItemAt(0) as LinkModel
+				}
+				
+				return linkModel;
+			}
+			
+			
+			
+			
+			//TODO hmmm... post using javascript .. can we have another solution here??
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var string:String = 'function (flg, path, params) {' +
+					'if(flg) {' +
+					'method = "post";' +
+					'var myform = document.createElement("form");' +
+					'myform.setAttribute("method", method);' +
+					'myform.setAttribute("action", path);' +
+					'myform.setAttribute("target", "_blank");' +
+					'for(var key in params) {' +
+					'if(params.hasOwnProperty(key)) {' +
+					'' +
+					'var hiddenField = document.createElement("input");' +
+					'hiddenField.setAttribute("type", "hidden");' +
+					'hiddenField.setAttribute("name", key);' +
+					'hiddenField.setAttribute("value", params[key]);' +
+					'myform.appendChild(hiddenField);' +
+					'}' +
+					'}' +
+					'document.body.appendChild(myform);' +
+					'myform.submit();' +
+					'};'+
+					'}' 
+				
+				
+				var INSERT_FUNCTION_LAUNCHLINK:String = 
+					"document.insertScript = function ()" +
+					"{ " +
+					"if (document." + JS_FUNTION + "==null)" + 
+					"{" + 
+					JS_FUNTION + " = " + string +
+					"}" +
+					"}";
+				
+				if(ExternalInterface.available)
+				{
+					trace(INSERT_FUNCTION_LAUNCHLINK)
+					ExternalInterface.call(INSERT_FUNCTION_LAUNCHLINK);
+				}
+				
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	<!-- MXML -->
+	<s:HGroup x="0" y="0" width="100%"
+			  paddingLeft="0" paddingRight="10"
+			  paddingBottom="10" paddingTop="5">
+		
+		
+		<s:Image id="storage" 
+				 source="@Embed(source='/assets/images/hpstorage_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.storageLink)"
+				 click="linkClickHandler(event, launchToolModel.storageLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="iLO" 
+				 source="@Embed(source='/assets/images/iLO_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.iLOLink)"
+				 click="linkClickHandler(event, launchToolModel.iLOLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="oa" 
+				 source="@Embed(source='/assets/images/oa_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.oaLink)"
+				 click="linkClickHandler(event, launchToolModel.oaLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="vc" 
+				 source="@Embed(source='/assets/images/vc_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.vcLink)"
+				 click="linkClickHandler(event, launchToolModel.vcLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="sim" 
+				 source="@Embed(source='/assets/images/sim_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.simLink)"
+				 click="linkClickHandler(event, launchToolModel.simLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="ipm" 
+				 source="@Embed(source='/assets/images/ipm_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.ipmLink)"
+				 click="linkClickHandler(event, launchToolModel.ipmLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		
+		<s:Image id="vcem" 
+				 source="@Embed(source='/assets/images/vcem_icon.png')"
+				 mouseOver="mouseOverHandler(event,launchToolModel.vcemLink)"
+				 click="linkClickHandler(event, launchToolModel.vcemLink)"
+				 buttonMode="false"
+				 visible="false"
+				 includeInLayout="false"
+				 />
+		<!--show error message in case there is an error or no data found if we receive null from backend -->
+		
+		<s:Label text="{noFooterInfoFoundLabel}" visible="{noFooterInfoFoundLabel.length > 0}" includeInLayout="{noFooterInfoFoundLabel.length > 0}"/>
+		<s:Label text="{errorMessage}" visible="{errorMessage.length > 0}" includeInLayout="{errorMessage.length > 0}"/>
+		
+		
+	</s:HGroup>
+</s:Group>

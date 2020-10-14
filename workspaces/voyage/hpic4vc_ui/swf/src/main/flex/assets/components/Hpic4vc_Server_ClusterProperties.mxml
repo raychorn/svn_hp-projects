@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				creationComplete="init()" paddingBottom="0" paddingLeft="0" paddingRight="0"  showCloseButton="true" close="closePopUp()"
+				width="300" height="280"  horizontalScrollPolicy="off"  verticalScrollPolicy="off">
+		
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.FlexGlobals;
+			import mx.core.IFlexDisplayObject;
+			import mx.events.CloseEvent;
+			import mx.events.ListEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable]
+			public var clusterPropertiesDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var objReferenceId:String;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var clusterProperties:ArrayCollection;
+			[Bindable]
+			public var errorFoundLabel:String;
+			[Bindable]
+			private var loading:String;
+			[Bindable]
+			private var clusterPropertiesObject:ArrayCollection;
+		
+			public var clusterPropertiesEditorPopUp:Hpic4vc_ClusterProperties_Popup;
+			public var selectedProperty:ArrayCollection;
+			public var editClusterPropertiesWindow:IFlexDisplayObject; 
+			
+			public function show (contextObject:IResourceReference, hpic4vc_uiView:Hpic4vc_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_uiView = hpic4vc_uiView;
+			}
+			
+			private function closePopUp():void{
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function init():void{
+				_proxyServer = new Hpic4vc_server_providerProxy();
+				if (objReferenceId){
+					getData();
+				}
+				else {
+					clusterPropertiesDataWatcher = ChangeWatcher.watch(this, ["objReferenceId"], getData);
+				}
+			}
+			
+			private function getData():void{
+				_proxyServer.getClusterProperties(objReferenceId, onGettingClusterProperties);
+			}
+			
+			private function onGettingClusterProperties(event:MethodReturnEvent):void {
+				trace("updated visible clusterProperties.columns");
+				var column:AdvancedDataGridColumn;
+				if (event != null && event.result) {
+					var detail:TableModel = event.result as TableModel;
+					if (detail){
+						clusterProperties =  detail.rowFormattedData as ArrayCollection;
+						clusterPropertiesObject =  clusterProperties.getItemAt(0) as ArrayCollection;
+				   }
+				}
+			}
+			
+			private function savePassword(e:Event):void
+			{ 
+				
+				if (e.target.id == "save"){
+					var data:String = "oper=edit" +":username=" + username.text +":password=" + password.text+":type=" + type.text;
+					_proxyServer.updateClusterProperties(objReferenceId,data,updateOfClusterPropertiesDone);
+				}else{
+					PopUpManager.removePopUp(this);
+					closeWindow();
+				}
+				
+			}
+			
+			private function updateOfClusterPropertiesDone(e:MethodReturnEvent):void{
+				
+				if (e.result && e.result.errorMessage){
+					Alert.show(e.result.errorMessage,"Warning");	
+				}else{
+					Alert.show("Cluster Properties updated");
+				}
+				PopUpManager.removePopUp(this);	
+			}
+			
+			private function closeWindow():void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<mx:VBox width="100%" paddingRight="3" verticalGap="-1" paddingLeft="3">
+		<mx:Text id="note1" color="#333333" paddingTop="5" width="100%"  text="{Helper.getString('Hpic4vc_ClusterProperties.note1')}"/>	
+		<mx:Text id="note2" color="#333333" width="100%"  text="{Helper.getString('Hpic4vc_ClusterProperties.note2')}"/>	
+	</mx:VBox>
+	<mx:Form width="100%" height="100%" paddingTop="5">
+		<mx:FormItem label="User Name" enabled="true" >
+			<mx:TextInput id="username" text="{clusterPropertiesObject.getItemAt(0)}"/>
+		</mx:FormItem>
+		<mx:FormItem label="Password" >
+			<mx:TextInput id="password"  displayAsPassword="true" />
+		</mx:FormItem>
+		<mx:FormItem label="Type" >
+			<mx:TextInput id="type"  text="{clusterPropertiesObject.getItemAt(2)}" editable="false" enabled="false"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button id="save" label="Submit"  click="savePassword(event)"/>
+		<mx:Button id="close" label="Cancel" click="closeWindow()"/>
+	</mx:ControlBar> 
+	
+	
+</mx:TitleWindow>

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+<!--- The default skin class for a Flexicious DashboardContainer.  
+@langversion 3.0
+@playerversion Flash 10
+@playerversion AIR 1.5
+@productversion Flex 4
+-->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false" 
+			 minWidth="131" minHeight="127" xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:controls="com.flexicious.controls.*" >
+	<fx:Metadata>[HostComponent("com.hp.asi.hpic4vc.ui.controls.dashboard.HPDashlet")]</fx:Metadata>
+	<fx:Script fb:purpose="styling">
+		<![CDATA[
+			import com.flexicious.components.IconRepository;
+			
+			import mx.core.FlexVersion;
+			
+			[Embed('/assets/images/chevron_gray_open.png')]
+			public static const collapse:Class;
+			
+			[Embed('/assets/images/chevron_gray_closed.png')]
+			public static const expand:Class;
+			
+			[Embed('/assets/images/minimize.png')]
+			public static const restore:Class;
+			
+			[Embed('/assets/images/maximize.png')]
+			public static const maximize:Class;
+			
+			[Embed('/assets/images/resize.png')]
+			public static const resize:Class;
+			/* Define the skin elements that should not be colorized. 
+			For panel, border and title background are skinned, but the content area, background, border, and title text are not. */
+			//static private const exclusions:Array = ["background", "titleDisplay", "contentGroup","border"];
+			
+			/* exclusions before Flex 4.5 for backwards-compatibility purposes */
+			//static private const exclusions_4_0:Array = ["background", "titleDisplay", "contentGroup"];
+			
+			/**
+			 * @private
+			 */
+			/* override public function get colorizeExclusions():Array 
+			{
+				// Since border is styleable via borderColor, no need to allow chromeColor to affect
+				// the border.  This is wrapped in a compatibility flag since this change was added  
+				// in Flex 4.5
+				if (FlexVersion.compatibilityVersion < FlexVersion.VERSION_4_5)
+				{
+					return exclusions_4_0;
+				}
+				
+				return exclusions;
+			} */
+			
+			/**
+			 * @private
+			 */
+			override protected function initializationComplete():void
+			{
+				//useChromeColor = true;
+				super.initializationComplete();
+			}
+			
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				//we've taken out all the stlying stuff from the default skin, we will be giving a  fully custom look and feel 
+				//in the skin itself
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			
+			public function linkLabel_clickHandler(event:MouseEvent, linkText:String):void
+			{
+				(hostComponent.itemRendererInstance as Object).onLinkClicked(event, linkText);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+	</s:states>
+	<s:Group left="0" right="0" top="0" bottom="0">
+		
+		<s:Rect id="background" left="0" right="0" top="0" bottom="0" radiusX="5" radiusY="5" visible="{!hostComponent.isCollapsed}" includeInLayout="{!hostComponent.isCollapsed}">
+			<s:fill>
+				<s:SolidColor color="0xFFFFFF"/>
+			</s:fill>
+		</s:Rect>
+		
+		
+		<!-- layer 1: border -->
+		<!--- @private -->
+		<s:Rect id="border" left="0" right="0" top="0" bottom="0"  radiusX="5" radiusY="5"  visible="{!hostComponent.isCollapsed}" includeInLayout="{!hostComponent.isCollapsed}">
+			<s:stroke>
+				<s:SolidColorStroke id="borderStroke" weight="1" color="0xB8C1C6"/>
+			</s:stroke>
+		</s:Rect>
+		
+		
+		<!-- layer 3: contents -->
+		<!--- Contains the vertical stack of titlebar and content. -->
+		<s:Group left="1" right="1" top="1" bottom="20" id="contents">
+			
+			<s:layout>
+				<s:VerticalLayout gap="0" horizontalAlign="justify" />
+			</s:layout>
+			
+			<!--- @private -->
+			<s:Group id="topGroup" 
+					 visible="{hostComponent.enableTitleBar}" includeInLayout="{hostComponent.enableTitleBar}">
+				<s:Rect left="0" right="0" top="0" bottom="0" topRightRadiusX="5" topRightRadiusY="5"  topLeftRadiusX="5" topLeftRadiusY="5">
+					<s:fill>
+						<s:SolidColor color="#e7e9ea"/>
+					</s:fill>
+				</s:Rect>
+				
+				<s:Rect id="headerBorder" left="-1" right="-1" top="-1" bottom="-1"  topRightRadiusX="5" topRightRadiusY="5"  topLeftRadiusX="5" topLeftRadiusY="5" visible="{hostComponent.isCollapsed}" includeInLayout="{hostComponent.isCollapsed}">
+					<s:stroke>
+						<!--- @private -->
+						<s:SolidColorStroke id="headerBorderStroke" weight="1" color="0xB8C1C6"/>
+					</s:stroke>
+				</s:Rect>
+				
+				<!-- layer 2: title bar divider -->
+				<!--- @private -->
+				<s:Rect id="tbDiv" left="0" right="0" height="1" bottom="0" visible="{!hostComponent.isCollapsed}" includeInLayout="{!hostComponent.isCollapsed}">
+					<s:fill>
+						<s:SolidColor color="0xC0C0C0" />
+					</s:fill>
+				</s:Rect>
+				<s:Group id="dragGrip"  includeInLayout="{hostComponent.draggable}" 
+						  visible="{hostComponent.draggable}"
+						  left="30" right="30" top="0" bottom="0"/>
+				<s:Group id="titleArea" includeIn="normal" left="1" top="2" right="1">
+					<s:layout>
+						<s:HorizontalLayout gap="0"/>
+					</s:layout>
+					
+					
+					
+					<s:Image width="16" height="16" useHandCursor="true" buttonMode="true" mouseChildren="false"  
+										  source="{hostComponent.isCollapsed?expand:collapse}" 
+										  visible="{hostComponent.enableExpandCollapse &amp;&amp; !hostComponent.isMaximized}"
+										  includeInLayout="{hostComponent.enableExpandCollapse &amp;&amp; !hostComponent.isMaximized}"
+										  click="if(hostComponent.isCollapsed)hostComponent.expand();else hostComponent.collapse()"  />
+					
+					<s:Spacer width="10" id="titleSpacer"
+							  visible="{!(hostComponent.enableExpandCollapse &amp;&amp; !hostComponent.isMaximized)}"
+							  includeInLayout="{!(hostComponent.enableExpandCollapse &amp;&amp; !hostComponent.isMaximized)}"/>
+					<s:Label id="titleDisplay" maxDisplayedLines="1"
+							 minHeight="24" 
+							 verticalAlign="middle" textAlign="start" fontWeight="bold" color="0x333333">
+					</s:Label>
+					
+				</s:Group>
+				
+				<s:Group id="buttonGroup" right="2" top="5">
+					<s:layout>
+						<s:HorizontalLayout gap="0"/>
+					</s:layout>
+					<s:Image width="16" height="16" 
+										  source="{restore}" 
+										  visible="{hostComponent.enableMinimize &amp;&amp; !hostComponent.isMaximized}"
+										  includeInLayout="{hostComponent.enableMinimize &amp;&amp; !hostComponent.isMaximized}" 
+										  click="hostComponent.minimizeToTaskBar()" 
+										  buttonMode="true"
+										  useHandCursor="true"
+										  mouseChildren="false"
+										  />
+					
+					<s:Image width="16" height="16"  
+										  source="{hostComponent.dashboardContainer.currentMaximizedDashlet==hostComponent?restore:maximize}" 
+										  visible="{hostComponent.enableMaximizeAndRestore }"
+										  includeInLayout="{hostComponent.enableMaximizeAndRestore}"
+										  click="if(hostComponent.dashboardContainer.currentMaximizedDashlet==hostComponent)hostComponent.restore();else hostComponent.maximize();"
+										  buttonMode="true"
+										  useHandCursor="true"
+										  mouseChildren="false"
+										  />
+					
+					<s:Image width="16" height="16"  
+										  source="{IconRepository.close}" 
+										  visible="{hostComponent.enableClose &amp;&amp;  !hostComponent.isMaximized}"
+										  includeInLayout="{hostComponent.enableClose &amp;&amp;  !hostComponent.isMaximized}"
+										  click="hostComponent.close()"
+										  buttonMode="true"
+										  useHandCursor="true"
+										  mouseChildren="false"
+										  />
+				</s:Group>
+				
+			</s:Group>
+			<s:Scroller width="100%" height="100%" verticalScrollPolicy="auto" horizontalScrollPolicy="auto" >
+				<!--
+				Note: setting the minimum size to 0 here so that changes to the host component's
+				size will not be thwarted by this skin part's minimum size.   This is a compromise,
+				more about it here: http://bugs.adobe.com/jira/browse/SDK-21143
+				-->
+				<!--- @copy spark.components.SkinnableContainer#contentGroup -->
+				<s:Group id="contentGroup" width="100%"  minWidth="0" minHeight="0" top="0" bottom="0">
+					
+				</s:Group>
+				
+			</s:Scroller>
+			
+		</s:Group>
+		<s:Line left="1" right="1" bottom="27" visible="{!hostComponent.isCollapsed}" includeInLayout="{!hostComponent.isCollapsed}">
+			<s:stroke>
+				<s:SolidColorStroke weight="1" color="0xB8C1C6"/>
+			</s:stroke>
+		</s:Line>
+		<s:Rect id="backgroundFooter" left="1" right="1" height="26" bottom="1" topLeftRadiusX="0" topRightRadiusX="0" topLeftRadiusY="0" topRightRadiusY="0" bottomLeftRadiusX="5"
+			bottomRightRadiusY="5" bottomRightRadiusX="5" bottomLeftRadiusY="5"	visible="{!hostComponent.isCollapsed}" includeInLayout="{!hostComponent.isCollapsed}">
+			<s:fill>
+				<s:SolidColor color="0xF2f2f2"/>
+			</s:fill>
+		</s:Rect>
+		<s:Image id="resizeGrip"   source="{resize}" includeInLayout="{!hostComponent.isCollapsed}" visible="{hostComponent.resizable &amp;&amp; !hostComponent.isCollapsed}"
+				 bottom="-2" right="-2"/>
+		<s:List dataProvider="{hostComponent.links}" contentBackgroundAlpha="0" borderVisible="false" right="20"  bottom="2" includeInLayout="{!hostComponent.isCollapsed}" visible="{!hostComponent.isCollapsed}">
+			<s:itemRenderer>
+				<fx:Component>
+					<s:ItemRenderer autoDrawBackground="false">
+						<s:Label   maxDisplayedLines="1" 
+								   minHeight="15" useHandCursor="true" buttonMode="true" mouseChildren="false" text="{data}"
+								   verticalAlign="middle" textAlign="start" color="0x336699" rollOver="event.currentTarget.setStyle('textDecoration','underline')"
+								   rollOut="event.currentTarget.setStyle('textDecoration','')" click="owner['document'].linkLabel_clickHandler(event,event.currentTarget.text)">
+						</s:Label>
+					</s:ItemRenderer>
+				</fx:Component>
+				
+			</s:itemRenderer>
+			<s:layout>
+				<s:HorizontalLayout gap="2" horizontalAlign="right"/>
+			</s:layout>
+		</s:List>
+		
+	</s:Group>
+</s:SparkSkin>

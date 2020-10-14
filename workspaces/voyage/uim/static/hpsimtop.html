@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" > 
+<head>
+  <title>HP Insight Control</title>
+  <script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.getUrlVars.js"></script>
+  <script type="text/javascript">
+  <!--
+    $.ajaxSetup({ cache: false });
+    var query = window.location.search.substring(1);
+	
+    function wait4bottom() {
+        if (parent.document.getElementById("bottomFrame").readyState == "loading") {
+            window.setTimeout(wait4bottom, 100);
+            return;
+        }
+        document.getElementById("ID_FORM_CL").submit();
+    }
+    
+    function doSimLogin() 
+    {
+        $.getJSON("/services/host/simlaunchinfo" + "?" + window.location.search.substring(1), function(result){            
+                              
+                    document.getElementById("ID_FORM_CL").action = "https://" + $.getUrlVar('simserver') + ":" + $.getUrlVar('simport') + "/j_security_check";
+                    
+                    document.getElementById("j_username").value = result.sim_launch_info.simuser;
+                    document.getElementById("j_password").value = result.sim_launch_info.simsso;
+                    
+                    wait4bottom();
+                })
+        
+    
+        
+    }
+  //-->
+  </script>
+</head>
+<body onload="doSimLogin()">
+  <form id="ID_FORM_CL" method = "post" target="bottom">
+    <input type="hidden" name="j_username" id="j_username" />
+    <input type="hidden" name="j_password" id="j_password" />
+  </form>
+</body>
+</html>

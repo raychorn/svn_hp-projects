@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:components="assets.components.*"
+		 implements="assets.components.Hpic4vc_BaseComponent"
+		 height="100%" width="100%"
+		 xmlns:grids="com.hp.asi.hpic4vc.ui.controls.grids.*"
+		 xmlns:support="com.hp.asi.hpic4vc.ui.controls.support.*">
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Storage_HBAsMediator")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.collections.ArrayCollection;
+			
+			// DataGrids
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			private var _tableModel:TableModel;
+			
+			// Error message labels
+			[Bindable]
+			public var errorFoundLabel:String;
+			
+			[Bindable]
+			public function get tableModel():TableModel
+			{
+				return _tableModel;
+			}
+			
+			public function set tableModel(value:TableModel):void
+			{
+				_tableModel = value;
+			}
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:Label text="{errorFoundLabel}" 
+			  visible="{errorFoundLabel.length>0}" 
+			  includeInLayout="{errorFoundLabel.length>0}" 
+			  styleName="errorMessage"/>
+	<s:VGroup height="100%" width="100%" 
+			  includeInLayout="{!(errorFoundLabel.length>0)}" visible="{!(errorFoundLabel.length>0)}" >
+		<s:HGroup width="100%" horizontalAlign="right" id="toolbar">
+			<support:FilterTextInput watermark="Filter" color="#333333" dataGrid="{dg}"/>
+		</s:HGroup>
+		<grids:HPDataGrid id="dg" enablePaging="true" tableModel="{tableModel}" height="100%" width="100%" toolbar="{toolbar}"/>
+	</s:VGroup>
+</s:VGroup>

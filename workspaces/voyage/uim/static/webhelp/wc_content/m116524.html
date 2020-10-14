@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Alarms</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-26T17:52:02+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="m110111.html" title="Viewing hardware alert notifications"/><link rel="prev" href="m110906.html" title="HP SNMP agent and HP CIM provider events"/><link rel="next" href="IC4VC_troubleshooting_chapter.html" title="Troubleshooting"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('m110111','icon4m110111','link4m116524','m110111')" onunload="clearbgcolortoc('link4m116524','m110111')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="m110111.html">Viewing hardware alert notifications</a> &gt; Alarms</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="IC4VC_troubleshooting_chapter.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="m116524"/><h1 class="sectiontitle">Alarms</h1></div></div></div><a id="v14395238" class="indexterm"/><a id="v14395239" class="indexterm"/><a id="v14395240" class="indexterm"/><p><a id="v14395241"/>When an Insight Control for vCenter event is
+delivered to vCenter Server, the overall host status changes based
+on the corresponding event category or the host status. An alarm is
+triggered when the changes to the host status meet the criteria assigned
+by the administrator. </p>
+	
+	<div class="informaltable"><a id="v14395242"/><table cellspacing="1" cellpadding="4" border="1"><colgroup><col width="50%"/><col width="50%"/></colgroup><thead> 
+
+<tr bgcolor="#ffffff">
+	
+	
+	<th valign="middle"><p>Event category</p>
+	
+	</th>
+	
+	
+	<th valign="middle"><p>Overall
+host status</p>
+	
+	</th></tr></thead><tbody> 
+
+<tr bgcolor="#ffffff">
+	
+	
+	<td valign="middle"><p>Informational</p>
+	
+	</td>
+	
+	
+	<td valign="middle"><p>Green</p>
+	
+	</td></tr><tr>
+	
+	
+	<td valign="middle"><p>Warning</p>
+	
+	</td>
+	
+	
+	<td valign="middle"><p>Yellow</p>
+	
+	</td></tr> 
+
+<tr bgcolor="#ffffff">
+	
+	
+	<td valign="middle"><p>Error</p>
+	
+	</td>
+	
+	
+	<td valign="middle"><p>Red</p>
+	
+	</td></tr></tbody></table></div><p><a id="v14395244"/>The following Insight Control for vCenter events can
+cause alarms in vCenter Server: </p>
+	
+	<div class="itemizedlist"><a id="v14395245"/><ul type="disc"><li><p><a id="v14395246"/><a id="v14395247"/><span class="bold"><b>Alarms
+associated with the HP server SNMP traps </b></span></p>
+	
+	<p><a id="v14395248"/>These alarms can be triggered by any event generated
+from an SNMP trap. The alarm states are controlled by the event category.</p>
+	
+	</li><li><p><a id="v16233137"/><a id="v17443719"/><span class="bold"><b>Alarms
+associated with the HP server WBEM indications</b></span></p>
+	
+	<p><a id="v17443720"/>These alarms can be triggered by any event generated
+from a WBEM indication. The alarm states are controlled by the event
+category.</p>
+	
+	</li><li><p><a id="v14395249"/><a id="v14395250"/><span class="bold"><b>Alarms
+associated with HP ProLiant and HP BladeSystem fan zones</b></span></p>
+	
+	<p><a id="v14395251"/>These alarms are triggered by an HP BladeSystem
+subsystem event. The alarm states are controlled by the type (severity)
+of the event. The alarms are triggered on all HP ProLiant and BladeSystem
+servers in the affected fan zone.</p>
+	
+	</li><li><p><a id="v14395252"/><a id="v14395253"/><span class="bold"><b>Alarms
+associated with HP ProLiant and HP BladeSystem power subsystem</b></span></p>
+	
+	<p><a id="v14395254"/>These alarms are triggered by an HP BladeSystem
+power subsystem event. The alarm states are controlled by the type
+(severity) of the event. The alarms are triggered on all HP ProLiant
+and BladeSystem servers in the affected enclosure.</p>
+	
+	</li></ul></div><h3><a id="v14395255"/>Alarm icon </h3><p><a id="v14395256"/>When an alarm occurs, an icon appears to the
+right of the vSphere Client window along the bar above the vSphere Client tabs
+or on the host icon in the inventory tree. To view the alarm in the
+Alarms tab, click the icon. The Alarms tab displays a list of all
+alarms.</p>
+	
+	<h4><a id="v15835532"/>Related
+topics</h4><div class="itemizedlist"><a id="v15835533"/><ul type="disc"><li><p><a id="v15835534"/><a id="v15835535"/><a href="m110904.html" title="Onboard Administrator events">Onboard Administrator events</a></p>
+	
+	</li><li><p><a id="v15835537"/><a id="v15835538"/><a href="m110906.html" title="HP SNMP agent and HP CIM provider events">HP SNMP agent and HP CIM provider events</a></p>
+	
+	</li></ul></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="m110906.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="m110111.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="IC4VC_troubleshooting_chapter.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">HP SNMP agent and HP CIM provider events </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Troubleshooting</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>

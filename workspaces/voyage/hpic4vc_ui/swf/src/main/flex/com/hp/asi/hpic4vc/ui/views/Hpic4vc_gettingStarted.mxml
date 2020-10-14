@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:s="library://ns.adobe.com/flex/spark">
+	
+	<fx:Metadata>
+		
+		[DefaultMediator("com.hp.asi.hpic4vc.ui.views.Hpic4vc_gettingStartedMediator")]
+		
+		[Event(name="{com.vmware.ui.events.NavigationRequest.NAVIGATION_REQUEST}",
+		type="com.vmware.ui.events.NavigationRequest")]
+		
+	</fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.ConfigurationModel;
+			import com.hp.asi.hpic4vc.ui.model.LinkModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.logging.ILogger;
+			import mx.logging.Log;
+			
+			[Bindable]
+			public var helpLinksList:ArrayCollection;
+			
+			[Bindable]
+			public var configurationLinksList:ArrayCollection;
+					
+			[Bindable]
+			public var errorMessageConfigLinks:String;
+			
+			[Bindable]
+			public var errorMessageProductLinks:String;
+			
+			[Bindable]
+			public var _logger:ILogger = Log.getLogger("Hpic4vc_gettingStarted");
+			
+			protected function helpLinkClicked(lm:LinkModel):void
+			{
+				if(lm == null || lm.errorMessage != null) {
+					_logger.debug(lm.errorMessage);
+					return;
+				}
+				navigateToURL(new URLRequest(lm.url));
+			}
+			
+			protected function configurationLinkClicked(cm:ConfigurationModel):void
+			{
+				if(cm == null || cm.link.errorMessage != null) {
+					_logger.debug(cm.link.errorMessage);
+					return;
+				}
+				var displayName:String = (cm.link as LinkModel).displayName;
+				if (displayName == "Configure storage") {
+					navigateToURL(new URLRequest(cm.link.url));
+				}
+				else {
+					var event:NavigationRequest = new NavigationRequest();
+					event.targetViewUid = (cm.link as LinkModel).url;
+					dispatchEvent(event);
+				}
+			}
+			protected function configurationHelpLinkClicked(cm:ConfigurationModel):void
+			{
+				if(cm == null || cm.link.errorMessage != null) {
+					_logger.debug(cm.link.errorMessage);
+					return;
+				}
+				navigateToURL(new URLRequest(cm.helpLink.url));
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="15"
+						  paddingRight="15"
+						  paddingTop="15"
+						  paddingBottom="15"/>
+	</s:layout>
+	
+	<mx:VBox width="100%" height="100%" minHeight="0" minWidth="0">
+		
+		<s:HGroup width="100%">
+			<mx:Image id="logo" source="@Embed(source='/assets/images/hp-logo-40px.png')" width="40" height="40"/>
+			<s:Label text="{Helper.getString('Hpic4vc_gettingStarted.mainTitle')}" alignmentBaseline="ideographicBottom" fontSize="25" fontWeight="bold"/>
+		</s:HGroup>
+		
+		<mx:HBox width="100%" height="100%">		
+			<mx:VBox width="100%" height="100%" horizontalAlign="left" styleName="paddingComponents">
+				
+				<mx:Text styleName="gettingStartedBoldText"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.thankyouTitle')}"/>
+				
+				<mx:Text styleName="gettingStartedTextFont" width="99%"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.thankyouText')}"/>
+				
+				<s:Label text=""/>
+				<mx:Text styleName="gettingStartedBoldText"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.aboutvCenterTitle')}"/>
+				
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('icvcenterdocsLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/icvcenter/docs'), '_blank')"
+							   styleName="gettingStartedTextFont"/>			 
+				
+				<s:Label text=""/>
+				<mx:Text styleName="gettingStartedBoldText" text="{Helper.getString('Hpic4vc_gettingStarted.aboutHPTitle')}"/>
+				
+				
+				<mx:LinkButton label="{Helper.getString('vmwareLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareStorageLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.hp.com/go/vmware/storage'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+				<mx:LinkButton label="{Helper.getString('vmwareHPLink.label')}"
+							   click="navigateToURL(new URLRequest('http://www.vmware.com/hp'), '_blank')"
+							   styleName="gettingStartedTextFont"/>
+				
+			</mx:VBox>
+			<mx:VBox width="100%" height="100%" styleName="paddingComponents">
+				
+				<mx:Text styleName="gettingStartedBoldText" text="{Helper.getString('Hpic4vc_gettingStarted.nextStepsTitle')}"/>
+				
+				<mx:Text width="99%" styleName="gettingStartedTextFont"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.nextStepsText')}"/>
+				<mx:HRule width="100%" chromeColor="#080808"/>
+				<mx:Text styleName="gettingStartedTextFont" fontStyle="italic" paddingLeft="30" width="99%"
+						 text="{Helper.getString('Hpic4vc_gettingStarted.nextStepsNote')}"/>
+				<mx:HRule width="100%"/>
+				<s:Label text=""/>
+				<mx:Text styleName="gettingStartedBoldText" text="{Helper.getString('Hpic4vc_gettingStarted.configProductTitle')}" width="99%"/>
+				<mx:VBox width="100%" height="100%">
+					<mx:Text width="100%" text="{errorMessageConfigLinks}" styleName="errorMessage" />
+					<mx:Repeater id="configurationLinksRepeater" dataProvider="{configurationLinksList}" >
+						<mx:HBox>
+							<mx:LinkButton label="{((configurationLinksRepeater.currentItem as ConfigurationModel).link as LinkModel).displayName as String}"
+										   click="configurationLinkClicked(event.currentTarget.getRepeaterItem() as ConfigurationModel)"
+										   styleName="gettingStartedTextFont"/>
+							<!--	click="helpLinkClicked(event, (productHelpRepeater.currentItem as LinkModel).url)" -->
+							
+							<mx:LinkButton label="({((configurationLinksRepeater.currentItem as ConfigurationModel).helpLink as LinkModel).displayName as String})"
+										   click="configurationHelpLinkClicked(event.currentTarget.getRepeaterItem() as ConfigurationModel)"
+										   styleName="gettingStartedTextFont"/>
+								
+						</mx:HBox>
+					</mx:Repeater>
+				</mx:VBox>
+				<s:Label text=""/>
+				<mx:Text styleName="gettingStartedBoldText" text="{Helper.getString('Hpic4vc_gettingStarted.usingProductTitle')}" width="99%"/>
+				<mx:VBox width="100%" height="100%">
+					<mx:Text width="100%" text="{errorMessageProductLinks}" styleName="errorMessage" />
+					<mx:Repeater id="productHelpRepeater" dataProvider="{helpLinksList}" >
+						<!--mx:VBox-->
+						<mx:LinkButton label="{(productHelpRepeater.currentItem as LinkModel).displayName as String}"
+									   click="helpLinkClicked(event.currentTarget.getRepeaterItem() as LinkModel)"
+									   styleName="gettingStartedTextFont"/>
+						<!--	click="helpLinkClicked(event, (productHelpRepeater.currentItem as LinkModel).url)" -->
+						<!--/mx:VBox-->
+					</mx:Repeater>
+				</mx:VBox>
+			</mx:VBox>
+			
+		</mx:HBox>
+		
+	</mx:VBox>
+
+</s:Group>

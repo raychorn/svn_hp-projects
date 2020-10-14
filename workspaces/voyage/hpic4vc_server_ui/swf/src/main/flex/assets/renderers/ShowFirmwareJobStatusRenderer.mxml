@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="100%" >
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.JobsModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			
+			import mx.controls.Alert;
+			
+			override public function set data(value:Object):void
+			{
+				
+				super.data = value ;
+				
+				var jobsModel:JobsModel;
+				
+				
+				if(value && value is JobsModel)
+				{
+					
+					jobsModel = JobsModel(value);
+					
+					var stringCompare:String = " There are no firmware jobs on this host."
+					
+					if(jobsModel.noJobs == stringCompare){
+						messageContainer.visible = false;
+						messageContainer.includeInLayout = false;
+						noJobsText.visible = true;
+						noJobsText.includeInLayout = true;
+						noJobsText.text = jobsModel.noJobs;
+					}else {
+						messageContainer.visible = true;
+						messageContainer.includeInLayout = true;
+						noJobsText.visible = false;
+						noJobsText.includeInLayout = false;
+						jobDescription.text = jobsModel.jobDescription;
+						status.text = jobsModel.status;
+						if(jobsModel.errorDescription!=null){
+							percentComplete.visible = false;
+							errorDescription.visible = true;
+							errorDescription.text = jobsModel.errorDescription;
+						}else {
+							errorDescription.visible = false;
+							percentComplete.visible = true;
+							percentComplete.text = jobsModel.percentComplete;
+						}
+					}
+				}
+			
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:VBox id="messageContainer" paddingTop="40" verticalGap="10" width="{parentDocument.parentDocument.columnHeader.width* 0.8}" paddingBottom="20">
+		<mx:HBox width="100%" horizontalAlign="left" >
+			<mx:Text id="jobDescription" width="37%" />
+			<s:Spacer width="10%" />
+			<mx:Text id="status" width="30%" />
+			<s:Spacer width="10%" />
+			<mx:Text id="percentComplete" width="10%" includeInLayout="false" visible="false" />
+		</mx:HBox>
+		
+		<mx:HBox horizontalGap="10" width="100%">
+			<mx:Text id="errorDescription" width="70%"  visible="false" includeInLayout="false" />
+		</mx:HBox>
+		
+	</mx:VBox>
+	<mx:Text id="noJobsText" width="100%" includeInLayout="false" visible="false" paddingTop="40" />
+	<s:Spacer height="10"  />
+	
+</s:ItemRenderer>

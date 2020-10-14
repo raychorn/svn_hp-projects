@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  height="100%" width="100%">
+	
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_SoftwareFirmware_StatusMesgMediator")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.DataGridWrapper;
+			import com.hp.asi.hpic4vc.ui.model.SmartComponentUpdateModel;
+			import com.hp.asi.hpic4vc.ui.model.TableModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.Application;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var hpic4vc_uiView:Hpic4vc_uiView;
+			[Bindable]
+			public var hpic4vc_manageUiView:Hpic4vc_manage_uiView;
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			[Bindable]
+			public var _proxyServer:Hpic4vc_server_providerProxy;
+			[Bindable]
+			private var _objReferenceId:String;
+			[Bindable]
+			public var smartComponentUpdateHostDataWatcher:ChangeWatcher;
+			[Bindable]
+			public var uploadedComponents:DataGridWrapper;
+			[Bindable]
+			public var  smartComponentUpdateModel:SmartComponentUpdateModel;
+			[Bindable]	
+			private var getSmartComponentupdateTimer:Timer;
+			[Bindable]
+			public var errorFoundLabel:String;
+			[Bindable]
+			public var noRecordsFoundLabel:String;
+			
+			public var  url:String = "";
+			
+			[Bindable]
+			public var serviceGuid:String;
+			[Bindable]
+			public var _mediator:Hpic4vc_SoftwareFirmware_StatusMesgMediator;
+					
+			
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			public function showManage (contextObject:IResourceReference, hpic4vc_manage_uiView:Hpic4vc_manage_uiView) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+				this.hpic4vc_manageUiView = hpic4vc_manage_uiView;
+			}
+			
+			public function selectDeleteHandlerMore(obj:Object):void{
+				_mediator.selectDeleteHandlerMore(obj);
+			}
+			
+		]]>
+	</fx:Script>
+	
+  <mx:VBox verticalAlign="middle" width="100%">
+	  
+  	
+	<mx:Label text="{errorFoundLabel}" 
+			  visible="{errorFoundLabel.length>0}" 
+			  includeInLayout="{errorFoundLabel.length>0}" 
+			  styleName="errorMessage"/>
+	
+	<mx:VBox  borderStyle="solid" width="90%"  autoLayout="true" minHeight="100"
+			  paddingTop="10" paddingBottom="10" paddingLeft="20" id="liveStatusUpdateBox">
+		
+		<mx:VBox  width="100%">
+			<s:Label text="Current Jobs" width="100%" fontWeight="bold"/>
+			<s:DataGroup  id ="jobsGroup" itemRenderer="assets.renderers.ShowComponentUpdateRenderer" width="100%"  >
+				<s:layout>
+					<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+				</s:layout>
+			</s:DataGroup>
+			<s:Label text="Pending Jobs" width="100%" fontWeight="bold" paddingTop="20"/>
+			<s:DataGroup  id="queueGroup" itemRenderer="assets.renderers.SmartComponentUpdateQueueRenderer" width="100%" >
+				<s:layout>
+					<s:VerticalLayout gap="0" useVirtualLayout="true"  />
+				</s:layout>
+			</s:DataGroup>
+		</mx:VBox>
+	</mx:VBox>	  
+  </mx:VBox>	
+	  
+</s:Group>

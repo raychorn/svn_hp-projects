@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/> 
+    <title>Smart Component Hosting Help</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/vsphere.css">
+    <script type="text/javascript" src="/static/js/helpers.js"></script>
+    <script type="text/javascript" language="JavaScript">
+
+    </script>
+ </head>
+
+ <body>
+   <table class="title" border="0" width="100%">
+     <tr>
+       <td><p class="dotted_left">&nbsp;&nbsp;Smart Component Hosting</p></td>
+     </tr>
+   </table>
+   <table class="data" border="0" width="100%">
+     <tr>
+       <td style="padding:10px;">
+        HP Smart Components can be hosted by Insight Control for vCenter. Smart Component Hosting
+        uses an HTTP web service which listens on port 63000.
+        <br />
+        <br />
+
+        The web service must be accessible by the ESXi hosts in order for component download to succeed. This means
+        that the ESXi hosts must exist on the same management network as Insight Control for vCenter.  If DNS names
+        were used when configuring Insight Control, ensure that the ESXi hosts can resolve the hostname of the server
+        where Insight Control is installed. 
+        <br />
+        <br />
+
+        Port 63000 must also be open on the server where Insight Control for vCenter is installed. If any other services
+        are using port 63000, Smart Component Hosting will not be able to start.
+        <br />
+        <br />
+        <div style="text-align:right;">
+            <a href="javascript:self.close();">Close</a>
+        </div>
+       </td>
+     </tr>
+   </table>
+   <br/>
+</body>
+</html>

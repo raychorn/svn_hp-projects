@@ -1,0 +1,178 @@
+<script id="more_menu_template" type="text/x-jquery-tmpl" >
+    <option value="${id}">${title}</option>
+</script>
+
+<script id="boxtemplate" type="text/x-jquery-tmpl" >
+    <div id="${id}" class="box ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" >
+        <div class="box_header ui-widget-header">${title}</div>
+        <div class="box_contents">
+          <div class="box_line">Loading...</div>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">   
+
+    var DatastoreOverview = {
+
+        boxes : [],
+        refreshTimeoutId: null,
+        lastStorageData: null,
+        reDrawStorage: false,
+
+        getDatastoreMoref : function(){
+            try {
+                return getQueryParameters()['moref'].split(':')[1];
+            } catch (e){
+                return '';
+            }
+        },
+
+        renderBox : function(box)
+        {
+            $.tmpl('boxtemplate', box).appendTo( "#column" + box.column );           
+        },
+        
+        renderBoxContents : function(box)
+        {
+            var url = box.data_url;
+            if (url.indexOf("?") > -1){
+                url = url.substring(0, url.indexOf("?"));
+                url += "?" + window.location.search.substring(1) + '&' + box.data_url.substring(box.data_url.indexOf("?")+1);
+            } else {
+                url += "?" + window.location.search.substring(1);
+            }
+
+            $.getJSON(url, function(box_data) {
+            	// Only update the storage box upon change or when the portlet moved.
+                if (box.id == "storage") {
+                	var newData = JSON.stringify(box_data);
+                	if (DatastoreOverview.lastStorageData != newData 
+                        	|| DatastoreOverview.reDrawStorage) {
+                        $( '#'+box.id + ' > .box_contents' ).empty();           
+                        $.tmpl(box.template, box_data).appendTo( '#'+box.id + ' > .box_contents' );
+                        DatastoreOverview.lastStorageData = newData;
+                        DatastoreOverview.reDrawStorage   = false;
+                    }                     
+                } else {
+                    $( '#'+box.id + ' > .box_contents' ).empty();           
+                    $.tmpl(box.template, box_data).appendTo( '#'+box.id + ' > .box_contents' );
+                } 
+            });  
+            
+        },
+        
+        makeBoxTemplate : function(tmpl_string, box)
+        {
+            $.template(box.template, tmpl_string);        
+        },
+        
+        loadBoxTemplate : function(box)
+        {
+            $.ajax({
+                 type: "GET",
+                 url: box.template + "?" + window.location.search.substring(1),             
+                 success: function(tmpl_string) {
+                	 DatastoreOverview.makeBoxTemplate(tmpl_string, box);                	 
+                	 DatastoreOverview.renderBoxContents(box);
+                 }
+            });
+        },
+        
+        refreshBoxes : function()
+        {            
+            if (DatastoreOverview.isActive())
+            {                
+                for(b in DatastoreOverview.boxes)
+                {
+                	DatastoreOverview.renderBoxContents(DatastoreOverview.boxes[b]);            
+                }
+            }
+
+            DatastoreOverview.refreshTimeoutId = setTimeout("DatastoreOverview.refreshBoxes()", 15000);
+        },
+
+        startApp : function()
+        {                       
+            
+            $( ".column" ).sortable({
+                connectWith: ".column", 
+                handle: '.box_header',
+                stop: function(event, ui) { 
+                        for(b in DatastoreOverview.boxes)
+                        {
+                            if(DatastoreOverview.boxes[b].id == ui.item.context.id)
+                            {
+                                if(DatastoreOverview.boxes[b].reload_on_sort_stop)
+                                {
+                                	// Set a flag so that storage knows to redraw.
+                                    if (DatastoreOverview.boxes[b].id == "storage") {
+                                        DatastoreOverview.reDrawStorage = true;
+                                    }
+                                    DatastoreOverview.renderBoxContents(DatastoreOverview.boxes[b]);                                      
+                                }
+                                break;
+                            }
+                        }
+                                            
+                    },
+                update: function(event, ui) {
+                        var order =  $(this).sortable("toArray").join(',');
+                        createCookie("ic4vc.DatastoreOverview." + $(this).attr('id'), order, 90);
+                    }
+            });
+    
+            $("#boxtemplate").template('boxtemplate');
+    
+            $.getJSON("/config/apps/datastoreoverview/boxes" + "?" + window.location.search.substring(1),
+                function(box_data) {
+                    DatastoreOverview.boxes = box_data;            
+                                            
+                    $('.column').each(function(){
+                        var sort_value = 0;
+                        var column_id = $(this).attr('id');
+                        var column_num = column_id.split('column')[1];
+                        var sort_order = readCookie('ic4vc.DatastoreOverview.' + column_id);
+                        if(sort_order)
+                        {
+                            sort_order = sort_order.split(',');
+                            for(var x in sort_order)
+                            {
+                                for(var b in DatastoreOverview.boxes)
+                                {
+                                    if(DatastoreOverview.boxes[b].id == sort_order[x])
+                                    {
+                                        DatastoreOverview.boxes[b].sort_order = sort_value++;
+                                        DatastoreOverview.boxes[b].column = column_num;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    DatastoreOverview.boxes.sort(compareBoxes);
+                    for(b in DatastoreOverview.boxes)
+                    {
+                        DatastoreOverview.renderBox(DatastoreOverview.boxes[b]);      
+                    	DatastoreOverview.loadBoxTemplate(DatastoreOverview.boxes[b]);                
+                    }
+                    DatastoreOverview.refreshTimeoutId = setTimeout("DatastoreOverview.refreshBoxes()", 60000);
+                }
+            );
+        },
+        
+        isActive: function(){
+            return $("#datastoreoverview").is(":visible");
+        }
+    };
+    
+    DatastoreOverview.startApp();
+</script>
+
+<div id="datastoreoverview" style="display:none;" >
+    <div id="column1" class="column">
+    </div>
+    <div id="column2" class="column">
+    </div>
+    <div id="column3" class="column">
+    </div>
+</div>

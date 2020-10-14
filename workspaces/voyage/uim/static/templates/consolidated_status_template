@@ -1,0 +1,55 @@
+<![CDATA[
+    <div id="" class="">
+        <div class="" style="font-size:125%;">Consolidated Status</div>
+        <div class="box_line">
+            <table>
+                <tr>
+                    <td width="20" style="font-size: 125%;color: #BE3927;"> 
+                        <% if(typeof this['ERROR'] != 'undefined'){ %>                            
+                            <%=this['ERROR']%>
+                        <% } %>
+                    </td>
+                    <td width="25"><img alt="Consolidated Status" src="/static/img/icons/red_stop_large.png" ></td>
+                    <td style="font-size: 125%;color: #BE3927;">ERROR</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box_line">
+            <table>
+                <tr>
+                    <td width="20" style="font-size: 125%;color:#DEA513;"> <% if(typeof this['WARNING'] != 'undefined'){ %>
+                        <%=this['WARNING']%> 
+                        <% } %>
+                    </td>
+                    <td width="25"><img alt="Consolidated Status" src="/static/img/icons/orange_triangle_large.png" ></td>
+                    <td style="font-size: 125%;color:#DEA513;">WARNING</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box_line">
+            <table>
+                <tr>
+                    <td width="20" style="font-size: 125%;color:#228b22;"> <% if(typeof this['OK'] != 'undefined'){ %>
+                        <%=this['OK']%>
+                        <% } %>
+                    </td>
+                    <td width="25"><img alt="Consolidated Status" src="/static/img/icons/green_check_large.png" ></td>
+                    <td style="font-size: 125%;">OK</td>
+                </tr>
+            </table>
+        </div>
+        <div class="box_line">
+            <table>
+                <tr>
+                    <td width="20" style="font-size: 125%;"> <% if(typeof this['INFORMATION'] != 'undefined'){ %>
+                        <%=this['INFORMATION']%>
+                        <% } %>
+                    </td>
+                    <td width="25"><img alt="Consolidated Status" src="/static/img/icons/white_info_large.png" ></td>
+                    <td style="font-size: 125%;">INFORMATION</td>
+                </tr>
+            </table>
+        </div>
+    </div>    
+    <div class="box_footer"><a href="#" onclick="$('#cs_icon_container').HideBubblePopup();AppManager.loadApp('<%=this['appname']%>');">More...</a></div>
+]]>

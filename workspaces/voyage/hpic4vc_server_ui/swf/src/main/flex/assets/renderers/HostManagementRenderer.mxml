@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				implements="mx.controls.listClasses.IDropInListItemRenderer" xmlns:utils="com.hp.asi.hpic4vc.ui.utils.*"
+				>
+	<fx:Declarations>
+		<utils:IPAddressValidator id="IPV" required="false" />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.vo.DeploymentVO;
+			import com.hp.asi.hpic4vc.ui.vo.NicsVO;
+			import com.hp.asi.hpic4vc.ui.vo.PersonalityDataVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.listClasses.BaseListData;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.ValidationResult;
+			
+			import spark.components.DataGroup;
+			import spark.events.TextOperationEvent;
+
+			
+			private var _listData:BaseListData;
+			
+			[Bindable] private var useDHCP:Boolean = true;
+			[Bindable] private var deploymentVO:DeploymentVO;
+			[Bindable] private var nicsVO:NicsVO ;
+			[Bindable] private var allowCopy:Boolean;
+			[Bindable] private var domainCopyButtonVisible:Boolean;
+			[Bindable] private var domainClearButtonVisible:Boolean;
+			[Bindable] private var copiedDomainName:String;
+			[Bindable] private var serverName:String;
+			[Bindable] private var nic0MacAddress:String;
+			
+			
+			
+			public function get listData():BaseListData
+			{
+				return this._listData;
+			}
+			
+			public function set listData(value:BaseListData):void
+			{
+				this._listData = value;
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				allowCopy = false;
+				if (value && value is DeploymentVO)
+				{
+					
+					var indx:Number =  this.itemIndex;
+					deploymentVO = DeploymentVO(value);
+					serverName = deploymentVO.personalityData.displayName;
+					if(deploymentVO.personalityData.nics.length > 0)
+					{
+					nic0MacAddress = NicsVO( deploymentVO.personalityData.nics.getItemAt(0)).macAddress;
+					}
+					hostNameTextInput.text = deploymentVO.personalityData.hostName;
+					domainTextInput.text = deploymentVO.personalityData.domainName;
+					userNameTextInput.text = deploymentVO.hostData.username;
+					passwordTextInput.text = deploymentVO.hostData.password;
+					
+					
+					
+					if (this.owner is DataGroup)
+					{
+						allowCopy =( DataGroup(this.owner).dataProvider.length > 1 	&&  indx == 0);
+					}
+					
+					if(allowCopy)
+					{
+						
+						domainCopyButtonVisible = (domainTextInput.text.length > 0  && !deploymentVO.copiedByImage);
+						domainClearButtonVisible = (domainTextInput.text.length > 0 && deploymentVO.copiedByImage);
+					}
+					else
+					{
+						domainCopyButtonVisible = false;
+						domainClearButtonVisible = false;
+					}
+				}
+				
+				if (deploymentVO)
+				{
+					if(deploymentVO.personalityData)
+					{
+						if(deploymentVO.personalityData.nics.length > 0 )
+						{
+							nicsVO = deploymentVO.personalityData.nics.getItemAt(0) as NicsVO;
+							useDHCP = nicsVO.dhcp;
+							ipAddressTextInput.text = nicsVO.ip4Address;
+							netMaskTextInput.text = nicsVO.mask;
+							gatewayTextInput.text = nicsVO.gateway;
+							DNSServerTextImput.text = nicsVO.dns;
+							
+							
+						}
+					}
+				}
+			}
+			
+			
+			protected function useDHCPCheckBox_changeHandler(event:Event):void
+			{
+				if(useDHCPCheckBox.selected)
+				{
+					useDHCP = true;
+					nicsVO.dhcp = true;
+					deploymentVO.hostData.DHCP =true;
+					clearStaticData();
+					
+					
+				}
+				else
+				{
+					useDHCP = false;
+					nicsVO.dhcp = false;
+					deploymentVO.hostData.DHCP = false;
+					
+				}
+				
+			}
+			
+			protected function hostNameTextInput_focusOutHandler(event:FocusEvent):void
+			{
+				 
+				deploymentVO.personalityData.hostName = hostNameTextInput.text;
+				
+				
+			}
+			
+			protected function domainCopyButton_clickHandler(event:MouseEvent):void
+			{
+					if(this.owner is DataGroup)
+					{
+						for each (var itemCopy:DeploymentVO in DataGroup(this.owner).dataProvider)
+						{
+							if(!NicsVO(itemCopy.personalityData.nics.getItemAt(0)).dhcp)
+							{
+								itemCopy.personalityData.domainName = domainTextInput.text;
+								copiedDomainName = domainTextInput.text;
+								itemCopy.copiedByImage = true;
+							}
+							
+						}
+						domainClearButtonVisible = true;
+						domainCopyButtonVisible = false;
+						invalidateDisplayList();
+						validateNow();
+					}
+				
+			} 
+			protected function domainTextInput_focusOutHandler(event:FocusEvent):void
+			{
+				deploymentVO.personalityData.domainName  = domainTextInput.text;
+				deploymentVO.copiedByImage = (copiedDomainName == domainTextInput.text && copiedDomainName.length > 0);
+			}
+			
+			
+			
+			protected function ipAddressTextInput_focusOutHandler(event:FocusEvent):void
+			{
+		
+				if (ipAddressTextInput.text.length > 0) 
+				{
+					var results:Array;
+					results = ValidationResultEvent(IPV.validate(ipAddressTextInput.text)).results;
+					var validationResult:ValidationResult ;
+					if (results && results.length >0 )
+						{
+							validationResult = results[0] as ValidationResult;
+							if (validationResult.isError)
+							{
+								Alert.show(validationResult.errorMessage,validationResult.errorCode);
+							}
+						}
+					else
+					{
+						nicsVO.ip4Address = ipAddressTextInput.text;
+					}
+				}
+				else
+				{
+					nicsVO.ip4Address = null;
+				}
+				
+				
+				
+			}
+			
+			protected function netMaskTextInput_focusOutHandler(event:FocusEvent):void
+			{
+				
+				if (netMaskTextInput.text.length > 0) 
+				{
+					var results:Array;
+					results = ValidationResultEvent(IPV.validate(netMaskTextInput.text)).results;
+					var validationResult:ValidationResult ;
+					if (results && results.length >0 )
+					{
+						validationResult = results[0] as ValidationResult;
+						if (validationResult.isError)
+						{
+							Alert.show(validationResult.errorMessage,validationResult.errorCode);
+						}
+					}
+					else
+					{
+						nicsVO.mask = netMaskTextInput.text;
+					}
+				}
+				else
+				{
+					nicsVO.mask = null;
+				}
+				
+				
+				
+				
+			}
+			
+			protected function gatewayTextInput_focusOutHandler(event:FocusEvent):void
+			{
+				if(gatewayTextInput.text.length > 0)
+				{
+				nicsVO.gateway = gatewayTextInput.text;
+					
+				}
+				else
+				{
+					nicsVO.gateway = null;
+				}
+				
+			}
+			
+			
+			protected function DNSServerTextImput_focusOutHandler(event:FocusEvent):void
+			{
+				if (DNSServerTextImput.text.length > 0)
+				{
+					nicsVO.dns = DNSServerTextImput.text;
+					
+				}
+				else
+				{
+					nicsVO.dns = null;
+				}
+				
+			}
+			
+			protected function userNameTextInput_focusOutHandler(event:FocusEvent):void
+			{
+				deploymentVO.hostData.username = userNameTextInput.text;
+				
+			}
+			
+			protected function passwordTextInput_focusOutHandler(event:FocusEvent):void
+			{
+			
+				deploymentVO.hostData.password = passwordTextInput.text;
+			}
+			
+			protected function domainClearButton_clickHandler(event:MouseEvent):void
+			{
+				if(this.owner is DataGroup)
+				{
+					for each (var itemClear:DeploymentVO in DataGroup(this.owner).dataProvider)
+					{
+						itemClear.personalityData.domainName = "";
+						copiedDomainName = "";
+						itemClear.copiedByImage = false;
+						
+					}
+					invalidateDisplayList();
+					validateNow();
+				}
+				
+			}
+			
+			protected function domainTextInput_changeHandler(event:TextOperationEvent):void
+			{
+				if (domainTextInput.text.length > 0 && allowCopy)
+				{
+					domainCopyButtonVisible = true;
+					domainClearButtonVisible = false;
+				
+				}
+				else
+				{
+					domainCopyButtonVisible = false ;
+					domainClearButtonVisible = false;
+				}
+				
+			}
+			
+			protected function nic0RadioGroupOption_changeHandler(event:Event):void
+			{
+				deploymentVO.useNIC0 = true;
+				
+			}
+			
+			protected function dnsNameRadioGroupOption_changeHandler(event:Event):void
+			{
+				
+				deploymentVO.hostData.hostName  = hostNameTextInput.text + '.' + domainTextInput.text;
+				deploymentVO.useNIC0 = false;
+				
+				Alert.show(Helper.getString('DNS_WARNING'),"Warning");
+				
+			}
+			
+			protected function DNSDomainTextImput_focusOutHandler(event:FocusEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function clearStaticData():void
+			{
+				ipAddressTextInput.text= "";
+				netMaskTextInput.text = "";
+				hostNameTextInput.text ="";
+				gatewayTextInput.text="";
+				domainTextInput.text="";
+				DNSServerTextImput.text="";
+				
+				nicsVO.ip4Address =null;
+				nicsVO.mask=null;
+				deploymentVO.personalityData.hostName = null;
+				nicsVO.gateway =null;
+				deploymentVO.personalityData.domainName = null;
+				nicsVO.dns = null;
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Panel title="{serverName}" width="760" height="268" >
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
+		
+		<s:VGroup width="60%" gap="5">
+			<s:Label text="NIC0 Network Configuration  {nic0MacAddress}" width="100%" paddingTop="5" paddingLeft="20" fontWeight="bold"/>
+			
+			<s:HGroup  paddingLeft="10">
+				<s:CheckBox id="useDHCPCheckBox" 
+							fontSize="9" fontWeight="bold"  
+							label="Use DHCP" selected="{nicsVO.dhcp}" 
+							change="useDHCPCheckBox_changeHandler(event)"  />
+			</s:HGroup>
+			
+			<s:HGroup enabled="{!useDHCP}"  >
+				<s:Label text="Static IP Address:" width="120" paddingLeft="10" paddingTop="10"  fontWeight="bold"/>
+				<s:TextInput id="ipAddressTextInput"
+							 width="140"
+							styleName="deploymentTextInput" 
+							 focusOut="ipAddressTextInput_focusOutHandler(event)"/>
+			</s:HGroup>
+			
+			<s:HGroup enabled="{!useDHCP}"  >
+				<s:Label text="Netmask:" width="120" paddingLeft="10" paddingTop="10" fontWeight="bold" />
+				<s:TextInput id="netMaskTextInput" 
+							width="140"
+							styleName = "deploymentTextInput"
+							focusOut="netMaskTextInput_focusOutHandler(event)"/>
+			</s:HGroup>
+			
+			<s:HGroup enabled="{!useDHCP}" >
+				<s:Label text="Host Name:" width="120" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+				<s:TextInput id="hostNameTextInput" width="140"
+							 styleName="deploymentTextInput"
+							 focusOut="hostNameTextInput_focusOutHandler(event)" />
+			</s:HGroup>
+			
+			<s:HGroup enabled="{!useDHCP}"  >
+				<s:Label text="Gateway:" width="120" paddingLeft="10" paddingTop="10" fontWeight="bold" />
+				<s:TextInput id="gatewayTextInput"
+							 width="140" 
+							 styleName="deploymentTextInput"
+							 focusOut="gatewayTextInput_focusOutHandler(event)"/>
+			</s:HGroup>
+			
+			<s:HGroup enabled="{!useDHCP}" >
+				<s:Label text="DNS Domain:" width="120" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+				<s:TextInput id="domainTextInput" 
+							 text="{deploymentVO.personalityData.domainName}"
+							 width="140"  
+							 styleName="deploymentTextInput"
+							 change="domainTextInput_changeHandler(event)"
+							 focusOut="domainTextInput_focusOutHandler(event)"/>
+				<s:Label text="optional" paddingLeft="10" fontStyle="italic"/>
+				<mx:Image id="domainCopyButton" 
+						  visible="{domainCopyButtonVisible}"
+						  includeInLayout="{domainCopyButtonVisible}"
+						  source="@Embed(source='/assets/images/green_arrow_down.png')" 
+						  click="domainCopyButton_clickHandler(event)"
+						  buttonMode="true"
+						  toolTip="copy to all"
+						  />
+				
+				<mx:Image id="domainClearButton" 
+						  visible="{domainClearButtonVisible}"
+						  includeInLayout="{domainClearButtonVisible}"
+						  source="@Embed(source='/assets/images/delete.png')" 
+						  click="domainClearButton_clickHandler(event)"
+						  buttonMode="true"
+						  toolTip="clear from all"
+						  />
+			</s:HGroup>
+			<s:HGroup enabled="{!useDHCP}" >
+				<s:Label text="DNS Server" width="120" paddingLeft="10" paddingTop="10" fontWeight="bold" />
+				<s:TextInput id="DNSServerTextImput" 
+							 width="140" 
+							 styleName="deploymentTextInput"
+							 focusOut="DNSServerTextImput_focusOutHandler(event)" />
+				<s:Label text="optional" paddingLeft="10" fontStyle="italic"/>
+			</s:HGroup>
+		</s:VGroup>	
+		<s:Line width="1" height="231" xFrom="0" xTo="0" yFrom="0" yTo="100">
+			<!-- Define the border color of the line. -->
+			<s:stroke>
+				<s:SolidColorStroke color="0x000000" weight="1" joints="miter"/>
+			</s:stroke>
+		</s:Line>
+		
+	
+		<s:VGroup width="40%" gap="10">
+			<s:Label text="Add Host to vCenter" width="100%" paddingTop="5" paddingLeft="10" fontWeight="bold"/>
+			<s:Label text="{Helper.getString('ADD_TO_VCENTER_NOTE')}" paddingLeft="10" width="100%"/>
+			
+			<s:HGroup>
+				<s:Label text="ESXi Username" width="100" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+				<s:TextInput id="userNameTextInput" 
+							 width="140" 
+							 styleName="deploymentTextInput"
+							 focusOut="userNameTextInput_focusOutHandler(event)"/>
+			</s:HGroup>
+			<s:HGroup>
+				<s:Label text="ESXi Password" width="100" paddingLeft="10" paddingTop="10" fontWeight="bold"/>
+				<s:TextInput id="passwordTextInput" displayAsPassword="true" 
+							 width="140" 
+							 styleName="deploymentTextInput"
+							 focusOut="passwordTextInput_focusOutHandler(event)" />
+			</s:HGroup>
+			
+		</s:VGroup>
+	
+	</s:Panel>		
+	
+</s:ItemRenderer>

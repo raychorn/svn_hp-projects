@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="100%" height="100%"
+		 xmlns:components="assets.components.*"
+		 implements="assets.components.Hpic4vc_BaseComponent"
+         creationComplete="init()">
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Server_InfrastructureMediator")]
+	</fx:Metadata>
+	
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- Script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.InfrastructureDetailViewModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.vmware.core.model.IResourceReference;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			
+            [Bindable]
+            public var errorFound:String;
+            
+            [Bindable]
+            public var dataNotFound:String;
+
+            [Bindable]
+            public var infraDetail:InfrastructureDetailViewModel;
+            
+            [Bindable]
+            public var infraDetailDataWatcher:ChangeWatcher;
+                       
+           
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+            
+            [Bindable]
+            private var loading:String;
+			
+            public function show (contextObject:IResourceReference) : void {
+                this.visible = true;
+				this._contextObject = contextObject;
+            }
+            
+            private function init():void{
+                errorFound = "";
+                dataNotFound = "";
+                this.currentState = "loadingData";
+                infraDetailDataWatcher = ChangeWatcher.watch(this, ["infraDetail"], showDetialHandler);
+               
+                loading = Helper.getString("loading");
+            }
+
+            private function showDetialHandler(event:Event):void {
+                currentState = "showDetail";
+                invalidateDisplayList();
+                resizeDataGridColumns();
+            }
+
+          
+            
+
+            private function setColumnWidth():void{
+                var i:int;
+                for (i=0;i< infraDetail.fans.columns.length; i++){
+                    if (AdvancedDataGridColumn(infraDetail.fans.columns[i]).headerText == 'Product Name')
+						AdvancedDataGridColumn(infraDetail.fans.columns[i]).width = 400;
+                }
+                for (i=0;i< infraDetail.powerSupplies.columns.length; i++){
+                    if (AdvancedDataGridColumn(infraDetail.powerSupplies.columns[i]).headerText == 'Product Name')
+						AdvancedDataGridColumn(infraDetail.powerSupplies.columns[i]).width = 400;
+                }
+                for (i=0;i< infraDetail.interconnects.columns.length; i++){
+                    if (AdvancedDataGridColumn(infraDetail.interconnects.columns[i]).headerText == 'Product Name')
+						AdvancedDataGridColumn(infraDetail.interconnects.columns[i]).width = 400;
+                }
+                
+                for (i=0;i< infraDetail.oaModules.columns.length; i++){
+                    if (AdvancedDataGridColumn(infraDetail.oaModules.columns[i]).headerText == 'Product Name')
+						AdvancedDataGridColumn(infraDetail.oaModules.columns[i]).width = 400;
+                }
+            }
+            
+            private function resizeDataGridColumns():void {
+                setColumnWidth();
+                fanDataGrid.rowCount = infraDetail.fans.list.length + 1;
+                psDataGrid.rowCount = infraDetail.powerSupplies.list.length + 1;              
+                intConnDataGrid.rowCount = infraDetail.interconnects.list.length + 1;
+                oaDataGrid.rowCount = infraDetail.oaModules.list.length + 1;
+            }
+            
+		]]>
+	</fx:Script>	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+        <!--<mx:ArrayCollection id="hostinfo" source="{hostDetail.hostInfo.lvList}"/>-->
+	</fx:Declarations>
+	
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <mx:states>
+        <mx:State name="loadingData"/>
+        <mx:State name="errorFound"/>
+        <mx:State name="showDetail"/>
+        <mx:State name="dataNotFound"/>
+    </mx:states>
+    
+    <mx:HBox height="30" includeIn="loadingData">
+        <s:Label text="{loading}" verticalCenter="0" />					 
+    </mx:HBox>
+    
+    <mx:HBox height="30" includeIn="dataNotFound">
+        <s:Label text="{dataNotFound}"/>					 
+    </mx:HBox>
+    
+    <mx:HBox height="30" includeIn="errorFound">
+		<mx:Text width="100%" id="errorId" text="{errorFound}" styleName="errorMessage" />					 
+    </mx:HBox>
+
+    <mx:VBox height="100%" width="100%" includeIn="showDetail">
+        <mx:Panel width="100%" styleName="overviewPortlet" title="Enclosure Information" >
+            <mx:VBox width="100%" styleName="portletVBoxValue">
+                <mx:HBox width="99%" horizontalGap="0">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0">
+                        <mx:Repeater id="enclosureLabel" dataProvider="{infraDetail.enclosure.lvList}">
+                            <s:Label width="200" text="{(enclosureLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="enclosureValue" dataProvider="{infraDetail.enclosure.lvList}">
+                            <s:Label text="{(enclosureValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+
+        <mx:Panel width="100%" styleName="overviewPortlet" title="Power Information">
+            <mx:VBox width="100%" styleName="portletVBoxValue">
+                <mx:HBox width="99%" horizontalGap="0">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0">
+                        <mx:Repeater id="powerLabel" dataProvider="{infraDetail.power.lvList}">
+                            <s:Label width="200" text="{(powerLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="powerValue" dataProvider="{infraDetail.power.lvList}">
+                            <s:Label paddingLeft="5" text="{(powerValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+     
+        <mx:Panel width="100%" styleName="overviewPortlet" title="Thermal Information" >
+            <mx:VBox width="100%" styleName="portletVBoxValue">
+                <mx:HBox width="99%" horizontalGap="0">
+                    <mx:VBox width="30%" styleName="portletVBoxKey" verticalGap="0">
+                        <mx:Repeater id="thermalLabel" dataProvider="{infraDetail.thermal.lvList}">
+                            <s:Label paddingLeft="5" width="200" text="{(thermalLabel.currentItem as LabelValueModel).label}" styleName="portletLabel"/>
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                    
+                    <mx:VBox width="70%" styleName="portletVBoxValue" verticalGap="0">
+                        <mx:Repeater id="thermalValue" dataProvider="{infraDetail.thermal.lvList}">
+                            <s:Label paddingLeft="5" text="{(thermalValue.currentItem as LabelValueModel).value}" styleName="portletText" />
+							<mx:HRule width="100%" strokeWidth="1" />
+                        </mx:Repeater>
+                    </mx:VBox>
+                </mx:HBox>
+            </mx:VBox>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Fan Module Information" >
+            <mx:AdvancedDataGrid id="fanDataGrid" columns="{infraDetail.fans.columns}"
+								 sortableColumns="false" sortItemRenderer="{null}"
+                         dataProvider="{infraDetail.fans.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Power Supply Module Information" >
+            <mx:AdvancedDataGrid id="psDataGrid" columns="{infraDetail.powerSupplies.columns}"
+								 sortableColumns="false" sortItemRenderer="{null}"
+                         dataProvider="{infraDetail.powerSupplies.list}">
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Interconnect Module Information" >
+            <mx:AdvancedDataGrid id="intConnDataGrid" columns="{infraDetail.interconnects.columns}"
+								 sortableColumns="false" sortItemRenderer="{null}"
+                         dataProvider="{infraDetail.interconnects.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Onboard Administrator Module Information" >
+            <mx:AdvancedDataGrid id="oaDataGrid" columns="{infraDetail.oaModules.columns}"
+								 sortableColumns="false" sortItemRenderer="{null}"
+                         dataProvider="{infraDetail.oaModules.list}">
+                
+            </mx:AdvancedDataGrid>
+        </mx:Panel>
+        
+        <mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Onboard Administrator Logs" >
+            <mx:List  width="98%" id="syslogList" dataProvider="{infraDetail.syslog}">
+            </mx:List>
+        </mx:Panel>
+  
+    </mx:VBox>
+</mx:Canvas>
+

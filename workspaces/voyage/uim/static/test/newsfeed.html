@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js" ></script>
+<script type="text/javascript" src="/static/js/helpers.js" ></script>
+<script type="text/javascript">
+
+var moref = '';
+
+function sendEvent(){
+    var eventObj = new Object();
+    var obj_id = $("#obj_id").val();
+    var vc_id = $("#vc_id").val();
+
+    if (obj_id == ''){
+        alert("Query string with moref parameter missing.");
+        return;
+    }
+
+    eventObj['events'] = new Array();
+
+    var obj = {};
+    obj['message'] = $("#message").val();
+    obj['messageArguments'] = $("#message_args").val().split(',');
+    obj['eventSource'] = $("#source").val();
+    obj['pluginSource'] = $("#p_source").val();
+    obj['status'] = $("#status").val();
+    obj['eventDate'] = new Date().getTime()/1000;
+
+    var url = '/newsfeed/' + window.location.search;
+
+    eventObj['events'].push(obj);
+    $.post(url, JSON.stringify(eventObj), callback, "json");
+}
+
+function callback(result){
+    if (result){
+        $("#rc").html(result['errorCode']);
+        $("#r_message").html(result['errorMessage']);
+        if (result['errorCode'] == 0){
+            $("input[type='text'][id!='obj_id'][id!='vc_id']").val('');
+        }
+    } else {
+        alert("A problem occurred!");
+    }
+}
+
+function updateStatus(){
+    $("#f_status").val($("#status").val());
+}
+
+function pageLoad(){
+    var moref = getQueryParameters()['moref'];
+    var vc_id = getQueryParameters()['serverGuid'];
+    if (typeof(moref) != 'undefined'){
+        if (moref==""){
+            alert("The moref query string parameter is required.");
+            return;
+        }
+        $("#obj_id").val(moref);
+        $("#vc_id").val(vc_id);
+    }
+}
+
+</script>
+</head>
+<body style="font-family: Arial; font-size: 12px;" onload="pageLoad();">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>Object ID:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><input type="text" id="obj_id" disabled="true" /></td>
+        </tr>
+        <tr>
+            <td>vCenter GUID:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><input type="text" id="vc_id" disabled="true" /></td>
+        </tr>
+        <tr>
+            <td>Message:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="message" /></td>
+        </tr>
+        <tr>
+            <td>Message Arguments:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="message_args" />(array, i.e. 1, 2, somestring)</td>
+        </tr>
+        <tr>
+            <td>Event Source:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="source" /></td>
+        </tr>
+        <tr>
+            <td>Plug-in Source:</td>
+            <td>&nbsp;</td>
+            <td><input type="text" id="p_source" /></td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td>&nbsp;</td>
+            <td>
+                <select id="status" onchange="updateStatus();">
+                    <option value="OK">OK</option>
+                    <option value="WARNING">WARNING</option>
+                    <option value="FAILED">FAILED</option>
+                    <option value="INFORMATION">INFORMATION</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <button onclick="sendEvent();">Send Event</button>
+    <br />
+    <br />
+
+    <b>Result</b><br /><br />
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td>Return Code:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><span id="rc"></span></td>
+        </tr>
+        <tr>
+            <td>Message:</td>
+            <td style="width:10px">&nbsp;</td>
+            <td><span id="r_message"></span></td>
+        </tr>
+    </table>
+
+</body>
+</html>

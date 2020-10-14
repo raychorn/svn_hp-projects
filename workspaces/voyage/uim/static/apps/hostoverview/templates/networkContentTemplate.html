@@ -1,0 +1,22 @@
+<div class="box_line">
+    <table width="100%">
+		<tr><th>VM NIC</th><th>Physical NIC</th><th>Link</th><th>vSwitch</th></tr>
+        {{each nics}}<tr><td>${vmnic}</td>
+		<td>${physical_nic}</td>
+        {{if speedGb}}
+            <td>${speedGb}&nbsp;Gb</td>
+        {{else}}
+            <td>Not Linked</td>
+        {{/if}}
+        {{if vswitch}}
+            <td>${vswitch}</td>
+        {{else}}
+            <td></td>
+        {{/if}}
+        </tr>{{/each}}
+    </table>    
+</div>
+<div class="box_footer">
+{{if hostInfo!=null && typeof hostInfo.blade != 'undefinded' && hostInfo.blade==true}}<a href="#" onclick="AppManager.loadApp('networkdiagram');">Diagram</a><br>{{/if}}
+<a href="#" onclick="AppManager.loadApp('networkdetail');">More...</a>
+</div>

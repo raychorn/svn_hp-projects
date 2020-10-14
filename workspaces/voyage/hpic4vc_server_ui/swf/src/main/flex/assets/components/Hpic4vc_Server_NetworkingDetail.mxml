@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2012 Hewlett-Packard Development Company, L.P. -->
+<mx:Canvas xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   width="100%" height="100%"
+		   xmlns:components="assets.components.*"
+		   implements="assets.components.Hpic4vc_BaseComponent"
+		   creationComplete="init()">
+	
+	<!-- Metadata ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<fx:Metadata>
+		[DefaultMediator("assets.components.Hpic4vc_Server_NetworkingDetailMediator")]
+	</fx:Metadata>
+	
+	<!-- Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<!-- Script ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.Hpic4vc_server_providerProxy;
+			import com.hp.asi.hpic4vc.ui.model.HostConfigMismatchModel;
+			import com.hp.asi.hpic4vc.ui.model.NetworkDetailViewModel;
+			import com.hp.asi.hpic4vc.ui.model.VirtualSwitchModel;
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_applyRecommendedMismatch;
+			import com.hp.asi.hpic4vc.ui.views.Hpic4vc_manage_uiView;
+			import com.vmware.core.model.IResourceReference;
+			import com.vmware.flexutil.events.MethodReturnEvent;
+			import com.vmware.ui.events.NavigationRequest;
+			
+			import mx.binding.utils.ChangeWatcher;
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.advancedDataGridClasses.AdvancedDataGridColumn;
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;
+			public var _proxyServer:Hpic4vc_server_providerProxy=new Hpic4vc_server_providerProxy();
+			public function show (contextObject:IResourceReference) : void {
+				this.visible = true;
+				this._contextObject = contextObject;
+			}
+			
+			[Bindable]
+			public var errorFound:String;
+			
+			[Bindable]
+			public var dataNotFound:String;
+			
+			[Bindable]
+			public var netDetail:NetworkDetailViewModel;            
+			
+			[Bindable]
+			public var netDetailDataWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var errorFoundWatcher:ChangeWatcher;
+			
+			[Bindable]
+			public var _contextObject:IResourceReference;
+			
+			[Bindable]
+			public var dataNotFoundWatcher:ChangeWatcher;
+			
+			//Network Mistch
+			[Bindable]
+			public var networkMismatch:HostConfigMismatchModel = new HostConfigMismatchModel();		
+			[Bindable]
+			public var serviceGuid:String;			
+			[Bindable]
+			public var applyRecommendedWindow:IFlexDisplayObject;
+			public var applyRecommendedActionsPopUp:Hpic4vc_applyRecommendedMismatch;
+			
+			[Bindable]
+			private var loading:String;
+			
+			
+			private function init():void{
+				errorFound = "";
+				dataNotFound = "";
+				this.currentState = "loadingData";
+				netDetailDataWatcher = ChangeWatcher.watch(this, ["netDetail"], showDetialHandler);
+				errorFoundWatcher = ChangeWatcher.watch(this, ["errorFound"], errorFoundHandler);
+				dataNotFoundWatcher = ChangeWatcher.watch(this, ["dataNotFound"], dataNotFoundHandler);
+				loading = Helper.getString("loading");
+			}
+			
+			private function showDetialHandler(event:Event):void {
+				currentState = "showDetail";
+				invalidateDisplayList();
+				resizeDataGridColumns();
+			}
+			
+			private function errorFoundHandler(event:Event):void {
+				currentState = "errorFound";
+				invalidateDisplayList();
+			}
+			
+			private function dataNotFoundHandler(event:Event):void {
+				currentState = "dataNotFound";
+				invalidateDisplayList();
+			}
+			
+			private function setColumnWidth():void{
+				var i:int;
+				for (i=0;i< extSwitches.columns.length; i++){
+					if (AdvancedDataGridColumn(extSwitches.columns[i]).headerText == 'Description')
+						AdvancedDataGridColumn(extSwitches.columns[i]).width = 600;
+					else
+						AdvancedDataGridColumn(extSwitches.columns[i]).width = 200;
+				}
+			}
+			
+			private function resizeDataGridColumns():void {
+				setColumnWidth();
+				
+				nics.rowCount = netDetail.nics.list.length + 1;
+				extStorage.rowCount = netDetail.externalStorage.list.length + 1;
+				extSwitches.rowCount = netDetail.externalSwitches.list.length + 1;
+			}
+			
+			
+			//									if(pg.getVlanId().isEmpty() || pg.getVlanId().equals("0"))
+			private function getPortGroup(item:Object):String {
+				if (item.vlanId != null && item.vlanId=="0")
+				{
+					return item.name;
+				}
+				else
+				{
+					return item.name + "   VLAN ID : " + item.vlanId;
+				}
+				
+			}
+			
+			private function getDownlinkPortGroup(item:Object):String {
+				if (item.vlanid != null && item.vlanid=="0")
+				{
+					return item.name;
+				}
+				else
+				{
+					return item.name + "   VLAN ID : " + item.vlanid;
+				}
+				
+			}
+			
+			
+			private function applyRecommendedActions(e:Event):void{
+				var recommAction:ArrayCollection;
+				applyRecommendedWindow=PopUpManager.createPopUp(this,Hpic4vc_applyRecommendedMismatch,true) as IFlexDisplayObject; 
+				applyRecommendedActionsPopUp = Hpic4vc_applyRecommendedMismatch(applyRecommendedWindow);  
+				recommAction= getApplyRecomActions(networkMismatch.mismatch);				
+				applyRecommendedActionsPopUp.networkMismatchActions = recommAction;
+				applyRecommendedActionsPopUp.width=500;
+				applyRecommendedActionsPopUp.height=300
+				applyRecommendedActionsPopUp._contextObject = _contextObject;				
+			}
+			private function setReferenceHost(e:Event):void{
+				var dataValue:String=_contextObject.uid;
+				var data_array:Array=dataValue.split(":");		
+					
+				var data:String = '{"type":"'+"ClustersDto"+'","refHostMoid":"'+data_array[2]+'","vmmUuid":"'+data_array[0]+'"}';				
+				if (_contextObject != null) {
+					_proxyServer.setreferenceHostLevel(serviceGuid, data, onGettingHostConfiguration);				
+					CursorManager.setBusyCursor();
+				}
+			}
+			private function onGettingHostConfiguration(e:MethodReturnEvent):void 
+			{
+				if ((e.result) && (!e.error)){		
+					CursorManager.removeBusyCursor();
+					Alert.show(Helper.getString('ALERT_SET_REFERENCE'),Helper.getString('ALERT_MESSAGE_TYPE_SUCCESS'));	
+					var event:MouseEvent = new MouseEvent(MouseEvent.CLICK);
+					moreClicked(event);
+				}				
+				else if (e && e.error){
+					CursorManager.removeBusyCursor();
+				}
+			}
+			
+			protected function moreClicked(event:MouseEvent):void
+			{
+				var baseMediator:Hpic4vc_BaseMediator = new Hpic4vc_BaseMediator();
+				baseMediator.setTabClickedInfo("networkingTab");
+				var manage_uiView:Hpic4vc_manage_uiView = baseMediator.getManageView();
+				var e:NavigationRequest = new NavigationRequest();
+				e.context = _contextObject;
+				e.targetViewUid = baseMediator.getManageMoreLinkURLs(_contextObject);;
+				dispatchEvent(e);
+				if(manage_uiView != null)
+					manage_uiView.component_moreOnNetworkingClicked(event);
+				//	hpic4vc_uiView.component_moreOnNetworkingClicked(event);
+			}
+			public function getApplyRecomActions(actions:ArrayCollection):ArrayCollection{
+				var i:int;
+				var j:int;
+				var k:int;
+				var recommActionNoCount:int=0;
+				var recommAction:ArrayCollection=new ArrayCollection;
+				//var recommActionNo:ArrayCollection=new ArrayCollection;
+				recommAction.addItem("Put Host in maintenance mode");
+				for(i = 0; i < actions.list.length; i++){		
+					var vswitchAcation:String;
+					var vswitchName:String;				
+					var actionStringSwitch:String;
+					vswitchAcation= actions.getItemAt(i).action;
+					vswitchName= actions.getItemAt(i).name;	
+					var obj:Object
+					for (j = 0; j < actions.getItemAt(i).portGroups.list.length; j++) 
+					{
+						var networkType:String;
+						var networkTypeAction:String;
+						var actionStringPortGrp:String;
+						recommActionNoCount=recommActionNoCount+1;
+						networkType = actions.getItemAt(i).portGroups.getItemAt(j).name;
+						networkTypeAction = actions.getItemAt(i).portGroups.getItemAt(j).action;						
+						actionStringPortGrp= networkTypeAction+" Port Group "+networkType+" on "+vswitchName;
+						
+						if(networkTypeAction!= "NONE"){
+							recommAction.addItem(actionStringPortGrp);
+						}
+						//recommActionNo.addItem(recommActionNoCount)
+						
+					}
+					for (k = 0; k < actions.getItemAt(i).uplinks.list.length; k++) 
+					{
+						var uplinkName:String;
+						var uplinkAction:String;
+						var actionStringUplink:String;
+						recommActionNoCount=recommActionNoCount+1;
+						uplinkAction = actions.getItemAt(i).uplinks.getItemAt(k).action;					
+						uplinkName = actions.getItemAt(i).uplinks.getItemAt(k).name;
+						actionStringUplink=uplinkAction+" uplink "+uplinkName+" to "+vswitchName;
+						if(uplinkAction!= "NONE"){
+							recommAction.addItem(actionStringUplink);			
+						}			
+						//recommActionNo.addItem(recommActionNoCount)
+					}
+					
+				}
+				//recommAction.addItem(recommActionNo);
+				recommAction.addItem("Exit Maintenance Mode");
+				return recommAction;
+			}
+			
+		]]>
+	</fx:Script>	
+	
+	<!-- Declarations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<!-- UI components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<mx:states>
+		<mx:State name="loadingData"/>
+		<mx:State name="errorFound"/>
+		<mx:State name="showDetail"/>
+		<mx:State name="dataNotFound"/>
+	</mx:states>
+	
+	<mx:HBox height="30" includeIn="loadingData">
+		<s:Label text="{loading}" verticalCenter="0" />					 
+	</mx:HBox>
+	
+	<mx:HBox height="30" includeIn="dataNotFound">
+		<s:Label text="{dataNotFound}"/>					 
+	</mx:HBox>
+	
+	<mx:HBox height="30" includeIn="errorFound">
+		<mx:Text width="100%" id="errorId" text="{errorFound}" styleName="errorMessage" />					 
+	</mx:HBox>
+	
+	<mx:VBox height="100%" width="100%" includeIn="showDetail">	
+		<mx:Panel width="100%" styleName="overviewPortlet" title="Host Network Configuration" 
+				  id="nm"  visible="{networkMismatch !=null}"
+				  includeInLayout="{networkMismatch!=null}">			
+			<s:Spacer width="10"/>				
+			<s:Label name="errorMessage" id="errorMessageId" text="{loading}" visible="true" paddingLeft="5"/>	
+			<mx:HBox paddingRight="5" paddingLeft="5" verticalAlign="middle">					
+				<s:Label name="mismatchDataservertxt" id="lbdataServertxt" text="Host Network Configuration Status " visible="{networkMismatch.hostStatus !=null}"/>
+				<s:Image id="loader1" visible="{networkMismatch.hostStatus !=null}"/> 
+				<s:Label name="mismatchData" id="lbdata" visible="{networkMismatch.hostStatus !=null}"/>	
+				<s:Label text=" | " visible="{networkMismatch.serverStatus !=null}"/>
+				<s:Label name="mismatchprofiletxt" id="lbdataprofiletxt" text="Virtual Connect Profile Status " visible="{networkMismatch.serverStatus !=null}"/>
+				<s:Image id="loader1server" visible="{networkMismatch.serverStatus !=null}"/> 
+				<s:Label name="mismatchDataserver" id="lbdataServer" visible="{networkMismatch.serverStatus !=null}"/>
+				<s:Label text=" | " visible="{networkMismatch.vCProfileStatus !=null}" />
+				<s:Label name="mismatchDatavctxt" id="lbdatavctxt" text="Host Network Status " visible="{networkMismatch.vCProfileStatus !=null}"/>
+				<s:Image id="loader1vc" visible="{networkMismatch.vCProfileStatus !=null}"/> 
+				<s:Label name="mismatchDatavc" id="lbdatavc" visible="{networkMismatch.vCProfileStatus !=null}"/>	
+			</mx:HBox>			
+			<mx:HRule width="100%" visible="{networkMismatch.refHostName !=null}"/>
+			<mx:HBox paddingRight="5" paddingLeft="5" verticalAlign="middle">	
+				<s:Label name="hostRefName" id="refHostName" fontWeight="bold" visible="{networkMismatch.refHostName !=null}"/>
+				<s:Button name="setPreference" label="Set Reference Host" click="setReferenceHost(event)" id="btnPreference" enabled="true"  visible="{networkMismatch.refHostName !=null}"/>	
+			</mx:HBox>
+			<s:Spacer width="10"/>	
+			<mx:HRule width="100%"/>	
+						
+			<s:VGroup width="100%" visible="{networkMismatch.mismatch !=null &amp;&amp; networkMismatch.mismatch.length > 0}"
+					  includeInLayout="{networkMismatch.mismatch !=null &amp;&amp; networkMismatch.mismatch.length > 0}">	
+				<mx:VBox horizontalAlign="right" width="100%" paddingRight="20">
+					<s:Button name="Save" label="Apply Recommended Actions" click="applyRecommendedActions(event)" id="btnActions" enabled="false"  visible="{networkMismatch.hostStatus !=null}"/>	
+				</mx:VBox>
+				
+				<mx:HBox width="100%" borderStyle="solid" borderVisible="true" >					
+					<mx:AdvancedDataGrid dataProvider="{networkMismatch.mismatch}" id="networkMismatchDataGrid" width="100%" rowCount="{networkMismatch.mismatch.length + 1}"
+										 variableRowHeight="true"  sortableColumns="false" sortItemRenderer="{null}">				
+						<mx:columns>				
+							<mx:AdvancedDataGridColumn headerText="vSwitch" dataField="name" textAlign="left"/>			
+							<mx:AdvancedDataGridColumn headerText="Networks" dataField="portGroups" textAlign="left" itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfNetworkRenderer"/>
+							<mx:AdvancedDataGridColumn headerText="Uplinks"  dataField="uplinks" textAlign="left" itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfUplinkRenderer"/>
+							<mx:AdvancedDataGridColumn headerText="Actions Recommended" dataField="action" textAlign="left" itemRenderer="com.hp.asi.hpic4vc.ui.renderers.HostConfNetActionRenderer" paddingLeft="5" />							
+						</mx:columns>				
+					</mx:AdvancedDataGrid>					
+				</mx:HBox>					
+			</s:VGroup>		
+			
+		</mx:Panel>
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Network Interface Controllers" 
+				  id="nic"
+				  visible="{netDetail.nics.list !=null &amp;&amp; netDetail.nics.list.length > 0}"
+				  includeInLayout="{nic.visible}">
+			<mx:AdvancedDataGrid id="nics" columns="{netDetail.nics.columns}" width="100%" 
+								 sortableColumns="false" sortItemRenderer="{null}"
+								 dataProvider="{netDetail.nics.list}">
+				
+			</mx:AdvancedDataGrid>
+		</mx:Panel>
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="vSphere Standard Switches"
+				  id="overviewportlet"
+				  visible="{netDetail.virtualSwitches !=null &amp;&amp; netDetail.virtualSwitches.length > 0}"
+				  includeInLayout="{overviewportlet.visible}">
+			<mx:VBox width="100%" height="100%">
+				<mx:VBox width="100%">
+					<mx:HBox width="100%" >                        
+						<mx:HBox width="50%">
+							<mx:Label width="33%" text="Name" fontWeight="bold"/>                                
+							<mx:Label width="33%" text="Ports" fontWeight="bold"/>                                
+							<mx:Label width="33%" text="Ports Available" fontWeight="bold"/>                                
+						</mx:HBox>
+						<mx:HBox>
+							<mx:Label text="Port Groups" fontWeight="bold"/>                                
+						</mx:HBox>
+					</mx:HBox>
+				</mx:VBox>
+				
+				<mx:Repeater id="vss" width="100%" height="100%" dataProvider="{netDetail.virtualSwitches}" >
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" height="100%" borderVisible="true" borderColor="0x888888" borderStyle="solid">                        
+							<mx:HBox width="50%" height="100%" borderVisible="false" borderColor="0x888888" borderStyle="solid">
+								<mx:Text width="33%" text="{vss.currentItem.name}"/>
+								<mx:Text width="33%" text="{vss.currentItem.numPorts}"/>
+								<mx:Text width="33%" text="{vss.currentItem.numPortsAvailable}"/>
+							</mx:HBox>
+							<mx:HBox height="100%">
+								<s:List borderVisible="false" dataProvider="{vss.currentItem.portGroups}" labelFunction="getPortGroup"
+										rollOverColor="0xFFFFFF" selectionColor="0xFFFFFF"/>                            
+							</mx:HBox>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:Repeater>
+			</mx:VBox>
+		</mx:Panel>
+		
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="vSphere Distributed Switches"
+				  id="vSphereDistributedSwitches"
+				  visible="{netDetail.distributedVirtualSwitches !=null &amp;&amp; netDetail.distributedVirtualSwitches.length > 0}"
+				  includeInLayout="{vSphereDistributedSwitches.visible}">
+			<mx:VBox width="100%" height="100%">
+				<mx:VBox width="100%">
+					<mx:HBox width="100%">
+						<mx:Label width="33%" text="Name" fontWeight="bold"/>                                
+						<mx:Label width="33%" text="Downlink Port Groups" fontWeight="bold"/>                                
+						<mx:Label width="33%" text="Uplink Port Groups" fontWeight="bold"/>                                
+					</mx:HBox>
+				</mx:VBox>
+				
+				<mx:Repeater id="vsds" width="100%" height="100%" dataProvider="{netDetail.distributedVirtualSwitches}" >
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" height="100%" borderVisible="true" borderColor="0x888888" borderStyle="solid">                        
+							<mx:Text width="33%" text="{vsds.currentItem.name}"/>
+							<!--<mx:Text width="33%" text="{(vsds.currentItem.downlinkPortGroups)}"/>-->
+							<s:List borderVisible="false" width="33%" dataProvider="{vsds.currentItem.downlinkPortGroups}" labelFunction="getDownlinkPortGroup"
+									rollOverColor="0xFFFFFF" selectionColor="0xFFFFFF"/>
+							<mx:Text width="33%" text="{vsds.currentItem.uplinkPortGroups}"/>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:Repeater>
+			</mx:VBox>
+		</mx:Panel>
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="Virtual Connect Information" 
+				  id="vci"
+				  visible="{netDetail.vcms !=null &amp;&amp; netDetail.vcms.length > 0}"
+				  includeInLayout="{vci.visible}">
+			<mx:VBox width="100%" height="100%">
+				<mx:VBox width="100%">
+					<mx:HBox width="100%" >                        
+						<mx:HBox width="55%">
+							<mx:Label width="15%" text="Enclosure" fontWeight="bold"/>                                
+							<mx:Label width="10%" text="Bay" fontWeight="bold"/>                                
+							<mx:Label width="25%" text="Module" fontWeight="bold"/>                                
+							<mx:Label width="10%" text="Status" fontWeight="bold"/>                                
+							<mx:Label width="15%" text="IP" fontWeight="bold"/>                                
+							<mx:Label width="25%" text="Firmware" fontWeight="bold"/>                                
+						</mx:HBox>
+						<mx:HBox width="20%">
+							<mx:Label text="Networks/Fabrics" fontWeight="bold"/>                                
+						</mx:HBox>
+						<mx:HBox  width="25%">
+							<mx:Label text="Uplinks" fontWeight="bold"/>                                
+						</mx:HBox>
+					</mx:HBox>
+				</mx:VBox>
+				<mx:Repeater id="vcms" width="100%" height="100%" dataProvider="{netDetail.vcms}">
+					<mx:VBox width="100%" height="100%">
+						<mx:HBox width="100%" height="100%" borderVisible="true" borderColor="0x888888" borderStyle="solid">                        
+							<mx:HBox width="55%" height="100%" borderVisible="false" borderColor="0x888888" borderStyle="solid" horizontalGap="2">
+								<mx:Text width="15%" text="{vcms.currentItem.enclosure}" />                                
+								<mx:Text width="10%" text="{vcms.currentItem.bay}" />                                
+								<mx:Text width="25%" text="{vcms.currentItem.name}" />                                
+								<mx:Text width="10%" text="{vcms.currentItem.status}" />                                
+								<mx:Text width="15%" text="{vcms.currentItem.ip}" />
+								<mx:Text width="25%" text="{vcms.currentItem.firmwareVersion}" />
+							</mx:HBox>
+							<mx:VBox width="20%" borderVisible="false" borderColor="0x888888" borderStyle="solid" horizontalGap="2">
+								<mx:Repeater id="networks" dataProvider="{vcms.currentItem.networks}">
+									<mx:VBox width="100%" height="100%" paddingBottom="25">
+										<mx:HBox width="100%">
+											<mx:Label width="40%" text="Name" fontWeight="bold"/>
+											<mx:Text text="{networks.currentItem.name}"/>                            
+										</mx:HBox>
+										<mx:HBox width="100%" includeInLayout="{networks.currentItem.uplinkVlanId!=null}" visible="{networks.currentItem.uplinkVlanId!=null}">
+											<mx:Label width="45%" text="VLAN ID" fontWeight="bold" includeInLayout="{networks.currentItem.uplinkVlanId!=null}" visible="{networks.currentItem.uplinkVlanId!=null}"/>
+											<mx:Text text="{networks.currentItem.uplinkVlanId}" includeInLayout="{networks.currentItem.uplinkVlanId!=null}" visible="{networks.currentItem.uplinkVlanId!=null}"/>                            
+										</mx:HBox>
+									</mx:VBox>
+								</mx:Repeater>
+								<mx:Repeater id="fabrics" dataProvider="{vcms.currentItem.fabrics}">
+									<mx:VBox width="100%" height="100%">
+										<mx:HBox width="100%">
+											<mx:Label width="45%" text="Name" fontWeight="bold"/>
+											<mx:Text text="{fabrics.currentItem.name}"/>                            
+										</mx:HBox>
+									</mx:VBox>
+								</mx:Repeater>
+							</mx:VBox>
+							<mx:VBox width="25%" borderVisible="false" borderColor="0x888888" borderStyle="solid">
+								<mx:Repeater id="uplinks" dataProvider="{vcms.currentItem.uplinks}">
+									<mx:VBox width="100%" height="100%" paddingBottom="25" >
+										
+										<mx:Grid id="myGrid" width="100%">
+											
+											<!-- Define Row 1. -->
+											<mx:GridRow id="row1">
+												<mx:GridItem width="45%">
+													<mx:Label  text="Port Label" fontWeight="bold"/>
+												</mx:GridItem>
+												<mx:GridItem width="45%">
+													<mx:Text text="{uplinks.currentItem.portLabel}"/>             
+												</mx:GridItem>
+											</mx:GridRow>
+											
+											<mx:GridRow id="row2">
+												<mx:GridItem width="45%">
+													<mx:Label text="Uplink Type" fontWeight="bold"/>
+												</mx:GridItem>
+												<mx:GridItem width="45%">
+													<mx:Text text="{uplinks.currentItem.uplinkType}"/>                  
+												</mx:GridItem>
+											</mx:GridRow>
+											
+											<mx:GridRow id="row3">
+												<mx:GridItem width="45%">
+													<mx:Label text="Status" fontWeight="bold"/>
+												</mx:GridItem>
+												<mx:GridItem width="45%">
+													<mx:Text  text="{uplinks.currentItem.status}"/> 
+												</mx:GridItem>
+											</mx:GridRow>
+											
+											<mx:GridRow id="row4">
+												<mx:GridItem width="45%">
+													<mx:Label text="Speed" fontWeight="bold"/>
+												</mx:GridItem>
+												<mx:GridItem width="45%">
+													<mx:Text  text="{uplinks.currentItem.speedGb} Gb"/> 
+												</mx:GridItem>
+											</mx:GridRow>
+											
+											<mx:GridRow id="row5">
+												<mx:GridItem width="45%" includeInLayout="{uplinks.currentItem.connector!=null}" visible="{uplinks.currentItem.connector!=null}">
+													<mx:Label text="Connector" fontWeight="bold" visible="{uplinks.currentItem.connector!=null}" includeInLayout="{uplinks.currentItem.connector!=null}"/>
+												</mx:GridItem>
+												<mx:GridItem width="45%" includeInLayout="{uplinks.currentItem.connector!=null}" visible="{uplinks.currentItem.connector!=null}">
+													<mx:Text  text="{uplinks.currentItem.connector}" includeInLayout="{uplinks.currentItem.connector!=null}" visible="{uplinks.currentItem.connector!=null}"/> 
+												</mx:GridItem>
+											</mx:GridRow>
+											
+										</mx:Grid>
+										
+									</mx:VBox>
+								</mx:Repeater>
+							</mx:VBox>
+						</mx:HBox>
+					</mx:VBox>
+				</mx:Repeater>
+				
+			</mx:VBox>
+		</mx:Panel>
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="External Switches" 
+				  id="es"
+				  visible="{netDetail.externalSwitches.list !=null &amp;&amp; netDetail.externalSwitches.list.length > 0}"
+				  includeInLayout="{es.visible}">
+			<mx:AdvancedDataGrid id="extSwitches" columns="{netDetail.externalSwitches.columns}"
+								 width="100%"
+								 sortableColumns="false" sortItemRenderer="{null}"
+								 dataProvider="{netDetail.externalSwitches.list}">                
+			</mx:AdvancedDataGrid>
+		</mx:Panel>
+		
+		<mx:Panel width="100%" height="100%" styleName="overviewPortlet" title="External Storage"  
+				  id="est"
+				  visible="{netDetail.externalStorage.list !=null &amp;&amp; netDetail.externalStorage.list.length > 0}"
+				  includeInLayout="{est.visible}">
+			<mx:AdvancedDataGrid id="extStorage" columns="{netDetail.externalStorage.columns}" 
+								 minWidth="200"
+								 sortableColumns="false" sortItemRenderer="{null}"
+								 dataProvider="{netDetail.externalStorage.list}">
+				
+			</mx:AdvancedDataGrid>
+		</mx:Panel>
+		
+	</mx:VBox>
+	
+</mx:Canvas>

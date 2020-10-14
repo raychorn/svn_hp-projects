@@ -1,0 +1,103 @@
+<script type="text/javascript">
+    var HostProperties = {
+        
+        startApp : function(){
+            HostProperties.loadprop();
+            $("#hostpropnav_center").remove();
+        },
+        
+        typeFormatter: function(data){
+            if (data == 'ProLiant Server')
+                return 'VMware Host';
+            else
+                return data;
+        },
+        
+        fieldValidate: function(value, colname) {
+            if(value.length<1) 
+                return [false, colname + " cannot be blank."];
+            else
+            {
+                return [true,""];
+            }
+        },
+        
+        onclickSubmitHandler: function (params, postdata) {
+            var id = $("#hostprop").jqGrid('getGridParam','selrow'); 
+            if (id) {
+                var ret = $("#hostprop").jqGrid('getRowData', id);
+                if (ret.type == 'VMware Host')
+                    ret.type = 'ProLiant Server';                
+                postdata['type'] = ret.type;
+            } 
+        },
+        
+        toggleAddButton: function(data) {
+            if ((data.hostprop.length) == 2) { 
+                $("#add_" + this.id).remove(); 
+            }
+        },
+
+        errorTextFormat: function(data)
+        {
+            if(data.responseText.length == 0)
+            {
+                return data.status + ':' + data.statusText;
+            }
+            return data.responseText;
+        },
+        
+        loadprop : function() {
+            var query = window.location.search;
+            //alert('in loadprop');
+            var hostpropurl = '/settings/hostproperties'+ query;
+            $("#hostprop").jqGrid( {
+            	url: hostpropurl,
+            	datatype: 'json',
+            	jsonReader: {
+            	  root : 'hostprop',
+            	  repeatitems: false
+            	},
+            	mtype: 'GET',
+            	colNames: ['Host', 'User Name', 'Password', 'Type'],
+        	    colModel :[ 
+        	      {name:'host', editable:true, sortable:false, width:300, editrules:{custom:true, custom_func:HostProperties.fieldValidate}}, 
+                  {name:'username', editable:true, sortable:false, width:300, editrules:{custom:true, custom_func:HostProperties.fieldValidate}}, 
+                  {name:'password', editable:true, sortable:false, edittype: 'password', width:300, hidden: true, editrules:{edithidden:true, custom:true, custom_func:HostProperties.fieldValidate}}, 
+        	      {name:'type', width:300, sortable:false, formatter: HostProperties.typeFormatter} 
+        	    ],
+            	rowNum:20,
+            	caption: 'Host Properties',
+            	loadError: function(xhr, status, error){var dstr = xhr.statusText + '; ' + status + '; ' + error; alert(dstr);},
+            	loadComplete: HostProperties.toggleAddButton,
+            	pager: '#hostpropnav'        	
+            }).navGrid('#hostpropnav', {edit:true, add:true, del:false, search:false}, 
+                                         {    url: '/settings/hostproperties'+ query, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, 
+                                              onclickSubmit: HostProperties.onclickSubmitHandler, errorTextFormat: HostProperties.errorTextFormat 
+                                         },
+                                         {  url: '/settings/hostproperties'+ query, mtype: 'POST', closeAfterEdit:true, closeAfterAdd:true, 
+                                              onclickSubmit: HostProperties.onclickSubmitHandler, errorTextFormat: HostProperties.errorTextFormat 
+                                         }, 
+                                         {}, 
+                                         {}, 
+                                         {} );       
+        }
+    };
+    
+    HostProperties.startApp();    
+	
+</script>
+
+<div id="hostproperties" style="display:none;">
+    <div id="notes" style="font-size:12px; width:900px;" ><b>
+        Notes:<br/>
+Insight Control for vCenter requires credentials for VMware Host and iLO to communicate with those devices for data collection. For hosts which have HP VMware image or HP CIM Provider bundle installed, the software will try to use the vCenter authentication ticket to communicate with the host.  If the vCenter authentication ticket fails, a host specific credential or the global credentials will be used. The software may be able to determine the IP/hostname of the iLO of this selected host if HP VMware Image or the HP CIM Provider bundle is installed on this host. However, the user must provide the credentials for the iLO to communicate with it. If iLO global credential is already specified, the software will use the global credentials. If neither HP VMware Image or the HP CIM Provider bundle is installed, an iLO can be discovered by entering the iLO credentials here. The credentials must have the highest level of privilege available.</br></br>
+This page shows what VMware Host and iLO credentials are currently being used with respect to the host selected on the tree view pane. An [ * ] in the Host field in the following table indicates global credentials are being used for the device type. A blank User Name indicates that no credential match was found for the device type with respect to the selected host in the credential database. To modify global credentials or add Onboard Administrator or Virtual Connect credentials, please use the Home->Administration->HP Insight Management->Server Password Management page. This page also allows you to enter new credentials for either the VMware Host or the iLO device for the selected host. The Host, User Name and Password fields are required for any modification.  
+    </b></div>
+    <br/>
+
+    <table class="box_contents" id="hostprop" width="100%"><tr><td/></tr></table>
+    <div id="hostpropnav"></div>
+    <br/>
+    <div class="bigbox_footer"><a href="#" onclick="AppManager.loadApp('hostoverview');">Back</a></div>
+</div>

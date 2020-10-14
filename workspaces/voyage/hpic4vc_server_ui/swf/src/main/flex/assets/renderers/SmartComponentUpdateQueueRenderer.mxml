@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" width="100%">
+	<fx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.model.JobsModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueListModel;
+			import com.hp.asi.hpic4vc.ui.model.LabelValueModel;
+			import com.hp.asi.hpic4vc.ui.model.events.QueueModel;
+			
+			override public function set data(value:Object):void
+			{
+				
+				super.data = value ;
+				
+				var queueModel:QueueModel;
+				
+				if(value && value is QueueModel)
+				{
+					queueModel = QueueModel(value);
+					
+					var stringCompare:String = " There are no pending jobs.";
+					
+					if(queueModel.package_url == stringCompare){
+						noJobs.visible = true;
+						noJobs.includeInLayout = true;
+						messageContainer.visible = false;
+						messageContainer.includeInLayout = false;
+						noPendingJobsText.visible = true;
+						noPendingJobsText.includeInLayout = true;
+						noPendingJobsText.text = queueModel.package_url;
+					}else {
+						noJobs.visible = false;
+						noJobs.includeInLayout = false;
+						noPendingJobsText.visible = false;
+						noPendingJobsText.includeInLayout = false;
+						messageContainer.visible = true;
+						messageContainer.includeInLayout = true;
+						queueDescription.text = queueModel.package_url;
+					}
+				}
+				
+			}
+			
+			override protected function get hovered():Boolean
+			{
+				return false;
+			}
+			
+			
+			private function clickDeleteHandlerMore(event:Event):void{
+				var object:Object = new Object();
+				object["deleteJob"] = queueDescription.text;
+				this.parentDocument.selectDeleteHandlerMore(queueDescription.text);
+			}
+			
+		]]>
+	</fx:Script>
+	
+		
+		<mx:VBox id="messageContainer" width="100%">
+		   <mx:HBox horizontalGap="20" horizontalAlign="center">
+		    	 <s:Label id="queueDescription" paddingTop="5"/>
+			     <mx:LinkButton label="Delete" click="clickDeleteHandlerMore(event)" styleName="htmlLink" />
+		   </mx:HBox> 
+		</mx:VBox>
+		
+		<mx:VBox width="100%" verticalGap="0" id="noJobs">
+			<s:Label id="noPendingJobsText" width="100%" includeInLayout="false" visible="false" />
+		</mx:VBox> 		
+	
+</s:ItemRenderer>

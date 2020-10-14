@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   width="160" height="212" backgroundColor="#FFFFCE" borderStyle="solid" color="#333333"
+		   cornerRadius="8" fontFamily="Arial" fontSize="12" horizontalScrollPolicy="off"
+		   implements="mx.core.IToolTip" verticalScrollPolicy="off"
+		   creationComplete="init()">
+	
+	<mx:Script>
+		<![CDATA[
+			import com.hp.asi.hpic4vc.ui.utils.Helper;
+			
+			import mx.controls.Alert;
+			
+			[Bindable] 
+			public var errorCount:String = "";
+			[Bindable] 
+			public var warningCount:String = "";
+			[Bindable] 
+			public var okCount:String = "";
+			[Bindable] 
+			public var informationCount:String = "";
+			
+			[Bindable] 
+			public var errorLabel:String = "";
+			[Bindable] 
+			public var warningLabel:String = "";
+			[Bindable] 
+			public var okLabel:String = "";
+			[Bindable] 
+			public var informationLabel:String = "";
+			
+			public var _text:String;
+			
+			protected function init():void {
+				errorLabel = Helper.getString('error');
+				warningLabel = Helper.getString('warning');
+				okLabel = Helper.getString('ok');
+				informationLabel = Helper.getString('information');
+			}
+			
+			public function get text() : String 
+			{ 
+				return _text; 
+			} 
+			public function set text( value:String ) : void
+			{
+				
+			} 
+			
+		]]>
+	</mx:Script>
+	<mx:Label text="{Helper.getString('consolidatedStatusToolTip')}" x="4" y="11" />
+	<mx:Label text="_____________________" x="4" y="20" />
+	
+	<mx:Image id="healthIconError" x="8" y="43"
+			  source="@Embed(source='/assets/images/statusRed.png')" />
+	<mx:Label text="{Helper.getString('error')}" x="28" y="40" />
+	<mx:Label text="{errorCount}" x="132" y="40" />
+	
+	<mx:Label text="_____________________" x="4" y="50" />
+	
+	<mx:Image id="healthIconOk" x="8" y="103" 
+			  source="@Embed(source='/assets/images/statusGreen.png')"/>
+	<mx:Label text="{Helper.getString('ok')}" x="28" y="100" />
+	<mx:Label text="{okCount}" x="132" y="100" />
+	
+	<mx:Label text="_____________________" x="4" y="80" />
+	
+	<mx:Image id="healthIconWarning" x="8" y="74"
+			  source="@Embed(source='/assets/images/statusWarning.png')" />
+	<mx:Label text="{Helper.getString('warning')}" x="28" y="70" />
+	<mx:Label text="{warningCount}" x="132" y="70" />
+	
+	<mx:Label text="_____________________" x="4" y="110" />
+	
+	
+	<mx:Image id="healthIconInfo" x="7" y="132"
+			  source="@Embed(source='/assets/images/info.png')" />
+	<mx:Label x="28" y="130" text="{Helper.getString('information')}"/>
+	<mx:Label text="{informationCount}" x="132" y="130" />
+	
+	<mx:Label text="_____________________" x="4" y="140" />
+	<mx:Label x="6" y="167" height="49" color="#505050" fontSize="10"
+			  text="{Helper.getString('consolidatedStatusToolTipMoreInfo')}"/>
+</mx:Canvas>

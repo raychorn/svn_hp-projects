@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" > 
+<head>
+  <title>HP Insight Control</title>
+  <script type="text/javascript" src="/static/js/oss/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.getUrlVars.js"></script>
+  <script type="text/javascript">
+  
+
+
+	function getURL(){
+		var url = '/mxportal/MxContextLaunch.jsp?systems=&quot;None&quot;&amp;tool=&quot;None&quot;';
+        var simhost = $.getUrlVar('simhost');
+        var simtool = $.getUrlVar('simtool');
+        
+		if(simtool == "default")
+        {            
+          url = "/mxportal/MxContextLaunch.jsp?systems=" + simhost + "&tool=DEFAULT";
+        }
+        else if(simtool == "power")
+        {
+          url = "/mxportal/MxContextLaunch.jsp?systems=" + simhost + "&tool=Display+Power/Thermal+data";
+        }
+        else if(simtool == "vcem")
+        {
+          url = "/mxportal/MxContextLaunch.jsp?systems=" + simhost + "&tool=mvcd";
+        }        
+        else if(simtool == "event")
+        {
+          url = "/mxportal/MxContextLaunch.jsp?systems=" + simhost + "&event";
+        }
+
+        return url;
+	}
+   //-->		
+   </script> 
+ </head>
+ <script type="text/javascript">
+ <!--   
+    $.ajaxSetup({ cache: false });
+    var query = window.location.search.substring(1);
+    var topURL  = "/static/hpsimtop.html?" + query;    
+    var bottomURL = 'https://' + $.getUrlVar('simserver') + ':' + $.getUrlVar('simport') + getURL();    
+    
+    document.write('<frameset rows = "0%,100%">');
+    document.write('<frame id="topFrame" src ="' + topURL + '" scrolling="auto"');
+    document.write('name="top" frameborder="0">');
+    document.write('<frame id="bottomFrame" src ="' + bottomURL + '"');
+    document.write('name="bottom" frameborder="0">');
+    document.write('</frameset>');
+    
+  //-->
+  </script> 
+</html>

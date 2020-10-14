@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   autoLayout="true"
+				   maxWidth="340"
+				   height="100%"
+				   backgroundColor="0xFFFFDE"
+				   implements="mx.core.IToolTip" initialize="init(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.ToolTipManager;
+			
+			
+			private var _text:String;
+			
+			public function get text():String { 
+				return _text; 
+			} 
+			public function set text(value:String):void {
+				_text = value;
+			} 
+			
+			protected function init(event:FlexEvent):void
+			{
+				this.setStyle("headerheight",0);
+				ToolTipManager.hideDelay = 500000;
+				
+			}
+			
+			public var title:String;
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup id="group" width="100%" left="5" right="5" top="5" bottom="5" >
+		<s:Label id="lblSummary" width="100%" lineHeight="20"  />
+	</s:VGroup>
+</s:BorderContainer>

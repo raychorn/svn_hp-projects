@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><head><title>Delete a datastore</title><meta name="generator" content="DocBook XSL Stylesheets V1.74.3"/><!--Date and time: 2013-09-11T18:55:33+00:00--><meta name="keywords" content="Insight&#xA;Control for VMware vCenter Server, IC4VC"/><link rel="start" href="book.html" title="HP Insight Control for VMware vCenter Server Help System"/><link rel="up" href="v14221628.html" title="Provisioning storage"/><link rel="prev" href="Expand_Datastore.html" title="Expand a datastore"/><link rel="next" href="Delete_Volume.html" title="Delete volume"/><meta name="generator" content="Arbortext Editor/Styler Version 5.3 M040 (Maple-Rev4)"/><link rel="StyleSheet" href="styles.css" type="text/css" media="screen"/>
+        <script type="text/javascript" src="../common/jquery/jquery-1.4.2.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery-ui-1.8.2.custom.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.cookie.js"></script>
+        <script type="text/javascript" src="../common/jquery/jquery.json-2.4.min.js"></script>
+        <script type="text/javascript" src="../common/jquery/jstorage.js"></script>
+        <script type="text/javascript" src="../common/webhelp.js"></script>
+      <base target=""/></head><body class="draft" bgcolor="white" text="black" link="#003366" alink="#003366" onload="loaddynamicTOC('v14221628','icon4v14221628','link4Delete_Datastore','v14221628')" onunload="clearbgcolortoc('link4Delete_Datastore','v14221628')"><div class="navheader"><table width="100%" summary="Navigation header" cellpadding="2pt" cellspacing="0pt" margin-top="0pt"><tr><td align="left" valign="top"><p class="navparastyle"><a href="v14221628.html">Provisioning storage</a> &gt; Delete a datastore</p></td><td align="center"> </td><td width="20%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Delete_Volume.html">next</a></p></td></tr></table><hr/></div><div id="content"><div class="section" lang="en"><div class="titlepage"><div><div><a id="Delete_Datastore"/><h1 class="sectiontitle">Delete a datastore</h1></div></div></div><a id="v14941946" class="indexterm"/><a id="v14941947" class="indexterm"/><p><a id="v14516226"/>You can delete a datastore if it is not used
+by a VM or VM template.</p>
+	
+	<div class="itemizedlist"><a id="v14915215"/><ul type="disc"><li><p><a id="v14915216"/><a id="v14915217"/>If the disk used by
+the datastore is replicated using snapshot, the delete operation will
+fail.</p>
+	
+	</li><li><p><a id="v14915218"/><a id="v14915219"/>If the datastore is
+used by a VM or VM template, the delete operation will fail.</p>
+	
+	</li></ul></div><p><a id="v14689058"/>To delete a datastore:</p>
+	
+	<div class="procedure"><a id="v14516227"/><ul><li><p><a id="v14516239"/><a id="v14516240"/>If any errors are shown,
+address them and then retry the operation. Otherwise, click <span><strong class="guibutton">Delete</strong></span> to
+confirm the operation.</p>
+	
+	<p><a id="v14520909"/>The Storage Module for vCenter removes
+the storage volumes from all hosts, deletes the volumes, and re-scans
+the hosts. When these tasks are complete, the deleted datastore is
+no longer displayed in the vSphere Client.</p>
+	
+	<div class="tip"><table border="0" cellspacing="1" cellpadding="2" summary="TIP"><tr><td> </td><td><hr class="admonup"/></td></tr><tr><td valign="top" width="25"><div><img alt="[TIP: ]" height="25px" src="images/tip.gif"/></div></td><td><p><b>TIP: </b><div class="itemizedlist"><ul type="disc"><li><p>View the progress of the operation in the Tasks pane
+of the vSphere Client.</p>
+	
+	</li><li><p>Manual cache refresh is not necessary when the operation
+is finished.  The cache will be refreshed automatically.</p>
+	
+	</li></ul></div></p></td></tr><tr><td> </td><td><hr class="admonbottom"/></td></tr></table></div></li></ul></div></div></div><div class="navfooter"><hr/><table width="100%" summary="Navigation footer" cellpadding="0pt" cellspacing="0pt"><tr><td width="40%" align="left" valign="top"><p class="navparastyle"><a accesskey="p" href="Expand_Datastore.html">prev</a></p> </td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="u" href="v14221628.html">up</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> <a accesskey="n" href="Delete_Volume.html">next</a></p></td></tr><tr><td width="40%" align="left" valign="top"><p class="navparastyle">Expand a datastore </p></td><td width="20%" align="center" valign="top"><p class="navparastyle"><a accesskey="h" href="index.html" target="_top">home</a></p></td><td width="40%" align="right" valign="top"><p class="navparastyle"> Delete volume</p></td></tr></table><p align="right" class="copyright">Copyright © 2012, 2013 Hewlett-Packard Development Company, L.P.</p></div></body></html>
